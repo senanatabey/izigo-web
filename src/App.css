@@ -1,0 +1,292 @@
+/* ==========================================================================
+   IZIGO — shared app shell (navbar / sidebar / footer / auth card)
+   Page-level design (Home, category grids, etc.) lives inline in each page
+   component — this file only styles the chrome that wraps every route.
+   ========================================================================== */
+
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.app-navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 6vw;
+}
+
+.app-logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--izigo-green);
+  letter-spacing: -0.3px;
+}
+
+.app-logo .app-logo-tagline {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+}
+
+.app-nav-links {
+  display: flex;
+  gap: 32px;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.app-nav-links a.active {
+  color: var(--izigo-green);
+}
+
+.app-nav-links a:hover {
+  color: var(--izigo-green);
+}
+
+.app-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-soft);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.language-switcher button {
+  border: none;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.language-switcher button.active {
+  background: var(--bg);
+  color: var(--izigo-green);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-icon-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.nav-icon-link:hover {
+  color: var(--izigo-green);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--izigo-orange);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.94);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--izigo-green);
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-soft);
+  padding: 24px;
+}
+
+.auth-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-md);
+}
+
+.auth-card .app-logo {
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-soft);
+}
+
+.app-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--text);
+  color: #fff;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-sidebar .app-logo {
+  color: #fff;
+  padding: 0 8px 20px;
+}
+
+.app-sidebar .app-logo .app-logo-tagline {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.sidebar-link.logout {
+  margin-top: auto;
+  color: #FCA5A5;
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 5vw;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 6vw;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-soft);
+  background: var(--bg);
+}
+
+.page-placeholder h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.page-placeholder p {
+  color: var(--text-soft);
+  font-size: 14.5px;
+}
+
+@media (max-width: 860px) {
+  .app-nav-links {
+    display: none;
+  }
+
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .app-navbar-inner {
+    padding: 12px 5vw;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-navbar-inner {
+    gap: 10px;
+  }
+
+  .app-nav-right {
+    gap: 8px;
+  }
+
+  .nav-icon-link span {
+    display: none;
+  }
+
+  .btn-outline {
+    padding: 9px 12px;
+  }
+
+  .btn-primary span {
+    display: none;
+  }
+
+  .btn-primary {
+    padding: 10px 12px;
+  }
+}
