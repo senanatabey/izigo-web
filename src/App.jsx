@@ -13,6 +13,10 @@ import CityGuide from "./pages/Destinations/CityGuide";
 import VillasPage from "./pages/Villas/VillasPage";
 import VillaDetailPage from "./pages/Villas/VillaDetail";
 import CarsPage from "./pages/Cars/CarsPage";
+import TransfersPage from "./pages/Transfers/TransfersPage";
+import TransferDetailPage from "./pages/Transfers/TransferDetail";
+import EventsPage from "./pages/Events/EventsPage";
+import EventDetailPage from "./pages/Events/EventDetail";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -86,6 +90,7 @@ function IzigoLogo() {
 }
 
 const MAIN_NAV_ITEMS = [
+  { to: "/concierge", key: "concierge" },
   { to: "/villas", key: "villas" },
   { to: "/cars", key: "cars" },
   { to: "/transfers", key: "transfers" },
@@ -228,13 +233,10 @@ function PagePlaceholder({ title, description }) {
 }
 
 const CarDetail = () => <PagePlaceholder title="Car detail" description="Make, model, transmission, contact host." />;
-const Transfers = () => <PagePlaceholder title="Transfers" description="Airport, city and intercity transfer listings." />;
-const TransferDetail = () => <PagePlaceholder title="Transfer detail" description="Route, vehicle type, contact host." />;
 const Experiences = () => <PagePlaceholder title="Experiences" description="Category browse grid for tours and activities." />;
 const ExperienceDetail = () => <PagePlaceholder title="Experience detail" description="Duration, group size, contact host." />;
-const Events = () => <PagePlaceholder title="Events" description="Category browse grid for upcoming events." />;
-const EventDetail = () => <PagePlaceholder title="Event detail" description="Date, venue, ticket price, contact host." />;
 const Deals = () => <PagePlaceholder title="Deals" description="Discounted and promoted listings across every category." />;
+const Concierge = () => <PagePlaceholder title="Concierge" description="On-demand delivery and local services — ice, firewood, pharmacy, babysitter, guide, and more." />;
 const Saved = () => <PagePlaceholder title="Saved" description="Listings the guest has bookmarked." />;
 
 const Login = () => <PagePlaceholder title="Log in" description="Phone or email + password, OTP verification." />;
@@ -269,16 +271,17 @@ export default function App() {
           {/* Public browse pages */}
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
+            <Route path="concierge" element={<Concierge />} />
             <Route path="villas" element={<VillasPage />} />
             <Route path="villas/:id" element={<VillaDetailPage />} />
             <Route path="cars" element={<CarsPage />} />
             <Route path="cars/:id" element={<CarDetail />} />
-            <Route path="transfers" element={<Transfers />} />
-            <Route path="transfers/:id" element={<TransferDetail />} />
+            <Route path="transfers" element={<TransfersPage />} />
+            <Route path="transfers/:id" element={<TransferDetailPage />} />
             <Route path="experiences" element={<Experiences />} />
             <Route path="experiences/:id" element={<ExperienceDetail />} />
-            <Route path="events" element={<Events />} />
-            <Route path="events/:id" element={<EventDetail />} />
+            <Route path="events" element={<EventsPage />} />
+            <Route path="events/:id" element={<EventDetailPage />} />
             <Route path="deals" element={<Deals />} />
             <Route path="saved" element={<Saved />} />
             <Route path="destinations/:city" element={<CityGuide />} />
