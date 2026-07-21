@@ -10,6 +10,9 @@ import {
 import "./App.css";
 import Home from "./pages/Home/IzigoHomepage";
 import CityGuide from "./pages/Destinations/CityGuide";
+import VillasPage from "./pages/Villas/VillasPage";
+import VillaDetailPage from "./pages/Villas/VillaDetail";
+import CarsPage from "./pages/Cars/CarsPage";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -224,9 +227,6 @@ function PagePlaceholder({ title, description }) {
   );
 }
 
-const Villas = () => <PagePlaceholder title="Villas" description="Category browse grid — filters by city, price, guests." />;
-const VillaDetail = () => <PagePlaceholder title="Villa detail" description="Gallery, amenities, map, and the WhatsApp contact box." />;
-const Cars = () => <PagePlaceholder title="Cars" description="Category browse grid for car listings." />;
 const CarDetail = () => <PagePlaceholder title="Car detail" description="Make, model, transmission, contact host." />;
 const Transfers = () => <PagePlaceholder title="Transfers" description="Airport, city and intercity transfer listings." />;
 const TransferDetail = () => <PagePlaceholder title="Transfer detail" description="Route, vehicle type, contact host." />;
@@ -269,9 +269,9 @@ export default function App() {
           {/* Public browse pages */}
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="villas" element={<Villas />} />
-            <Route path="villas/:id" element={<VillaDetail />} />
-            <Route path="cars" element={<Cars />} />
+            <Route path="villas" element={<VillasPage />} />
+            <Route path="villas/:id" element={<VillaDetailPage />} />
+            <Route path="cars" element={<CarsPage />} />
             <Route path="cars/:id" element={<CarDetail />} />
             <Route path="transfers" element={<Transfers />} />
             <Route path="transfers/:id" element={<TransferDetail />} />
