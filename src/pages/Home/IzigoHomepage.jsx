@@ -125,7 +125,7 @@ export default function IzigoHomepage() {
       <style>{`
         .izigo-home .hero {
           position: relative;
-          padding: 130px 6vw 72px;
+          padding: 96px 6vw 48px;
           display: flex;
           flex-direction: column;
           background:
@@ -150,21 +150,21 @@ export default function IzigoHomepage() {
         .izigo-home .hero p {
           margin-top: 18px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 520px;
         }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
         .izigo-home .hero-btn {
           display: inline-flex; align-items: center; gap: 8px; border-radius: 10px;
-          padding: 14px 28px; font-weight: 700; font-size: 15px; white-space: nowrap; transition: filter 0.15s ease;
+          padding: 12px 22px; font-weight: 700; font-size: 14.5px; white-space: nowrap; transition: filter 0.15s ease;
         }
         .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; }
         .izigo-home .hero-btn.secondary { background: #fff; color: var(--izigo-green); }
         .izigo-home .hero-btn:hover { filter: brightness(0.95); }
 
         .izigo-home .search-card {
-          margin: 48px 0 0;
+          margin: 32px 0 0;
           background: #fff;
           border-radius: 16px;
           box-shadow: var(--shadow-md);
-          padding: 20px 24px;
+          padding: 18px 22px;
           position: relative;
           z-index: 5;
         }
@@ -220,12 +220,12 @@ export default function IzigoHomepage() {
         }
         .izigo-home .search-submit:hover { filter: brightness(0.94); }
 
-        .izigo-home section { padding: 84px 6vw; }
+        .izigo-home section { padding: 52px 6vw; }
 
-        .izigo-home .feature-cards { background: var(--bg-soft); padding: 28px 6vw; }
-        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .izigo-home .feature-cards { background: var(--bg-soft); padding: 32px 6vw; }
+        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
         .izigo-home .feature-card {
-          display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border);
+          display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--border);
           border-radius: 14px; padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text);
         }
         .izigo-home .feature-card-icon {
@@ -233,41 +233,19 @@ export default function IzigoHomepage() {
           justify-content: center; background: rgba(0, 200, 151, 0.12); color: var(--izigo-green);
         }
         .izigo-home .feature-card:nth-child(2n) .feature-card-icon { background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
-        .izigo-home .section-head { max-width: 1280px; margin: 0 auto 36px; display: flex; align-items: baseline; justify-content: space-between; }
-        .izigo-home .section-head h2 { font-size: 30px; font-weight: 800; }
-        .izigo-home .section-head a { font-size: 15px; font-weight: 700; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; }
-
-        .izigo-home .category-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 56px; }
-        .izigo-home .category-card {
-          border: 1px solid var(--border); border-radius: 16px; padding: 32px;
-          background: #fff; transition: box-shadow 0.15s ease, transform 0.15s ease;
-        }
-        .izigo-home .category-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .izigo-home .category-icon {
-          width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center;
-          justify-content: center; margin-bottom: 20px;
-        }
-        .izigo-home .category-icon.green { background: rgba(0, 200, 151, 0.12); color: var(--izigo-green); }
-        .izigo-home .category-icon.orange { background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
-        .izigo-home .category-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
-        .izigo-home .category-card p { font-size: 14.5px; color: var(--text-soft); line-height: 1.45; margin-bottom: 22px; min-height: 42px; }
-        .izigo-home .category-btn {
-          display: inline-flex; align-items: center; justify-content: center; width: 100%;
-          border: none; border-radius: 10px; padding: 13px; font-weight: 700; font-size: 14.5px;
-          color: #fff; cursor: pointer;
-        }
-        .izigo-home .category-btn.green { background: var(--izigo-green); }
-        .izigo-home .category-btn.orange { background: var(--izigo-orange); }
+        .izigo-home .section-head { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: baseline; justify-content: space-between; }
+        .izigo-home .section-head h2 { font-size: 26px; font-weight: 800; }
+        .izigo-home .section-head a { font-size: 14px; font-weight: 700; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; }
 
         .izigo-home .latest { background: var(--bg); }
-        .izigo-home .latest-tabs { max-width: 1280px; margin: 0 auto 28px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .izigo-home .latest-tabs { max-width: 1280px; margin: 0 auto 18px; display: flex; gap: 8px; flex-wrap: wrap; }
         .izigo-home .latest-tab {
-          display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 999px;
-          border: 1px solid var(--border); background: #fff; color: var(--text-soft); font-size: 13.5px; font-weight: 600;
+          display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px;
+          border: 1px solid var(--border); background: #fff; color: var(--text-soft); font-size: 13px; font-weight: 600;
           cursor: pointer; transition: all 0.15s ease;
         }
         .izigo-home .latest-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
-        .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .izigo-home .latest-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .izigo-home .latest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .izigo-home .latest-thumb { aspect-ratio: 4 / 3; }
@@ -281,7 +259,7 @@ export default function IzigoHomepage() {
         .izigo-home .latest-price span { font-size: 11.5px; font-weight: 500; color: var(--text-soft); }
 
         .izigo-home .destinations { background: var(--bg); }
-        .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
         .izigo-home .destination-card {
           display: block; border-radius: 16px; overflow: hidden; transition: transform 0.15s ease;
         }
@@ -289,31 +267,31 @@ export default function IzigoHomepage() {
         .izigo-home .destination-card img { width: 100%; height: auto; display: block; }
 
         .izigo-home .plan-trip-section { background: var(--izigo-green); color: #fff; }
-        .izigo-home .plan-trip-layout { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+        .izigo-home .plan-trip-layout { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
         .izigo-home .plan-trip-copy .premium-badge.dark {
-          display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700;
-          background: rgba(255,255,255,0.15); color: #FFD447; padding: 7px 16px; border-radius: 999px; margin-bottom: 18px;
+          display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+          background: rgba(255,255,255,0.15); color: #FFD447; padding: 6px 14px; border-radius: 999px; margin-bottom: 14px;
         }
-        .izigo-home .plan-trip-copy h2 { font-size: 28px; font-weight: 800; margin: 0 0 14px; line-height: 1.3; }
-        .izigo-home .plan-trip-copy p { font-size: 15px; line-height: 1.65; color: rgba(255,255,255,0.88); margin: 0 0 18px; max-width: 440px; }
+        .izigo-home .plan-trip-copy h2 { font-size: 25px; font-weight: 800; margin: 0 0 10px; line-height: 1.28; }
+        .izigo-home .plan-trip-copy p { font-size: 14.5px; line-height: 1.55; color: rgba(255,255,255,0.88); margin: 0 0 14px; max-width: 440px; }
         .izigo-home .plan-trip-example {
-          font-style: italic; font-size: 14px; color: rgba(255,255,255,0.75);
-          border-left: 3px solid rgba(255,255,255,0.35); padding-left: 14px; max-width: 420px;
+          font-style: italic; font-size: 13.5px; color: rgba(255,255,255,0.75);
+          border-left: 3px solid rgba(255,255,255,0.35); padding-left: 12px; max-width: 420px;
         }
-        .izigo-home .plan-trip-form-wrap { background: #fff; border-radius: 20px; padding: 8px; box-shadow: var(--shadow-md); }
+        .izigo-home .plan-trip-form-wrap { background: #fff; border-radius: 18px; box-shadow: var(--shadow-md); }
         .izigo-home .plan-trip-form-wrap .pt-form { border: none; padding: 24px; }
-        .izigo-home .plan-trip-form-wrap .pt-success { border: none; padding: 40px 20px; }
+        .izigo-home .plan-trip-form-wrap .pt-success { border: none; padding: 32px 20px; }
 
         .izigo-home .premium-teasers { background: var(--bg); }
-        .izigo-home .premium-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .izigo-home .premium-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .izigo-home .premium-grid.single { grid-template-columns: 1fr; max-width: 800px; }
         .izigo-home .premium-card {
-          border-radius: 20px; padding: 36px; display: flex; flex-direction: column; align-items: flex-start;
+          border-radius: 18px; padding: 24px; display: flex; flex-direction: column; align-items: flex-start;
         }
         .izigo-home .premium-card.local-services { background: var(--bg-soft); border: 1px solid var(--border); width: 100%; }
-        .izigo-home .premium-card h3 { font-size: 22px; font-weight: 800; margin: 0 0 10px; color: var(--text); }
-        .izigo-home .premium-card p { font-size: 14.5px; line-height: 1.6; margin: 0 0 24px; max-width: 380px; color: var(--text-soft); }
-        .izigo-home .premium-icons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .izigo-home .premium-card h3 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
+        .izigo-home .premium-card p { font-size: 14px; line-height: 1.55; margin: 0 0 16px; max-width: 380px; color: var(--text-soft); }
+        .izigo-home .premium-icons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
         .izigo-home .premium-icon {
           width: 38px; height: 38px; border-radius: 50%; background: #fff; color: var(--izigo-orange);
           display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
@@ -324,19 +302,19 @@ export default function IzigoHomepage() {
         }
         .izigo-home .premium-btn.dark { background: var(--izigo-green); color: #fff; }
 
-        .izigo-home .pt-section-title { font-size: 14px; font-weight: 800; margin: 0 0 12px; color: var(--text); }
-        .izigo-home .pt-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 18px; }
+        .izigo-home .pt-section-title { font-size: 14px; font-weight: 800; margin: 0 0 10px; color: var(--text); }
+        .izigo-home .pt-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
         .izigo-home .pt-field { display: flex; flex-direction: column; gap: 6px; }
         .izigo-home .pt-field.full { grid-column: 1 / -1; }
         .izigo-home .pt-field label { font-size: 12px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
         .izigo-home .pt-field input,
         .izigo-home .pt-field select,
         .izigo-home .pt-field textarea {
-          border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+          border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px;
           font-size: 13.5px; color: var(--text); background: #fff; font-family: var(--sans);
         }
-        .izigo-home .pt-field textarea { resize: vertical; min-height: 64px; }
-        .izigo-home .pt-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+        .izigo-home .pt-field textarea { resize: vertical; min-height: 60px; }
+        .izigo-home .pt-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
         .izigo-home .pt-chip {
           display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px;
           padding: 8px 14px; font-size: 12.5px; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
@@ -346,12 +324,12 @@ export default function IzigoHomepage() {
         .izigo-home .pt-submit {
           width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
           background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
-          padding: 14px; font-weight: 700; font-size: 14.5px; cursor: pointer;
+          padding: 13px; font-weight: 700; font-size: 14px; cursor: pointer;
         }
         .izigo-home .pt-submit:disabled { opacity: 0.45; cursor: not-allowed; }
         .izigo-home .pt-submit-note { text-align: center; font-size: 11.5px; color: var(--text-soft); margin-top: 10px; }
-        .izigo-home .pt-success { text-align: center; }
-        .izigo-home .pt-success-icon { color: var(--izigo-green); margin-bottom: 14px; }
+        .izigo-home .pt-success { text-align: center; padding: 12px 0; }
+        .izigo-home .pt-success-icon { color: var(--izigo-green); margin-bottom: 12px; }
         .izigo-home .pt-success h3 { font-size: 19px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
         .izigo-home .pt-success p { font-size: 13.5px; color: var(--text-soft); line-height: 1.6; }
 
@@ -359,9 +337,9 @@ export default function IzigoHomepage() {
         .izigo-home .comparison-card {
           max-width: 1280px; margin: 0 auto;
           background: var(--izigo-green); color: #fff;
-          border-radius: 20px; padding: 48px; box-shadow: var(--shadow-md);
+          border-radius: 18px; padding: 32px; box-shadow: var(--shadow-md);
         }
-        .izigo-home .comparison-card h2 { font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 32px; }
+        .izigo-home .comparison-card h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 22px; }
         .izigo-home .comparison-scroll { overflow-x: auto; }
         .izigo-home .comparison-table { width: 100%; border-collapse: collapse; min-width: 640px; }
         .izigo-home .comparison-table th, .izigo-home .comparison-table td {
@@ -382,18 +360,18 @@ export default function IzigoHomepage() {
         .izigo-home .host-cta { background: var(--bg-soft); }
         .izigo-home .host-cta-card {
           background: linear-gradient(180deg, rgba(0,200,151,0.08) 0%, rgba(0,200,151,0.02) 100%);
-          border: 1px solid rgba(0,200,151,0.25); border-radius: 20px;
-          padding: 48px; text-align: center; max-width: 860px; margin: 0 auto;
+          border: 1px solid rgba(0,200,151,0.25); border-radius: 18px;
+          padding: 32px; text-align: center; max-width: 860px; margin: 0 auto;
         }
         .izigo-home .host-cta-icon {
-          width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px;
+          width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 14px;
           display: flex; align-items: center; justify-content: center;
           background: var(--izigo-green); color: #fff;
         }
-        .izigo-home .host-cta-card h2 { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
-        .izigo-home .host-cta-card > p { font-size: 15px; color: var(--text-soft); line-height: 1.6; margin: 0 auto 32px; max-width: 600px; }
-        .izigo-home .host-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-        .izigo-home .host-perk { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px 16px; }
+        .izigo-home .host-cta-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .izigo-home .host-cta-card > p { font-size: 14.5px; color: var(--text-soft); line-height: 1.55; margin: 0 auto 22px; max-width: 600px; }
+        .izigo-home .host-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+        .izigo-home .host-perk { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; }
         .izigo-home .host-perk svg { color: var(--izigo-green); margin-bottom: 10px; }
         .izigo-home .host-perk h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
         .izigo-home .host-perk p { font-size: 12.5px; color: var(--text-soft); }
@@ -436,7 +414,6 @@ export default function IzigoHomepage() {
         }
 
         @media (max-width: 1024px) {
-          .izigo-home .category-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .destination-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-grid { grid-template-columns: 1fr; }
@@ -445,24 +422,25 @@ export default function IzigoHomepage() {
           .izigo-home .hero h1 { font-size: 42px; }
         }
         @media (max-width: 640px) {
-          .izigo-home .hero { padding: 56px 5vw 32px; }
-          .izigo-home .hero h1 { font-size: 30px; }
+          .izigo-home .hero { padding: 40px 5vw 24px; }
+          .izigo-home .hero h1 { font-size: 28px; }
           .izigo-home .hero-cta-row { flex-direction: column; align-items: stretch; }
-          .izigo-home .search-card { margin: 28px 0 0; padding: 16px; }
+          .izigo-home .search-card { margin: 20px 0 0; padding: 14px; }
           .izigo-home .search-row { flex-direction: column; gap: 12px; }
           .izigo-home .search-field { padding: 4px; }
           .izigo-home .search-submit { width: 100%; padding: 12px; }
-          .izigo-home section { padding: 44px 5vw; }
-          .izigo-home .category-grid { grid-template-columns: 1fr; }
+          .izigo-home section { padding: 36px 5vw; }
+          .izigo-home .feature-cards { padding: 24px 5vw; }
           .izigo-home .latest-grid { grid-template-columns: 1fr; }
           .izigo-home .destination-grid { grid-template-columns: 1fr; }
-          .izigo-home .premium-card { padding: 26px 20px; }
-          .izigo-home .feature-cards-grid { grid-template-columns: repeat(2, 1fr); }
-          .izigo-home .pt-row { grid-template-columns: 1fr; }
-          .izigo-home .host-cta-card { padding: 32px 20px; }
+          .izigo-home .premium-card { padding: 20px 18px; }
+          .izigo-home .plan-trip-form-wrap .pt-form { padding: 18px 16px; }
+          .izigo-home .feature-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .izigo-home .pt-row { grid-template-columns: 1fr; gap: 12px; }
+          .izigo-home .host-cta-card { padding: 22px 18px; }
           .izigo-home .host-perks { grid-template-columns: 1fr; }
           .izigo-home .host-cta-actions { flex-direction: column; align-items: stretch; }
-          .izigo-home .comparison-card { padding: 28px 20px; border-radius: 16px; }
+          .izigo-home .comparison-card { padding: 20px 16px; border-radius: 16px; }
           .izigo-home .newsletter-inner { flex-direction: column; align-items: stretch; text-align: center; }
           .izigo-home .newsletter-copy { flex-direction: column; text-align: center; }
           .izigo-home .newsletter-form { max-width: none; }
@@ -541,19 +519,6 @@ export default function IzigoHomepage() {
             <div className="feature-card" key={key}>
               <div className="feature-card-icon"><Icon size={20} /></div>
               <span>{t(`featureCards.${key}`)}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="categories">
-        <div className="category-grid">
-          {CATEGORIES.map(({ icon: Icon, tone, key, to }) => (
-            <div className="category-card" key={key}>
-              <div className={`category-icon ${tone}`}><Icon size={24} /></div>
-              <h3>{t(`categories.${key}.title`)}</h3>
-              <p>{t(`categories.${key}.text`)}</p>
-              <Link to={to} className={`category-btn ${tone}`}>{t(`categories.${key}.cta`)}</Link>
             </div>
           ))}
         </div>

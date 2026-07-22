@@ -2,7 +2,7 @@ export const translations = {
   en: {
     nav: {
       home: "Home",
-      concierge: "Bring Me",
+      concierge: "Local Services",
       villas: "Villas",
       cars: "Cars",
       transfers: "Transfers & Tours",
@@ -106,7 +106,7 @@ export const translations = {
       notFound: "This event could not be found.",
     },
     conciergePage: {
-      heading: "Bring Me",
+      heading: "Local Services",
       subtitle: "Anything you need, delivered or arranged by a local — something Airbnb and Booking simply don't offer.",
       exclusiveNote: "Only on IZIGO",
       services: {
@@ -262,7 +262,7 @@ export const translations = {
       cars: { title: "Cars for Rent", text: "Book a car and drive around comfortably", cta: "Explore Cars" },
       transfers: { title: "Transfers", text: "Airport, city or intercity comfortable transfers", cta: "Explore Transfers" },
       events: { title: "Events & Activities", text: "Discover local events and unique activities", cta: "Explore Events" },
-      concierge: { title: "Bring Me", text: "Ice, firewood, a guide, a babysitter — delivered by a local", cta: "See What You Can Ask For" },
+      concierge: { title: "Local Services", text: "Ice, firewood, a guide, a babysitter — delivered by a local", cta: "See What You Can Ask For" },
     },
     destinations: {
       heading: "Popular Destinations",
@@ -352,7 +352,7 @@ export const translations = {
   az: {
     nav: {
       home: "Ana səhifə",
-      concierge: "Bring Me",
+      concierge: "Yerli Xidmətlər",
       villas: "Villalar",
       cars: "Avtomobillər",
       transfers: "Transfer və Turlar",
@@ -456,7 +456,7 @@ export const translations = {
       notFound: "Bu tədbir tapılmadı.",
     },
     conciergePage: {
-      heading: "Bring Me",
+      heading: "Yerli Xidmətlər",
       subtitle: "İstədiyin hər şey — yerli sakin tərəfindən gətirilir və ya təşkil edilir. Airbnb və Booking-də bu xidmət yoxdur.",
       exclusiveNote: "Yalnız IZIGO-da",
       services: {
@@ -612,7 +612,7 @@ export const translations = {
       cars: { title: "Kirayə Avtomobillər", text: "Avtomobil kirələ, rahat şəkildə hərəkət et", cta: "Avtomobilləri kəşf et" },
       transfers: { title: "Transferlər", text: "Hava limanı, şəhər və şəhərlərarası rahat transferlər", cta: "Transferləri kəşf et" },
       events: { title: "Tədbirlər və Fəaliyyətlər", text: "Yerli tədbirləri və unikal fəaliyyətləri kəşf et", cta: "Tədbirləri kəşf et" },
-      concierge: { title: "Bring Me", text: "Buz, odun, bələdçi, uşaq baxıcısı — yerli sakin tərəfindən gətirilir", cta: "Nə sifariş edə bilərsən" },
+      concierge: { title: "Yerli Xidmətlər", text: "Buz, odun, bələdçi, uşaq baxıcısı — yerli sakin tərəfindən gətirilir", cta: "Nə sifariş edə bilərsən" },
     },
     destinations: {
       heading: "Populyar Məkanlar",

@@ -56,6 +56,24 @@ export const MOCK_VILLAS = [
     },
     amenities: ["wifi", "kitchen", "parking", "fireplace"],
   },
+  {
+    id: "v7", city: "Baku", tone: "meadow", price: 60, guests: 3, bedrooms: 1,
+    title: { en: "Cosy studio near Fountains Square", az: "Fəvvarələr Meydanına yaxın rahat studiya" },
+    description: {
+      en: "A tidy studio flat two blocks from Fountains Square, ideal for a short city break.",
+      az: "Fəvvarələr Meydanından iki bina aralı səliqəli studiya mənzil, qısa şəhər səyahəti üçün ideal.",
+    },
+    amenities: ["wifi", "kitchen", "ac"],
+  },
+  {
+    id: "v8", city: "Gabala", tone: "forest", price: 175, guests: 8, bedrooms: 4,
+    title: { en: "Large group villa with pool", az: "Hovuzlu böyük qrup villası" },
+    description: {
+      en: "A 4-bedroom villa with a private pool and garden, built for larger groups visiting Gabala.",
+      az: "Şəxsi hovuzu və bağçası olan 4 otaqlı villa, Qəbələyə gələn böyük qruplar üçün nəzərdə tutulub.",
+    },
+    amenities: ["wifi", "parking", "garden", "kitchen"],
+  },
 ];
 
 export const MOCK_CARS = [
@@ -89,6 +107,38 @@ export const MOCK_CARS = [
     description: {
       en: "A 7-seat minivan, ideal for larger groups heading to Shahdag or Khinalig.",
       az: "7 yerlik minivan — Şahdağ və ya Xınalığa gedən böyük qruplar üçün idealdır.",
+    },
+  },
+  {
+    id: "c5", city: "Baku", tone: "meadow", price: 90, seats: 5, transmission: { en: "Automatic", az: "Avtomat" },
+    title: { en: "BMW 3 Series 2023", az: "BMW 3 Series 2023" },
+    description: {
+      en: "A premium sedan with leather interior, well suited for business trips and airport pickups.",
+      az: "Dəri salonlu premium sedan — biznes səfərləri və aeroport qarşılamaları üçün uyğundur.",
+    },
+  },
+  {
+    id: "c6", city: "Gabala", tone: "dusk", price: 45, seats: 5, transmission: { en: "Manual", az: "Mexaniki" },
+    title: { en: "Chevrolet Lacetti 2019", az: "Chevrolet Lacetti 2019" },
+    description: {
+      en: "A budget-friendly compact sedan, easy to park and cheap on fuel around Gabala.",
+      az: "Büdcəyə uyğun kompakt sedan — Qəbələ ətrafında parklamaq asan, yanacaq sərfiyyatı azdır.",
+    },
+  },
+  {
+    id: "c7", city: "Guba", tone: "forest", price: 70, seats: 5, transmission: { en: "Automatic", az: "Avtomat" },
+    title: { en: "Nissan Qashqai 2022", az: "Nissan Qashqai 2022" },
+    description: {
+      en: "A comfortable crossover with good ground clearance for the mountain roads near Guba.",
+      az: "Quba yaxınlığındakı dağ yolları üçün yerdən hündürlüyü yaxşı olan rahat krossover.",
+    },
+  },
+  {
+    id: "c8", city: "Baku", tone: "meadow", price: 120, seats: 4, transmission: { en: "Automatic", az: "Avtomat" },
+    title: { en: "Mercedes-Benz E-Class 2021", az: "Mercedes-Benz E-Class 2021" },
+    description: {
+      en: "An executive sedan for guests who want extra comfort for city driving or special occasions.",
+      az: "Şəhər daxili sürüş və ya xüsusi günlər üçün əlavə rahatlıq istəyən qonaqlar üçün icraçı sedan.",
     },
   },
 ];
@@ -144,6 +194,22 @@ export const MOCK_TRANSFERS = [
       az: "Şahdağ Milli Parkı və yaxınlıqdakı şəlalələrə mənzərəli avtomobil turu, avtomobil və sürücü daxildir.",
     },
   },
+  {
+    id: "t7", type: "transfer", city: "Gabala", tone: "forest", price: 45, hasVehicle: true, seats: 4,
+    title: { en: "Gabala Airport transfer", az: "Qəbələ Aeroportu transferi" },
+    description: {
+      en: "Direct transfer between Gabala Airport and your accommodation, sedan included.",
+      az: "Qəbələ Aeroportu ilə yaşadığınız yer arasında sedan ilə birbaşa transfer.",
+    },
+  },
+  {
+    id: "t8", type: "tour", city: "Baku", tone: "dusk", price: 55, hasVehicle: true, seats: 4,
+    title: { en: "Baku by night driving tour", az: "Bakı gecə avtomobil turu" },
+    description: {
+      en: "An evening driving tour past the Flame Towers, Boulevard and Old City, vehicle and driver included.",
+      az: "Alov Qüllələri, Bulvar və İçərişəhər boyunca axşam avtomobil turu, avtomobil və sürücü daxildir.",
+    },
+  },
 ];
 
 export const MOCK_EVENTS = [
@@ -177,6 +243,38 @@ export const MOCK_EVENTS = [
     description: {
       en: "An annual harvest festival celebrating Guba's orchards, with tastings, music and local food stalls.",
       az: "Quba bağlarını qeyd edən illik bayram — dequstasiya, musiqi və yerli yemək stendləri.",
+    },
+  },
+  {
+    id: "e5", city: "Baku", tone: "meadow", price: 20, date: "2026-08-22",
+    title: { en: "Baku Wine & Food Festival", az: "Bakı Şərab və Qida Festivalı" },
+    description: {
+      en: "A tasting festival featuring Azerbaijani wines and local chefs at the Boulevard park.",
+      az: "Bulvar parkında Azərbaycan şərabları və yerli aşpazların iştirakı ilə dequstasiya festivalı.",
+    },
+  },
+  {
+    id: "e6", city: "Gabala", tone: "dusk", price: 0, date: "2026-08-30",
+    title: { en: "Gabala Open-Air Cinema Night", az: "Qəbələ Açıq Hava Kino Gecəsi" },
+    description: {
+      en: "A free open-air screening under the stars in the Gabala amphitheatre gardens.",
+      az: "Qəbələ amfiteatrı bağlarında ulduzlar altında pulsuz açıq hava film nümayişi.",
+    },
+  },
+  {
+    id: "e7", city: "Guba", tone: "meadow", price: 5, date: "2026-09-12",
+    title: { en: "Guba Handicraft Fair", az: "Quba Əl İşləri Yarmarkası" },
+    description: {
+      en: "A weekend fair of traditional Guba carpets, ceramics and woodwork from local artisans.",
+      az: "Yerli ustaların ənənəvi Quba xalçaları, keramikası və taxta işlərinin nümayiş olunduğu həftəsonu yarmarkası.",
+    },
+  },
+  {
+    id: "e8", city: "Baku", tone: "forest", price: 30, date: "2026-09-18",
+    title: { en: "Caspian Sailing Regatta", az: "Xəzər Yelkənli Reqatası" },
+    description: {
+      en: "Watch the annual sailing regatta from the Baku Boulevard promenade, with live commentary.",
+      az: "İllik yelkənli reqatasını Bakı Bulvar gəzinti yolundan canlı şərhlə izləyin.",
     },
   },
 ];
