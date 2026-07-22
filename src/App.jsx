@@ -91,6 +91,10 @@ function IzigoLogo() {
   );
 }
 
+function IzigoLogoMark() {
+  return <span className="logo-mark" role="img" aria-label="IZIGO" />;
+}
+
 const MAIN_NAV_ITEMS = [
   { to: "/concierge", key: "concierge" },
   { to: "/villas", key: "villas" },
@@ -129,7 +133,7 @@ function MainLayout() {
     <div>
       <header className="app-navbar">
         <div className="app-navbar-inner">
-          <Link to="/"><IzigoLogo /></Link>
+          <Link to="/"><IzigoLogoMark /></Link>
           <nav className="app-nav-links">
             <Link to="/" className={location.pathname === "/" ? "active" : ""}>{t("nav.home")}</Link>
             {MAIN_NAV_ITEMS.map(({ to, key }) => (

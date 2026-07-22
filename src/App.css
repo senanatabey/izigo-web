@@ -40,6 +40,19 @@
   text-transform: uppercase;
 }
 
+/* Cropped from public/images/izigo logo.png (1536x1024) — shows just the
+   IZIGO wordmark, the source banner's tagline/icon row is cropped out. */
+.logo-mark {
+  display: block;
+  width: 140px;
+  height: 34px;
+  background-image: url("/images/izigo logo.png");
+  background-repeat: no-repeat;
+  background-size: 180px auto;
+  background-position: -17px -16px;
+  border-radius: 6px;
+}
+
 .app-nav-links {
   display: flex;
   gap: 32px;
