@@ -83,16 +83,11 @@ function RequireAdmin({ children }) {
    LOGO — shared between navbar, auth card and sidebars
    ========================================================================= */
 function IzigoLogo() {
-  return (
-    <span className="app-logo">
-      IZIGO
-      <span className="app-logo-tagline">Stay · Drive · Explore</span>
-    </span>
-  );
+  return <img src="/images/logos/logo-navbar.png" alt="IZIGO" className="app-logo-img" />;
 }
 
-function IzigoLogoMark() {
-  return <span className="logo-mark" role="img" aria-label="IZIGO" />;
+function IzigoLogoDark() {
+  return <img src="/images/logos/logo-dark.png" alt="IZIGO" className="app-logo-img app-logo-img-dark" />;
 }
 
 const MAIN_NAV_ITEMS = [
@@ -133,7 +128,7 @@ function MainLayout() {
     <div>
       <header className="app-navbar">
         <div className="app-navbar-inner">
-          <Link to="/"><IzigoLogoMark /></Link>
+          <Link to="/"><IzigoLogo /></Link>
           <nav className="app-nav-links">
             <Link to="/" className={location.pathname === "/" ? "active" : ""}>{t("nav.home")}</Link>
             {MAIN_NAV_ITEMS.map(({ to, key }) => (
@@ -153,7 +148,10 @@ function MainLayout() {
         </div>
       </header>
       <main><Outlet /></main>
-      <footer className="site-footer">© {new Date().getFullYear()} IZIGO. {t("footer.rights")}</footer>
+      <footer className="site-footer">
+        <img src="/images/logos/logo-footer.png" alt="IZIGO" className="site-footer-logo" />
+        <p>© {new Date().getFullYear()} IZIGO. {t("footer.rights")}</p>
+      </footer>
     </div>
   );
 }
@@ -181,7 +179,7 @@ function AppLayout() {
   return (
     <div className="app-shell">
       <aside className="app-sidebar">
-        <Link to="/"><IzigoLogo /></Link>
+        <Link to="/"><IzigoLogoDark /></Link>
         {APP_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <Link key={to} to={to} className="sidebar-link"><Icon size={17} />{label}</Link>
         ))}

@@ -22,35 +22,14 @@
   padding: 20px 6vw;
 }
 
-.app-logo {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-  font-weight: 800;
-  font-size: 26px;
-  color: var(--izigo-green);
-  letter-spacing: -0.3px;
-}
-
-.app-logo .app-logo-tagline {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  color: var(--text-soft);
-  text-transform: uppercase;
-}
-
-/* Cropped from public/images/izigo logo.png (1536x1024) — shows just the
-   IZIGO wordmark, the source banner's tagline/icon row is cropped out. */
-.logo-mark {
+.app-logo-img {
   display: block;
-  width: 140px;
+  height: 28px;
+  width: auto;
+}
+
+.app-logo-img-dark {
   height: 34px;
-  background-image: url("/images/izigo logo.png");
-  background-repeat: no-repeat;
-  background-size: 180px auto;
-  background-position: -17px -16px;
-  border-radius: 6px;
 }
 
 .app-nav-links {
@@ -173,8 +152,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.auth-card .app-logo {
-  align-items: center;
+.auth-card .app-logo-img {
   margin-bottom: 24px;
 }
 
@@ -195,13 +173,8 @@
   gap: 4px;
 }
 
-.app-sidebar .app-logo {
-  color: #fff;
+.app-sidebar .app-logo-img {
   padding: 0 8px 20px;
-}
-
-.app-sidebar .app-logo .app-logo-tagline {
-  color: rgba(255, 255, 255, 0.55);
 }
 
 .sidebar-link {
@@ -244,6 +217,17 @@
   font-size: 13px;
   color: var(--text-soft);
   background: var(--bg);
+}
+
+.site-footer-logo {
+  display: block;
+  height: 30px;
+  width: auto;
+  margin: 0 auto 12px;
+}
+
+.site-footer p {
+  margin: 0;
 }
 
 .page-placeholder h1 {
