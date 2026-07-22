@@ -18,6 +18,7 @@ import TransferDetailPage from "./pages/Transfers/TransferDetail";
 import EventsPage from "./pages/Events/EventsPage";
 import EventDetailPage from "./pages/Events/EventDetail";
 import ConciergePage from "./pages/Concierge/ConciergePage";
+import PlanMyTripPage from "./pages/PlanMyTrip/PlanMyTripPage";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -272,6 +273,7 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="concierge" element={<ConciergePage />} />
+            <Route path="plan-my-trip" element={<PlanMyTripPage />} />
             <Route path="villas" element={<VillasPage />} />
             <Route path="villas/:id" element={<VillaDetailPage />} />
             <Route path="cars" element={<CarsPage />} />
