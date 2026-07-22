@@ -17,6 +17,7 @@ import TransfersPage from "./pages/Transfers/TransfersPage";
 import TransferDetailPage from "./pages/Transfers/TransferDetail";
 import EventsPage from "./pages/Events/EventsPage";
 import EventDetailPage from "./pages/Events/EventDetail";
+import ConciergePage from "./pages/Concierge/ConciergePage";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -236,7 +237,6 @@ const CarDetail = () => <PagePlaceholder title="Car detail" description="Make, m
 const Experiences = () => <PagePlaceholder title="Experiences" description="Category browse grid for tours and activities." />;
 const ExperienceDetail = () => <PagePlaceholder title="Experience detail" description="Duration, group size, contact host." />;
 const Deals = () => <PagePlaceholder title="Deals" description="Discounted and promoted listings across every category." />;
-const Concierge = () => <PagePlaceholder title="Concierge" description="On-demand delivery and local services — ice, firewood, pharmacy, babysitter, guide, and more." />;
 const Saved = () => <PagePlaceholder title="Saved" description="Listings the guest has bookmarked." />;
 
 const Login = () => <PagePlaceholder title="Log in" description="Phone or email + password, OTP verification." />;
@@ -271,7 +271,7 @@ export default function App() {
           {/* Public browse pages */}
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="concierge" element={<Concierge />} />
+            <Route path="concierge" element={<ConciergePage />} />
             <Route path="villas" element={<VillasPage />} />
             <Route path="villas/:id" element={<VillaDetailPage />} />
             <Route path="cars" element={<CarsPage />} />
