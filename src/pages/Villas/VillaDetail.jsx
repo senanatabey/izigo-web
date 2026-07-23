@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, BedDouble, ShieldCheck, MessageCircle, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees } from "lucide-react";
+import { MapPin, Users, BedDouble, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_VILLAS } from "../../data/mockListings";
+import { MOCK_VILLAS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import PhoneReveal from "../../components/PhoneReveal";
 
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
 
@@ -51,12 +52,6 @@ export default function VillaDetail() {
         .villa-detail .vd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; }
         .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
-        .villa-detail .vd-whatsapp {
-          display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-          background: var(--izigo-green); color: #fff; border: none; border-radius: 10px;
-          padding: 13px; font-weight: 700; font-size: 14.5px; cursor: not-allowed; opacity: 0.9;
-        }
-        .villa-detail .vd-contact-note { font-size: 12px; color: var(--text-soft); text-align: center; margin-top: 10px; line-height: 1.5; }
 
         @media (max-width: 900px) {
           .villa-detail .vd-layout { grid-template-columns: 1fr; }
@@ -117,10 +112,7 @@ export default function VillaDetail() {
             </div>
           </div>
 
-          <button type="button" className="vd-whatsapp" disabled>
-            <MessageCircle size={17} />{t("villaDetail.contactWhatsapp")}
-          </button>
-          <p className="vd-contact-note">{t("villaDetail.contactNote")}</p>
+          <PhoneReveal phone={DEMO_HOST_PHONE} />
         </aside>
       </div>
     </div>

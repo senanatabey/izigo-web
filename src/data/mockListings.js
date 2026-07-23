@@ -1,6 +1,10 @@
 /* Placeholder listings until Supabase is connected — gradient thumbnails, no real photos yet.
    Shared between VillasPage, CarsPage, detail pages and the homepage "Latest Listings" preview. */
 
+/* Every mock listing shares the same "IZIGO Verified Host" placeholder identity,
+   so a single demo phone number is used for the WhatsApp reveal on detail pages. */
+export const DEMO_HOST_PHONE = "+994708830812";
+
 export const MOCK_VILLAS = [
   {
     id: "v1", city: "Baku", tone: "dusk", price: 90, guests: 4, bedrooms: 2,

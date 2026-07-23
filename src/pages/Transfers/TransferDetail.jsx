@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, Car, Footprints, ShieldCheck, MessageCircle } from "lucide-react";
+import { MapPin, Users, Car, Footprints, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_TRANSFERS } from "../../data/mockListings";
+import { MOCK_TRANSFERS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import PhoneReveal from "../../components/PhoneReveal";
 
 export default function TransferDetail() {
   const { id } = useParams();
@@ -48,12 +49,6 @@ export default function TransferDetail() {
         .transfer-detail .td-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .transfer-detail .td-host-name { font-size: 14px; font-weight: 700; }
         .transfer-detail .td-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
-        .transfer-detail .td-whatsapp {
-          display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-          background: var(--izigo-green); color: #fff; border: none; border-radius: 10px;
-          padding: 13px; font-weight: 700; font-size: 14.5px; cursor: not-allowed; opacity: 0.9;
-        }
-        .transfer-detail .td-contact-note { font-size: 12px; color: var(--text-soft); text-align: center; margin-top: 10px; line-height: 1.5; }
 
         @media (max-width: 900px) {
           .transfer-detail .td-layout { grid-template-columns: 1fr; }
@@ -100,10 +95,7 @@ export default function TransferDetail() {
             </div>
           </div>
 
-          <button type="button" className="td-whatsapp" disabled>
-            <MessageCircle size={17} />{t("villaDetail.contactWhatsapp")}
-          </button>
-          <p className="td-contact-note">{t("villaDetail.contactNote")}</p>
+          <PhoneReveal phone={DEMO_HOST_PHONE} />
         </aside>
       </div>
     </div>
