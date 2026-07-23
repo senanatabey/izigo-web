@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   BrowserRouter, Routes, Route, Outlet, Navigate, Link, useLocation,
 } from "react-router-dom";
 import {
   Home as HomeIcon, Heart, User, ListChecks,
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
-  ShieldCheck, LogOut,
+  ShieldCheck, LogOut, X,
 } from "lucide-react";
 import "./App.css";
 import Home from "./pages/Home/IzigoHomepage";
@@ -21,6 +21,8 @@ import ConciergePage from "./pages/Concierge/ConciergePage";
 import PlanMyTripPage from "./pages/PlanMyTrip/PlanMyTripPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
+import LoginForm from "./pages/Auth/LoginForm";
+import RegisterForm from "./pages/Auth/RegisterForm";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -55,6 +57,74 @@ export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
+}
+
+/* =========================================================================
+   AUTH MODAL — Airbnb-style login/signup overlay, triggered from anywhere
+   via useAuthModal().openLogin() instead of navigating to /login.
+   ========================================================================= */
+const AuthModalContext = createContext(null);
+
+function AuthModalProvider({ children }) {
+  const [mode, setMode] = useState(null); // null | "login" | "register"
+  const value = {
+    mode,
+    openLogin: () => setMode("login"),
+    openRegister: () => setMode("register"),
+    close: () => setMode(null),
+  };
+  return <AuthModalContext.Provider value={value}>{children}</AuthModalContext.Provider>;
+}
+
+export function useAuthModal() {
+  const ctx = useContext(AuthModalContext);
+  if (!ctx) throw new Error("useAuthModal must be used within AuthModalProvider");
+  return ctx;
+}
+
+function AuthModal() {
+  const { t } = useLanguage();
+  const { mode, openLogin, openRegister, close } = useAuthModal();
+
+  useEffect(() => {
+    if (!mode) return undefined;
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [mode]);
+
+  if (!mode) return null;
+
+  return (
+    <div className="auth-modal-overlay" onClick={close}>
+      <div className="auth-modal-card" onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="auth-modal-close" onClick={close} aria-label="Close"><X size={18} /></button>
+        {mode === "login" ? (
+          <LoginForm
+            onSuccess={close}
+            footerSwitch={
+              <p className="ap-switch">
+                {t("auth.noAccount")} <button type="button" onClick={openRegister}>{t("auth.signUpLink")}</button>
+              </p>
+            }
+          />
+        ) : (
+          <RegisterForm
+            onSuccess={close}
+            footerSwitch={
+              <p className="ap-switch">
+                {t("auth.haveAccount")} <button type="button" onClick={openLogin}>{t("auth.loginLink")}</button>
+              </p>
+            }
+          />
+        )}
+      </div>
+    </div>
+  );
 }
 
 /* =========================================================================
@@ -123,6 +193,7 @@ function LanguageSwitcher() {
    ========================================================================= */
 function MainLayout() {
   const { isAuthenticated } = useAuth();
+  const { openLogin } = useAuthModal();
   const { t } = useLanguage();
   const location = useLocation();
   return (
@@ -147,7 +218,7 @@ function MainLayout() {
             {isAuthenticated ? (
               <Link to="/profile" className="btn-outline">{t("nav.myAccount")}</Link>
             ) : (
-              <Link to="/login" className="btn-outline">{t("nav.login")}</Link>
+              <button type="button" className="btn-outline" onClick={openLogin}>{t("nav.login")}</button>
             )}
             <Link to="/add-listing" className="btn-primary"><PlusCircle size={16} /><span>{t("nav.publish")}</span></Link>
           </div>
@@ -273,7 +344,9 @@ export default function App() {
   return (
     <LanguageProvider>
     <AuthProvider>
+    <AuthModalProvider>
       <BrowserRouter>
+        <AuthModal />
         <Routes>
           {/* Public browse pages */}
           <Route element={<MainLayout />}>
@@ -323,6 +396,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </AuthModalProvider>
     </AuthProvider>
     </LanguageProvider>
   );
