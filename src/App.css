@@ -15,29 +15,40 @@
 .app-navbar-inner {
   max-width: 1280px;
   margin: 0 auto;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 20px 6vw;
+  flex-wrap: nowrap;
+  gap: 28px;
+  padding: 0 6vw;
 }
 
 .app-logo-img {
   display: block;
-  height: 28px;
+  height: 24px;
   width: auto;
 }
 
 .app-logo-img-dark {
-  height: 34px;
+  height: 30px;
 }
 
 .app-nav-links {
   display: flex;
-  gap: 32px;
-  font-size: 15.5px;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 26px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--text);
+  white-space: nowrap;
+}
+
+.app-nav-links a {
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .app-nav-links a.active {
@@ -51,6 +62,8 @@
 .app-nav-right {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
   gap: 14px;
 }
 

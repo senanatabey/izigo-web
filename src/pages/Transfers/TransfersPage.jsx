@@ -12,7 +12,7 @@ export default function TransfersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
-  const [type, setType] = useState("");
+  const [type, setType] = useState(() => searchParams.get("type") || "");
   const [vehicle, setVehicle] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 

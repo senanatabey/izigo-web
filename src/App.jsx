@@ -94,9 +94,8 @@ const MAIN_NAV_ITEMS = [
   { to: "/concierge", key: "concierge" },
   { to: "/villas", key: "villas" },
   { to: "/cars", key: "cars" },
-  { to: "/transfers", key: "transfers" },
-  { to: "/events", key: "events" },
-  { to: "/deals", key: "deals" },
+  { to: "/transfers?type=transfer", key: "transfers", matchTo: "/transfers" },
+  { to: "/transfers?type=tour", key: "tours", matchTo: "/transfers" },
 ];
 
 function LanguageSwitcher() {
@@ -130,10 +129,15 @@ function MainLayout() {
         <div className="app-navbar-inner">
           <Link to="/"><IzigoLogo /></Link>
           <nav className="app-nav-links">
-            <Link to="/" className={location.pathname === "/" ? "active" : ""}>{t("nav.home")}</Link>
-            {MAIN_NAV_ITEMS.map(({ to, key }) => (
-              <Link key={to} to={to} className={location.pathname.startsWith(to) ? "active" : ""}>{t(`nav.${key}`)}</Link>
-            ))}
+            {MAIN_NAV_ITEMS.map(({ to, key, matchTo }) => {
+              const [toPath, toQuery] = to.split("?");
+              const isActive = matchTo
+                ? location.pathname.startsWith(matchTo) && (location.search.slice(1) === toQuery)
+                : location.pathname.startsWith(toPath);
+              return (
+                <Link key={key} to={to} className={isActive ? "active" : ""}>{t(`nav.${key}`)}</Link>
+              );
+            })}
           </nav>
           <div className="app-nav-right">
             <LanguageSwitcher />

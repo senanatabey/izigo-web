@@ -2,16 +2,17 @@ export const translations = {
   en: {
     nav: {
       home: "Home",
-      concierge: "Local Services",
+      concierge: "Bring",
       villas: "Villas",
       cars: "Cars",
-      transfers: "Transfers & Tours",
+      transfers: "Transfers",
+      tours: "Tours",
       events: "Events",
       deals: "Deals",
       saved: "Saved",
       login: "Log in",
       myAccount: "My account",
-      publish: "Publish Listing",
+      publish: "Publish",
     },
     villasPage: {
       heading: "Villas & Homes",
@@ -352,16 +353,17 @@ export const translations = {
   az: {
     nav: {
       home: "Ana səhifə",
-      concierge: "Yerli Xidmətlər",
+      concierge: "Gətir",
       villas: "Villalar",
-      cars: "Avtomobillər",
-      transfers: "Transfer və Turlar",
+      cars: "Maşınlar",
+      transfers: "Transfer",
+      tours: "Turlar",
       events: "Tədbirlər",
       deals: "Endirimlər",
       saved: "Seçilmişlər",
-      login: "Daxil ol",
+      login: "Giriş",
       myAccount: "Hesabım",
-      publish: "Elan yerləşdir",
+      publish: "Elan ver",
     },
     villasPage: {
       heading: "Villalar və Evlər",
