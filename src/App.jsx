@@ -19,6 +19,8 @@ import EventsPage from "./pages/Events/EventsPage";
 import EventDetailPage from "./pages/Events/EventDetail";
 import ConciergePage from "./pages/Concierge/ConciergePage";
 import PlanMyTripPage from "./pages/PlanMyTrip/PlanMyTripPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 
@@ -33,9 +35,9 @@ const AuthContext = createContext(null);
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // null | { name, role: 'guest' | 'host' | 'admin' }
 
-  const login = async (email, password) => {
+  const login = async (email, password, name) => {
     // TODO: replace with `POST /auth/login`, then `GET /users/me` to hydrate the session
-    setUser({ name: "Elvin Mammadov", role: "host" });
+    setUser({ name: name || "Elvin Mammadov", role: "host" });
   };
 
   const loginAsAdmin = () => setUser({ name: "Admin", role: "admin" }); // demo helper only
@@ -49,7 +51,7 @@ function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-function useAuth() {
+export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
@@ -246,8 +248,6 @@ const ExperienceDetail = () => <PagePlaceholder title="Experience detail" descri
 const Deals = () => <PagePlaceholder title="Deals" description="Discounted and promoted listings across every category." />;
 const Saved = () => <PagePlaceholder title="Saved" description="Listings the guest has bookmarked." />;
 
-const Login = () => <PagePlaceholder title="Log in" description="Phone or email + password, OTP verification." />;
-const Register = () => <PagePlaceholder title="Sign up" description="Name, phone, email, password — WhatsApp number added later on Profile." />;
 
 const Profile = () => <PagePlaceholder title="Profile" description="Personal info, WhatsApp number, verification status." />;
 const AddListing = () => <PagePlaceholder title="Add listing" description="Category picker, then the matching villa/car/experience/event form." />;
@@ -297,8 +297,8 @@ export default function App() {
 
           {/* Auth pages — redirect away if already logged in */}
           <Route element={<AuthLayout />}>
-            <Route path="login" element={<RequireGuest><Login /></RequireGuest>} />
-            <Route path="register" element={<RequireGuest><Register /></RequireGuest>} />
+            <Route path="login" element={<RequireGuest><LoginPage /></RequireGuest>} />
+            <Route path="register" element={<RequireGuest><RegisterPage /></RequireGuest>} />
           </Route>
 
           {/* Authenticated user pages */}
