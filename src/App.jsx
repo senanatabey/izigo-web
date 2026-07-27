@@ -13,6 +13,14 @@ import CityGuide from "./pages/Destinations/CityGuide";
 import VillasPage from "./pages/Villas/VillasPage";
 import VillaDetailPage from "./pages/Villas/VillaDetail";
 import CarsPage from "./pages/Cars/CarsPage";
+import CarDetailPage from "./pages/Cars/CarDetail";
+import ExperiencesPage from "./pages/Experiences/ExperiencesPage";
+import ExperienceDetailPage from "./pages/Experiences/ExperienceDetail";
+import DealsPage from "./pages/Deals/DealsPage";
+import SavedPage from "./pages/Saved/SavedPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import MyListingsPage from "./pages/MyListings/MyListingsPage";
+import ReviewsPage from "./pages/Reviews/ReviewsPage";
 import TransfersPage from "./pages/Transfers/TransfersPage";
 import TransferDetailPage from "./pages/Transfers/TransferDetail";
 import EventsPage from "./pages/Events/EventsPage";
@@ -130,6 +138,34 @@ function AuthModal() {
 }
 
 /* =========================================================================
+   SAVED — in-memory only (no localStorage), keyed by "type:id" e.g. "villa:v1".
+   ========================================================================= */
+const SavedContext = createContext(null);
+
+function SavedProvider({ children }) {
+  const [saved, setSaved] = useState([]); // [{ type, id }]
+
+  const isSaved = (type, id) => saved.some((s) => s.type === type && s.id === id);
+
+  const toggleSaved = (type, id) => {
+    setSaved((prev) => (
+      prev.some((s) => s.type === type && s.id === id)
+        ? prev.filter((s) => !(s.type === type && s.id === id))
+        : [...prev, { type, id }]
+    ));
+  };
+
+  const value = { saved, isSaved, toggleSaved };
+  return <SavedContext.Provider value={value}>{children}</SavedContext.Provider>;
+}
+
+export function useSaved() {
+  const ctx = useContext(SavedContext);
+  if (!ctx) throw new Error("useSaved must be used within SavedProvider");
+  return ctx;
+}
+
+/* =========================================================================
    ROUTE GUARDS
    ========================================================================= */
 function RequireAuth({ children }) {
@@ -169,7 +205,7 @@ const MAIN_NAV_ITEMS = [
   { to: "/villas", key: "villas" },
   { to: "/cars", key: "cars" },
   { to: "/transfers?type=transfer", key: "transfers", matchTo: "/transfers" },
-  { to: "/transfers?type=tour", key: "tours", matchTo: "/transfers" },
+  { to: "/experiences", key: "tours" },
 ];
 
 function LanguageSwitcher() {
@@ -315,16 +351,8 @@ function PagePlaceholder({ title, description }) {
   );
 }
 
-const CarDetail = () => <PagePlaceholder title="Car detail" description="Make, model, transmission, contact host." />;
-const Experiences = () => <PagePlaceholder title="Experiences" description="Category browse grid for tours and activities." />;
-const ExperienceDetail = () => <PagePlaceholder title="Experience detail" description="Duration, group size, contact host." />;
-const Deals = () => <PagePlaceholder title="Deals" description="Discounted and promoted listings across every category." />;
-const Saved = () => <PagePlaceholder title="Saved" description="Listings the guest has bookmarked." />;
 
 
-const Profile = () => <PagePlaceholder title="Profile" description="Personal info, WhatsApp number, verification status." />;
-const MyListings = () => <PagePlaceholder title="My listings" description="Status badges, inquiries, and the confirm-stay action." />;
-const Reviews = () => <PagePlaceholder title="Reviews" description="Guest: confirm stays and write reviews. Host: view and reply to reviews." />;
 
 const AdminDashboard = () => <PagePlaceholder title="Admin dashboard" description="KPI cards and trend charts." />;
 const AdminUsers = () => <PagePlaceholder title="Users" description="Search, filter, suspend/ban." />;
@@ -345,6 +373,7 @@ export default function App() {
     <LanguageProvider>
     <AuthProvider>
     <AuthModalProvider>
+    <SavedProvider>
       <BrowserRouter>
         <AuthModal />
         <Routes>
@@ -356,15 +385,15 @@ export default function App() {
             <Route path="villas" element={<VillasPage />} />
             <Route path="villas/:id" element={<VillaDetailPage />} />
             <Route path="cars" element={<CarsPage />} />
-            <Route path="cars/:id" element={<CarDetail />} />
+            <Route path="cars/:id" element={<CarDetailPage />} />
             <Route path="transfers" element={<TransfersPage />} />
             <Route path="transfers/:id" element={<TransferDetailPage />} />
-            <Route path="experiences" element={<Experiences />} />
-            <Route path="experiences/:id" element={<ExperienceDetail />} />
+            <Route path="experiences" element={<ExperiencesPage />} />
+            <Route path="experiences/:id" element={<ExperienceDetailPage />} />
             <Route path="events" element={<EventsPage />} />
             <Route path="events/:id" element={<EventDetailPage />} />
-            <Route path="deals" element={<Deals />} />
-            <Route path="saved" element={<Saved />} />
+            <Route path="deals" element={<DealsPage />} />
+            <Route path="saved" element={<SavedPage />} />
             <Route path="destinations/:city" element={<CityGuide />} />
           </Route>
 
@@ -376,11 +405,11 @@ export default function App() {
 
           {/* Authenticated user pages */}
           <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
-            <Route path="profile" element={<Profile />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="add-listing" element={<AddListingPage />} />
             <Route path="add-listing/:category" element={<AddListingFormPage />} />
-            <Route path="my-listings" element={<MyListings />} />
-            <Route path="reviews" element={<Reviews />} />
+            <Route path="my-listings" element={<MyListingsPage />} />
+            <Route path="reviews" element={<ReviewsPage />} />
           </Route>
 
           {/* Admin pages */}
@@ -396,6 +425,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </SavedProvider>
     </AuthModalProvider>
     </AuthProvider>
     </LanguageProvider>

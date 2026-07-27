@@ -16,7 +16,7 @@ export const MOCK_VILLAS = [
     amenities: ["wifi", "kitchen", "ac", "parking"],
   },
   {
-    id: "v2", city: "Baku", tone: "forest", price: 70, guests: 2, bedrooms: 1,
+    id: "v2", city: "Baku", tone: "forest", price: 70, discount: 20, guests: 2, bedrooms: 1,
     title: { en: "Modern flat in the city center", az: "Şəhər mərkəzində müasir mənzil" },
     description: {
       en: "Compact and stylish one-bedroom flat in the heart of Baku, close to restaurants, metro and the Fountains Square.",
@@ -43,7 +43,7 @@ export const MOCK_VILLAS = [
     amenities: ["wifi", "parking", "kitchen"],
   },
   {
-    id: "v5", city: "Guba", tone: "forest", price: 85, guests: 5, bedrooms: 2,
+    id: "v5", city: "Guba", tone: "forest", price: 85, discount: 15, guests: 5, bedrooms: 2,
     title: { en: "Orchard house with garden", az: "Bağçalı, meyvə bağı evi" },
     description: {
       en: "A traditional Guba house surrounded by its own fruit orchard, with a shaded garden terrace.",
@@ -98,7 +98,7 @@ export const MOCK_CARS = [
     },
   },
   {
-    id: "c3", city: "Gabala", tone: "meadow", price: 55, seats: 5, transmission: { en: "Manual", az: "Mexaniki" },
+    id: "c3", city: "Gabala", tone: "meadow", price: 55, discount: 25, seats: 5, transmission: { en: "Manual", az: "Mexaniki" },
     title: { en: "Toyota RAV4 2021", az: "Toyota RAV4 2021" },
     description: {
       en: "A reliable 4x4 crossover, a popular choice for the mountain roads around Gabala.",
@@ -138,7 +138,7 @@ export const MOCK_CARS = [
     },
   },
   {
-    id: "c8", city: "Baku", tone: "meadow", price: 120, seats: 4, transmission: { en: "Automatic", az: "Avtomat" },
+    id: "c8", city: "Baku", tone: "meadow", price: 120, discount: 15, seats: 4, transmission: { en: "Automatic", az: "Avtomat" },
     title: { en: "Mercedes-Benz E-Class 2021", az: "Mercedes-Benz E-Class 2021" },
     description: {
       en: "An executive sedan for guests who want extra comfort for city driving or special occasions.",
@@ -159,7 +159,7 @@ export const MOCK_TRANSFERS = [
     },
   },
   {
-    id: "t2", type: "transfer", city: "Baku", tone: "forest", price: 60, hasVehicle: true, seats: 7,
+    id: "t2", type: "transfer", city: "Baku", tone: "forest", price: 60, discount: 20, hasVehicle: true, seats: 7,
     title: { en: "Baku – Gabala intercity transfer", az: "Bakı – Qəbələ şəhərlərarası transfer" },
     description: {
       en: "Door-to-door transfer between Baku and Gabala in a 7-seat minivan, luggage space included.",
@@ -183,7 +183,7 @@ export const MOCK_TRANSFERS = [
     },
   },
   {
-    id: "t5", type: "tour", city: "Guba", tone: "forest", price: 40, hasVehicle: false, seats: 8,
+    id: "t5", type: "tour", city: "Guba", tone: "forest", price: 40, discount: 30, hasVehicle: false, seats: 8,
     title: { en: "Khinalig village hiking tour", az: "Xınalıq kəndi hiking turu" },
     description: {
       en: "A guided hike around Khinalig village — guide only, transport to the village arranged separately.",
@@ -234,7 +234,7 @@ export const MOCK_EVENTS = [
     },
   },
   {
-    id: "e3", city: "Gabala", tone: "meadow", price: 25, date: "2026-09-05",
+    id: "e3", city: "Gabala", tone: "meadow", price: 25, discount: 20, date: "2026-09-05",
     title: { en: "Gabala International Music Festival", az: "Qəbələ Beynəlxalq Musiqi Festivalı" },
     description: {
       en: "An evening of classical and world music performed at the Gabala amphitheatre.",
@@ -274,7 +274,7 @@ export const MOCK_EVENTS = [
     },
   },
   {
-    id: "e8", city: "Baku", tone: "forest", price: 30, date: "2026-09-18",
+    id: "e8", city: "Baku", tone: "forest", price: 30, discount: 25, date: "2026-09-18",
     title: { en: "Caspian Sailing Regatta", az: "Xəzər Yelkənli Reqatası" },
     description: {
       en: "Watch the annual sailing regatta from the Baku Boulevard promenade, with live commentary.",

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Settings2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_CARS } from "../../data/mockListings";
+import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 const SEAT_OPTIONS = [2, 5, 7];
@@ -62,7 +63,7 @@ export default function CarsPage() {
         .cars-page .cp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
         .cars-page .cp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .cars-page .cp-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .cars-page .cp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .cars-page .cp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .cars-page .cp-thumb { aspect-ratio: 4 / 2.8; }
         .cars-page .cp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -127,6 +128,7 @@ export default function CarsPage() {
         <div className="cp-grid">
           {filtered.map((c) => (
             <Link to={`/cars/${c.id}`} className="cp-card" key={c.id}>
+              <SaveHeart type="car" id={c.id} />
               <div className={`cp-thumb ${c.tone}`} />
               <div className="cp-body">
                 <div className="cp-city"><MapPin size={12} />{c.city}</div>

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, BedDouble } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_VILLAS } from "../../data/mockListings";
+import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 const GUEST_OPTIONS = [2, 4, 6, 8];
@@ -62,7 +63,7 @@ export default function VillasPage() {
         .villas-page .vp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
         .villas-page .vp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .villas-page .vp-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .villas-page .vp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .villas-page .vp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .villas-page .vp-thumb { aspect-ratio: 4 / 2.8; }
         .villas-page .vp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -127,6 +128,7 @@ export default function VillasPage() {
         <div className="vp-grid">
           {filtered.map((v) => (
             <Link to={`/villas/${v.id}`} className="vp-card" key={v.id}>
+              <SaveHeart type="villa" id={v.id} />
               <div className={`vp-thumb ${v.tone}`} />
               <div className="vp-body">
                 <div className="vp-city"><MapPin size={12} />{v.city}</div>

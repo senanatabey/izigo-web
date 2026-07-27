@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_TRANSFERS } from "../../data/mockListings";
+import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 const PRICE_OPTIONS = [30, 50, 75, 100];
@@ -65,7 +66,7 @@ export default function TransfersPage() {
         .transfers-page .tp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
         .transfers-page .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .transfers-page .tp-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .transfers-page .tp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .transfers-page .tp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .transfers-page .tp-thumb { aspect-ratio: 4 / 2.8; position: relative; }
         .transfers-page .tp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -144,6 +145,7 @@ export default function TransfersPage() {
         <div className="tp-grid">
           {filtered.map((item) => (
             <Link to={`/transfers/${item.id}`} className="tp-card" key={item.id}>
+              <SaveHeart type="transfer" id={item.id} />
               <div className={`tp-thumb ${item.tone}`}>
                 <span className="tp-badge">
                   {item.hasVehicle ? <Car size={12} /> : <Footprints size={12} />}

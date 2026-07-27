@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Calendar } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_EVENTS } from "../../data/mockListings";
+import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 
@@ -53,7 +54,7 @@ export default function EventsPage() {
         .events-page .ep-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
         .events-page .ep-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .events-page .ep-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .events-page .ep-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .events-page .ep-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .events-page .ep-thumb { aspect-ratio: 4 / 2.8; }
         .events-page .ep-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -102,6 +103,7 @@ export default function EventsPage() {
         <div className="ep-grid">
           {filtered.map((e) => (
             <Link to={`/events/${e.id}`} className="ep-card" key={e.id}>
+              <SaveHeart type="event" id={e.id} />
               <div className={`ep-thumb ${e.tone}`} />
               <div className="ep-body">
                 <div className="ep-city"><MapPin size={12} />{e.city}</div>
