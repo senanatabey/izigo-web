@@ -125,7 +125,7 @@ export default function IzigoHomepage() {
       <style>{`
         .izigo-home .hero {
           position: relative;
-          padding: 96px 6vw 48px;
+          padding: 122px 6vw 56px;
           display: flex;
           flex-direction: column;
           background:
@@ -150,10 +150,10 @@ export default function IzigoHomepage() {
         .izigo-home .hero p {
           margin-top: 18px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 520px;
         }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
         .izigo-home .hero-btn {
-          display: inline-flex; align-items: center; gap: 8px; border-radius: 10px;
-          padding: 12px 22px; font-weight: 700; font-size: 14.5px; white-space: nowrap; transition: filter 0.15s ease;
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px;
+          min-width: 200px; height: 52px; padding: 0 26px; font-weight: 700; font-size: 15px; white-space: nowrap; transition: filter 0.15s ease;
         }
         .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; }
         .izigo-home .hero-btn.secondary { background: #fff; color: var(--izigo-green); }
@@ -220,16 +220,16 @@ export default function IzigoHomepage() {
         }
         .izigo-home .search-submit:hover { filter: brightness(0.94); }
 
-        .izigo-home section { padding: 52px 6vw; }
+        .izigo-home section { padding: 45px 6vw; }
 
-        .izigo-home .feature-cards { background: var(--bg-soft); padding: 32px 6vw; }
-        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+        .izigo-home .feature-cards { background: var(--bg-soft); padding: 28px 6vw; }
+        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
         .izigo-home .feature-card {
-          display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--border);
-          border-radius: 14px; padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text);
+          display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--border);
+          border-radius: 16px; padding: 18px 20px; font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.3;
         }
         .izigo-home .feature-card-icon {
-          width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center;
+          width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center;
           justify-content: center; background: rgba(0, 200, 151, 0.12); color: var(--izigo-green);
         }
         .izigo-home .feature-card:nth-child(2n) .feature-card-icon { background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
@@ -245,17 +245,17 @@ export default function IzigoHomepage() {
           cursor: pointer; transition: all 0.15s ease;
         }
         .izigo-home .latest-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
-        .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .izigo-home .latest-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .izigo-home .latest-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .izigo-home .latest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .izigo-home .latest-thumb { aspect-ratio: 4 / 3; }
         .izigo-home .latest-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .izigo-home .latest-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .izigo-home .latest-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .izigo-home .latest-body { padding: 14px; }
+        .izigo-home .latest-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
         .izigo-home .latest-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--izigo-orange); }
         .izigo-home .latest-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.35; min-height: 36px; }
-        .izigo-home .latest-price { font-size: 14px; font-weight: 800; color: var(--text); }
+        .izigo-home .latest-price { font-size: 14px; font-weight: 800; color: var(--text); margin-top: auto; }
         .izigo-home .latest-price span { font-size: 11.5px; font-weight: 500; color: var(--text-soft); }
 
         .izigo-home .destinations { background: var(--bg); }
@@ -517,7 +517,7 @@ export default function IzigoHomepage() {
         <div className="feature-cards-grid">
           {FEATURE_CARDS.map(({ icon: Icon, key }) => (
             <div className="feature-card" key={key}>
-              <div className="feature-card-icon"><Icon size={20} /></div>
+              <div className="feature-card-icon"><Icon size={22} /></div>
               <span>{t(`featureCards.${key}`)}</span>
             </div>
           ))}
