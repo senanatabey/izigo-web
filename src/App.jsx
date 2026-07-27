@@ -20,6 +20,8 @@ import EventDetailPage from "./pages/Events/EventDetail";
 import ConciergePage from "./pages/Concierge/ConciergePage";
 import PlanMyTripPage from "./pages/PlanMyTrip/PlanMyTripPage";
 import LoginPage from "./pages/Auth/LoginPage";
+import AddListingPage from "./pages/AddListing/AddListingPage";
+import AddListingFormPage from "./pages/AddListing/AddListingFormPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import LoginForm from "./pages/Auth/LoginForm";
 import RegisterForm from "./pages/Auth/RegisterForm";
@@ -321,8 +323,6 @@ const Saved = () => <PagePlaceholder title="Saved" description="Listings the gue
 
 
 const Profile = () => <PagePlaceholder title="Profile" description="Personal info, WhatsApp number, verification status." />;
-const AddListing = () => <PagePlaceholder title="Add listing" description="Category picker, then the matching villa/car/experience/event form." />;
-const AddListingCategory = () => <PagePlaceholder title="Add listing — category form" description="Category-specific fields, photo upload, submit for approval." />;
 const MyListings = () => <PagePlaceholder title="My listings" description="Status badges, inquiries, and the confirm-stay action." />;
 const Reviews = () => <PagePlaceholder title="Reviews" description="Guest: confirm stays and write reviews. Host: view and reply to reviews." />;
 
@@ -377,8 +377,8 @@ export default function App() {
           {/* Authenticated user pages */}
           <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
             <Route path="profile" element={<Profile />} />
-            <Route path="add-listing" element={<AddListing />} />
-            <Route path="add-listing/:category" element={<AddListingCategory />} />
+            <Route path="add-listing" element={<AddListingPage />} />
+            <Route path="add-listing/:category" element={<AddListingFormPage />} />
             <Route path="my-listings" element={<MyListings />} />
             <Route path="reviews" element={<Reviews />} />
           </Route>
