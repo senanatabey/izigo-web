@@ -1,0 +1,29 @@
+<svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Green triangle -->
+  <path d="M8 8 L30 8 L8 30 Z" fill="#8BC34A"></path>
+
+  <!-- Letter I -->
+  <rect x="8" y="12" width="12" height="40" fill="#0B2239"></rect>
+
+  <!-- Z -->
+  <path d="M38 12 H82 V20 L52 44 H82 V52 H38 V44 L68 20 H38 Z" fill="#0B2239"></path>
+
+  <!-- I -->
+  <rect x="94" y="12" width="12" height="40" fill="#0B2239"></rect>
+
+  <!-- G -->
+  <path d="M142 12
+    C125 12 112 25 112 32
+    C112 45 122 52 140 52
+    C158 52 168 42 168 30
+    H145 V38 H158
+    C156 44 150 46 142 46
+    C131 46 124 40 124 32
+    C124 24 131 18 142 18
+    C149 18 154 20 159 25
+    L166 18
+    C160 14 153 12 142 12 Z" fill="#0B2239"></path>
+
+  <!-- O -->
+  <circle cx="198" cy="32" r="20" stroke="#0B2239" stroke-width="12" fill="none"></circle>
+</svg>

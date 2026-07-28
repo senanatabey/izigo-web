@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, BedDouble } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_VILLAS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
@@ -16,6 +16,22 @@ export default function VillasPage() {
 
   const [guests, setGuests] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [villas, setVillas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApprovedListings("villa")
+      .then((rows) => setVillas(rows.map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        guests: row.details?.guests || 0,
+        bedrooms: row.details?.bedrooms || 0,
+      }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
@@ -30,13 +46,13 @@ export default function VillasPage() {
   };
 
   const filtered = useMemo(() => {
-    return MOCK_VILLAS.filter((v) => {
+    return villas.filter((v) => {
       if (cityParam && v.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       if (guests && v.guests < Number(guests)) return false;
       if (maxPrice && v.price > Number(maxPrice)) return false;
       return true;
     });
-  }, [cityParam, guests, maxPrice]);
+  }, [villas, cityParam, guests, maxPrice]);
 
   return (
     <div className="villas-page">
@@ -122,7 +138,7 @@ export default function VillasPage() {
 
       <p className="vp-count">{t("villasPage.resultsCount").replace("{count}", filtered.length)}</p>
 
-      {filtered.length === 0 ? (
+      {loading ? null : filtered.length === 0 ? (
         <div className="vp-empty">{t("villasPage.noResults")}</div>
       ) : (
         <div className="vp-grid">

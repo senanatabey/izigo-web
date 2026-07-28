@@ -35,31 +35,69 @@ import LoginForm from "./pages/Auth/LoginForm";
 import RegisterForm from "./pages/Auth/RegisterForm";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
+import { supabase } from "./lib/supabaseClient";
+import PendingApprovalsPage from "./pages/Admin/PendingApprovalsPage";
 
 /* =========================================================================
-   AUTH — mock context for now. Swap the two TODOs for real API calls.
-   Session is kept in memory only (React state), never localStorage —
-   in production this should be backed by an httpOnly cookie + a /me call
-   on app load, as described in the MVP architecture doc.
+   AUTH — backed by Supabase Auth. Session lives in Supabase's own storage
+   (it manages refresh tokens internally); the `user` shape we expose here
+   ({ name, role }) is hydrated from the `profiles` table on every auth
+   state change.
    ========================================================================= */
 const AuthContext = createContext(null);
 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // null | { name, role: 'guest' | 'host' | 'admin' }
+  const [user, setUser] = useState(null); // null | { id, email, name, role: 'host' | 'admin' }
+  const [loading, setLoading] = useState(true);
 
-  const login = async (email, password, name) => {
-    // TODO: replace with `POST /auth/login`, then `GET /users/me` to hydrate the session
-    setUser({ name: name || "Elvin Mammadov", role: "host" });
+  const hydrateFromSession = async (session) => {
+    if (!session?.user) {
+      setUser(null);
+      return;
+    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, role")
+      .eq("id", session.user.id)
+      .single();
+    setUser({
+      id: session.user.id,
+      email: session.user.email,
+      name: profile?.full_name || session.user.email,
+      role: profile?.role || "host",
+    });
   };
 
-  const loginAsAdmin = () => setUser({ name: "Admin", role: "admin" }); // demo helper only
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      hydrateFromSession(session).finally(() => setLoading(false));
+    });
 
-  const logout = () => {
-    // TODO: replace with `POST /auth/logout`
-    setUser(null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      hydrateFromSession(session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email, password) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
   };
 
-  const value = { user, isAuthenticated: !!user, login, loginAsAdmin, logout };
+  const register = async (email, password, name, phone) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name, phone } },
+    });
+    if (error) throw error;
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const value = { user, isAuthenticated: !!user, loading, login, register, logout };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
@@ -169,8 +207,9 @@ export function useSaved() {
    ROUTE GUARDS
    ========================================================================= */
 function RequireAuth({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
+  if (loading) return null;
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
@@ -178,13 +217,15 @@ function RequireAuth({ children }) {
 }
 
 function RequireGuest({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
   if (isAuthenticated) return <Navigate to="/profile" replace />;
   return children;
 }
 
 function RequireAdmin({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return null;
   if (!user || user.role !== "admin") return <Navigate to="/" replace />;
   return children;
 }
@@ -357,7 +398,6 @@ function PagePlaceholder({ title, description }) {
 const AdminDashboard = () => <PagePlaceholder title="Admin dashboard" description="KPI cards and trend charts." />;
 const AdminUsers = () => <PagePlaceholder title="Users" description="Search, filter, suspend/ban." />;
 const AdminListings = () => <PagePlaceholder title="Listings" description="All listings across every status, category, and city." />;
-const AdminPendingApprovals = () => <PagePlaceholder title="Pending approvals" description="Daily triage queue — approve, reject with reason, or request edits." />;
 const AdminReviews = () => <PagePlaceholder title="Reviews" description="Verified reviews plus the flagged/reported queue." />;
 const AdminStatistics = () => <PagePlaceholder title="Statistics" description="Conversion rates, review volume, premium revenue." />;
 
@@ -417,7 +457,7 @@ export default function App() {
             <Route path="admin" element={<AdminDashboard />} />
             <Route path="admin/users" element={<AdminUsers />} />
             <Route path="admin/listings" element={<AdminListings />} />
-            <Route path="admin/listings/pending" element={<AdminPendingApprovals />} />
+            <Route path="admin/listings/pending" element={<PendingApprovalsPage />} />
             <Route path="admin/reviews" element={<AdminReviews />} />
             <Route path="admin/statistics" element={<AdminStatistics />} />
           </Route>

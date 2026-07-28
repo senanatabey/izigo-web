@@ -2,32 +2,35 @@ import { useState } from "react";
 import { User, Mail, Smartphone, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
-import { GoogleGlyph, AppleGlyph } from "./BrandGlyphs";
 
 export default function RegisterForm({ onSuccess, footerSwitch }) {
   const { t } = useLanguage();
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
   const canSubmit = name && phone && email && password && confirmPassword && !mismatch;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit) return;
-    login(email, password, name);
-    onSuccess?.();
-  };
-
-  const handleSocialSignup = (provider) => {
-    // Demo only — real Google/Apple sign-in needs Supabase Auth wired up.
-    login(`demo@${provider}.com`, "social-auth", `IZIGO ${provider === "google" ? "Google" : "Apple"} User`);
-    onSuccess?.();
+    setError("");
+    setSubmitting(true);
+    try {
+      await register(email, password, name, phone);
+      onSuccess?.();
+    } catch (err) {
+      setError(err.message || "Registration failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -91,17 +94,6 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         <p>{t("auth.registerSubtitle")}</p>
       </div>
 
-      <div className="ap-social">
-        <button type="button" className="ap-social-btn" onClick={() => handleSocialSignup("google")}>
-          <GoogleGlyph />{t("auth.continueWithGoogle")}
-        </button>
-        <button type="button" className="ap-social-btn apple" onClick={() => handleSocialSignup("apple")}>
-          <AppleGlyph />{t("auth.continueWithApple")}
-        </button>
-      </div>
-
-      <div className="ap-divider"><span>{t("auth.orDivider")}</span></div>
-
       <form onSubmit={handleSubmit}>
         <div className="ap-field">
           <label>{t("auth.nameLabel")}</label>
@@ -143,9 +135,10 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
           </div>
         </div>
         {mismatch && <p className="ap-error-text">{t("auth.passwordMismatch")}</p>}
+        {error && <p className="ap-error-text">{error}</p>}
 
-        <button type="submit" className="ap-submit" disabled={!canSubmit}>
-          {t("auth.registerButton")}
+        <button type="submit" className="ap-submit" disabled={!canSubmit || submitting}>
+          {submitting ? "..." : t("auth.registerButton")}
         </button>
       </form>
 

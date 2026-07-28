@@ -5,6 +5,8 @@ import {
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useAuth } from "../../App";
+import { supabase } from "../../lib/supabaseClient";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden"];
@@ -16,6 +18,7 @@ const VALID_CATEGORIES = ["villa", "car", "transfer", "event", "service"];
 export default function AddListingFormPage() {
   const { category } = useParams();
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
@@ -39,6 +42,8 @@ export default function AddListingFormPage() {
   const [serviceType, setServiceType] = useState("");
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   if (!VALID_CATEGORIES.includes(category)) {
     return <Navigate to="/add-listing" replace />;
@@ -60,10 +65,38 @@ export default function AddListingFormPage() {
     return true;
   })();
 
-  const handleSubmit = (e) => {
+  const buildDetails = () => {
+    if (category === "villa") return { guests: Number(guests), bedrooms: Number(bedrooms), amenities };
+    if (category === "car") return { seats: Number(seats), transmission };
+    if (category === "transfer") return { type, hasVehicle };
+    if (category === "event") return { date, isFree };
+    if (category === "service") return { serviceType };
+    return {};
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
-    setSubmitted(true);
+    if (!canSubmit || !user) return;
+    setError("");
+    setSubmitting(true);
+    try {
+      const { error: insertError } = await supabase.from("listings").insert({
+        host_id: user.id,
+        category,
+        city,
+        title: { en: title, az: title },
+        description: { en: description, az: description },
+        price: isFree ? 0 : Number(price) || 0,
+        details: buildDetails(),
+        whatsapp_phone: whatsapp,
+      });
+      if (insertError) throw insertError;
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || "Failed to publish listing");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -291,8 +324,9 @@ export default function AddListingFormPage() {
               <input type="tel" placeholder={t("addListing.whatsappPlaceholder")} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
             </div>
 
-            <button type="submit" className="alf-submit" disabled={!canSubmit}>
-              {t("addListing.submit")}
+            {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <button type="submit" className="alf-submit" disabled={!canSubmit || submitting}>
+              {submitting ? "..." : t("addListing.submit")}
             </button>
           </form>
         </>

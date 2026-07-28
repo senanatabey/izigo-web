@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, BedDouble, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_VILLAS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import { fetchListingById, toneForId } from "../../lib/listings";
 import PhoneReveal from "../../components/PhoneReveal";
 
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
@@ -9,7 +10,27 @@ const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, par
 export default function VillaDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
-  const villa = MOCK_VILLAS.find((v) => v.id === id);
+  const [row, setRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchListingById(id).then(setRow).finally(() => setLoading(false));
+  }, [id]);
+
+  const villa = row ? {
+    id: row.id,
+    city: row.city,
+    tone: toneForId(row.id),
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    guests: row.details?.guests || 0,
+    bedrooms: row.details?.bedrooms || 0,
+    amenities: row.details?.amenities || [],
+    phone: row.whatsapp_phone,
+  } : null;
+
+  if (loading) return null;
 
   if (!villa) {
     return (
@@ -112,7 +133,7 @@ export default function VillaDetail() {
             </div>
           </div>
 
-          <PhoneReveal phone={DEMO_HOST_PHONE} />
+          <PhoneReveal phone={villa.phone} />
         </aside>
       </div>
     </div>

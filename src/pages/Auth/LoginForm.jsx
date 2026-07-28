@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Mail, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
-import { GoogleGlyph, AppleGlyph } from "./BrandGlyphs";
 
 export default function LoginForm({ onSuccess, footerSwitch }) {
   const { t } = useLanguage();
@@ -10,18 +9,22 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (!identifier || !password) return;
-    login(identifier, password);
-    onSuccess?.();
-  };
-
-  const handleSocialLogin = (provider) => {
-    // Demo only — real Google/Apple sign-in needs Supabase Auth wired up.
-    login(`demo@${provider}.com`, "social-auth");
-    onSuccess?.();
+    setError("");
+    setSubmitting(true);
+    try {
+      await login(identifier, password);
+      onSuccess?.();
+    } catch (err) {
+      setError(err.message || "Login failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -59,6 +62,8 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
           border: none; outline: none; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
         }
 
+        .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
+
         .auth-form .ap-submit {
           width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
           padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px;
@@ -82,17 +87,6 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
         <h1>{t("auth.loginTitle")}</h1>
         <p>{t("auth.loginSubtitle")}</p>
       </div>
-
-      <div className="ap-social">
-        <button type="button" className="ap-social-btn" onClick={() => handleSocialLogin("google")}>
-          <GoogleGlyph />{t("auth.continueWithGoogle")}
-        </button>
-        <button type="button" className="ap-social-btn apple" onClick={() => handleSocialLogin("apple")}>
-          <AppleGlyph />{t("auth.continueWithApple")}
-        </button>
-      </div>
-
-      <div className="ap-divider"><span>{t("auth.orDivider")}</span></div>
 
       <form onSubmit={handlePasswordSubmit}>
         <div className="ap-field">
@@ -119,8 +113,9 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
             />
           </div>
         </div>
-        <button type="submit" className="ap-submit" disabled={!identifier || !password}>
-          {t("auth.loginButton")}
+        {error && <p className="ap-error-text">{error}</p>}
+        <button type="submit" className="ap-submit" disabled={!identifier || !password || submitting}>
+          {submitting ? "..." : t("auth.loginButton")}
         </button>
       </form>
 
