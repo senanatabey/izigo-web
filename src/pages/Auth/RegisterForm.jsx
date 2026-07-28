@@ -3,11 +3,23 @@ import { User, Mail, Smartphone, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 
+const COUNTRY_CODES = [
+  { code: "+994", country: "Azerbaijan" },
+  { code: "+90", country: "Turkey" },
+  { code: "+995", country: "Georgia" },
+  { code: "+7", country: "Russia" },
+  { code: "+971", country: "UAE" },
+  { code: "+44", country: "UK" },
+  { code: "+49", country: "Germany" },
+  { code: "+1", country: "USA" },
+];
+
 export default function RegisterForm({ onSuccess, footerSwitch }) {
   const { t } = useLanguage();
   const { register } = useAuth();
 
   const [name, setName] = useState("");
+  const [phoneCountry, setPhoneCountry] = useState("+994");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +36,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
     setError("");
     setSubmitting(true);
     try {
-      await register(email, password, name, phone);
+      await register(email, password, name, `${phoneCountry}${phone}`);
       onSuccess?.();
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -68,6 +80,10 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         .auth-form .ap-input input {
           border: none; outline: none; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
         }
+        .auth-form .ap-phone-input select {
+          border: none; outline: none; font-size: 13.5px; font-weight: 700; color: var(--text); background: none;
+          font-family: var(--sans); flex-shrink: 0; padding-right: 6px; border-right: 1px solid var(--border);
+        }
         .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
 
         .auth-form .ap-submit {
@@ -105,9 +121,19 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
 
         <div className="ap-field">
           <label>{t("auth.phoneLabelRegister")}</label>
-          <div className="ap-input">
+          <div className="ap-input ap-phone-input">
             <Smartphone size={16} />
-            <input type="tel" placeholder={t("auth.phonePlaceholder")} value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <select value={phoneCountry} onChange={(e) => setPhoneCountry(e.target.value)}>
+              {COUNTRY_CODES.map(({ code, country }) => (
+                <option key={code} value={code}>{code} {country}</option>
+              ))}
+            </select>
+            <input
+              type="tel"
+              placeholder="50 123 45 67"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ""))}
+            />
           </div>
         </div>
 

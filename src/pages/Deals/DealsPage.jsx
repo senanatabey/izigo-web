@@ -1,21 +1,48 @@
+import { useEffect, useState } from "react";
 import { MapPin, Percent } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_VILLAS, MOCK_CARS, MOCK_TRANSFERS, MOCK_EVENTS } from "../../data/mockListings";
+import { supabase } from "../../lib/supabaseClient";
+import { toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
-const DEAL_ITEMS = [
-  ...MOCK_VILLAS.filter((v) => v.discount).map((v) => ({ ...v, saveType: "villa", to: `/villas/${v.id}` })),
-  ...MOCK_CARS.filter((c) => c.discount).map((c) => ({ ...c, saveType: "car", to: `/cars/${c.id}` })),
-  ...MOCK_TRANSFERS.filter((t) => t.discount).map((t) => ({
-    ...t, saveType: t.type === "tour" ? "experience" : "transfer",
-    to: t.type === "tour" ? `/experiences/${t.id}` : `/transfers/${t.id}`,
-  })),
-  ...MOCK_EVENTS.filter((e) => e.discount).map((e) => ({ ...e, saveType: "event", to: `/events/${e.id}` })),
-];
+const CATEGORY_TO_PATH = { villa: "villas", car: "cars", event: "events" };
+
+function toPath(row) {
+  if (row.category === "transfer") {
+    return row.details?.type === "tour" ? `/experiences/${row.id}` : `/transfers/${row.id}`;
+  }
+  return `/${CATEGORY_TO_PATH[row.category]}/${row.id}`;
+}
+
+function saveType(row) {
+  if (row.category === "transfer") return row.details?.type === "tour" ? "experience" : "transfer";
+  return row.category;
+}
 
 export default function DealsPage() {
   const { t, language } = useLanguage();
+  const [dealItems, setDealItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("listings")
+      .select("*")
+      .eq("status", "approved")
+      .not("discount", "is", null)
+      .then(({ data }) => setDealItems((data || []).map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        discount: row.discount,
+        saveType: saveType(row),
+        to: toPath(row),
+      }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="deals-page">
@@ -41,7 +68,7 @@ export default function DealsPage() {
         .deals-page .dp-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.35; min-height: 36px; }
         .deals-page .dp-price-row { display: flex; align-items: baseline; gap: 8px; }
         .deals-page .dp-price-new { font-size: 15px; font-weight: 800; color: var(--text); }
-        .deals-page .dp-price-old { font-size: 12.5px; font-weight: 600; color: var(--text-soft); text-decoration: line-through; }
+        .deals-page .dp-price-old { font-size: 12.5px; font-weight: 600; color: #E0553F !important; text-decoration: line-through; }
 
         .deals-page .dp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
 
@@ -57,11 +84,11 @@ export default function DealsPage() {
         <p>{t("dealsPage.subtitle")}</p>
       </div>
 
-      {DEAL_ITEMS.length === 0 ? (
+      {loading ? null : dealItems.length === 0 ? (
         <div className="dp-empty">{t("dealsPage.noResults")}</div>
       ) : (
         <div className="dp-grid">
-          {DEAL_ITEMS.map((item) => {
+          {dealItems.map((item) => {
             const discounted = Math.round(item.price * (1 - item.discount / 100));
             return (
               <Link to={item.to} className="dp-card" key={`${item.saveType}-${item.id}`}>

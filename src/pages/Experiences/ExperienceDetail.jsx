@@ -1,13 +1,37 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Car, Footprints, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_TRANSFERS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import { fetchListingById, toneForId } from "../../lib/listings";
 import PhoneReveal from "../../components/PhoneReveal";
+import SaveHeart from "../../components/SaveHeart";
 
 export default function ExperienceDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
-  const item = MOCK_TRANSFERS.find((v) => v.id === id && v.type === "tour");
+  const [row, setRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchListingById(id).then((data) => {
+      setRow(data && data.details?.type === "tour" ? data : null);
+    }).finally(() => setLoading(false));
+  }, [id]);
+
+  const item = row ? {
+    id: row.id,
+    city: row.city,
+    tone: toneForId(row.id),
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    discount: row.discount,
+    hasVehicle: !!row.details?.hasVehicle,
+    seats: row.details?.seats || 0,
+    phone: row.whatsapp_phone,
+  } : null;
+
+  if (loading) return null;
 
   if (!item) {
     return (
@@ -45,6 +69,9 @@ export default function ExperienceDetail() {
         .experience-detail .xd-sidebar { position: sticky; top: 90px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
         .experience-detail .xd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .experience-detail .xd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
+        .experience-detail .xd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
+        .experience-detail .xd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .experience-detail .detail-save-btn { position: static; }
         .experience-detail .xd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .experience-detail .xd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .experience-detail .xd-host-name { font-size: 14px; font-weight: 700; }
@@ -84,7 +111,12 @@ export default function ExperienceDetail() {
         </div>
 
         <aside className="xd-sidebar">
-          <div className="xd-price">{item.price} AZN <span>{t("transfersPage.perPerson")}</span></div>
+          <div className="xd-price-row">
+            <div className="xd-price">
+              {item.discount ? (<><span className="xd-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
+            </div>
+            <SaveHeart type="experience" id={item.id} className="detail-save-btn" />
+          </div>
 
           <div className="xd-host">
             <div className="xd-host-avatar"><ShieldCheck size={20} /></div>
@@ -94,7 +126,7 @@ export default function ExperienceDetail() {
             </div>
           </div>
 
-          <PhoneReveal phone={DEMO_HOST_PHONE} />
+          <PhoneReveal phone={item.phone} />
         </aside>
       </div>
     </div>

@@ -37,6 +37,9 @@ import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 import { supabase } from "./lib/supabaseClient";
 import PendingApprovalsPage from "./pages/Admin/PendingApprovalsPage";
+import AdminDashboardPage from "./pages/Admin/DashboardPage";
+import AdminListingsPage from "./pages/Admin/ListingsPage";
+import AdminUsersPage from "./pages/Admin/UsersPage";
 
 /* =========================================================================
    AUTH — backed by Supabase Auth. Session lives in Supabase's own storage
@@ -242,11 +245,11 @@ function IzigoLogoDark() {
 }
 
 const MAIN_NAV_ITEMS = [
-  { to: "/concierge", key: "concierge" },
   { to: "/villas", key: "villas" },
   { to: "/cars", key: "cars" },
   { to: "/transfers?type=transfer", key: "transfers", matchTo: "/transfers" },
   { to: "/experiences", key: "tours" },
+  { to: "/concierge", key: "concierge" },
 ];
 
 function LanguageSwitcher() {
@@ -395,9 +398,6 @@ function PagePlaceholder({ title, description }) {
 
 
 
-const AdminDashboard = () => <PagePlaceholder title="Admin dashboard" description="KPI cards and trend charts." />;
-const AdminUsers = () => <PagePlaceholder title="Users" description="Search, filter, suspend/ban." />;
-const AdminListings = () => <PagePlaceholder title="Listings" description="All listings across every status, category, and city." />;
 const AdminReviews = () => <PagePlaceholder title="Reviews" description="Verified reviews plus the flagged/reported queue." />;
 const AdminStatistics = () => <PagePlaceholder title="Statistics" description="Conversion rates, review volume, premium revenue." />;
 
@@ -454,9 +454,9 @@ export default function App() {
 
           {/* Admin pages */}
           <Route element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
-            <Route path="admin" element={<AdminDashboard />} />
-            <Route path="admin/users" element={<AdminUsers />} />
-            <Route path="admin/listings" element={<AdminListings />} />
+            <Route path="admin" element={<AdminDashboardPage />} />
+            <Route path="admin/users" element={<AdminUsersPage />} />
+            <Route path="admin/listings" element={<AdminListingsPage />} />
             <Route path="admin/listings/pending" element={<PendingApprovalsPage />} />
             <Route path="admin/reviews" element={<AdminReviews />} />
             <Route path="admin/statistics" element={<AdminStatistics />} />

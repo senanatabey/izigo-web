@@ -1,13 +1,35 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Settings2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_CARS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import { fetchListingById, toneForId } from "../../lib/listings";
 import PhoneReveal from "../../components/PhoneReveal";
+import SaveHeart from "../../components/SaveHeart";
 
 export default function CarDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
-  const car = MOCK_CARS.find((c) => c.id === id);
+  const [row, setRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchListingById(id).then(setRow).finally(() => setLoading(false));
+  }, [id]);
+
+  const car = row ? {
+    id: row.id,
+    city: row.city,
+    tone: toneForId(row.id),
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    seats: row.details?.seats || 0,
+    discount: row.discount,
+    transmission: row.details?.transmission || "automatic",
+    phone: row.whatsapp_phone,
+  } : null;
+
+  if (loading) return null;
 
   if (!car) {
     return (
@@ -41,6 +63,9 @@ export default function CarDetail() {
         .car-detail .cd-sidebar { position: sticky; top: 90px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
         .car-detail .cd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .car-detail .cd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
+        .car-detail .cd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
+        .car-detail .cd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .car-detail .detail-save-btn { position: static; }
         .car-detail .cd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .car-detail .cd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .car-detail .cd-host-name { font-size: 14px; font-weight: 700; }
@@ -68,7 +93,7 @@ export default function CarDetail() {
           <h1 className="cd-title">{car.title[language] || car.title.en}</h1>
           <div className="cd-meta">
             <span><Users size={15} />{car.seats} {t("carsPage.seatsUnit")}</span>
-            <span><Settings2 size={15} />{car.transmission[language] || car.transmission.en}</span>
+            <span><Settings2 size={15} />{t(`addListing.${car.transmission}`)}</span>
           </div>
 
           <h2>{t("carDetail.aboutHeading")}</h2>
@@ -76,7 +101,12 @@ export default function CarDetail() {
         </div>
 
         <aside className="cd-sidebar">
-          <div className="cd-price">{car.price} AZN <span>{t("carsPage.perDay")}</span></div>
+          <div className="cd-price-row">
+            <div className="cd-price">
+              {car.discount ? (<><span className="cd-price-old">{car.price} AZN</span> {Math.round(car.price * (1 - car.discount / 100))} AZN</>) : `${car.price} AZN`} <span>{t("carsPage.perDay")}</span>
+            </div>
+            <SaveHeart type="car" id={car.id} className="detail-save-btn" />
+          </div>
 
           <div className="cd-host">
             <div className="cd-host-avatar"><ShieldCheck size={20} /></div>
@@ -86,7 +116,7 @@ export default function CarDetail() {
             </div>
           </div>
 
-          <PhoneReveal phone={DEMO_HOST_PHONE} />
+          <PhoneReveal phone={car.phone} />
         </aside>
       </div>
     </div>

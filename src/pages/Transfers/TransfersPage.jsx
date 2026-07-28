@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_TRANSFERS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
@@ -16,6 +16,24 @@ export default function TransfersPage() {
   const [type, setType] = useState(() => searchParams.get("type") || "");
   const [vehicle, setVehicle] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApprovedListings("transfer")
+      .then((rows) => setItems(rows.map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        type: row.details?.type || "transfer",
+        hasVehicle: !!row.details?.hasVehicle,
+        seats: row.details?.seats || 0,
+        discount: row.discount,
+      }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
@@ -31,7 +49,7 @@ export default function TransfersPage() {
   };
 
   const filtered = useMemo(() => {
-    return MOCK_TRANSFERS.filter((item) => {
+    return items.filter((item) => {
       if (cityParam && item.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       if (type && item.type !== type) return false;
       if (vehicle === "with" && !item.hasVehicle) return false;
@@ -39,7 +57,7 @@ export default function TransfersPage() {
       if (maxPrice && item.price > Number(maxPrice)) return false;
       return true;
     });
-  }, [cityParam, type, vehicle, maxPrice]);
+  }, [items, cityParam, type, vehicle, maxPrice]);
 
   return (
     <div className="transfers-page">
@@ -85,6 +103,7 @@ export default function TransfersPage() {
         .transfers-page .tp-footer { display: flex; align-items: center; justify-content: space-between; }
         .transfers-page .tp-price { font-size: 16px; font-weight: 800; color: var(--text); }
         .transfers-page .tp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
+        .transfers-page .tp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .transfers-page .tp-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
 
         .transfers-page .tp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
@@ -139,7 +158,7 @@ export default function TransfersPage() {
 
       <p className="tp-count">{t("transfersPage.resultsCount").replace("{count}", filtered.length)}</p>
 
-      {filtered.length === 0 ? (
+      {loading ? null : filtered.length === 0 ? (
         <div className="tp-empty">{t("transfersPage.noResults")}</div>
       ) : (
         <div className="tp-grid">
@@ -160,7 +179,9 @@ export default function TransfersPage() {
                   <span><Users size={14} />{item.seats} {t("transfersPage.seatsUnit")}</span>
                 </div>
                 <div className="tp-footer">
-                  <div className="tp-price">{item.price} AZN <span>{t("transfersPage.perPerson")}</span></div>
+                  <div className="tp-price">
+                    {item.discount ? (<><span className="tp-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
+                  </div>
                   <span className="tp-link">{t("transfersPage.viewDetails")} →</span>
                 </div>
               </div>

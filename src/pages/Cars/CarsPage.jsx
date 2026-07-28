@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Settings2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_CARS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
@@ -16,6 +16,23 @@ export default function CarsPage() {
 
   const [seats, setSeats] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApprovedListings("car")
+      .then((rows) => setCars(rows.map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        discount: row.discount,
+        seats: row.details?.seats || 0,
+        transmission: row.details?.transmission || "automatic",
+      }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
@@ -30,13 +47,13 @@ export default function CarsPage() {
   };
 
   const filtered = useMemo(() => {
-    return MOCK_CARS.filter((c) => {
+    return cars.filter((c) => {
       if (cityParam && c.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       if (seats && c.seats < Number(seats)) return false;
       if (maxPrice && c.price > Number(maxPrice)) return false;
       return true;
     });
-  }, [cityParam, seats, maxPrice]);
+  }, [cars, cityParam, seats, maxPrice]);
 
   return (
     <div className="cars-page">
@@ -77,6 +94,7 @@ export default function CarsPage() {
         .cars-page .cp-footer { display: flex; align-items: center; justify-content: space-between; }
         .cars-page .cp-price { font-size: 16px; font-weight: 800; color: var(--text); }
         .cars-page .cp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
+        .cars-page .cp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .cars-page .cp-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
 
         .cars-page .cp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
@@ -122,7 +140,7 @@ export default function CarsPage() {
 
       <p className="cp-count">{t("carsPage.resultsCount").replace("{count}", filtered.length)}</p>
 
-      {filtered.length === 0 ? (
+      {loading ? null : filtered.length === 0 ? (
         <div className="cp-empty">{t("carsPage.noResults")}</div>
       ) : (
         <div className="cp-grid">
@@ -135,10 +153,12 @@ export default function CarsPage() {
                 <div className="cp-title">{c.title[language] || c.title.en}</div>
                 <div className="cp-meta">
                   <span><Users size={14} />{c.seats} {t("carsPage.seatsUnit")}</span>
-                  <span><Settings2 size={14} />{c.transmission[language] || c.transmission.en}</span>
+                  <span><Settings2 size={14} />{t(`addListing.${c.transmission}`)}</span>
                 </div>
                 <div className="cp-footer">
-                  <div className="cp-price">{c.price} AZN <span>{t("carsPage.perDay")}</span></div>
+                  <div className="cp-price">
+                    {c.discount ? (<><span className="cp-price-old">{c.price} AZN</span> {Math.round(c.price * (1 - c.discount / 100))} AZN</>) : `${c.price} AZN`} <span>{t("carsPage.perDay")}</span>
+                  </div>
                   <span className="cp-link">{t("carsPage.viewDetails")} →</span>
                 </div>
               </div>

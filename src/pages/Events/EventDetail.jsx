@@ -1,13 +1,34 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Calendar, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_EVENTS, DEMO_HOST_PHONE } from "../../data/mockListings";
+import { fetchListingById, toneForId } from "../../lib/listings";
 import PhoneReveal from "../../components/PhoneReveal";
+import SaveHeart from "../../components/SaveHeart";
 
 export default function EventDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
-  const event = MOCK_EVENTS.find((v) => v.id === id);
+  const [row, setRow] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchListingById(id).then(setRow).finally(() => setLoading(false));
+  }, [id]);
+
+  const event = row ? {
+    id: row.id,
+    city: row.city,
+    tone: toneForId(row.id),
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    date: row.details?.date,
+    discount: row.discount,
+    phone: row.whatsapp_phone,
+  } : null;
+
+  if (loading) return null;
 
   if (!event) {
     return (
@@ -42,6 +63,9 @@ export default function EventDetail() {
 
         .event-detail .ed-sidebar { position: sticky; top: 90px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
         .event-detail .ed-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+        .event-detail .ed-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
+        .event-detail .ed-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .event-detail .detail-save-btn { position: static; }
         .event-detail .ed-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .event-detail .ed-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .event-detail .ed-host-name { font-size: 14px; font-weight: 700; }
@@ -76,7 +100,12 @@ export default function EventDetail() {
         </div>
 
         <aside className="ed-sidebar">
-          <div className="ed-price">{event.price === 0 ? t("eventsPage.free") : `${event.price} AZN`}</div>
+          <div className="ed-price-row">
+            <div className="ed-price">
+              {event.price === 0 ? t("eventsPage.free") : event.discount ? (<><span className="ed-price-old">{event.price} AZN</span> {Math.round(event.price * (1 - event.discount / 100))} AZN</>) : `${event.price} AZN`}
+            </div>
+            <SaveHeart type="event" id={event.id} className="detail-save-btn" />
+          </div>
 
           <div className="ed-host">
             <div className="ed-host-avatar"><ShieldCheck size={20} /></div>
@@ -86,7 +115,7 @@ export default function EventDetail() {
             </div>
           </div>
 
-          <PhoneReveal phone={DEMO_HOST_PHONE} />
+          <PhoneReveal phone={event.phone} />
         </aside>
       </div>
     </div>

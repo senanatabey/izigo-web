@@ -27,6 +27,7 @@ export default function VillasPage() {
         tone: toneForId(row.id),
         title: row.title,
         price: row.price,
+        discount: row.discount,
         guests: row.details?.guests || 0,
         bedrooms: row.details?.bedrooms || 0,
       }))))
@@ -93,6 +94,7 @@ export default function VillasPage() {
         .villas-page .vp-footer { display: flex; align-items: center; justify-content: space-between; }
         .villas-page .vp-price { font-size: 16px; font-weight: 800; color: var(--text); }
         .villas-page .vp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
+        .villas-page .vp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .villas-page .vp-link { font-size: 13px; font-weight: 700; color: var(--izigo-green); }
 
         .villas-page .vp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
@@ -154,7 +156,9 @@ export default function VillasPage() {
                   <span><BedDouble size={14} />{v.bedrooms} {t("villasPage.bedroomsUnit")}</span>
                 </div>
                 <div className="vp-footer">
-                  <div className="vp-price">{v.price} AZN <span>{t("villasPage.perNight")}</span></div>
+                  <div className="vp-price">
+                    {v.discount ? (<><span className="vp-price-old">{v.price} AZN</span> {Math.round(v.price * (1 - v.discount / 100))} AZN</>) : `${v.price} AZN`} <span>{t("villasPage.perNight")}</span>
+                  </div>
                   <span className="vp-link">{t("villasPage.viewDetails")} →</span>
                 </div>
               </div>

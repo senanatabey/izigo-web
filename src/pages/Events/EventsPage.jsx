@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Calendar } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_EVENTS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
@@ -11,6 +11,22 @@ export default function EventsPage() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApprovedListings("event")
+      .then((rows) => setEvents(rows.map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        date: row.details?.date,
+        discount: row.discount,
+      }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
@@ -21,11 +37,11 @@ export default function EventsPage() {
   const resetFilters = () => setSearchParams({});
 
   const filtered = useMemo(() => {
-    return MOCK_EVENTS.filter((e) => {
+    return events.filter((e) => {
       if (cityParam && e.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       return true;
     });
-  }, [cityParam]);
+  }, [events, cityParam]);
 
   const formatDate = (iso) => new Date(iso).toLocaleDateString(language === "az" ? "az-AZ" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -66,6 +82,7 @@ export default function EventsPage() {
         .events-page .ep-meta { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; }
         .events-page .ep-footer { display: flex; align-items: center; justify-content: space-between; }
         .events-page .ep-price { font-size: 16px; font-weight: 800; color: var(--text); }
+        .events-page .ep-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .events-page .ep-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
 
         .events-page .ep-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
@@ -97,7 +114,7 @@ export default function EventsPage() {
 
       <p className="ep-count">{t("eventsPage.resultsCount").replace("{count}", filtered.length)}</p>
 
-      {filtered.length === 0 ? (
+      {loading ? null : filtered.length === 0 ? (
         <div className="ep-empty">{t("eventsPage.noResults")}</div>
       ) : (
         <div className="ep-grid">
@@ -110,7 +127,9 @@ export default function EventsPage() {
                 <div className="ep-title">{e.title[language] || e.title.en}</div>
                 <div className="ep-meta"><Calendar size={13} />{formatDate(e.date)}</div>
                 <div className="ep-footer">
-                  <div className="ep-price">{e.price === 0 ? t("eventsPage.free") : `${e.price} AZN`}</div>
+                  <div className="ep-price">
+                    {e.price === 0 ? t("eventsPage.free") : e.discount ? (<><span className="ep-price-old">{e.price} AZN</span> {Math.round(e.price * (1 - e.discount / 100))} AZN</>) : `${e.price} AZN`}
+                  </div>
                   <span className="ep-link">{t("eventsPage.viewDetails")} →</span>
                 </div>
               </div>

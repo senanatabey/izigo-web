@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import {
-  MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar,
+  MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar, Percent,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -23,6 +23,7 @@ export default function AddListingFormPage() {
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
   const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
 
@@ -68,7 +69,7 @@ export default function AddListingFormPage() {
   const buildDetails = () => {
     if (category === "villa") return { guests: Number(guests), bedrooms: Number(bedrooms), amenities };
     if (category === "car") return { seats: Number(seats), transmission };
-    if (category === "transfer") return { type, hasVehicle };
+    if (category === "transfer") return { type, hasVehicle, seats: Number(seats) || 0 };
     if (category === "event") return { date, isFree };
     if (category === "service") return { serviceType };
     return {};
@@ -87,8 +88,9 @@ export default function AddListingFormPage() {
         title: { en: title, az: title },
         description: { en: description, az: description },
         price: isFree ? 0 : Number(price) || 0,
+        discount: discount ? Number(discount) : null,
         details: buildDetails(),
-        whatsapp_phone: whatsapp,
+        whatsapp_phone: `+994${whatsapp}`,
       });
       if (insertError) throw insertError;
       setSubmitted(true);
@@ -121,6 +123,15 @@ export default function AddListingFormPage() {
           font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
         }
         .add-listing-form-page .alf-field textarea { resize: vertical; min-height: 90px; }
+        .add-listing-form-page .alf-phone-input {
+          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+        }
+        .add-listing-form-page .alf-phone-input span {
+          padding: 11px 12px; background: var(--bg-soft); font-size: 14px; font-weight: 700; color: var(--text-soft); flex-shrink: 0;
+        }
+        .add-listing-form-page .alf-phone-input input {
+          border: none; padding: 11px 14px; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
+        }
 
         .add-listing-form-page .alf-photos {
           display: flex; align-items: flex-start; gap: 12px; border: 1px dashed var(--border); border-radius: 12px;
@@ -227,6 +238,13 @@ export default function AddListingFormPage() {
               </div>
             )}
 
+            {!(category === "event" && isFree) && (
+              <div className="alf-field">
+                <label><Percent size={13} />Endirim (%) — istəyə bağlı</label>
+                <input type="number" min="0" max="90" placeholder="məs. 15" value={discount} onChange={(e) => setDiscount(e.target.value)} />
+              </div>
+            )}
+
             {category === "villa" && (
               <>
                 <p className="alf-section-title">{t("addListing.categories.villa.title")}</p>
@@ -292,6 +310,10 @@ export default function AddListingFormPage() {
                     <label className="alf-radio"><input type="radio" name="vehicle" checked={!hasVehicle} onChange={() => setHasVehicle(false)} />{t("addListing.withoutVehicle")}</label>
                   </div>
                 </div>
+                <div className="alf-field">
+                  <label><Users size={13} />{t("addListing.seatsLabel")}</label>
+                  <input type="number" min="1" value={seats} onChange={(e) => setSeats(e.target.value)} />
+                </div>
               </>
             )}
 
@@ -321,7 +343,15 @@ export default function AddListingFormPage() {
 
             <div className="alf-field full">
               <label><MessageCircle size={13} />{t("addListing.whatsappLabel")}</label>
-              <input type="tel" placeholder={t("addListing.whatsappPlaceholder")} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
+              <div className="alf-phone-input">
+                <span>+994</span>
+                <input
+                  type="tel"
+                  placeholder="50 123 45 67"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value.replace(/[^0-9]/g, ""))}
+                />
+              </div>
             </div>
 
             {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}

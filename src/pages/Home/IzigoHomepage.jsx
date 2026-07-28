@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight,
+  MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight, Compass,
   PartyPopper, MessageCircle, Mail, Send,
   Percent, BadgeCheck, PlusCircle, TrendingUp, Star, ShoppingBasket,
   Sparkles, ArrowRight, Award,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_VILLAS, MOCK_CARS, MOCK_TRANSFERS, MOCK_EVENTS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { SERVICES as CONCIERGE_SERVICES } from "../Concierge/ConciergePage";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
 
@@ -18,10 +18,8 @@ const LOCAL_SERVICES_PREVIEW = LOCAL_SERVICES_PREVIEW_KEYS
 
 const FEATURE_CARDS = [
   { icon: Percent, key: "zeroCommission" },
-  { icon: BadgeCheck, key: "verifiedStay" },
   { icon: MessageCircle, key: "whatsapp" },
   { icon: MapPin, key: "localHosts" },
-  { icon: Award, key: "bestOffers" },
 ];
 
 /* lucide-react no longer ships brand/logo glyphs — small inline outlines instead */
@@ -54,8 +52,7 @@ const CATEGORIES = [
   { icon: HomeIcon, tone: "green", key: "villas", to: "/villas" },
   { icon: Car, tone: "orange", key: "cars", to: "/cars" },
   { icon: ArrowLeftRight, tone: "green", key: "transfers", to: "/transfers" },
-  { icon: PartyPopper, tone: "orange", key: "events", to: "/events" },
-  { icon: ShoppingBasket, tone: "orange", key: "concierge", to: "/concierge" },
+  { icon: Compass, tone: "orange", key: "tours", to: "/experiences" },
 ];
 
 const DESTINATIONS = [
@@ -66,11 +63,11 @@ const DESTINATIONS = [
 
 const CITY_OPTIONS = ["baku", "gabala", "guba"];
 
-const LISTINGS_TABS = [
-  { key: "villas", icon: HomeIcon, to: "/villas", items: MOCK_VILLAS.slice(0, 8), detailTo: (id) => `/villas/${id}`, priceUnit: "villasPage.perNight" },
-  { key: "cars", icon: Car, to: "/cars", items: MOCK_CARS.slice(0, 8), detailTo: (id) => `/cars/${id}`, priceUnit: "carsPage.perDay" },
-  { key: "transfers", icon: ArrowLeftRight, to: "/transfers", items: MOCK_TRANSFERS.slice(0, 8), detailTo: (id) => `/transfers/${id}`, priceUnit: "transfersPage.perPerson" },
-  { key: "events", icon: PartyPopper, to: "/events", items: MOCK_EVENTS.slice(0, 8), detailTo: (id) => `/events/${id}`, priceUnit: null },
+const LISTINGS_TABS_META = [
+  { key: "villas", icon: HomeIcon, to: "/villas", category: "villa", detailTo: (id) => `/villas/${id}`, priceUnit: "villasPage.perNight" },
+  { key: "cars", icon: Car, to: "/cars", category: "car", detailTo: (id) => `/cars/${id}`, priceUnit: "carsPage.perDay" },
+  { key: "transfers", icon: ArrowLeftRight, to: "/transfers", category: "transfer", detailTo: (id) => `/transfers/${id}`, priceUnit: "transfersPage.perPerson" },
+  { key: "events", icon: PartyPopper, to: "/events", category: "event", detailTo: (id) => `/events/${id}`, priceUnit: null },
 ];
 
 const COMPARISON_ROWS = ["commission", "hiddenFees", "directContact", "verified", "focus", "freeToList"];
@@ -90,6 +87,25 @@ export default function IzigoHomepage() {
   const [citySlug, setCitySlug] = useState(null);
   const [whereOpen, setWhereOpen] = useState(false);
   const [listingsTab, setListingsTab] = useState("villas");
+  const [listingsByCategory, setListingsByCategory] = useState({});
+
+  useEffect(() => {
+    Promise.all(LISTINGS_TABS_META.map(({ category }) =>
+      fetchApprovedListings(category).then((rows) => [category, rows.slice(0, 8).map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        discount: row.discount,
+      }))])
+    )).then((entries) => setListingsByCategory(Object.fromEntries(entries)));
+  }, []);
+
+  const LISTINGS_TABS = LISTINGS_TABS_META.map((tab) => ({
+    ...tab,
+    items: listingsByCategory[tab.category] || [],
+  }));
 
   const cityLabel = (slug) => t(`cities.${slug}.name`);
   const filteredCities = CITY_OPTIONS.filter((slug) =>
@@ -110,14 +126,19 @@ export default function IzigoHomepage() {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    const cat = CATEGORIES.find((c) => c.key === service);
     const params = where.trim() ? `?city=${encodeURIComponent(where.trim())}` : "";
-    navigate(`/${service}${params}`);
+    navigate(`${cat ? cat.to : "/villas"}${params}`);
   };
 
   const activeListingsTab = LISTINGS_TABS.find((tab) => tab.key === listingsTab);
   const priceLabel = (item, priceUnit) => {
-    if (priceUnit === null) return item.price === 0 ? t("eventsPage.free") : `${item.price} AZN`;
-    return <>{item.price} AZN <span>{t(priceUnit)}</span></>;
+    const finalPrice = item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price;
+    const priceNode = item.discount ? (
+      <><span className="latest-price-old">{item.price} AZN</span> {finalPrice} AZN</>
+    ) : `${finalPrice} AZN`;
+    if (priceUnit === null) return item.price === 0 ? t("eventsPage.free") : priceNode;
+    return <>{priceNode} <span>{t(priceUnit)}</span></>;
   };
 
   return (
@@ -125,9 +146,11 @@ export default function IzigoHomepage() {
       <style>{`
         .izigo-home .hero {
           position: relative;
-          padding: 122px 6vw 56px;
+          padding: 84px 6vw 56px;
+          min-height: 640px;
           display: flex;
           flex-direction: column;
+          justify-content: center;
           background:
             linear-gradient(90deg, rgba(5, 22, 20, 0.78) 0%, rgba(5, 22, 20, 0.45) 32%, rgba(5, 22, 20, 0.08) 58%, rgba(5, 22, 20, 0) 78%),
             linear-gradient(0deg, rgba(4, 16, 15, 0.35) 0%, rgba(4, 16, 15, 0) 30%),
@@ -148,16 +171,21 @@ export default function IzigoHomepage() {
         }
         .izigo-home .hero h1 span { display: block; }
         .izigo-home .hero p {
-          margin-top: 18px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 520px;
+          margin-top: 4px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 640px;
         }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+        .izigo-home .hero p span { display: block; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 24px; }
         .izigo-home .hero-btn {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px;
-          min-width: 200px; height: 52px; padding: 0 26px; font-weight: 700; font-size: 15px; white-space: nowrap; transition: filter 0.15s ease;
+          min-width: 230px; height: 60px; padding: 0 30px; font-weight: 700; font-size: 17px; white-space: nowrap;
+          transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
-        .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; }
+        .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; box-shadow: 0 10px 24px rgba(186, 91, 46, 0.32); }
         .izigo-home .hero-btn.secondary { background: #fff; color: var(--izigo-green); }
-        .izigo-home .hero-btn:hover { filter: brightness(0.95); }
+        .izigo-home .hero-btn.secondary:hover { filter: brightness(0.95); }
+        .izigo-home .hero-btn.primary:hover {
+          background: #A34D26; transform: translateY(-2px); box-shadow: 0 14px 28px rgba(186, 91, 46, 0.4);
+        }
 
         .izigo-home .search-card {
           margin: 32px 0 0;
@@ -223,7 +251,7 @@ export default function IzigoHomepage() {
         .izigo-home section { padding: 45px 6vw; }
 
         .izigo-home .feature-cards { background: var(--bg-soft); padding: 28px 6vw; }
-        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+        .izigo-home .feature-cards-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .izigo-home .feature-card {
           display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--border);
           border-radius: 16px; padding: 18px 20px; font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.3;
@@ -257,6 +285,7 @@ export default function IzigoHomepage() {
         .izigo-home .latest-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.35; min-height: 36px; }
         .izigo-home .latest-price { font-size: 14px; font-weight: 800; color: var(--text); margin-top: auto; }
         .izigo-home .latest-price span { font-size: 11.5px; font-weight: 500; color: var(--text-soft); }
+        .izigo-home .latest-price-old { font-size: 11.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
 
         .izigo-home .destinations { background: var(--bg); }
         .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
@@ -417,12 +446,11 @@ export default function IzigoHomepage() {
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .destination-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-grid { grid-template-columns: 1fr; }
-          .izigo-home .feature-cards-grid { grid-template-columns: repeat(3, 1fr); }
           .izigo-home .plan-trip-layout { grid-template-columns: 1fr; gap: 32px; }
           .izigo-home .hero h1 { font-size: 42px; }
         }
         @media (max-width: 640px) {
-          .izigo-home .hero { padding: 40px 5vw 24px; }
+          .izigo-home .hero { padding: 40px 5vw 24px; min-height: auto; }
           .izigo-home .hero h1 { font-size: 28px; }
           .izigo-home .hero-cta-row { flex-direction: column; align-items: stretch; }
           .izigo-home .search-card { margin: 20px 0 0; padding: 14px; }
@@ -435,7 +463,7 @@ export default function IzigoHomepage() {
           .izigo-home .destination-grid { grid-template-columns: 1fr; }
           .izigo-home .premium-card { padding: 20px 18px; }
           .izigo-home .plan-trip-form-wrap .pt-form { padding: 18px 16px; }
-          .izigo-home .feature-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .izigo-home .feature-cards-grid { grid-template-columns: 1fr; gap: 10px; }
           .izigo-home .pt-row { grid-template-columns: 1fr; gap: 12px; }
           .izigo-home .host-cta-card { padding: 22px 18px; }
           .izigo-home .host-perks { grid-template-columns: 1fr; }
@@ -452,10 +480,9 @@ export default function IzigoHomepage() {
           <div className="hero-content">
             <div className="hero-eyebrow">{t("hero.fixed.eyebrow")}</div>
             <h1>{t("hero.fixed.title").split("\n").map((line, i) => <span key={i}>{line}</span>)}</h1>
-            <p>{t("hero.fixed.subtitle")}</p>
+            <p>{t("hero.fixed.subtitle").split("\n").map((line, i) => <span key={i}>{line}</span>)}</p>
             <div className="hero-cta-row">
-              <a href="#listings" className="hero-btn primary"><Search size={16} />{t("heroButtons.searchListings")}</a>
-              <Link to="/plan-my-trip" className="hero-btn secondary"><Sparkles size={16} />{t("heroButtons.planMyTrip")}</Link>
+              <Link to="/plan-my-trip" className="hero-btn primary"><Sparkles size={16} />{t("heroButtons.planMyTrip")}</Link>
             </div>
           </div>
 

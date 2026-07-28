@@ -338,7 +338,7 @@ export const translations = {
       fixed: {
         eyebrow: "Zero commission",
         title: "Talk directly with local hosts.\nStay like a local.",
-        subtitle: "Search listings or let local hosts compete for your reservation.",
+        subtitle: "Tell us where you want to go and how much you want to spend.\nLet local experts compete for your reservation.",
       },
     },
     heroButtons: {
@@ -357,7 +357,7 @@ export const translations = {
       localHosts: "Local hosts",
     },
     featureCards: {
-      zeroCommission: "Zero Commission",
+      zeroCommission: "No Booking Fees",
       verifiedStay: "Verified Stay",
       whatsapp: "Direct WhatsApp Contact",
       localHosts: "Local Hosts",
@@ -822,7 +822,7 @@ export const translations = {
       fixed: {
         eyebrow: "Sıfır komissiya",
         title: "Yerli ev sahibləri ilə birbaşa danış.\nYerli kimi qal.",
-        subtitle: "Elanları axtar və ya ev sahiblərinin rezervasiyan üçün yarışmasına icazə ver.",
+        subtitle: "Bizə hara getmək istədiyinizi və büdcənizi deyin.\nYerli ekspertlər rezervasiyanız üçün yarışsın.",
       },
     },
     heroButtons: {
@@ -841,7 +841,7 @@ export const translations = {
       localHosts: "Yerli ev sahibləri",
     },
     featureCards: {
-      zeroCommission: "Sıfır Komissiya",
+      zeroCommission: "Rezervasiya Haqqı Yoxdur",
       verifiedStay: "Təsdiqlənmiş Qalma",
       whatsapp: "Birbaşa WhatsApp Əlaqəsi",
       localHosts: "Yerli Ev Sahibləri",

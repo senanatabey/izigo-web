@@ -4,6 +4,7 @@ import { MapPin, Users, BedDouble, ShieldCheck, Wifi, UtensilsCrossed, Snowflake
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchListingById, toneForId } from "../../lib/listings";
 import PhoneReveal from "../../components/PhoneReveal";
+import SaveHeart from "../../components/SaveHeart";
 
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
 
@@ -27,6 +28,7 @@ export default function VillaDetail() {
     guests: row.details?.guests || 0,
     bedrooms: row.details?.bedrooms || 0,
     amenities: row.details?.amenities || [],
+    discount: row.discount,
     phone: row.whatsapp_phone,
   } : null;
 
@@ -69,6 +71,9 @@ export default function VillaDetail() {
         .villa-detail .vd-sidebar { position: sticky; top: 90px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
         .villa-detail .vd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .villa-detail .vd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
+        .villa-detail .vd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
+        .villa-detail .vd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .villa-detail .detail-save-btn { position: static; }
         .villa-detail .vd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .villa-detail .vd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; }
@@ -123,7 +128,12 @@ export default function VillaDetail() {
         </div>
 
         <aside className="vd-sidebar">
-          <div className="vd-price">{villa.price} AZN <span>{t("villaDetail.perNight")}</span></div>
+          <div className="vd-price-row">
+            <div className="vd-price">
+              {villa.discount ? (<><span className="vd-price-old">{villa.price} AZN</span> {Math.round(villa.price * (1 - villa.discount / 100))} AZN</>) : `${villa.price} AZN`} <span>{t("villaDetail.perNight")}</span>
+            </div>
+            <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
+          </div>
 
           <div className="vd-host">
             <div className="vd-host-avatar"><ShieldCheck size={20} /></div>

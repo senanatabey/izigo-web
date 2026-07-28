@@ -1,29 +1,50 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useSaved } from "../../App";
-import { MOCK_VILLAS, MOCK_CARS, MOCK_TRANSFERS, MOCK_EVENTS } from "../../data/mockListings";
+import { supabase } from "../../lib/supabaseClient";
+import { toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
-const SOURCES = {
-  villa: { items: MOCK_VILLAS, to: (id) => `/villas/${id}`, priceUnit: "villasPage.perNight" },
-  car: { items: MOCK_CARS, to: (id) => `/cars/${id}`, priceUnit: "carsPage.perDay" },
-  transfer: { items: MOCK_TRANSFERS.filter((t) => t.type === "transfer"), to: (id) => `/transfers/${id}`, priceUnit: "transfersPage.perPerson" },
-  experience: { items: MOCK_TRANSFERS.filter((t) => t.type === "tour"), to: (id) => `/experiences/${id}`, priceUnit: "transfersPage.perPerson" },
-  event: { items: MOCK_EVENTS, to: (id) => `/events/${id}`, priceUnit: null },
-};
+const PRICE_UNITS = { villa: "villasPage.perNight", car: "carsPage.perDay", transfer: "transfersPage.perPerson", experience: "transfersPage.perPerson", event: null };
+const CATEGORY_TO_PATH = { villa: "villas", car: "cars", event: "events" };
+
+function toPath(row) {
+  if (row.category === "transfer") {
+    return row.details?.type === "tour" ? `/experiences/${row.id}` : `/transfers/${row.id}`;
+  }
+  return `/${CATEGORY_TO_PATH[row.category]}/${row.id}`;
+}
 
 export default function SavedPage() {
   const { t, language } = useLanguage();
   const { saved } = useSaved();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const items = saved
-    .map(({ type, id }) => {
-      const source = SOURCES[type];
-      const item = source?.items.find((i) => i.id === id);
-      return item ? { ...item, saveType: type, to: source.to(id), priceUnit: source.priceUnit } : null;
-    })
-    .filter(Boolean);
+  useEffect(() => {
+    if (saved.length === 0) {
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+    supabase
+      .from("listings")
+      .select("*")
+      .in("id", saved.map((s) => s.id))
+      .then(({ data }) => setItems((data || []).map((row) => ({
+        id: row.id,
+        city: row.city,
+        tone: toneForId(row.id),
+        title: row.title,
+        price: row.price,
+        saveType: saved.find((s) => s.id === row.id)?.type,
+        to: toPath(row),
+        priceUnit: PRICE_UNITS[saved.find((s) => s.id === row.id)?.type],
+      }))))
+      .finally(() => setLoading(false));
+  }, [saved]);
 
   return (
     <div className="saved-page">
@@ -62,7 +83,7 @@ export default function SavedPage() {
         <p>{t("savedPage.subtitle")}</p>
       </div>
 
-      {items.length === 0 ? (
+      {loading ? null : items.length === 0 ? (
         <div className="sp-empty">
           <Heart size={32} />
           <p>{t("savedPage.empty")}</p>

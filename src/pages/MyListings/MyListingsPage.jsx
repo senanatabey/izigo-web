@@ -1,20 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, MessageCircle, CheckCircle2 } from "lucide-react";
+import { MapPin, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useAuth } from "../../App";
+import { supabase } from "../../lib/supabaseClient";
+import { toneForId } from "../../lib/listings";
 
-const MY_LISTINGS = [
-  { id: "v1", type: "villa", city: "Baku", tone: "dusk", status: "approved", price: 90, inquiries: 3, title: { en: "Seafront apartment near the Boulevard", az: "Bulvar yaxınlığında dənizkənarı mənzil" } },
-  { id: "c2", type: "car", city: "Baku", tone: "forest", status: "pending", price: 65, inquiries: 0, title: { en: "Kia Sportage 2023", az: "Kia Sportage 2023" } },
-  { id: "t4", type: "transfer", city: "Gabala", tone: "dusk", status: "approved", price: 90, inquiries: 5, title: { en: "Gabala & Tufandag day tour with driver", az: "Sürücü ilə Qəbələ və Tufandağ günlük turu" } },
-  { id: "v4", type: "villa", city: "Gabala", tone: "dusk", status: "rejected", price: 110, inquiries: 0, title: { en: "Cosy cottage near Tufandag", az: "Tufandağa yaxın rahat kottec" } },
-];
-
-const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", experience: "experiences", event: "events" };
+const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events", service: "concierge" };
 
 export default function MyListingsPage() {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [confirmed, setConfirmed] = useState([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("listings")
+      .select("*")
+      .eq("host_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setListings((data || []).map((row) => ({
+        id: row.id,
+        type: row.category,
+        city: row.city,
+        tone: toneForId(row.id),
+        status: row.status,
+        price: row.price,
+        title: row.title,
+      }))))
+      .finally(() => setLoading(false));
+  }, [user]);
 
   return (
     <div className="my-listings-page">
@@ -59,32 +77,35 @@ export default function MyListingsPage() {
         <p>{t("myListingsPage.subtitle")}</p>
       </div>
 
-      <div className="mlp-list">
-        {MY_LISTINGS.map((item) => (
-          <div className="mlp-row" key={item.id}>
-            <Link to={`/${TYPE_TO_PATH[item.type]}/${item.id}`} className={`mlp-thumb ${item.tone}`} />
-            <div className="mlp-body">
-              <div className="mlp-title">{item.title[language] || item.title.en}</div>
-              <div className="mlp-meta"><MapPin size={12} />{item.city} · {item.price} AZN</div>
+      {loading ? null : listings.length === 0 ? (
+        <p style={{ color: "var(--text-soft)", fontSize: 14 }}>{t("myListingsPage.subtitle")}</p>
+      ) : (
+        <div className="mlp-list">
+          {listings.map((item) => (
+            <div className="mlp-row" key={item.id}>
+              <Link to={`/${TYPE_TO_PATH[item.type]}/${item.id}`} className={`mlp-thumb ${item.tone}`} />
+              <div className="mlp-body">
+                <div className="mlp-title">{item.title[language] || item.title.en}</div>
+                <div className="mlp-meta"><MapPin size={12} />{item.city} · {item.price} AZN</div>
+              </div>
+              <div className="mlp-side">
+                <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
+                {item.status === "approved" && (
+                  <button
+                    type="button"
+                    className="mlp-confirm"
+                    disabled={confirmed.includes(item.id)}
+                    onClick={() => setConfirmed((prev) => [...prev, item.id])}
+                  >
+                    <CheckCircle2 size={13} />
+                    {confirmed.includes(item.id) ? t("myListingsPage.confirmed") : t("myListingsPage.confirmStay")}
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="mlp-side">
-              <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
-              <span className="mlp-inquiries"><MessageCircle size={12} />{item.inquiries} {t("myListingsPage.inquiries")}</span>
-              {item.status === "approved" && (
-                <button
-                  type="button"
-                  className="mlp-confirm"
-                  disabled={confirmed.includes(item.id)}
-                  onClick={() => setConfirmed((prev) => [...prev, item.id])}
-                >
-                  <CheckCircle2 size={13} />
-                  {confirmed.includes(item.id) ? t("myListingsPage.confirmed") : t("myListingsPage.confirmStay")}
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

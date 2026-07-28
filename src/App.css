@@ -64,7 +64,12 @@
   align-items: center;
   flex-wrap: nowrap;
   flex-shrink: 0;
-  gap: 14px;
+  gap: 18px;
+}
+
+.app-nav-right .btn-primary {
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(186, 91, 46, 0.28);
 }
 
 .language-switcher {
@@ -163,6 +168,11 @@
   width: 100%;
   max-width: 400px;
   box-shadow: var(--shadow-md);
+}
+
+.auth-card > a {
+  display: flex;
+  justify-content: center;
 }
 
 .auth-card .app-logo-img {

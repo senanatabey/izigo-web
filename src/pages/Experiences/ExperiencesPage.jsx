@@ -1,13 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_TRANSFERS } from "../../data/mockListings";
+import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 const PRICE_OPTIONS = [30, 50, 75, 100];
-const TOURS = MOCK_TRANSFERS.filter((item) => item.type === "tour");
 
 export default function ExperiencesPage() {
   const { t, language } = useLanguage();
@@ -16,6 +15,25 @@ export default function ExperiencesPage() {
 
   const [vehicle, setVehicle] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchApprovedListings("transfer")
+      .then((rows) => setTours(rows
+        .filter((row) => row.details?.type === "tour")
+        .map((row) => ({
+          id: row.id,
+          city: row.city,
+          tone: toneForId(row.id),
+          title: row.title,
+          price: row.price,
+          discount: row.discount,
+          hasVehicle: !!row.details?.hasVehicle,
+          seats: row.details?.seats || 0,
+        }))))
+      .finally(() => setLoading(false));
+  }, []);
 
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
@@ -30,14 +48,14 @@ export default function ExperiencesPage() {
   };
 
   const filtered = useMemo(() => {
-    return TOURS.filter((item) => {
+    return tours.filter((item) => {
       if (cityParam && item.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       if (vehicle === "with" && !item.hasVehicle) return false;
       if (vehicle === "without" && item.hasVehicle) return false;
       if (maxPrice && item.price > Number(maxPrice)) return false;
       return true;
     });
-  }, [cityParam, vehicle, maxPrice]);
+  }, [tours, cityParam, vehicle, maxPrice]);
 
   return (
     <div className="experiences-page">
@@ -83,6 +101,7 @@ export default function ExperiencesPage() {
         .experiences-page .xp-footer { display: flex; align-items: center; justify-content: space-between; }
         .experiences-page .xp-price { font-size: 16px; font-weight: 800; color: var(--text); }
         .experiences-page .xp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
+        .experiences-page .xp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .experiences-page .xp-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
 
         .experiences-page .xp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
@@ -129,7 +148,7 @@ export default function ExperiencesPage() {
 
       <p className="xp-count">{t("experiencesPage.resultsCount").replace("{count}", filtered.length)}</p>
 
-      {filtered.length === 0 ? (
+      {loading ? null : filtered.length === 0 ? (
         <div className="xp-empty">{t("experiencesPage.noResults")}</div>
       ) : (
         <div className="xp-grid">
@@ -149,7 +168,9 @@ export default function ExperiencesPage() {
                   <span><Users size={14} />{item.seats} {t("transfersPage.seatsUnit")}</span>
                 </div>
                 <div className="xp-footer">
-                  <div className="xp-price">{item.price} AZN <span>{t("transfersPage.perPerson")}</span></div>
+                  <div className="xp-price">
+                    {item.discount ? (<><span className="xp-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
+                  </div>
                   <span className="xp-link">{t("transfersPage.viewDetails")} →</span>
                 </div>
               </div>
