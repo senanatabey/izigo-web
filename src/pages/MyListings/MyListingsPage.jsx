@@ -30,6 +30,8 @@ export default function MyListingsPage() {
         status: row.status,
         price: row.price,
         title: row.title,
+        image: row.images?.[0],
+        rejectReason: row.reject_reason,
       }))))
       .finally(() => setLoading(false));
   }, [user]);
@@ -45,7 +47,8 @@ export default function MyListingsPage() {
         .my-listings-page .mlp-row {
           display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); border-radius: 14px; padding: 14px;
         }
-        .my-listings-page .mlp-thumb { width: 76px; height: 60px; border-radius: 10px; flex-shrink: 0; }
+        .my-listings-page .mlp-thumb { width: 76px; height: 60px; border-radius: 10px; flex-shrink: 0; background-size: cover; background-position: center; }
+        .my-listings-page .mlp-reject-reason { font-size: 12px; color: #E0553F; margin-top: 6px; }
         .my-listings-page .mlp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .my-listings-page .mlp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .my-listings-page .mlp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -65,6 +68,7 @@ export default function MyListingsPage() {
           border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .my-listings-page .mlp-confirm:disabled { opacity: 0.6; cursor: default; }
+        .my-listings-page .mlp-edit { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); }
 
         @media (max-width: 560px) {
           .my-listings-page .mlp-row { flex-wrap: wrap; }
@@ -83,13 +87,21 @@ export default function MyListingsPage() {
         <div className="mlp-list">
           {listings.map((item) => (
             <div className="mlp-row" key={item.id}>
-              <Link to={`/${TYPE_TO_PATH[item.type]}/${item.id}`} className={`mlp-thumb ${item.tone}`} />
+              <Link
+                to={`/${TYPE_TO_PATH[item.type]}/${item.id}`}
+                className={`mlp-thumb ${item.image ? "" : item.tone}`}
+                style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}
+              />
               <div className="mlp-body">
                 <div className="mlp-title">{item.title[language] || item.title.en}</div>
                 <div className="mlp-meta"><MapPin size={12} />{item.city} · {item.price} AZN</div>
+                {item.status === "rejected" && item.rejectReason && (
+                  <div className="mlp-reject-reason">{t("myListingsPage.rejectReasonLabel")}: {item.rejectReason}</div>
+                )}
               </div>
               <div className="mlp-side">
                 <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
+                <Link to={`/edit-listing/${item.id}`} className="mlp-edit">{t("myListingsPage.edit")}</Link>
                 {item.status === "approved" && (
                   <button
                     type="button"

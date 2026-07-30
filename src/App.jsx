@@ -36,10 +36,15 @@ import RegisterForm from "./pages/Auth/RegisterForm";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { LANGUAGES } from "./i18n/translations";
 import { supabase } from "./lib/supabaseClient";
+import NotificationBell from "./components/NotificationBell";
 import PendingApprovalsPage from "./pages/Admin/PendingApprovalsPage";
 import AdminDashboardPage from "./pages/Admin/DashboardPage";
 import AdminListingsPage from "./pages/Admin/ListingsPage";
 import AdminUsersPage from "./pages/Admin/UsersPage";
+import AdminReviewsPage from "./pages/Admin/ReviewsPage";
+import AdminStatisticsPage from "./pages/Admin/StatisticsPage";
+import HostProfilePage from "./pages/Host/HostProfilePage";
+import AllDestinationsPage from "./pages/Destinations/AllDestinationsPage";
 
 /* =========================================================================
    AUTH — backed by Supabase Auth. Session lives in Supabase's own storage
@@ -88,12 +93,13 @@ function AuthProvider({ children }) {
   };
 
   const register = async (email, password, name, phone) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: name, phone } },
     });
     if (error) throw error;
+    return { needsEmailConfirmation: !data.session };
   };
 
   const logout = async () => {
@@ -342,6 +348,8 @@ function AppLayout() {
         {APP_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <Link key={to} to={to} className="sidebar-link"><Icon size={17} />{label}</Link>
         ))}
+        <NotificationBell userId={user?.id} />
+        <LanguageSwitcher />
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Log out</button>
       </aside>
       <main className="app-main">
@@ -398,8 +406,6 @@ function PagePlaceholder({ title, description }) {
 
 
 
-const AdminReviews = () => <PagePlaceholder title="Reviews" description="Verified reviews plus the flagged/reported queue." />;
-const AdminStatistics = () => <PagePlaceholder title="Statistics" description="Conversion rates, review volume, premium revenue." />;
 
 function NotFound() {
   return <PagePlaceholder title="Page not found" description="The page you're looking for doesn't exist." />;
@@ -435,6 +441,8 @@ export default function App() {
             <Route path="deals" element={<DealsPage />} />
             <Route path="saved" element={<SavedPage />} />
             <Route path="destinations/:city" element={<CityGuide />} />
+            <Route path="host/:id" element={<HostProfilePage />} />
+            <Route path="destinations" element={<AllDestinationsPage />} />
           </Route>
 
           {/* Auth pages — redirect away if already logged in */}
@@ -448,6 +456,7 @@ export default function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="add-listing" element={<AddListingPage />} />
             <Route path="add-listing/:category" element={<AddListingFormPage />} />
+            <Route path="edit-listing/:id" element={<AddListingFormPage />} />
             <Route path="my-listings" element={<MyListingsPage />} />
             <Route path="reviews" element={<ReviewsPage />} />
           </Route>
@@ -458,8 +467,8 @@ export default function App() {
             <Route path="admin/users" element={<AdminUsersPage />} />
             <Route path="admin/listings" element={<AdminListingsPage />} />
             <Route path="admin/listings/pending" element={<PendingApprovalsPage />} />
-            <Route path="admin/reviews" element={<AdminReviews />} />
-            <Route path="admin/statistics" element={<AdminStatistics />} />
+            <Route path="admin/reviews" element={<AdminReviewsPage />} />
+            <Route path="admin/statistics" element={<AdminStatisticsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

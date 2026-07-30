@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Car, Footprints, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { fetchListingById, toneForId } from "../../lib/listings";
+import { useAuth } from "../../App";
+import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
+import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
+import ListingReviews from "../../components/ListingReviews";
 
 export default function TransferDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,6 +32,10 @@ export default function TransferDetail() {
     hasVehicle: !!row.details?.hasVehicle,
     seats: row.details?.seats || 0,
     phone: row.whatsapp_phone,
+    host: row.host,
+    code: shortListingCode(row.id),
+    postedAt: relativeDate(row.created_at, language),
+    image: row.images?.[0],
   } : null;
 
   if (loading) return null;
@@ -51,11 +59,13 @@ export default function TransferDetail() {
         .transfer-detail .td-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .transfer-detail .td-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .transfer-detail .td-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .transfer-detail .td-thumb { width: 100%; height: 100%; }
+        .transfer-detail .td-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
 
         .transfer-detail .td-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .transfer-detail .td-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .transfer-detail .td-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
+        .transfer-detail .td-listing-meta { font-size: 12.5px; color: var(--text-soft); margin: -10px 0 16px; }
+        .transfer-detail .td-edit-link { color: var(--izigo-green); font-weight: 700; }
         .transfer-detail .td-meta { display: flex; gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
         .transfer-detail .td-meta span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-soft); }
         .transfer-detail .td-main h2 { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
@@ -89,13 +99,17 @@ export default function TransferDetail() {
       <Link to="/transfers" className="td-back">{t("transferDetail.back")}</Link>
 
       <div className="td-gallery">
-        <div className={`td-thumb ${item.tone}`} />
+        <div className={`td-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
       </div>
 
       <div className="td-layout">
         <div className="td-main">
-          <div className="td-city"><MapPin size={13} />{item.city}</div>
+          <div className="td-city"><MapPin size={13} />{cityLabel(item.city, language)}</div>
           <h1 className="td-title">{item.title[language] || item.title.en}</h1>
+          <div className="td-listing-meta">
+            {item.code} · {item.postedAt}
+            {user?.id === row.host_id && <Link to={`/edit-listing/${item.id}`} className="td-edit-link"> · {t("myListingsPage.edit")}</Link>}
+          </div>
           <div className="td-meta">
             <span>{item.type === "tour" ? t("transfersPage.typeTour") : t("transfersPage.typeTransfer")}</span>
             <span><Users size={15} />{item.seats} {t("transfersPage.seatsUnit")}</span>
@@ -108,6 +122,8 @@ export default function TransferDetail() {
             {item.hasVehicle ? <Car size={15} /> : <Footprints size={15} />}
             {item.hasVehicle ? t("transferDetail.withVehicleNote") : t("transferDetail.withoutVehicleNote")}
           </div>
+
+          <ListingReviews listingId={item.id} />
         </div>
 
         <aside className="td-sidebar">
@@ -118,13 +134,13 @@ export default function TransferDetail() {
             <SaveHeart type={item.type === "tour" ? "experience" : "transfer"} id={item.id} className="detail-save-btn" />
           </div>
 
-          <div className="td-host">
+          <Link to={`/host/${item.host?.id}`} className="td-host">
             <div className="td-host-avatar"><ShieldCheck size={20} /></div>
             <div>
-              <div className="td-host-name">{t("villaDetail.hostName")}</div>
+              <div className="td-host-name">{item.host?.full_name || t("villaDetail.hostName")}</div>
               <div className="td-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
-          </div>
+          </Link>
 
           <PhoneReveal phone={item.phone} />
         </aside>

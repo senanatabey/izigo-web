@@ -26,6 +26,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
   const canSubmit = name && phone && email && password && confirmPassword && !mismatch;
@@ -36,14 +37,29 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
     setError("");
     setSubmitting(true);
     try {
-      await register(email, password, name, `${phoneCountry}${phone}`);
-      onSuccess?.();
+      const { needsEmailConfirmation } = await register(email, password, name, `${phoneCountry}${phone}`);
+      if (needsEmailConfirmation) {
+        setNeedsConfirmation(true);
+      } else {
+        onSuccess?.();
+      }
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (needsConfirmation) {
+    return (
+      <div className="auth-form">
+        <div className="ap-head">
+          <h1>{t("auth.checkEmailTitle")}</h1>
+          <p>{t("auth.checkEmailText").replace("{email}", email)}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-form">

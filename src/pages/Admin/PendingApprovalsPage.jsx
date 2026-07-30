@@ -18,8 +18,21 @@ export default function PendingApprovalsPage() {
 
   useEffect(load, []);
 
-  const setStatus = async (id, status) => {
-    await supabase.from("listings").update({ status }).eq("id", id);
+  const notifyHost = async (hostId, message, link) => {
+    await supabase.from("notifications").insert({ user_id: hostId, message, link });
+  };
+
+  const approve = async (listing) => {
+    await supabase.from("listings").update({ status: "approved", reject_reason: null }).eq("id", listing.id);
+    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" was approved and is now live.`, "/my-listings");
+    load();
+  };
+
+  const reject = async (listing) => {
+    const reason = window.prompt("Rədd səbəbini yazın (host görəcək):");
+    if (reason === null) return;
+    await supabase.from("listings").update({ status: "rejected", reject_reason: reason || null }).eq("id", listing.id);
+    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" was rejected${reason ? `: ${reason}` : "."}`, "/my-listings");
     load();
   };
 
@@ -49,8 +62,8 @@ export default function PendingApprovalsPage() {
               <h3>{l.title?.en || l.title?.az} — {l.category}</h3>
               <p>{l.city} · {l.price} AZN · submitted {new Date(l.created_at).toLocaleDateString()}</p>
               <div className="pending-actions">
-                <button className="btn-approve" onClick={() => setStatus(l.id, "approved")}>Approve</button>
-                <button className="btn-reject" onClick={() => setStatus(l.id, "rejected")}>Reject</button>
+                <button className="btn-approve" onClick={() => approve(l)}>Approve</button>
+                <button className="btn-reject" onClick={() => reject(l)}>Reject</button>
               </div>
             </div>
           ))}

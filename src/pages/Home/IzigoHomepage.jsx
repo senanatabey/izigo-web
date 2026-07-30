@@ -98,6 +98,7 @@ export default function IzigoHomepage() {
         title: row.title,
         price: row.price,
         discount: row.discount,
+        image: row.images?.[0],
       }))])
     )).then((entries) => setListingsByCategory(Object.fromEntries(entries)));
   }, []);
@@ -276,7 +277,7 @@ export default function IzigoHomepage() {
         .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .izigo-home .latest-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .izigo-home .latest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .izigo-home .latest-thumb { aspect-ratio: 4 / 3; }
+        .izigo-home .latest-thumb { aspect-ratio: 4 / 3; background-size: cover; background-position: center; }
         .izigo-home .latest-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .izigo-home .latest-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .izigo-home .latest-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -289,6 +290,10 @@ export default function IzigoHomepage() {
 
         .izigo-home .destinations { background: var(--bg); }
         .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .izigo-home .explore-all-link {
+          display: block; max-width: 1280px; margin: 18px auto 0; text-align: center;
+          font-size: 13.5px; font-weight: 700; color: var(--izigo-green);
+        }
         .izigo-home .destination-card {
           display: block; border-radius: 16px; overflow: hidden; transition: transform 0.15s ease;
         }
@@ -575,7 +580,7 @@ export default function IzigoHomepage() {
               className="latest-card"
               key={item.id}
             >
-              <div className={`latest-thumb ${item.tone}`} />
+              <div className={`latest-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
               <div className="latest-body">
                 <div className="latest-city"><MapPin size={11} />{item.city}</div>
                 <div className="latest-title">{item.title[language] || item.title.en}</div>
@@ -598,6 +603,7 @@ export default function IzigoHomepage() {
             </Link>
           ))}
         </div>
+        <Link to="/destinations" className="explore-all-link">{t("destinations.exploreAll")}</Link>
       </section>
 
       <section className="plan-trip-section">

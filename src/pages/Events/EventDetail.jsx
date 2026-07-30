@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Calendar, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { fetchListingById, toneForId } from "../../lib/listings";
+import { useAuth } from "../../App";
+import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
+import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
+import ListingReviews from "../../components/ListingReviews";
 
 export default function EventDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +30,10 @@ export default function EventDetail() {
     date: row.details?.date,
     discount: row.discount,
     phone: row.whatsapp_phone,
+    host: row.host,
+    code: shortListingCode(row.id),
+    postedAt: relativeDate(row.created_at, language),
+    image: row.images?.[0],
   } : null;
 
   if (loading) return null;
@@ -51,11 +59,13 @@ export default function EventDetail() {
         .event-detail .ed-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .event-detail .ed-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .event-detail .ed-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .event-detail .ed-thumb { width: 100%; height: 100%; }
+        .event-detail .ed-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
 
         .event-detail .ed-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .event-detail .ed-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .event-detail .ed-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
+        .event-detail .ed-listing-meta { font-size: 12.5px; color: var(--text-soft); margin: -10px 0 16px; }
+        .event-detail .ed-edit-link { color: var(--izigo-green); font-weight: 700; }
         .event-detail .ed-meta { display: flex; gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
         .event-detail .ed-meta span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-soft); }
         .event-detail .ed-main h2 { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
@@ -84,19 +94,25 @@ export default function EventDetail() {
       <Link to="/events" className="ed-back">{t("eventDetail.back")}</Link>
 
       <div className="ed-gallery">
-        <div className={`ed-thumb ${event.tone}`} />
+        <div className={`ed-thumb ${event.image ? "" : event.tone}`} style={event.image ? { backgroundImage: `url("${event.image}")` } : undefined} />
       </div>
 
       <div className="ed-layout">
         <div className="ed-main">
-          <div className="ed-city"><MapPin size={13} />{event.city}</div>
+          <div className="ed-city"><MapPin size={13} />{cityLabel(event.city, language)}</div>
           <h1 className="ed-title">{event.title[language] || event.title.en}</h1>
+          <div className="ed-listing-meta">
+            {event.code} · {event.postedAt}
+            {user?.id === row.host_id && <Link to={`/edit-listing/${event.id}`} className="ed-edit-link"> · {t("myListingsPage.edit")}</Link>}
+          </div>
           <div className="ed-meta">
             <span><Calendar size={15} />{formatDate(event.date)}</span>
           </div>
 
           <h2>{t("eventDetail.aboutHeading")}</h2>
           <p className="ed-desc">{event.description[language] || event.description.en}</p>
+
+          <ListingReviews listingId={event.id} />
         </div>
 
         <aside className="ed-sidebar">
@@ -107,13 +123,13 @@ export default function EventDetail() {
             <SaveHeart type="event" id={event.id} className="detail-save-btn" />
           </div>
 
-          <div className="ed-host">
+          <Link to={`/host/${event.host?.id}`} className="ed-host">
             <div className="ed-host-avatar"><ShieldCheck size={20} /></div>
             <div>
-              <div className="ed-host-name">{t("villaDetail.hostName")}</div>
+              <div className="ed-host-name">{event.host?.full_name || t("villaDetail.hostName")}</div>
               <div className="ed-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
-          </div>
+          </Link>
 
           <PhoneReveal phone={event.phone} />
         </aside>

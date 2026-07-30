@@ -4,8 +4,9 @@ import { MapPin, Calendar } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 
 export default function EventsPage() {
   const { t, language } = useLanguage();
@@ -24,6 +25,7 @@ export default function EventsPage() {
         price: row.price,
         date: row.details?.date,
         discount: row.discount,
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, []);
@@ -72,7 +74,7 @@ export default function EventsPage() {
         .events-page .ep-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .events-page .ep-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .events-page .ep-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .events-page .ep-thumb { aspect-ratio: 4 / 2.8; }
+        .events-page .ep-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .events-page .ep-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .events-page .ep-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .events-page .ep-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -106,7 +108,7 @@ export default function EventsPage() {
           <label>{t("eventsPage.filterCity")}</label>
           <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("eventsPage.allCities")}</option>
-            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <button type="button" className="ep-reset" onClick={resetFilters}>{t("eventsPage.resetFilters")}</button>
@@ -121,9 +123,9 @@ export default function EventsPage() {
           {filtered.map((e) => (
             <Link to={`/events/${e.id}`} className="ep-card" key={e.id}>
               <SaveHeart type="event" id={e.id} />
-              <div className={`ep-thumb ${e.tone}`} />
+              <div className={`ep-thumb ${e.image ? "" : e.tone}`} style={e.image ? { backgroundImage: `url("${e.image}")` } : undefined} />
               <div className="ep-body">
-                <div className="ep-city"><MapPin size={12} />{e.city}</div>
+                <div className="ep-city"><MapPin size={12} />{cityLabel(e.city, language)}</div>
                 <div className="ep-title">{e.title[language] || e.title.en}</div>
                 <div className="ep-meta"><Calendar size={13} />{formatDate(e.date)}</div>
                 <div className="ep-footer">

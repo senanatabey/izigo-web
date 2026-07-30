@@ -4,8 +4,9 @@ import { MapPin, Users, BedDouble } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 const GUEST_OPTIONS = [2, 4, 6, 8];
 const PRICE_OPTIONS = [80, 100, 150, 200];
 
@@ -30,6 +31,7 @@ export default function VillasPage() {
         discount: row.discount,
         guests: row.details?.guests || 0,
         bedrooms: row.details?.bedrooms || 0,
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, []);
@@ -82,7 +84,7 @@ export default function VillasPage() {
         .villas-page .vp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .villas-page .vp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .villas-page .vp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .villas-page .vp-thumb { aspect-ratio: 4 / 2.8; }
+        .villas-page .vp-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .villas-page .vp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .villas-page .vp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .villas-page .vp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -118,7 +120,7 @@ export default function VillasPage() {
           <label>{t("villasPage.filterCity")}</label>
           <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("villasPage.allCities")}</option>
-            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <div className="vp-field">
@@ -147,9 +149,9 @@ export default function VillasPage() {
           {filtered.map((v) => (
             <Link to={`/villas/${v.id}`} className="vp-card" key={v.id}>
               <SaveHeart type="villa" id={v.id} />
-              <div className={`vp-thumb ${v.tone}`} />
+              <div className={`vp-thumb ${v.image ? "" : v.tone}`} style={v.image ? { backgroundImage: `url("${v.image}")` } : undefined} />
               <div className="vp-body">
-                <div className="vp-city"><MapPin size={12} />{v.city}</div>
+                <div className="vp-city"><MapPin size={12} />{cityLabel(v.city, language)}</div>
                 <div className="vp-title">{v.title[language] || v.title.en}</div>
                 <div className="vp-meta">
                   <span><Users size={14} />{v.guests} {t("villasPage.guestsUnit")}</span>

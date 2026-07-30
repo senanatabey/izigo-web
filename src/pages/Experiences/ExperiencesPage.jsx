@@ -4,8 +4,9 @@ import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 const PRICE_OPTIONS = [30, 50, 75, 100];
 
 export default function ExperiencesPage() {
@@ -31,6 +32,7 @@ export default function ExperiencesPage() {
           discount: row.discount,
           hasVehicle: !!row.details?.hasVehicle,
           seats: row.details?.seats || 0,
+          image: row.images?.[0],
         }))))
       .finally(() => setLoading(false));
   }, []);
@@ -84,7 +86,7 @@ export default function ExperiencesPage() {
         .experiences-page .xp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .experiences-page .xp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .experiences-page .xp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .experiences-page .xp-thumb { aspect-ratio: 4 / 2.8; position: relative; }
+        .experiences-page .xp-thumb { aspect-ratio: 4 / 2.8; position: relative; background-size: cover; background-position: center; }
         .experiences-page .xp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .experiences-page .xp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .experiences-page .xp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -125,7 +127,7 @@ export default function ExperiencesPage() {
           <label>{t("transfersPage.filterCity")}</label>
           <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("transfersPage.allCities")}</option>
-            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <div className="xp-field">
@@ -155,14 +157,14 @@ export default function ExperiencesPage() {
           {filtered.map((item) => (
             <Link to={`/experiences/${item.id}`} className="xp-card" key={item.id}>
               <SaveHeart type="experience" id={item.id} />
-              <div className={`xp-thumb ${item.tone}`}>
+              <div className={`xp-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}>
                 <span className="xp-badge">
                   {item.hasVehicle ? <Car size={12} /> : <Footprints size={12} />}
                   {item.hasVehicle ? t("transfersPage.withVehicle") : t("transfersPage.withoutVehicle")}
                 </span>
               </div>
               <div className="xp-body">
-                <div className="xp-city"><MapPin size={12} />{item.city}</div>
+                <div className="xp-city"><MapPin size={12} />{cityLabel(item.city, language)}</div>
                 <div className="xp-title">{item.title[language] || item.title.en}</div>
                 <div className="xp-meta">
                   <span><Users size={14} />{item.seats} {t("transfersPage.seatsUnit")}</span>

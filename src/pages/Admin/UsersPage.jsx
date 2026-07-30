@@ -7,12 +7,14 @@ export default function UsersPage() {
 
   const load = () => {
     setLoading(true);
-    supabase
-      .from("profiles")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => setUsers(data || []))
-      .finally(() => setLoading(false));
+    Promise.all([
+      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+      supabase.from("listings").select("host_id"),
+    ]).then(([{ data: profiles }, { data: listings }]) => {
+      const counts = {};
+      (listings || []).forEach((l) => { counts[l.host_id] = (counts[l.host_id] || 0) + 1; });
+      setUsers((profiles || []).map((u) => ({ ...u, listingCount: counts[u.id] || 0 })));
+    }).finally(() => setLoading(false));
   };
 
   useEffect(load, []);
@@ -41,7 +43,7 @@ export default function UsersPage() {
       ) : (
         <table className="admin-users-table">
           <thead>
-            <tr><th>Name</th><th>Phone</th><th>Role</th><th>Joined</th><th></th></tr>
+            <tr><th>Name</th><th>Phone</th><th>Role</th><th>Listings</th><th>Joined</th><th></th></tr>
           </thead>
           <tbody>
             {users.map((u) => (
@@ -49,6 +51,7 @@ export default function UsersPage() {
                 <td>{u.full_name || "—"}</td>
                 <td>{u.phone || "—"}</td>
                 <td><span className={`role-pill ${u.role}`}>{u.role}</span></td>
+                <td>{u.listingCount}</td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Revoke admin" : "Make admin"}</button></td>
               </tr>

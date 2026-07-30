@@ -1,14 +1,15 @@
-import { useState } from "react";
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import {
   MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar, Percent,
-  CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees,
+  CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden"];
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
 const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "guide", "laundry", "babysitter"];
@@ -16,9 +17,15 @@ const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakf
 const VALID_CATEGORIES = ["villa", "car", "transfer", "event", "service"];
 
 export default function AddListingFormPage() {
-  const { category } = useParams();
-  const { t } = useLanguage();
+  const params = useParams();
+  const navigate = useNavigate();
+  const isEdit = !!params.id;
+  const { t, language } = useLanguage();
   const { user } = useAuth();
+
+  const [category, setCategory] = useState(params.category || "");
+  const [loadingExisting, setLoadingExisting] = useState(isEdit);
+  const [existingImages, setExistingImages] = useState([]);
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
@@ -42,16 +49,77 @@ export default function AddListingFormPage() {
 
   const [serviceType, setServiceType] = useState("");
 
+  const [photos, setPhotos] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if (!VALID_CATEGORIES.includes(category)) {
+  useEffect(() => {
+    if (!isEdit || !user) return;
+    supabase.from("listings").select("*").eq("id", params.id).single().then(({ data: row }) => {
+      if (!row || row.host_id !== user.id) {
+        navigate("/my-listings", { replace: true });
+        return;
+      }
+      setCategory(row.category);
+      setTitle(row.title?.en || row.title?.az || "");
+      setCity(row.city || "");
+      setPrice(row.price ? String(row.price) : "");
+      setDiscount(row.discount ? String(row.discount) : "");
+      setDescription(row.description?.en || row.description?.az || "");
+      setWhatsapp((row.whatsapp_phone || "").replace(/^\+994/, ""));
+      setExistingImages(row.images || []);
+      const d = row.details || {};
+      setGuests(d.guests ? String(d.guests) : "");
+      setBedrooms(d.bedrooms ? String(d.bedrooms) : "");
+      setAmenities(d.amenities || []);
+      setSeats(d.seats ? String(d.seats) : "");
+      setTransmission(d.transmission || "automatic");
+      setType(d.type || "transfer");
+      setHasVehicle(d.hasVehicle ?? true);
+      setDate(d.date || "");
+      setIsFree(d.isFree || false);
+      setServiceType(d.serviceType || "");
+      setLoadingExisting(false);
+    });
+  }, [isEdit, user]);
+
+  if (!isEdit && !VALID_CATEGORIES.includes(category)) {
     return <Navigate to="/add-listing" replace />;
   }
 
+  if (loadingExisting) return null;
+
+  const removeExistingImage = (index) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const toggleAmenity = (key) => {
     setAmenities((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  };
+
+  const totalPhotoCount = existingImages.length + photos.length;
+
+  const handlePhotosChange = (e) => {
+    const files = Array.from(e.target.files || []).slice(0, 6 - totalPhotoCount);
+    setPhotos((prev) => [...prev, ...files].slice(0, 6 - existingImages.length));
+    e.target.value = "";
+  };
+
+  const removePhoto = (index) => {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadPhotos = async () => {
+    const urls = [];
+    for (const file of photos) {
+      const path = `${user.id}/${crypto.randomUUID()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("listing-images").upload(path, file);
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+      urls.push(data.publicUrl);
+    }
+    return urls;
   };
 
   const canSubmit = (() => {
@@ -81,8 +149,9 @@ export default function AddListingFormPage() {
     setError("");
     setSubmitting(true);
     try {
-      const { error: insertError } = await supabase.from("listings").insert({
-        host_id: user.id,
+      const uploaded = await uploadPhotos();
+      const images = [...existingImages, ...uploaded];
+      const payload = {
         category,
         city,
         title: { en: title, az: title },
@@ -91,8 +160,18 @@ export default function AddListingFormPage() {
         discount: discount ? Number(discount) : null,
         details: buildDetails(),
         whatsapp_phone: `+994${whatsapp}`,
-      });
-      if (insertError) throw insertError;
+        images,
+      };
+      if (isEdit) {
+        const { error: updateError } = await supabase
+          .from("listings")
+          .update({ ...payload, status: "pending", reject_reason: null })
+          .eq("id", params.id);
+        if (updateError) throw updateError;
+      } else {
+        const { error: insertError } = await supabase.from("listings").insert({ ...payload, host_id: user.id });
+        if (insertError) throw insertError;
+      }
       setSubmitted(true);
     } catch (err) {
       setError(err.message || "Failed to publish listing");
@@ -135,10 +214,17 @@ export default function AddListingFormPage() {
 
         .add-listing-form-page .alf-photos {
           display: flex; align-items: flex-start; gap: 12px; border: 1px dashed var(--border); border-radius: 12px;
-          padding: 16px; background: var(--bg-soft); margin-bottom: 16px;
+          padding: 16px; background: var(--bg-soft); margin-bottom: 16px; cursor: pointer;
         }
         .add-listing-form-page .alf-photos svg { color: var(--text-soft); flex-shrink: 0; margin-top: 2px; }
         .add-listing-form-page .alf-photos p { font-size: 12.5px; color: var(--text-soft); line-height: 1.5; margin: 0; }
+        .add-listing-form-page .alf-photo-previews { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+        .add-listing-form-page .alf-photo-thumb { position: relative; width: 84px; height: 84px; border-radius: 10px; overflow: hidden; }
+        .add-listing-form-page .alf-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .add-listing-form-page .alf-photo-thumb button {
+          position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; border: none;
+          background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
 
         .add-listing-form-page .alf-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
         .add-listing-form-page .alf-chip {
@@ -208,7 +294,7 @@ export default function AddListingFormPage() {
                 <label><MapPin size={13} />{t("addListing.cityLabel")}</label>
                 <select value={city} onChange={(e) => setCity(e.target.value)}>
                   <option value="">{t("addListing.chooseCity")}</option>
-                  {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
                 </select>
               </div>
 
@@ -331,10 +417,29 @@ export default function AddListingFormPage() {
             )}
 
             <p className="alf-section-title">{t("addListing.photosLabel")}</p>
-            <div className="alf-photos">
-              <ImageIcon size={18} />
-              <p>{t("addListing.photosNote")}</p>
-            </div>
+            {(existingImages.length > 0 || photos.length > 0) && (
+              <div className="alf-photo-previews">
+                {existingImages.map((url, i) => (
+                  <div className="alf-photo-thumb" key={`existing-${i}`}>
+                    <img src={url} alt="" />
+                    <button type="button" onClick={() => removeExistingImage(i)}><X size={12} /></button>
+                  </div>
+                ))}
+                {photos.map((file, i) => (
+                  <div className="alf-photo-thumb" key={i}>
+                    <img src={URL.createObjectURL(file)} alt="" />
+                    <button type="button" onClick={() => removePhoto(i)}><X size={12} /></button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {totalPhotoCount < 6 && (
+              <label className="alf-photos">
+                <ImageIcon size={18} />
+                <p>{t("addListing.photosNote")}</p>
+                <input type="file" accept="image/*" multiple onChange={handlePhotosChange} hidden />
+              </label>
+            )}
 
             <div className="alf-field full">
               <label>{t("addListing.descriptionLabel")}</label>

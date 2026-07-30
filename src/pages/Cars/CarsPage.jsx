@@ -4,8 +4,9 @@ import { MapPin, Users, Settings2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 const SEAT_OPTIONS = [2, 5, 7];
 const PRICE_OPTIONS = [40, 50, 60, 80];
 
@@ -30,6 +31,7 @@ export default function CarsPage() {
         discount: row.discount,
         seats: row.details?.seats || 0,
         transmission: row.details?.transmission || "automatic",
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, []);
@@ -82,7 +84,7 @@ export default function CarsPage() {
         .cars-page .cp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .cars-page .cp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .cars-page .cp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .cars-page .cp-thumb { aspect-ratio: 4 / 2.8; }
+        .cars-page .cp-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .cars-page .cp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .cars-page .cp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .cars-page .cp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -118,7 +120,7 @@ export default function CarsPage() {
           <label>{t("carsPage.filterCity")}</label>
           <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("carsPage.allCities")}</option>
-            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <div className="cp-field">
@@ -147,9 +149,9 @@ export default function CarsPage() {
           {filtered.map((c) => (
             <Link to={`/cars/${c.id}`} className="cp-card" key={c.id}>
               <SaveHeart type="car" id={c.id} />
-              <div className={`cp-thumb ${c.tone}`} />
+              <div className={`cp-thumb ${c.image ? "" : c.tone}`} style={c.image ? { backgroundImage: `url("${c.image}")` } : undefined} />
               <div className="cp-body">
-                <div className="cp-city"><MapPin size={12} />{c.city}</div>
+                <div className="cp-city"><MapPin size={12} />{cityLabel(c.city, language)}</div>
                 <div className="cp-title">{c.title[language] || c.title.en}</div>
                 <div className="cp-meta">
                   <span><Users size={14} />{c.seats} {t("carsPage.seatsUnit")}</span>

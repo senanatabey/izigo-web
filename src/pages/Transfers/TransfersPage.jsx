@@ -4,8 +4,9 @@ import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 const PRICE_OPTIONS = [30, 50, 75, 100];
 
 export default function TransfersPage() {
@@ -31,6 +32,7 @@ export default function TransfersPage() {
         hasVehicle: !!row.details?.hasVehicle,
         seats: row.details?.seats || 0,
         discount: row.discount,
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, []);
@@ -86,7 +88,7 @@ export default function TransfersPage() {
         .transfers-page .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .transfers-page .tp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .transfers-page .tp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .transfers-page .tp-thumb { aspect-ratio: 4 / 2.8; position: relative; }
+        .transfers-page .tp-thumb { aspect-ratio: 4 / 2.8; position: relative; background-size: cover; background-position: center; }
         .transfers-page .tp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .transfers-page .tp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .transfers-page .tp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -127,7 +129,7 @@ export default function TransfersPage() {
           <label>{t("transfersPage.filterCity")}</label>
           <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("transfersPage.allCities")}</option>
-            {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <div className="tp-field">
@@ -165,14 +167,14 @@ export default function TransfersPage() {
           {filtered.map((item) => (
             <Link to={`/transfers/${item.id}`} className="tp-card" key={item.id}>
               <SaveHeart type="transfer" id={item.id} />
-              <div className={`tp-thumb ${item.tone}`}>
+              <div className={`tp-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}>
                 <span className="tp-badge">
                   {item.hasVehicle ? <Car size={12} /> : <Footprints size={12} />}
                   {item.hasVehicle ? t("transfersPage.withVehicle") : t("transfersPage.withoutVehicle")}
                 </span>
               </div>
               <div className="tp-body">
-                <div className="tp-city"><MapPin size={12} />{item.city}</div>
+                <div className="tp-city"><MapPin size={12} />{cityLabel(item.city, language)}</div>
                 <div className="tp-title">{item.title[language] || item.title.en}</div>
                 <div className="tp-meta">
                   <span>{item.type === "tour" ? t("transfersPage.typeTour") : t("transfersPage.typeTransfer")}</span>

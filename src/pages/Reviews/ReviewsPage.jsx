@@ -1,23 +1,8 @@
-import { useState } from "react";
-import { Star, MessageCircle, CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Star, MessageCircle } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-
-const STAYS_TO_REVIEW = [
-  { id: "v1", title: { en: "Seafront apartment near the Boulevard", az: "Bulvar yaxınlığında dənizkənarı mənzil" } },
-];
-
-const RECEIVED_REVIEWS = [
-  {
-    id: "r1", guest: "Kamran M.", rating: 5,
-    text: { en: "Great location and very responsive host. Would stay again!", az: "Əla yerləşmə və çox operativ ev sahibi. Yenidən qalardım!" },
-    reply: null,
-  },
-  {
-    id: "r2", guest: "Aysel R.", rating: 4,
-    text: { en: "Clean and comfortable, exactly as described.", az: "Təmiz və rahat, təsvir olunduğu kimi." },
-    reply: null,
-  },
-];
+import { useAuth } from "../../App";
+import { supabase } from "../../lib/supabaseClient";
 
 function StarRow({ value, onChange }) {
   return (
@@ -38,24 +23,72 @@ function StarRow({ value, onChange }) {
 
 export default function ReviewsPage() {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [tab, setTab] = useState("guest");
 
+  const [listings, setListings] = useState([]);
+  const [selectedListing, setSelectedListing] = useState("");
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
-  const [submittedIds, setSubmittedIds] = useState([]);
+  const [myReviews, setMyReviews] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [replies, setReplies] = useState({});
+  const [hostReviews, setHostReviews] = useState([]);
   const [replyDrafts, setReplyDrafts] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const submitReview = (id) => {
-    if (!rating || !reviewText.trim()) return;
-    setSubmittedIds((prev) => [...prev, id]);
+  const loadGuestData = () => {
+    Promise.all([
+      supabase.from("listings").select("id, title, category").eq("status", "approved").order("created_at", { ascending: false }).limit(50),
+      supabase.from("reviews").select("*").eq("reviewer_id", user.id).order("created_at", { ascending: false }),
+    ]).then(([{ data: l }, { data: r }]) => {
+      setListings(l || []);
+      setMyReviews(r || []);
+    }).finally(() => setLoading(false));
   };
 
-  const submitReply = (id) => {
+  const loadHostData = async () => {
+    const { data: myListings } = await supabase.from("listings").select("id, title").eq("host_id", user.id);
+    const ids = (myListings || []).map((l) => l.id);
+    if (ids.length === 0) {
+      setHostReviews([]);
+      setLoading(false);
+      return;
+    }
+    const { data: reviews } = await supabase.from("reviews").select("*").in("listing_id", ids).order("created_at", { ascending: false });
+    const titleById = Object.fromEntries((myListings || []).map((l) => [l.id, l.title]));
+    setHostReviews((reviews || []).map((r) => ({ ...r, listingTitle: titleById[r.listing_id] })));
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    setLoading(true);
+    if (tab === "guest") loadGuestData();
+    else loadHostData();
+  }, [user, tab]);
+
+  const submitReview = async () => {
+    if (!rating || !reviewText.trim() || !selectedListing) return;
+    setSubmitting(true);
+    await supabase.from("reviews").insert({
+      listing_id: selectedListing,
+      reviewer_id: user.id,
+      rating,
+      text: reviewText.trim(),
+    });
+    setRating(0);
+    setReviewText("");
+    setSelectedListing("");
+    setSubmitting(false);
+    loadGuestData();
+  };
+
+  const submitReply = async (id) => {
     const draft = (replyDrafts[id] || "").trim();
     if (!draft) return;
-    setReplies((prev) => ({ ...prev, [id]: draft }));
+    await supabase.from("reviews").update({ host_reply: draft }).eq("id", id);
+    loadHostData();
   };
 
   return (
@@ -107,55 +140,75 @@ export default function ReviewsPage() {
         <button type="button" className={`rp-tab${tab === "host" ? " active" : ""}`} onClick={() => setTab("host")}>{t("reviewsPage.hostTab")}</button>
       </div>
 
-      {tab === "guest" ? (
-        STAYS_TO_REVIEW.length === 0 ? (
+      {loading ? null : tab === "guest" ? (
+        <>
+          <div className="rp-card">
+            <div className="rp-card-title">{t("reviewsPage.writeReview")}</div>
+            <select
+              className="rp-textarea"
+              style={{ minHeight: "auto" }}
+              value={selectedListing}
+              onChange={(e) => setSelectedListing(e.target.value)}
+            >
+              <option value="">{t("reviewsPage.chooseListing")}</option>
+              {listings.map((l) => (
+                <option key={l.id} value={l.id}>{l.title?.[language] || l.title?.en}</option>
+              ))}
+            </select>
+            <StarRow value={rating} onChange={setRating} />
+            <textarea
+              className="rp-textarea"
+              placeholder={t("reviewsPage.placeholder")}
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+            />
+            <button
+              type="button"
+              className="rp-submit"
+              disabled={!rating || !reviewText.trim() || !selectedListing || submitting}
+              onClick={submitReview}
+            >
+              {submitting ? "..." : t("reviewsPage.submit")}
+            </button>
+          </div>
+
+          {myReviews.map((review) => (
+            <div className="rp-card" key={review.id}>
+              <StarRow value={review.rating} />
+              <p className="rp-review-text">{review.text}</p>
+              {review.host_reply && (
+                <div className="rp-reply"><strong>{t("reviewsPage.yourReply")}:</strong> {review.host_reply}</div>
+              )}
+            </div>
+          ))}
+        </>
+      ) : (
+        hostReviews.length === 0 ? (
           <p className="rp-empty">{t("reviewsPage.noStays")}</p>
         ) : (
-          STAYS_TO_REVIEW.map((stay) => (
-            <div className="rp-card" key={stay.id}>
-              <div className="rp-card-title">{stay.title[language] || stay.title.en}</div>
-              {submittedIds.includes(stay.id) ? (
-                <div className="rp-done"><CheckCircle2 size={17} />{t("reviewsPage.thanks")}</div>
+          hostReviews.map((review) => (
+            <div className="rp-card" key={review.id}>
+              <div className="rp-guest-name">{review.listingTitle?.[language] || review.listingTitle?.en}</div>
+              <StarRow value={review.rating} />
+              <p className="rp-review-text">{review.text}</p>
+              {review.host_reply ? (
+                <div className="rp-reply"><strong>{t("reviewsPage.yourReply")}:</strong> {review.host_reply}</div>
               ) : (
-                <>
-                  <StarRow value={rating} onChange={setRating} />
-                  <textarea
-                    className="rp-textarea"
-                    placeholder={t("reviewsPage.placeholder")}
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value)}
+                <div className="rp-reply-form">
+                  <input
+                    type="text"
+                    placeholder={t("reviewsPage.replyPlaceholder")}
+                    value={replyDrafts[review.id] || ""}
+                    onChange={(e) => setReplyDrafts((prev) => ({ ...prev, [review.id]: e.target.value }))}
                   />
-                  <button type="button" className="rp-submit" disabled={!rating || !reviewText.trim()} onClick={() => submitReview(stay.id)}>
-                    {t("reviewsPage.submit")}
+                  <button type="button" className="rp-reply-btn" onClick={() => submitReply(review.id)}>
+                    <MessageCircle size={13} />
                   </button>
-                </>
+                </div>
               )}
             </div>
           ))
         )
-      ) : (
-        RECEIVED_REVIEWS.map((review) => (
-          <div className="rp-card" key={review.id}>
-            <div className="rp-guest-name">{review.guest}</div>
-            <StarRow value={review.rating} />
-            <p className="rp-review-text">{review.text[language] || review.text.en}</p>
-            {replies[review.id] ? (
-              <div className="rp-reply"><strong>{t("reviewsPage.yourReply")}:</strong> {replies[review.id]}</div>
-            ) : (
-              <div className="rp-reply-form">
-                <input
-                  type="text"
-                  placeholder={t("reviewsPage.replyPlaceholder")}
-                  value={replyDrafts[review.id] || ""}
-                  onChange={(e) => setReplyDrafts((prev) => ({ ...prev, [review.id]: e.target.value }))}
-                />
-                <button type="button" className="rp-reply-btn" onClick={() => submitReply(review.id)}>
-                  <MessageCircle size={13} />
-                </button>
-              </div>
-            )}
-          </div>
-        ))
       )}
     </div>
   );

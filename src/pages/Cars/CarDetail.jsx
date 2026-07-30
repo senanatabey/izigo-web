@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Settings2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { fetchListingById, toneForId } from "../../lib/listings";
+import { useAuth } from "../../App";
+import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
+import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
+import ListingReviews from "../../components/ListingReviews";
 
 export default function CarDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +31,10 @@ export default function CarDetail() {
     discount: row.discount,
     transmission: row.details?.transmission || "automatic",
     phone: row.whatsapp_phone,
+    host: row.host,
+    code: shortListingCode(row.id),
+    postedAt: relativeDate(row.created_at, language),
+    image: row.images?.[0],
   } : null;
 
   if (loading) return null;
@@ -47,7 +55,7 @@ export default function CarDetail() {
         .car-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .car-detail .cd-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
         .car-detail .cd-gallery { border-radius: 16px; overflow: hidden; height: 380px; margin-bottom: 32px; }
-        .car-detail .cd-thumb { width: 100%; height: 100%; }
+        .car-detail .cd-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
         .car-detail .cd-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .car-detail .cd-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .car-detail .cd-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -55,6 +63,8 @@ export default function CarDetail() {
         .car-detail .cd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .car-detail .cd-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .car-detail .cd-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
+        .car-detail .cd-listing-meta { font-size: 12.5px; color: var(--text-soft); margin: -10px 0 16px; }
+        .car-detail .cd-edit-link { color: var(--izigo-green); font-weight: 700; }
         .car-detail .cd-meta { display: flex; gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
         .car-detail .cd-meta span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-soft); }
         .car-detail .cd-main h2 { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
@@ -84,13 +94,17 @@ export default function CarDetail() {
       <Link to="/cars" className="cd-back">{t("carDetail.back")}</Link>
 
       <div className="cd-gallery">
-        <div className={`cd-thumb ${car.tone}`} />
+        <div className={`cd-thumb ${car.image ? "" : car.tone}`} style={car.image ? { backgroundImage: `url("${car.image}")` } : undefined} />
       </div>
 
       <div className="cd-layout">
         <div className="cd-main">
-          <div className="cd-city"><MapPin size={13} />{car.city}</div>
+          <div className="cd-city"><MapPin size={13} />{cityLabel(car.city, language)}</div>
           <h1 className="cd-title">{car.title[language] || car.title.en}</h1>
+          <div className="cd-listing-meta">
+            {car.code} · {car.postedAt}
+            {user?.id === row.host_id && <Link to={`/edit-listing/${car.id}`} className="cd-edit-link"> · {t("myListingsPage.edit")}</Link>}
+          </div>
           <div className="cd-meta">
             <span><Users size={15} />{car.seats} {t("carsPage.seatsUnit")}</span>
             <span><Settings2 size={15} />{t(`addListing.${car.transmission}`)}</span>
@@ -98,6 +112,8 @@ export default function CarDetail() {
 
           <h2>{t("carDetail.aboutHeading")}</h2>
           <p className="cd-desc">{car.description[language] || car.description.en}</p>
+
+          <ListingReviews listingId={car.id} />
         </div>
 
         <aside className="cd-sidebar">
@@ -108,13 +124,13 @@ export default function CarDetail() {
             <SaveHeart type="car" id={car.id} className="detail-save-btn" />
           </div>
 
-          <div className="cd-host">
+          <Link to={`/host/${car.host?.id}`} className="cd-host">
             <div className="cd-host-avatar"><ShieldCheck size={20} /></div>
             <div>
-              <div className="cd-host-name">{t("villaDetail.hostName")}</div>
+              <div className="cd-host-name">{car.host?.full_name || t("villaDetail.hostName")}</div>
               <div className="cd-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
-          </div>
+          </Link>
 
           <PhoneReveal phone={car.phone} />
         </aside>

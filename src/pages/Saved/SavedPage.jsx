@@ -4,7 +4,8 @@ import { MapPin, Heart } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useSaved } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
-import { toneForId } from "../../lib/listings";
+import { toneForId, shortListingCode } from "../../lib/listings";
+import { cityLabel } from "../../data/azerbaijanDestinations";
 import SaveHeart from "../../components/SaveHeart";
 
 const PRICE_UNITS = { villa: "villasPage.perNight", car: "carsPage.perDay", transfer: "transfersPage.perPerson", experience: "transfersPage.perPerson", event: null };
@@ -31,7 +32,7 @@ export default function SavedPage() {
     }
     supabase
       .from("listings")
-      .select("*")
+      .select("*, host:profiles(full_name)")
       .in("id", saved.map((s) => s.id))
       .then(({ data }) => setItems((data || []).map((row) => ({
         id: row.id,
@@ -42,6 +43,9 @@ export default function SavedPage() {
         saveType: saved.find((s) => s.id === row.id)?.type,
         to: toPath(row),
         priceUnit: PRICE_UNITS[saved.find((s) => s.id === row.id)?.type],
+        code: shortListingCode(row.id),
+        hostName: row.host?.full_name,
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, [saved]);
@@ -56,7 +60,7 @@ export default function SavedPage() {
         .saved-page .sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .saved-page .sp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .saved-page .sp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .saved-page .sp-thumb { aspect-ratio: 4 / 3; }
+        .saved-page .sp-thumb { aspect-ratio: 4 / 3; background-size: cover; background-position: center; }
         .saved-page .sp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .saved-page .sp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .saved-page .sp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -65,6 +69,7 @@ export default function SavedPage() {
         .saved-page .sp-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.35; min-height: 36px; }
         .saved-page .sp-price { font-size: 14px; font-weight: 800; color: var(--text); }
         .saved-page .sp-price span { font-size: 11.5px; font-weight: 500; color: var(--text-soft); }
+        .saved-page .sp-meta { font-size: 11px; color: var(--text-soft); margin-top: 6px; }
 
         .saved-page .sp-empty { text-align: center; padding: 60px 20px; border: 1px dashed var(--border); border-radius: 16px; }
         .saved-page .sp-empty svg { color: var(--border); margin-bottom: 12px; }
@@ -94,15 +99,16 @@ export default function SavedPage() {
           {items.map((item) => (
             <Link to={item.to} className="sp-card" key={`${item.saveType}-${item.id}`}>
               <SaveHeart type={item.saveType} id={item.id} />
-              <div className={`sp-thumb ${item.tone}`} />
+              <div className={`sp-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
               <div className="sp-body">
-                <div className="sp-city"><MapPin size={12} />{item.city}</div>
+                <div className="sp-city"><MapPin size={12} />{cityLabel(item.city, language)}</div>
                 <div className="sp-title">{item.title[language] || item.title.en}</div>
                 <div className="sp-price">
                   {item.priceUnit
                     ? <>{item.price} AZN <span>{t(item.priceUnit)}</span></>
                     : (item.price === 0 ? t("eventsPage.free") : `${item.price} AZN`)}
                 </div>
+                <div className="sp-meta">{item.code}{item.hostName ? ` · ${item.hostName}` : ""}</div>
               </div>
             </Link>
           ))}

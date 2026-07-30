@@ -7,8 +7,9 @@ import {
   MessageCircle, MapPin, Check,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ALL_DESTINATIONS;
 
 export const SERVICES = [
   { key: "ice", icon: Snowflake },
@@ -36,7 +37,7 @@ export const SERVICES = [
 ];
 
 export default function ConciergePage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -131,7 +132,7 @@ export default function ConciergePage() {
         <label><MapPin size={13} />{t("conciergePage.filterCity")}</label>
         <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
           <option value="">{t("conciergePage.chooseCity")}</option>
-          {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
         </select>
       </div>
 

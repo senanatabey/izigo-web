@@ -3,7 +3,8 @@ import { MapPin, Percent } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { supabase } from "../../lib/supabaseClient";
-import { toneForId } from "../../lib/listings";
+import { toneForId, shortListingCode } from "../../lib/listings";
+import { cityLabel } from "../../data/azerbaijanDestinations";
 import SaveHeart from "../../components/SaveHeart";
 
 const CATEGORY_TO_PATH = { villa: "villas", car: "cars", event: "events" };
@@ -28,7 +29,7 @@ export default function DealsPage() {
   useEffect(() => {
     supabase
       .from("listings")
-      .select("*")
+      .select("*, host:profiles(full_name)")
       .eq("status", "approved")
       .not("discount", "is", null)
       .then(({ data }) => setDealItems((data || []).map((row) => ({
@@ -40,6 +41,9 @@ export default function DealsPage() {
         discount: row.discount,
         saveType: saveType(row),
         to: toPath(row),
+        code: shortListingCode(row.id),
+        hostName: row.host?.full_name,
+        image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
   }, []);
@@ -54,7 +58,7 @@ export default function DealsPage() {
         .deals-page .dp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .deals-page .dp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .deals-page .dp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .deals-page .dp-thumb { aspect-ratio: 4 / 3; position: relative; }
+        .deals-page .dp-thumb { aspect-ratio: 4 / 3; position: relative; background-size: cover; background-position: center; }
         .deals-page .dp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .deals-page .dp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .deals-page .dp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -69,6 +73,7 @@ export default function DealsPage() {
         .deals-page .dp-price-row { display: flex; align-items: baseline; gap: 8px; }
         .deals-page .dp-price-new { font-size: 15px; font-weight: 800; color: var(--text); }
         .deals-page .dp-price-old { font-size: 12.5px; font-weight: 600; color: #E0553F !important; text-decoration: line-through; }
+        .deals-page .dp-meta { font-size: 11px; color: var(--text-soft); margin-top: 6px; }
 
         .deals-page .dp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
 
@@ -93,16 +98,17 @@ export default function DealsPage() {
             return (
               <Link to={item.to} className="dp-card" key={`${item.saveType}-${item.id}`}>
                 <SaveHeart type={item.saveType} id={item.id} />
-                <div className={`dp-thumb ${item.tone}`}>
+                <div className={`dp-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}>
                   <span className="dp-discount"><Percent size={11} />-{item.discount}%</span>
                 </div>
                 <div className="dp-body">
-                  <div className="dp-city"><MapPin size={12} />{item.city}</div>
+                  <div className="dp-city"><MapPin size={12} />{cityLabel(item.city, language)}</div>
                   <div className="dp-title">{item.title[language] || item.title.en}</div>
                   <div className="dp-price-row">
                     <span className="dp-price-new">{discounted} AZN</span>
                     <span className="dp-price-old">{item.price} AZN</span>
                   </div>
+                  <div className="dp-meta">{item.code}{item.hostName ? ` · ${item.hostName}` : ""}</div>
                 </div>
               </Link>
             );

@@ -22,9 +22,20 @@ export async function fetchApprovedListings(category) {
 export async function fetchListingById(id) {
   const { data, error } = await supabase
     .from("listings")
-    .select("*")
+    .select("*, host:profiles(id, full_name)")
     .eq("id", id)
     .single();
   if (error) return null;
   return data;
+}
+
+export function shortListingCode(id) {
+  return `IZ-${id.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
+}
+
+export function relativeDate(dateStr, language) {
+  const days = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+  if (days <= 0) return language === "az" ? "Bu gün" : "Today";
+  if (days === 1) return language === "az" ? "Dünən" : "Yesterday";
+  return language === "az" ? `${days} gün əvvəl` : `${days} days ago`;
 }
