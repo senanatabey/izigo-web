@@ -18,31 +18,48 @@ Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzər
 
 ## Hazırkı fayl strukturu
 
+Bütün əsas səhifələr artıq tikilib və real Supabase data ilə işləyir — heç bir route
+`PagePlaceholder`-ə bağlı deyil (o yalnız 404 üçün istifadə olunur).
+
 ```
 src/
-├── App.jsx                      ← router, layout-lar, auth guard-lar (hazırdır)
+├── App.jsx                      ← router, layout-lar, auth guard-lar, real Supabase auth
+├── lib/                         ← supabaseClient, listings.js, heroCampaigns.js və s. (data qatı)
 ├── pages/
-│   ├── Home/
-│   │   └── IzigoHomepage.jsx    ← hazır dizayn (Hero, Search, Cities, Listings, Reviews)
-│   ├── Villas/                  ← hələ yoxdur, tikilməlidir
-│   ├── Cars/                    ← hələ yoxdur
-│   ├── Experiences/             ← hələ yoxdur
-│   ├── Events/                  ← hələ yoxdur
-│   ├── Auth/                    ← Login, Register hələ placeholder
-│   ├── Profile/                 ← hələ placeholder
-│   ├── AddListing/              ← hələ placeholder
-│   ├── MyListings/               ← hələ placeholder
-│   └── Reviews/                 ← hələ placeholder
+│   ├── Home/                    ← IzigoHomepage.jsx (Hero, Search, Cities, Listings, Reviews)
+│   ├── Villas/, Cars/, Transfers/, Experiences/, Events/, Deals/  ← siyahı + detal səhifələri
+│   ├── Destinations/            ← şəhər bələdçiləri (CityGuide) + bütün şəhərlər siyahısı
+│   ├── Host/                    ← host profili səhifəsi
+│   ├── Auth/                    ← Login, Register (real Supabase auth)
+│   ├── Profile/, MyListings/, AddListing/, Reviews/, Saved/       ← giriş tələb edən səhifələr
+│   ├── PlanMyTrip/, Concierge/  ← "Plan My Trip" forması, local services (Bring)
+│   └── Admin/                   ← Dashboard, Users, Listings, Pending approvals, Reviews,
+│                                    Statistics, Hero campaigns (bax aşağıda)
 ```
 
 ## App.jsx haqqında bilməli olduqların
 
 - Router 4 layout istifadə edir: `MainLayout` (public səhifələr), `AuthLayout` (login/register),
   `AppLayout` (profil, elan əlavə etmə və s. — giriş tələb edir), `AdminLayout` (admin panel).
-- Route guard-lar: `RequireAuth`, `RequireGuest`, `RequireAdmin` — bunlar hazırda `AuthContext`-dən
-  mock (yaddaşda saxlanan) user obyekti oxuyur. Real Supabase auth qoşulanda bu hissə dəyişəcək.
-- Bütün digər səhifələr `PagePlaceholder` komponenti ilə əvəz olunub — hər hansı bir səhifəni
-  tikəndə, App.jsx-də həmin placeholder sətrini import ilə əvəz et.
+- Route guard-lar: `RequireAuth`, `RequireGuest`, `RequireAdmin` — **real Supabase auth** istifadə edir
+  (`supabase.auth.getSession()` / `onAuthStateChange`), mock user yoxdur.
+- Admin rolu `profiles` cədvəlindəki `role = 'admin'` sahəsi ilə müəyyən olunur.
+- Yeni bir səhifə/funksiya əlavə edəndə oxşar mövcud səhifəyə bax (məs. yeni kateqoriya üçün
+  `src/pages/Villas/`-ın strukturuna bax) — hazır pattern var, sıfırdan İxtira etməyə ehtiyac yoxdur.
+
+## Hero campaigns (homepage-in yuxarı hissəsi)
+
+- Homepage hero-nun **layout-u həmişə eynidir**: fon şəkli + başlıq + subtitle + "Plan My Trip"
+  düyməsi (əsas CTA, HEÇ vaxt kampaniya ilə əvəz olunmur) + search paneli (Villas/Cars/Transfers/Tours
+  tab-ları ilə). Bunu mürəkkəbləşdirmə — admin yalnız şəkil və mətn dəyişə bilər, düymə/layout seçimi yoxdur.
+- `src/lib/heroCampaigns.js`: `fetchActiveCampaign()` (ən son publish olunmuş aktiv kampaniya),
+  `fetchSiteSettings()` / `updateDefaultHeroImages()` (kampaniya olmayanda göstərilən default şəkil).
+- Admin idarəetməsi: `src/pages/Admin/HeroCampaignsPage.jsx` (`/admin/hero`) — kampaniya siyahısı
+  + "Default hero image" bloku. Sahələr: ad, status (draft/scheduled/published/archived),
+  başlıq/subtitle (EN/AZ), başlanğıc/bitmə tarixi, desktop/mobil şəkil.
+- DB: `hero_campaigns` və `site_settings` cədvəlləri (`supabase/013_*.sql`, `supabase/014_*.sql`).
+  `hero_campaigns`-da istifadə olunmayan köhnə sütunlar (`content_type`, `button_mode`,
+  `button_pos_*` və s.) qalıb, zərərsizdirlər, sadəcə kod onları oxumur/yazmır.
 
 ## Dizayn dili (yeni səhifə/komponent tikəndə buna sadiq qal)
 

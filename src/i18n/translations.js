@@ -23,6 +23,7 @@ export const translations = {
       allCities: "All cities",
       anyGuests: "Any",
       anyPrice: "Any",
+      allAmenities: "All",
       resetFilters: "Reset filters",
       resultsCount: "{count} villas found",
       noResults: "No villas match these filters yet.",
@@ -268,6 +269,8 @@ export const translations = {
       parking: "Parking",
       fireplace: "Fireplace",
       garden: "Garden",
+      pool: "Pool",
+      heated_pool: "Heated pool",
     },
     addListing: {
       pickHeading: "What are you listing?",
@@ -517,6 +520,7 @@ export const translations = {
       allCities: "Bütün şəhərlər",
       anyGuests: "Fərq etməz",
       anyPrice: "Fərq etməz",
+      allAmenities: "Hamısı",
       resetFilters: "Filtri sıfırla",
       resultsCount: "{count} villa tapıldı",
       noResults: "Bu filtrlərə uyğun villa tapılmadı.",
@@ -762,6 +766,8 @@ export const translations = {
       parking: "Parkinq",
       fireplace: "Şömünə",
       garden: "Bağça",
+      pool: "Hovuz",
+      heated_pool: "İsti hovuz",
     },
     addListing: {
       pickHeading: "Nə elan etmək istəyirsən?",

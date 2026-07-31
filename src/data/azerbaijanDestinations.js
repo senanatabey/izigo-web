@@ -31,7 +31,15 @@ const AZ_NAMES = {
   Zangilan: "Zəngilan", Zaqatala: "Zaqatala", Zardab: "Zərdab",
 };
 
-export const ALL_DESTINATIONS = Object.keys(AZ_NAMES).sort((a, b) => a.localeCompare(b));
+// Priority cities always lead the list (in this order); everything else follows alphabetically.
+const PRIORITY_DESTINATIONS = ["Baku", "Gabala", "Guba", "Gusar"];
+
+export const ALL_DESTINATIONS = [
+  ...PRIORITY_DESTINATIONS,
+  ...Object.keys(AZ_NAMES)
+    .filter((city) => !PRIORITY_DESTINATIONS.includes(city))
+    .sort((a, b) => a.localeCompare(b)),
+];
 
 export function cityLabel(city, language) {
   return language === "az" ? (AZ_NAMES[city] || city) : city;

@@ -30,6 +30,17 @@
   width: auto;
 }
 
+.app-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.app-navbar .app-logo-img {
+  height: 44px;
+  margin-left: 14px;
+}
+
 .app-logo-img-dark {
   height: 30px;
 }

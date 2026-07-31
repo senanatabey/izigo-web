@@ -5,7 +5,7 @@ import {
 import {
   Home as HomeIcon, Heart, User, ListChecks,
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
-  ShieldCheck, LogOut, X,
+  ShieldCheck, LogOut, X, Sparkles,
 } from "lucide-react";
 import "./App.css";
 import Home from "./pages/Home/IzigoHomepage";
@@ -43,6 +43,7 @@ import AdminListingsPage from "./pages/Admin/ListingsPage";
 import AdminUsersPage from "./pages/Admin/UsersPage";
 import AdminReviewsPage from "./pages/Admin/ReviewsPage";
 import AdminStatisticsPage from "./pages/Admin/StatisticsPage";
+import AdminHeroCampaignsPage from "./pages/Admin/HeroCampaignsPage";
 import HostProfilePage from "./pages/Host/HostProfilePage";
 import AllDestinationsPage from "./pages/Destinations/AllDestinationsPage";
 
@@ -288,18 +289,20 @@ function MainLayout() {
     <div>
       <header className="app-navbar">
         <div className="app-navbar-inner">
-          <Link to="/"><IzigoLogo /></Link>
-          <nav className="app-nav-links">
-            {MAIN_NAV_ITEMS.map(({ to, key, matchTo }) => {
-              const [toPath, toQuery] = to.split("?");
-              const isActive = matchTo
-                ? location.pathname.startsWith(matchTo) && (location.search.slice(1) === toQuery)
-                : location.pathname.startsWith(toPath);
-              return (
-                <Link key={key} to={to} className={isActive ? "active" : ""}>{t(`nav.${key}`)}</Link>
-              );
-            })}
-          </nav>
+          <div className="app-navbar-left">
+            <Link to="/"><IzigoLogo /></Link>
+            <nav className="app-nav-links">
+              {MAIN_NAV_ITEMS.map(({ to, key, matchTo }) => {
+                const [toPath, toQuery] = to.split("?");
+                const isActive = matchTo
+                  ? location.pathname.startsWith(matchTo) && (location.search.slice(1) === toQuery)
+                  : location.pathname.startsWith(toPath);
+                return (
+                  <Link key={key} to={to} className={isActive ? "active" : ""}>{t(`nav.${key}`)}</Link>
+                );
+              })}
+            </nav>
+          </div>
           <div className="app-nav-right">
             <LanguageSwitcher />
             <Link to="/saved" className="nav-icon-link"><Heart size={17} /><span>{t("nav.saved")}</span></Link>
@@ -369,6 +372,7 @@ const ADMIN_NAV_ITEMS = [
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/statistics", label: "Statistics", icon: BarChart3 },
+  { to: "/admin/hero", label: "Hero campaigns", icon: Sparkles },
 ];
 
 function AdminLayout() {
@@ -469,6 +473,7 @@ export default function App() {
             <Route path="admin/listings/pending" element={<PendingApprovalsPage />} />
             <Route path="admin/reviews" element={<AdminReviewsPage />} />
             <Route path="admin/statistics" element={<AdminStatisticsPage />} />
+            <Route path="admin/hero" element={<AdminHeroCampaignsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

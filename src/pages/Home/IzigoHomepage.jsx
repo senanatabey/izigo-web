@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { fetchActiveCampaign, fetchSiteSettings } from "../../lib/heroCampaigns";
 import { SERVICES as CONCIERGE_SERVICES } from "../Concierge/ConciergePage";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
 
@@ -88,6 +89,13 @@ export default function IzigoHomepage() {
   const [whereOpen, setWhereOpen] = useState(false);
   const [listingsTab, setListingsTab] = useState("villas");
   const [listingsByCategory, setListingsByCategory] = useState({});
+  const [campaign, setCampaign] = useState(null);
+  const [siteSettings, setSiteSettings] = useState(null);
+
+  useEffect(() => {
+    fetchActiveCampaign().then(setCampaign);
+    fetchSiteSettings().then(setSiteSettings);
+  }, []);
 
   useEffect(() => {
     Promise.all(LISTINGS_TABS_META.map(({ category }) =>
@@ -132,6 +140,14 @@ export default function IzigoHomepage() {
     navigate(`${cat ? cat.to : "/villas"}${params}`);
   };
 
+  // The hero layout never changes — a campaign only ever swaps the
+  // background image and this text. Plan My Trip and the search panel
+  // always render exactly the same way, campaign or not.
+  const heroTitle = campaign?.[`title_${language}`] || campaign?.title_en || t("hero.fixed.title");
+  const heroSubtitle = campaign?.[`subtitle_${language}`] || campaign?.subtitle_en || t("hero.fixed.subtitle");
+  const planMyTripText = t("heroButtons.planMyTrip");
+  const planMyTripLink = "/plan-my-trip";
+
   const activeListingsTab = LISTINGS_TABS.find((tab) => tab.key === listingsTab);
   const priceLabel = (item, priceUnit) => {
     const finalPrice = item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price;
@@ -141,6 +157,60 @@ export default function IzigoHomepage() {
     if (priceUnit === null) return item.price === 0 ? t("eventsPage.free") : priceNode;
     return <>{priceNode} <span>{t(priceUnit)}</span></>;
   };
+
+  const searchCard = (
+    <form className="search-card" onSubmit={handleSearch}>
+      <div className="search-tabs">
+        {CATEGORIES.map(({ icon: Icon, key }) => (
+          <button
+            key={key}
+            type="button"
+            className={`search-tab${service === key ? " active" : ""}`}
+            onClick={() => setService(key)}
+          >
+            <Icon size={15} />{t(`nav.${key}`)}
+          </button>
+        ))}
+      </div>
+      <div className="search-row">
+        <div className="search-field-wrap">
+          <div className="search-field">
+            <MapPin size={18} color="var(--text-soft)" />
+            <div>
+              <label>{t("search.where")}</label>
+              <input
+                type="text"
+                placeholder={t("search.wherePlaceholder")}
+                value={where}
+                onChange={handleWhereChange}
+                onFocus={() => setWhereOpen(true)}
+                onBlur={() => setTimeout(() => setWhereOpen(false), 150)}
+              />
+            </div>
+          </div>
+          {whereOpen && filteredCities.length > 0 && (
+            <div className="search-dropdown">
+              {filteredCities.map((slug) => (
+                <button key={slug} type="button" onMouseDown={() => pickCity(slug)}>
+                  <MapPin size={14} color="var(--text-soft)" />{cityLabel(slug)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button type="submit" className="search-submit"><Search size={16} />{t("search.search")}</button>
+      </div>
+      <div className="search-guide-slot">
+        <Link
+          to={citySlug ? `/destinations/${citySlug}` : "#"}
+          tabIndex={citySlug ? 0 : -1}
+          className={`search-guide-link${citySlug ? " visible" : ""}`}
+        >
+          {citySlug ? `${t("search2.guideLink").replace("{city}", cityLabel(citySlug))} →` : " "}
+        </Link>
+      </div>
+    </form>
+  );
 
   return (
     <div className="izigo-home">
@@ -153,9 +223,9 @@ export default function IzigoHomepage() {
           flex-direction: column;
           justify-content: center;
           background:
-            linear-gradient(90deg, rgba(5, 22, 20, 0.78) 0%, rgba(5, 22, 20, 0.45) 32%, rgba(5, 22, 20, 0.08) 58%, rgba(5, 22, 20, 0) 78%),
-            linear-gradient(0deg, rgba(4, 16, 15, 0.35) 0%, rgba(4, 16, 15, 0) 30%),
-            url("/images/izigo-hero.webp");
+            var(--hero-overlay-1, linear-gradient(90deg, rgba(5, 22, 20, 0.78) 0%, rgba(5, 22, 20, 0.45) 32%, rgba(5, 22, 20, 0.08) 58%, rgba(5, 22, 20, 0) 78%)),
+            var(--hero-overlay-2, linear-gradient(0deg, rgba(4, 16, 15, 0.35) 0%, rgba(4, 16, 15, 0) 30%)),
+            var(--hero-image, url("/images/izigo-hero.webp"));
           background-size: cover;
           background-position: center;
           color: #fff;
@@ -175,7 +245,7 @@ export default function IzigoHomepage() {
           margin-top: 4px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 640px;
         }
         .izigo-home .hero p span { display: block; }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 24px; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 28px; }
         .izigo-home .hero-btn {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px;
           min-width: 230px; height: 60px; padding: 0 30px; font-weight: 700; font-size: 17px; white-space: nowrap;
@@ -187,7 +257,6 @@ export default function IzigoHomepage() {
         .izigo-home .hero-btn.primary:hover {
           background: #A34D26; transform: translateY(-2px); box-shadow: 0 14px 28px rgba(186, 91, 46, 0.4);
         }
-
         .izigo-home .search-card {
           margin: 32px 0 0;
           background: #fff;
@@ -480,68 +549,25 @@ export default function IzigoHomepage() {
         }
       `}</style>
 
-      <section className="hero">
+      <section
+        className="hero"
+        style={
+          (campaign?.image_desktop_url || siteSettings?.default_hero_desktop_url)
+            ? { "--hero-image": `url("${campaign?.image_desktop_url || siteSettings.default_hero_desktop_url}")` }
+            : {}
+        }
+      >
         <div className="hero-inner">
           <div className="hero-content">
             <div className="hero-eyebrow">{t("hero.fixed.eyebrow")}</div>
-            <h1>{t("hero.fixed.title").split("\n").map((line, i) => <span key={i}>{line}</span>)}</h1>
-            <p>{t("hero.fixed.subtitle").split("\n").map((line, i) => <span key={i}>{line}</span>)}</p>
+            <h1>{heroTitle.split("\n").map((line, i) => <span key={i}>{line}</span>)}</h1>
+            {heroSubtitle && <p>{heroSubtitle.split("\n").map((line, i) => <span key={i}>{line}</span>)}</p>}
             <div className="hero-cta-row">
-              <Link to="/plan-my-trip" className="hero-btn primary"><Sparkles size={16} />{t("heroButtons.planMyTrip")}</Link>
+              <Link to={planMyTripLink} className="hero-btn primary"><Sparkles size={16} />{planMyTripText}</Link>
             </div>
           </div>
 
-          <form className="search-card" onSubmit={handleSearch}>
-            <div className="search-tabs">
-              {CATEGORIES.map(({ icon: Icon, key }) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={`search-tab${service === key ? " active" : ""}`}
-                  onClick={() => setService(key)}
-                >
-                  <Icon size={15} />{t(`nav.${key}`)}
-                </button>
-              ))}
-            </div>
-            <div className="search-row">
-              <div className="search-field-wrap">
-                <div className="search-field">
-                  <MapPin size={18} color="var(--text-soft)" />
-                  <div>
-                    <label>{t("search.where")}</label>
-                    <input
-                      type="text"
-                      placeholder={t("search.wherePlaceholder")}
-                      value={where}
-                      onChange={handleWhereChange}
-                      onFocus={() => setWhereOpen(true)}
-                      onBlur={() => setTimeout(() => setWhereOpen(false), 150)}
-                    />
-                  </div>
-                </div>
-                {whereOpen && filteredCities.length > 0 && (
-                  <div className="search-dropdown">
-                    {filteredCities.map((slug) => (
-                      <button key={slug} type="button" onMouseDown={() => pickCity(slug)}>
-                        <MapPin size={14} color="var(--text-soft)" />{cityLabel(slug)}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <button type="submit" className="search-submit"><Search size={16} />{t("search.search")}</button>
-            </div>
-            <div className="search-guide-slot">
-              <Link
-                to={citySlug ? `/destinations/${citySlug}` : "#"}
-                tabIndex={citySlug ? 0 : -1}
-                className={`search-guide-link${citySlug ? " visible" : ""}`}
-              >
-                {citySlug ? `${t("search2.guideLink").replace("{city}", cityLabel(citySlug))} →` : " "}
-              </Link>
-            </div>
-          </form>
+          {searchCard}
         </div>
       </section>
 

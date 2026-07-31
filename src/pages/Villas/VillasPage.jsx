@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { MapPin, Users, BedDouble } from "lucide-react";
+import { MapPin, Users, BedDouble, Waves, Thermometer, Flame } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import SaveHeart from "../../components/SaveHeart";
@@ -9,6 +9,11 @@ import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 const CITIES = ALL_DESTINATIONS;
 const GUEST_OPTIONS = [2, 4, 6, 8];
 const PRICE_OPTIONS = [80, 100, 150, 200];
+const AMENITY_QUICK_FILTERS = [
+  { key: "pool", icon: Waves },
+  { key: "heated_pool", icon: Thermometer },
+  { key: "fireplace", icon: Flame },
+];
 
 export default function VillasPage() {
   const { t, language } = useLanguage();
@@ -17,6 +22,7 @@ export default function VillasPage() {
 
   const [guests, setGuests] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [amenityFilter, setAmenityFilter] = useState("");
   const [villas, setVillas] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +37,7 @@ export default function VillasPage() {
         discount: row.discount,
         guests: row.details?.guests || 0,
         bedrooms: row.details?.bedrooms || 0,
+        amenities: row.details?.amenities || [],
         image: row.images?.[0],
       }))))
       .finally(() => setLoading(false));
@@ -45,6 +52,7 @@ export default function VillasPage() {
   const resetFilters = () => {
     setGuests("");
     setMaxPrice("");
+    setAmenityFilter("");
     setSearchParams({});
   };
 
@@ -53,9 +61,10 @@ export default function VillasPage() {
       if (cityParam && v.city.toLowerCase() !== cityParam.toLowerCase()) return false;
       if (guests && v.guests < Number(guests)) return false;
       if (maxPrice && v.price > Number(maxPrice)) return false;
+      if (amenityFilter && !v.amenities.includes(amenityFilter)) return false;
       return true;
     });
-  }, [villas, cityParam, guests, maxPrice]);
+  }, [villas, cityParam, guests, maxPrice, amenityFilter]);
 
   return (
     <div className="villas-page">
@@ -63,6 +72,15 @@ export default function VillasPage() {
         .villas-page { max-width: 1280px; margin: 0 auto; padding: 48px 6vw 80px; }
         .villas-page .vp-head h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px; }
         .villas-page .vp-head p { font-size: 15px; color: var(--text-soft); margin: 0 0 32px; }
+
+        .villas-page .vp-quick-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+        .villas-page .vp-quick-chip {
+          display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 999px;
+          border: 1.5px solid var(--border); background: #fff; color: var(--text); font-size: 14px; font-weight: 700;
+          cursor: pointer; transition: all 0.15s ease;
+        }
+        .villas-page .vp-quick-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .villas-page .vp-quick-chip:hover:not(.active) { border-color: var(--izigo-green); color: var(--izigo-green); }
 
         .villas-page .vp-filters {
           display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;
@@ -91,8 +109,9 @@ export default function VillasPage() {
         .villas-page .vp-body { padding: 18px; }
         .villas-page .vp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
         .villas-page .vp-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
-        .villas-page .vp-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; }
+        .villas-page .vp-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; flex-wrap: wrap; }
         .villas-page .vp-meta span { display: flex; align-items: center; gap: 5px; }
+        .villas-page .vp-meta span.vp-amenity-badge { color: var(--izigo-green); font-weight: 700; }
         .villas-page .vp-footer { display: flex; align-items: center; justify-content: space-between; }
         .villas-page .vp-price { font-size: 16px; font-weight: 800; color: var(--text); }
         .villas-page .vp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
@@ -106,6 +125,7 @@ export default function VillasPage() {
           .villas-page { padding: 32px 5vw 56px; }
           .villas-page .vp-grid { grid-template-columns: 1fr; }
           .villas-page .vp-filters { flex-direction: column; align-items: stretch; }
+          .villas-page .vp-quick-chip { padding: 9px 14px; font-size: 13px; }
           .villas-page .vp-field select { width: 100%; }
         }
       `}</style>
@@ -113,6 +133,26 @@ export default function VillasPage() {
       <div className="vp-head">
         <h1>{t("villasPage.heading")}</h1>
         <p>{t("villasPage.subtitle")}</p>
+      </div>
+
+      <div className="vp-quick-filters">
+        <button
+          type="button"
+          className={`vp-quick-chip${amenityFilter === "" ? " active" : ""}`}
+          onClick={() => setAmenityFilter("")}
+        >
+          {t("villasPage.allAmenities")}
+        </button>
+        {AMENITY_QUICK_FILTERS.map(({ key, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            className={`vp-quick-chip${amenityFilter === key ? " active" : ""}`}
+            onClick={() => setAmenityFilter(amenityFilter === key ? "" : key)}
+          >
+            <Icon size={16} />{t(`amenities.${key}`)}
+          </button>
+        ))}
       </div>
 
       <div className="vp-filters">
@@ -156,6 +196,11 @@ export default function VillasPage() {
                 <div className="vp-meta">
                   <span><Users size={14} />{v.guests} {t("villasPage.guestsUnit")}</span>
                   <span><BedDouble size={14} />{v.bedrooms} {t("villasPage.bedroomsUnit")}</span>
+                  {v.amenities.includes("heated_pool") ? (
+                    <span className="vp-amenity-badge"><Thermometer size={14} />{t("amenities.heated_pool")}</span>
+                  ) : v.amenities.includes("pool") ? (
+                    <span className="vp-amenity-badge"><Waves size={14} />{t("amenities.pool")}</span>
+                  ) : null}
                 </div>
                 <div className="vp-footer">
                   <div className="vp-price">

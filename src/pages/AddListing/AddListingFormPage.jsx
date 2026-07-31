@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import {
   MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar, Percent,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
+  Waves, Thermometer,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
@@ -10,8 +11,11 @@ import { supabase } from "../../lib/supabaseClient";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 const CITIES = ALL_DESTINATIONS;
-const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden"];
-const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
+const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden", "pool", "heated_pool"];
+const AMENITY_ICONS = {
+  wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees,
+  pool: Waves, heated_pool: Thermometer,
+};
 const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "guide", "laundry", "babysitter"];
 
 const VALID_CATEGORIES = ["villa", "car", "transfer", "event", "service"];
