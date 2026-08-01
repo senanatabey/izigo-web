@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /profile
+Disallow: /my-listings
+Disallow: /add-listing
+Disallow: /edit-listing
+Disallow: /reviews
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://izigo.az/sitemap.xml

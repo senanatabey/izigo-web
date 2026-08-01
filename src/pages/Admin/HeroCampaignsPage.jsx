@@ -5,6 +5,13 @@ import { fetchSiteSettings, updateDefaultHeroImages } from "../../lib/heroCampai
 
 const STATUSES = ["draft", "scheduled", "published", "archived"];
 
+// Storage keys must stay ASCII-safe — the original filename (accents, spaces,
+// parentheses) can otherwise be rejected by Supabase Storage as an "Invalid key".
+function safeExt(file) {
+  const match = /\.([a-zA-Z0-9]+)$/.exec(file.name);
+  return match ? match[1].toLowerCase() : "jpg";
+}
+
 const EMPTY_FORM = {
   id: null,
   name: "",
@@ -34,7 +41,7 @@ export default function HeroCampaignsPage() {
   const loadSettings = () => fetchSiteSettings().then(setSettings);
 
   const uploadDefaultImage = async (file) => {
-    const path = `default-${crypto.randomUUID()}-${file.name}`;
+    const path = `default-${crypto.randomUUID()}.${safeExt(file)}`;
     const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, file);
     if (uploadError) throw uploadError;
     const { data } = supabase.storage.from("hero-images").getPublicUrl(path);
@@ -89,7 +96,7 @@ export default function HeroCampaignsPage() {
   const closeForm = () => setForm(null);
 
   const uploadImage = async (file) => {
-    const path = `${crypto.randomUUID()}-${file.name}`;
+    const path = `${crypto.randomUUID()}.${safeExt(file)}`;
     const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, file);
     if (uploadError) throw uploadError;
     const { data } = supabase.storage.from("hero-images").getPublicUrl(path);

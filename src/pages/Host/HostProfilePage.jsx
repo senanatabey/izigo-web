@@ -6,12 +6,9 @@ import { supabase } from "../../lib/supabaseClient";
 import { toneForId } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 
-const CATEGORY_TO_PATH = { villa: "villas", car: "cars", event: "events" };
+const CATEGORY_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events" };
 
 function toPath(row) {
-  if (row.category === "transfer") {
-    return row.details?.type === "tour" ? `/experiences/${row.id}` : `/transfers/${row.id}`;
-  }
   return `/${CATEGORY_TO_PATH[row.category]}/${row.id}`;
 }
 

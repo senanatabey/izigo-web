@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight, Compass,
+  MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight,
   PartyPopper, MessageCircle, Mail, Send,
   Percent, BadgeCheck, PlusCircle, TrendingUp, Star, ShoppingBasket,
   Sparkles, ArrowRight, Award,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { useSeo } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings } from "../../lib/heroCampaigns";
 import { SERVICES as CONCIERGE_SERVICES } from "../Concierge/ConciergePage";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
@@ -53,7 +54,7 @@ const CATEGORIES = [
   { icon: HomeIcon, tone: "green", key: "villas", to: "/villas" },
   { icon: Car, tone: "orange", key: "cars", to: "/cars" },
   { icon: ArrowLeftRight, tone: "green", key: "transfers", to: "/transfers" },
-  { icon: Compass, tone: "orange", key: "tours", to: "/experiences" },
+  { icon: ShoppingBasket, tone: "orange", key: "concierge", to: "/concierge" },
 ];
 
 const DESTINATIONS = [
@@ -83,6 +84,13 @@ const HOST_PERKS = [
 export default function IzigoHomepage() {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+
+  useSeo({
+    title: "Villas, Cars & Transfers in Azerbaijan — Zero Commission",
+    description: "Book villas, cars and transfers directly with verified local hosts in Baku, Gabala and Guba — no commission, no middleman, contact on WhatsApp.",
+    path: "/",
+  });
+
   const [service, setService] = useState("villas");
   const [where, setWhere] = useState("");
   const [citySlug, setCitySlug] = useState(null);
@@ -230,8 +238,8 @@ export default function IzigoHomepage() {
           background-position: center;
           color: #fff;
         }
-        .izigo-home .hero-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; }
-        .izigo-home .hero-content { max-width: 680px; }
+        .izigo-home .hero-inner { max-width: 1280px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; min-width: 0; }
+        .izigo-home .hero-content { max-width: 680px; width: 100%; min-width: 0; }
         .izigo-home .hero-eyebrow {
           display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 800; letter-spacing: 0.6px;
           text-transform: uppercase; color: #FFD447; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
@@ -265,6 +273,8 @@ export default function IzigoHomepage() {
           padding: 18px 22px;
           position: relative;
           z-index: 5;
+          width: 100%;
+          min-width: 0;
         }
         .izigo-home .search-tabs {
           display: flex; gap: 8px; overflow-x: auto;

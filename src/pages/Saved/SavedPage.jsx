@@ -9,12 +9,9 @@ import { cityLabel } from "../../data/azerbaijanDestinations";
 import SaveHeart from "../../components/SaveHeart";
 
 const PRICE_UNITS = { villa: "villasPage.perNight", car: "carsPage.perDay", transfer: "transfersPage.perPerson", experience: "transfersPage.perPerson", event: null };
-const CATEGORY_TO_PATH = { villa: "villas", car: "cars", event: "events" };
+const CATEGORY_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events" };
 
 function toPath(row) {
-  if (row.category === "transfer") {
-    return row.details?.type === "tour" ? `/experiences/${row.id}` : `/transfers/${row.id}`;
-  }
   return `/${CATEGORY_TO_PATH[row.category]}/${row.id}`;
 }
 

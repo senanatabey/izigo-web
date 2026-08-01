@@ -18,9 +18,9 @@
   height: 68px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: nowrap;
-  gap: 28px;
+  gap: 48px;
   padding: 0 6vw;
 }
 
@@ -42,7 +42,8 @@
 }
 
 .app-logo-img-dark {
-  height: 30px;
+  height: 44px;
+  width: auto;
 }
 
 .app-nav-links {

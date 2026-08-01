@@ -1,10 +1,18 @@
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useSeo } from "../../lib/seo";
 import { FEATURED_DESTINATIONS, ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 export default function AllDestinationsPage() {
   const { t, language } = useLanguage();
+
+  useSeo({
+    title: "Destinations in Azerbaijan",
+    description: "Explore Baku, Gabala, Guba and every region of Azerbaijan — travel guides, sightseeing and verified local listings.",
+    path: "/destinations",
+  });
+
   const rest = ALL_DESTINATIONS.filter((c) => !FEATURED_DESTINATIONS.includes(c));
 
   return (

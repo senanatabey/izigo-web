@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Calendar } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
@@ -12,6 +13,13 @@ export default function EventsPage() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
+
+  useSeo({
+    title: "Events in Azerbaijan — Concerts & Festivals",
+    description: "Concerts, festivals and local happenings across Azerbaijan — find what's on in Baku, Gabala and Guba.",
+    path: "/events",
+  });
+
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 

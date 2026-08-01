@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Settings2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
@@ -14,6 +15,12 @@ export default function CarsPage() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
+
+  useSeo({
+    title: "Rent a Car in Azerbaijan — No Agency Markup",
+    description: "Rent a car directly from verified local owners in Baku, Gabala and Guba — no agency markup, no hidden fees, contact on WhatsApp.",
+    path: "/cars",
+  });
 
   const [seats, setSeats] = useState("");
   const [maxPrice, setMaxPrice] = useState("");

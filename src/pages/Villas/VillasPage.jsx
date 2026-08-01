@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, BedDouble, Waves, Thermometer, Flame } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
@@ -19,6 +20,12 @@ export default function VillasPage() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
+
+  useSeo({
+    title: "Villas & Homes in Azerbaijan",
+    description: "Verified villas and homes in Baku, Gabala and Guba — with or without a pool — contact the host directly on WhatsApp, no commission.",
+    path: "/villas",
+  });
 
   const [guests, setGuests] = useState("");
   const [maxPrice, setMaxPrice] = useState("");

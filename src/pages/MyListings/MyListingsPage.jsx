@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, CheckCircle2 } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
@@ -13,7 +13,6 @@ export default function MyListingsPage() {
   const { user } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [confirmed, setConfirmed] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -62,12 +61,6 @@ export default function MyListingsPage() {
         .my-listings-page .mlp-badge.approved { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
         .my-listings-page .mlp-badge.pending { background: rgba(255,180,0,0.16); color: #B87700; }
         .my-listings-page .mlp-badge.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
-        .my-listings-page .mlp-inquiries { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-soft); }
-        .my-listings-page .mlp-confirm {
-          display: flex; align-items: center; gap: 5px; border: none; background: var(--izigo-green); color: #fff;
-          border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
-        }
-        .my-listings-page .mlp-confirm:disabled { opacity: 0.6; cursor: default; }
         .my-listings-page .mlp-edit { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); }
 
         @media (max-width: 560px) {
@@ -102,17 +95,6 @@ export default function MyListingsPage() {
               <div className="mlp-side">
                 <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
                 <Link to={`/edit-listing/${item.id}`} className="mlp-edit">{t("myListingsPage.edit")}</Link>
-                {item.status === "approved" && (
-                  <button
-                    type="button"
-                    className="mlp-confirm"
-                    disabled={confirmed.includes(item.id)}
-                    onClick={() => setConfirmed((prev) => [...prev, item.id])}
-                  >
-                    <CheckCircle2 size={13} />
-                    {confirmed.includes(item.id) ? t("myListingsPage.confirmed") : t("myListingsPage.confirmStay")}
-                  </button>
-                )}
               </div>
             </div>
           ))}

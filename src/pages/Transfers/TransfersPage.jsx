@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
@@ -13,6 +14,12 @@ export default function TransfersPage() {
   const { t, language } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
+
+  useSeo({
+    title: "Transfers & Tours in Azerbaijan",
+    description: "Airport transfers, intercity rides and guided tours in Azerbaijan — booked directly with local drivers and guides on WhatsApp.",
+    path: "/transfers",
+  });
 
   const [type, setType] = useState(() => searchParams.get("type") || "");
   const [vehicle, setVehicle] = useState("");

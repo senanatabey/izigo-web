@@ -131,7 +131,7 @@ export default function TransferDetail() {
             <div className="td-price">
               {item.discount ? (<><span className="td-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
             </div>
-            <SaveHeart type={item.type === "tour" ? "experience" : "transfer"} id={item.id} className="detail-save-btn" />
+            <SaveHeart type="transfer" id={item.id} className="detail-save-btn" />
           </div>
 
           <Link to={`/host/${item.host?.id}`} className="td-host">

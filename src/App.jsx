@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-  BrowserRouter, Routes, Route, Outlet, Navigate, Link, useLocation,
+  BrowserRouter, Routes, Route, Outlet, Navigate, Link, useLocation, useParams,
 } from "react-router-dom";
 import {
   Home as HomeIcon, Heart, User, ListChecks,
@@ -14,8 +14,6 @@ import VillasPage from "./pages/Villas/VillasPage";
 import VillaDetailPage from "./pages/Villas/VillaDetail";
 import CarsPage from "./pages/Cars/CarsPage";
 import CarDetailPage from "./pages/Cars/CarDetail";
-import ExperiencesPage from "./pages/Experiences/ExperiencesPage";
-import ExperienceDetailPage from "./pages/Experiences/ExperienceDetail";
 import DealsPage from "./pages/Deals/DealsPage";
 import SavedPage from "./pages/Saved/SavedPage";
 import ProfilePage from "./pages/Profile/ProfilePage";
@@ -254,10 +252,14 @@ function IzigoLogoDark() {
 const MAIN_NAV_ITEMS = [
   { to: "/villas", key: "villas" },
   { to: "/cars", key: "cars" },
-  { to: "/transfers?type=transfer", key: "transfers", matchTo: "/transfers" },
-  { to: "/experiences", key: "tours" },
+  { to: "/transfers", key: "transfers" },
   { to: "/concierge", key: "concierge" },
 ];
+
+function ExperienceRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/transfers/${id}`} replace />;
+}
 
 function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
@@ -336,24 +338,25 @@ function AuthLayout() {
 }
 
 const APP_NAV_ITEMS = [
-  { to: "/profile", label: "Profile", icon: User },
-  { to: "/my-listings", label: "My listings", icon: ListChecks },
-  { to: "/add-listing", label: "Add listing", icon: PlusCircle },
-  { to: "/reviews", label: "Reviews", icon: Star },
+  { to: "/profile", key: "profile", icon: User },
+  { to: "/my-listings", key: "myListings", icon: ListChecks },
+  { to: "/add-listing", key: "addListing", icon: PlusCircle },
+  { to: "/reviews", key: "reviews", icon: Star },
 ];
 
 function AppLayout() {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   return (
     <div className="app-shell">
       <aside className="app-sidebar">
         <Link to="/"><IzigoLogoDark /></Link>
-        {APP_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-          <Link key={to} to={to} className="sidebar-link"><Icon size={17} />{label}</Link>
+        {APP_NAV_ITEMS.map(({ to, key, icon: Icon }) => (
+          <Link key={to} to={to} className="sidebar-link"><Icon size={17} />{t(`sidebar.${key}`)}</Link>
         ))}
         <NotificationBell userId={user?.id} />
         <LanguageSwitcher />
-        <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Log out</button>
+        <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
       </aside>
       <main className="app-main">
         <p style={{ fontSize: 13, color: "var(--text-soft)", marginBottom: 18 }}>
@@ -438,8 +441,11 @@ export default function App() {
             <Route path="cars/:id" element={<CarDetailPage />} />
             <Route path="transfers" element={<TransfersPage />} />
             <Route path="transfers/:id" element={<TransferDetailPage />} />
-            <Route path="experiences" element={<ExperiencesPage />} />
-            <Route path="experiences/:id" element={<ExperienceDetailPage />} />
+            {/* Tours used to live on their own page — they're just transfer
+                listings with details.type "tour", so this now redirects into
+                the merged Transfers & Tours page instead of a separate one. */}
+            <Route path="experiences" element={<Navigate to="/transfers" replace />} />
+            <Route path="experiences/:id" element={<ExperienceRedirect />} />
             <Route path="events" element={<EventsPage />} />
             <Route path="events/:id" element={<EventDetailPage />} />
             <Route path="deals" element={<DealsPage />} />

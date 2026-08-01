@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export default function NotificationBell({ userId }) {
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -67,13 +69,13 @@ export default function NotificationBell({ userId }) {
       `}</style>
       <button type="button" className="nb-btn" onClick={toggleOpen}>
         <Bell size={17} />
-        Notifications
+        {t("sidebar.notifications")}
         {unreadCount > 0 && <span className="nb-dot" />}
       </button>
       {open && (
         <div className="nb-dropdown">
           {notifications.length === 0 ? (
-            <div className="nb-empty">No notifications yet.</div>
+            <div className="nb-empty">{t("sidebar.noNotifications")}</div>
           ) : (
             notifications.map((n) => (
               <Link to={n.link || "#"} className={`nb-item${n.read ? "" : " unread"}`} key={n.id} onClick={() => setOpen(false)}>

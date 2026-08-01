@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { MapPin, Sparkles, UtensilsCrossed, Compass, Home as HomeIcon, Car, ArrowLeftRight, PartyPopper } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useSeo } from "../../lib/seo";
 
 const BROWSE_LINKS = [
   { icon: HomeIcon, key: "villas", to: "/villas" },
@@ -13,8 +14,15 @@ export default function CityGuide() {
   const { city } = useParams();
   const { t } = useLanguage();
   const data = t(`cities.${city}`);
+  const isValid = data && typeof data === "object";
 
-  if (!data || typeof data !== "object") {
+  useSeo({
+    title: isValid ? `${data.name} Travel Guide — History, Sightseeing & Attractions` : undefined,
+    description: isValid ? data.intro : undefined,
+    path: `/destinations/${city}`,
+  });
+
+  if (!isValid) {
     return <Navigate to="/" replace />;
   }
 

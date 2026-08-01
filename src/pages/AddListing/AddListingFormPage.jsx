@@ -117,7 +117,11 @@ export default function AddListingFormPage() {
   const uploadPhotos = async () => {
     const urls = [];
     for (const file of photos) {
-      const path = `${user.id}/${crypto.randomUUID()}-${file.name}`;
+      // Storage keys must stay ASCII-safe — the original filename (accents,
+      // spaces, parentheses) can otherwise be rejected as an "Invalid key".
+      const extMatch = /\.([a-zA-Z0-9]+)$/.exec(file.name);
+      const ext = extMatch ? extMatch[1].toLowerCase() : "jpg";
+      const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
       const { error: uploadError } = await supabase.storage.from("listing-images").upload(path, file);
       if (uploadError) throw uploadError;
       const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
