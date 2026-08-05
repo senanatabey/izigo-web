@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Settings2 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
@@ -13,6 +14,7 @@ const PRICE_OPTIONS = [40, 50, 60, 80];
 
 export default function CarsPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -166,7 +168,7 @@ export default function CarsPage() {
                 </div>
                 <div className="cp-footer">
                   <div className="cp-price">
-                    {c.discount ? (<><span className="cp-price-old">{c.price} AZN</span> {Math.round(c.price * (1 - c.discount / 100))} AZN</>) : `${c.price} AZN`} <span>{t("carsPage.perDay")}</span>
+                    {c.discount ? (<><span className="cp-price-old">{formatPrice(c.price)}</span> {formatPrice(Math.round(c.price * (1 - c.discount / 100)))}</>) : formatPrice(c.price)} <span>{t("carsPage.perDay")}</span>
                   </div>
                   <span className="cp-link">{t("carsPage.viewDetails")} →</span>
                 </div>

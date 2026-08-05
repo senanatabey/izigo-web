@@ -44,3 +44,14 @@ export const ALL_DESTINATIONS = [
 export function cityLabel(city, language) {
   return language === "az" ? (AZ_NAMES[city] || city) : city;
 }
+
+/* City Guide URLs (/destinations/:slug) use a lowercase slug of the
+   canonical `city` value above — these two helpers are the only place
+   that mapping happens, so every other module stays in sync automatically. */
+export function citySlug(city) {
+  return city.toLowerCase();
+}
+
+export function cityFromSlug(slug) {
+  return ALL_DESTINATIONS.find((city) => citySlug(city) === slug) || null;
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId } from "../../lib/listings";
@@ -10,6 +11,7 @@ const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", even
 
 export default function MyListingsPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +89,7 @@ export default function MyListingsPage() {
               />
               <div className="mlp-body">
                 <div className="mlp-title">{item.title[language] || item.title.en}</div>
-                <div className="mlp-meta"><MapPin size={12} />{item.city} · {item.price} AZN</div>
+                <div className="mlp-meta"><MapPin size={12} />{item.city} · {formatPrice(item.price)}</div>
                 {item.status === "rejected" && item.rejectReason && (
                   <div className="mlp-reject-reason">{t("myListingsPage.rejectReasonLabel")}: {item.rejectReason}</div>
                 )}

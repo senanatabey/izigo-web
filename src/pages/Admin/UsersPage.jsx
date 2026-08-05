@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { tryGrantFounderStatus } from "../../lib/founder";
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -26,6 +27,12 @@ export default function UsersPage() {
     load();
   };
 
+  const toggleVerified = async (id, currentlyVerified) => {
+    await supabase.from("profiles").update({ verified: !currentlyVerified }).eq("id", id);
+    if (!currentlyVerified) await tryGrantFounderStatus(id);
+    load();
+  };
+
   return (
     <div>
       <style>{`
@@ -36,6 +43,10 @@ export default function UsersPage() {
         .role-pill.admin { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
         .role-pill.host { background: var(--bg-soft); color: var(--text-soft); }
         .admin-users-table button.toggle { border: none; background: none; color: var(--izigo-green); font-weight: 700; cursor: pointer; font-size: 12.5px; }
+        .verified-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+        .verified-pill.yes { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .verified-pill.no { background: var(--bg-soft); color: var(--text-soft); }
+        .founder-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: rgba(255,180,0,0.16); color: #B87700; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Users</h1>
       {loading ? <p>Loading...</p> : users.length === 0 ? (
@@ -43,7 +54,7 @@ export default function UsersPage() {
       ) : (
         <table className="admin-users-table">
           <thead>
-            <tr><th>Name</th><th>Phone</th><th>Role</th><th>Listings</th><th>Joined</th><th></th></tr>
+            <tr><th>Name</th><th>Phone</th><th>Role</th><th>Listings</th><th>Verified</th><th>Founder</th><th>Joined</th><th></th></tr>
           </thead>
           <tbody>
             {users.map((u) => (
@@ -52,6 +63,12 @@ export default function UsersPage() {
                 <td>{u.phone || "—"}</td>
                 <td><span className={`role-pill ${u.role}`}>{u.role}</span></td>
                 <td>{u.listingCount}</td>
+                <td>
+                  <button className="toggle" onClick={() => toggleVerified(u.id, u.verified)}>
+                    <span className={`verified-pill ${u.verified ? "yes" : "no"}`}>{u.verified ? "Verified" : "Not verified"}</span>
+                  </button>
+                </td>
+                <td>{u.founder_host ? <span className="founder-pill">🏅 Founder</span> : "—"}</td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Revoke admin" : "Make admin"}</button></td>
               </tr>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Settings2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
@@ -12,6 +13,7 @@ import ListingReviews from "../../components/ListingReviews";
 export default function CarDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -119,7 +121,7 @@ export default function CarDetail() {
         <aside className="cd-sidebar">
           <div className="cd-price-row">
             <div className="cd-price">
-              {car.discount ? (<><span className="cd-price-old">{car.price} AZN</span> {Math.round(car.price * (1 - car.discount / 100))} AZN</>) : `${car.price} AZN`} <span>{t("carsPage.perDay")}</span>
+              {car.discount ? (<><span className="cd-price-old">{formatPrice(car.price)}</span> {formatPrice(Math.round(car.price * (1 - car.discount / 100)))}</>) : formatPrice(car.price)} <span>{t("carsPage.perDay")}</span>
             </div>
             <SaveHeart type="car" id={car.id} className="detail-save-btn" />
           </div>

@@ -5,6 +5,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { submitTripRequest } from "../../lib/tripRequests";
 
 const CITIES = ["Baku", "Gabala", "Guba"];
 
@@ -27,6 +28,7 @@ const OCCASIONS = [
 
 export default function PlanMyTripForm() {
   const { t } = useLanguage();
+  const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
   const [budget, setBudget] = useState("");
   const [guests, setGuests] = useState("");
@@ -35,14 +37,35 @@ export default function PlanMyTripForm() {
   const [notes, setNotes] = useState("");
   const [travelerType, setTravelerType] = useState("");
   const [occasion, setOccasion] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const canSubmit = destination && budget && guests && days && whatsapp;
+  const canSubmit = name && destination && budget && guests && days && whatsapp;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
-    setSubmitted(true);
+    if (!canSubmit || submitting) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitTripRequest({
+        guest_name: name,
+        whatsapp,
+        city: destination,
+        budget: Number(budget),
+        guests_count: Number(guests),
+        trip_length_days: Number(days),
+        traveler_type: travelerType || null,
+        occasion: occasion || null,
+        special_requests: notes || null,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(t("planTrip.submitError"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -58,6 +81,10 @@ export default function PlanMyTripForm() {
   return (
     <form className="pt-form" onSubmit={handleSubmit}>
       <div className="pt-row">
+        <div className="pt-field full">
+          <label><User size={13} />{t("planTrip.name")}</label>
+          <input type="text" placeholder={t("planTrip.namePlaceholder")} value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
         <div className="pt-field">
           <label><MapPin size={13} />{t("planTrip.destination")}</label>
           <select value={destination} onChange={(e) => setDestination(e.target.value)}>
@@ -84,6 +111,7 @@ export default function PlanMyTripForm() {
         <div className="pt-field full">
           <label>{t("planTrip.notes")}</label>
           <textarea placeholder={t("planTrip.notesPlaceholder")} value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <p className="pt-notes-hint">{t("planTrip.notesHint")}</p>
         </div>
       </div>
 
@@ -115,8 +143,9 @@ export default function PlanMyTripForm() {
         ))}
       </div>
 
-      <button type="submit" className="pt-submit" disabled={!canSubmit}>
-        {t("planTrip.submit")}
+      {error && <p className="pt-submit-error">{error}</p>}
+      <button type="submit" className="pt-submit" disabled={!canSubmit || submitting}>
+        {submitting ? t("planTrip.submitting") : t("planTrip.submit")}
       </button>
       <p className="pt-submit-note">{t("planTrip.submitNote")}</p>
     </form>

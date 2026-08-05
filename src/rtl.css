@@ -1,0 +1,42 @@
+/* ==========================================================================
+   RTL utility stylesheet.
+
+   Most of the site is flexbox-based, which already mirrors correctly the
+   moment `dir="rtl"` is set on <html> (LanguageContext does this whenever
+   the active language is flagged `rtl: true` in translations.js — see
+   RTL_LANGUAGES). This file only overrides the handful of rules that use
+   *physical* left/right values instead of flow-relative ones, which the
+   browser cannot flip automatically. Keep additions here minimal and
+   targeted — do not duplicate whole component stylesheets.
+   ========================================================================== */
+
+.rtl .sidebar-link.active {
+  border-left: none;
+  border-right: 3px solid var(--izigo-green);
+  padding-left: 12px;
+  padding-right: 9px;
+}
+
+.rtl .locale-switcher-dropdown {
+  left: auto;
+  right: 0;
+  transform-origin: top left;
+}
+
+.rtl .account-menu-dropdown {
+  right: auto;
+  left: 0;
+  transform-origin: top right;
+}
+
+.rtl .admin-profile-dropdown {
+  left: auto;
+  right: 0;
+}
+
+.rtl .nav-icon-badge,
+.rtl .admin-kpi-badge {
+  right: auto;
+  left: 2px;
+}
+

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Calendar } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
@@ -11,6 +12,7 @@ const CITIES = ALL_DESTINATIONS;
 
 export default function EventsPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -138,7 +140,7 @@ export default function EventsPage() {
                 <div className="ep-meta"><Calendar size={13} />{formatDate(e.date)}</div>
                 <div className="ep-footer">
                   <div className="ep-price">
-                    {e.price === 0 ? t("eventsPage.free") : e.discount ? (<><span className="ep-price-old">{e.price} AZN</span> {Math.round(e.price * (1 - e.discount / 100))} AZN</>) : `${e.price} AZN`}
+                    {e.price === 0 ? t("eventsPage.free") : e.discount ? (<><span className="ep-price-old">{formatPrice(e.price)}</span> {formatPrice(Math.round(e.price * (1 - e.discount / 100)))}</>) : formatPrice(e.price)}
                   </div>
                   <span className="ep-link">{t("eventsPage.viewDetails")} →</span>
                 </div>

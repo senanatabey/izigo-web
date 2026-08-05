@@ -3,9 +3,9 @@ Allow: /
 Disallow: /admin
 Disallow: /profile
 Disallow: /my-listings
-Disallow: /add-listing
 Disallow: /edit-listing
 Disallow: /reviews
+Disallow: /notifications
 Disallow: /login
 Disallow: /register
 

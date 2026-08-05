@@ -1,5 +1,13 @@
+import { Check } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import PlanMyTripForm from "./PlanMyTripForm";
+
+const TRUST_ITEMS = [
+  "personalizedPlanning",
+  "verifiedExperts",
+  "directWhatsapp",
+  "noBookingFees",
+];
 
 export default function PlanMyTripPage() {
   const { t } = useLanguage();
@@ -12,6 +20,13 @@ export default function PlanMyTripPage() {
         .plan-trip-page .pt-head h1 { font-size: 32px; font-weight: 800; margin: 0 0 10px; }
         .plan-trip-page .pt-head p { font-size: 15px; color: var(--text-soft); max-width: 560px; margin: 0 auto; line-height: 1.6; }
         .plan-trip-page .pt-tagline { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange); background: var(--bg-soft); padding: 6px 14px; border-radius: 999px; margin-bottom: 16px; }
+        .plan-trip-page .pt-trust-row {
+          display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px; margin-top: 18px;
+        }
+        .plan-trip-page .pt-trust-item {
+          display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-soft);
+        }
+        .plan-trip-page .pt-trust-item svg { color: var(--izigo-green); flex-shrink: 0; }
 
         .plan-trip-page .pt-form { border: 1px solid var(--border); border-radius: 20px; padding: 32px; }
         .plan-trip-page .pt-section-title { font-size: 15px; font-weight: 800; margin: 0 0 14px; color: var(--text); }
@@ -25,7 +40,8 @@ export default function PlanMyTripPage() {
           border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px;
           font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
         }
-        .plan-trip-page .pt-field textarea { resize: vertical; min-height: 80px; }
+        .plan-trip-page .pt-field textarea { resize: vertical; min-height: 170px; }
+        .plan-trip-page .pt-notes-hint { margin: 6px 0 0; font-size: 12px; color: var(--text-soft); }
 
         .plan-trip-page .pt-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
         .plan-trip-page .pt-chip {
@@ -42,6 +58,7 @@ export default function PlanMyTripPage() {
         }
         .plan-trip-page .pt-submit:disabled { opacity: 0.45; cursor: not-allowed; }
         .plan-trip-page .pt-submit-note { text-align: center; font-size: 12px; color: var(--text-soft); margin-top: 12px; }
+        .plan-trip-page .pt-submit-error { text-align: center; font-size: 13px; font-weight: 600; color: #E0553F; margin: 0 0 12px; }
 
         .plan-trip-page .pt-success { text-align: center; border: 1px solid var(--border); border-radius: 20px; padding: 56px 32px; }
         .plan-trip-page .pt-success-icon { color: var(--izigo-green); margin-bottom: 16px; }
@@ -59,6 +76,11 @@ export default function PlanMyTripPage() {
         <div className="pt-tagline">{t("planTrip.tagline")}</div>
         <h1>{t("planTrip.heading")}</h1>
         <p>{t("planTrip.subtitle")}</p>
+        <div className="pt-trust-row">
+          {TRUST_ITEMS.map((key) => (
+            <span className="pt-trust-item" key={key}><Check size={13} />{t(`planTrip.trust.${key}`)}</span>
+          ))}
+        </div>
       </div>
 
       <PlanMyTripForm />

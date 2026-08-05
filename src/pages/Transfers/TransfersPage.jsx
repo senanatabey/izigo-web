@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
@@ -12,6 +13,7 @@ const PRICE_OPTIONS = [30, 50, 75, 100];
 
 export default function TransfersPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -189,7 +191,7 @@ export default function TransfersPage() {
                 </div>
                 <div className="tp-footer">
                   <div className="tp-price">
-                    {item.discount ? (<><span className="tp-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
+                    {item.discount ? (<><span className="tp-price-old">{formatPrice(item.price)}</span> {formatPrice(Math.round(item.price * (1 - item.discount / 100)))}</>) : formatPrice(item.price)} <span>{t("transfersPage.perPerson")}</span>
                   </div>
                   <span className="tp-link">{t("transfersPage.viewDetails")} →</span>
                 </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Image as ImageIcon, X, Sparkles } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 import { fetchSiteSettings, updateDefaultHeroImages } from "../../lib/heroCampaigns";
+import { compressImage } from "../../lib/imageOptimize";
 
 const STATUSES = ["draft", "scheduled", "published", "archived"];
 
@@ -41,8 +42,9 @@ export default function HeroCampaignsPage() {
   const loadSettings = () => fetchSiteSettings().then(setSettings);
 
   const uploadDefaultImage = async (file) => {
-    const path = `default-${crypto.randomUUID()}.${safeExt(file)}`;
-    const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, file);
+    const optimized = await compressImage(file);
+    const path = `default-${crypto.randomUUID()}.${safeExt(optimized)}`;
+    const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, optimized);
     if (uploadError) throw uploadError;
     const { data } = supabase.storage.from("hero-images").getPublicUrl(path);
     return data.publicUrl;
@@ -96,8 +98,9 @@ export default function HeroCampaignsPage() {
   const closeForm = () => setForm(null);
 
   const uploadImage = async (file) => {
-    const path = `${crypto.randomUUID()}.${safeExt(file)}`;
-    const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, file);
+    const optimized = await compressImage(file);
+    const path = `${crypto.randomUUID()}.${safeExt(optimized)}`;
+    const { error: uploadError } = await supabase.storage.from("hero-images").upload(path, optimized);
     if (uploadError) throw uploadError;
     const { data } = supabase.storage.from("hero-images").getPublicUrl(path);
     return data.publicUrl;

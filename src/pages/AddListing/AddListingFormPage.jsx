@@ -3,12 +3,14 @@ import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import {
   MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar, Percent,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
-  Waves, Thermometer,
+  Waves, Thermometer, User, Mail, Lock,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
+import { compressImage } from "../../lib/imageOptimize";
+import { isFounderCampaignJoinable } from "../../lib/founder";
 
 const CITIES = ALL_DESTINATIONS;
 const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden", "pool", "heated_pool"];
@@ -53,10 +55,16 @@ export default function AddListingFormPage() {
 
   const [serviceType, setServiceType] = useState("");
 
+  const [accountName, setAccountName] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
+  const [accountPassword, setAccountPassword] = useState("");
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+
   const [photos, setPhotos] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [showFounderNote, setShowFounderNote] = useState(false);
 
   useEffect(() => {
     if (!isEdit || !user) return;
@@ -114,15 +122,18 @@ export default function AddListingFormPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const uploadPhotos = async () => {
+  const uploadPhotos = async (uploaderId) => {
     const urls = [];
     for (const file of photos) {
+      // Resize + re-encode as WebP before it ever leaves the browser —
+      // smaller uploads, smaller storage, smaller downloads for every visitor.
+      const optimized = await compressImage(file);
       // Storage keys must stay ASCII-safe — the original filename (accents,
       // spaces, parentheses) can otherwise be rejected as an "Invalid key".
-      const extMatch = /\.([a-zA-Z0-9]+)$/.exec(file.name);
+      const extMatch = /\.([a-zA-Z0-9]+)$/.exec(optimized.name);
       const ext = extMatch ? extMatch[1].toLowerCase() : "jpg";
-      const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("listing-images").upload(path, file);
+      const path = `${uploaderId}/${crypto.randomUUID()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("listing-images").upload(path, optimized);
       if (uploadError) throw uploadError;
       const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
       urls.push(data.publicUrl);
@@ -132,6 +143,7 @@ export default function AddListingFormPage() {
 
   const canSubmit = (() => {
     if (!title || !city || !description || !whatsapp) return false;
+    if (!user && (!accountName || !accountEmail || accountPassword.length < 6)) return false;
     if (!isFree && !price && category !== "event") return false;
     if (category === "event" && !isFree && !price) return false;
     if (category === "villa") return !!(guests && bedrooms);
@@ -153,11 +165,35 @@ export default function AddListingFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit || !user) return;
+    if (!canSubmit) return;
+    if (isEdit && !user) return;
     setError("");
     setSubmitting(true);
     try {
-      const uploaded = await uploadPhotos();
+      let hostId = user?.id;
+
+      // Guests can publish without an account first — we create it here,
+      // right alongside the listing, tap.az-style.
+      if (!user) {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: accountEmail,
+          password: accountPassword,
+          options: { data: { full_name: accountName, phone: `+994${whatsapp}` } },
+        });
+        if (signUpError) throw signUpError;
+        if (!data.session) {
+          // Email confirmation is required — we can't upload photos or
+          // insert the listing without an authenticated session, so ask
+          // the guest to confirm and come back. Their entered fields stay
+          // filled so they can just log in and resubmit.
+          setNeedsEmailConfirmation(true);
+          setSubmitting(false);
+          return;
+        }
+        hostId = data.user.id;
+      }
+
+      const uploaded = await uploadPhotos(hostId);
       const images = [...existingImages, ...uploaded];
       const payload = {
         category,
@@ -177,8 +213,22 @@ export default function AddListingFormPage() {
           .eq("id", params.id);
         if (updateError) throw updateError;
       } else {
-        const { error: insertError } = await supabase.from("listings").insert({ ...payload, host_id: user.id });
+        const { error: insertError } = await supabase.from("listings").insert({ ...payload, host_id: hostId });
         if (insertError) throw insertError;
+      }
+
+      // Founder benefits only apply to Villa, Cars, Transfers and Local
+      // Services — Events are excluded, so no Founder messaging there.
+      if (!isEdit && category !== "event") {
+        const { count } = await supabase
+          .from("listings")
+          .select("id", { count: "exact", head: true })
+          .eq("host_id", hostId);
+        const isFirstListing = (count || 0) <= 1;
+        if (isFirstListing) {
+          const joinable = await isFounderCampaignJoinable();
+          setShowFounderNote(joinable);
+        }
       }
       setSubmitted(true);
     } catch (err) {
@@ -191,6 +241,7 @@ export default function AddListingFormPage() {
   return (
     <div className="add-listing-form-page">
       <style>{`
+        .add-listing-form-page { max-width: 1280px; margin: 0 auto; padding: 40px 5vw 80px; }
         .add-listing-form-page .alf-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 16px; }
         .add-listing-form-page .alf-head { margin-bottom: 24px; }
         .add-listing-form-page .alf-head h1 { font-size: 22px; font-weight: 800; margin: 0 0 8px; }
@@ -199,6 +250,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page form { border: 1px solid var(--border); border-radius: 18px; padding: 28px; max-width: 640px; }
         .add-listing-form-page .alf-section-title { font-size: 14px; font-weight: 800; margin: 24px 0 14px; color: var(--text); }
         .add-listing-form-page .alf-section-title:first-child { margin-top: 0; }
+        .add-listing-form-page .alf-account-note { font-size: 12.5px; color: var(--text-soft); line-height: 1.5; margin: -6px 0 16px; }
         .add-listing-form-page .alf-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
         .add-listing-form-page .alf-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .add-listing-form-page .alf-field.full { grid-column: 1 / -1; }
@@ -274,11 +326,22 @@ export default function AddListingFormPage() {
 
       <Link to="/add-listing" className="alf-back">{t("addListing.back")}</Link>
 
-      {submitted ? (
+      {needsEmailConfirmation ? (
+        <div className="alf-success">
+          <CheckCircle2 size={44} className="alf-success-icon" />
+          <h2>{t("auth.checkEmailTitle")}</h2>
+          <p>{t("auth.checkEmailText").replace("{email}", accountEmail)}</p>
+          <p>{t("addListing.confirmThenResubmit")}</p>
+          <div className="alf-success-actions">
+            <Link to="/login" className="alf-btn-primary">{t("nav.login")}</Link>
+          </div>
+        </div>
+      ) : submitted ? (
         <div className="alf-success">
           <CheckCircle2 size={44} className="alf-success-icon" />
           <h2>{t("addListing.successHeading")}</h2>
           <p>{t("addListing.successText")}</p>
+          {showFounderNote && <p>{t("addListing.founderSuccessNote")}</p>}
           <div className="alf-success-actions">
             <Link to="/my-listings" className="alf-btn-primary">{t("addListing.viewMyListings")}</Link>
             <Link to="/add-listing" className="alf-btn-outline">{t("addListing.addAnother")}</Link>
@@ -429,13 +492,13 @@ export default function AddListingFormPage() {
               <div className="alf-photo-previews">
                 {existingImages.map((url, i) => (
                   <div className="alf-photo-thumb" key={`existing-${i}`}>
-                    <img src={url} alt="" />
+                    <img src={url} alt="" loading="lazy" decoding="async" />
                     <button type="button" onClick={() => removeExistingImage(i)}><X size={12} /></button>
                   </div>
                 ))}
                 {photos.map((file, i) => (
                   <div className="alf-photo-thumb" key={i}>
-                    <img src={URL.createObjectURL(file)} alt="" />
+                    <img src={URL.createObjectURL(file)} alt="" loading="lazy" decoding="async" />
                     <button type="button" onClick={() => removePhoto(i)}><X size={12} /></button>
                   </div>
                 ))}
@@ -466,6 +529,25 @@ export default function AddListingFormPage() {
                 />
               </div>
             </div>
+
+            {!user && (
+              <>
+                <p className="alf-section-title">{t("addListing.accountSectionTitle")}</p>
+                <p className="alf-account-note">{t("addListing.accountSectionNote")}</p>
+                <div className="alf-field full">
+                  <label><User size={13} />{t("auth.nameLabel")}</label>
+                  <input type="text" placeholder={t("auth.namePlaceholder")} value={accountName} onChange={(e) => setAccountName(e.target.value)} />
+                </div>
+                <div className="alf-field full">
+                  <label><Mail size={13} />{t("auth.emailLabel")}</label>
+                  <input type="email" placeholder={t("auth.emailPlaceholder")} value={accountEmail} onChange={(e) => setAccountEmail(e.target.value)} />
+                </div>
+                <div className="alf-field full">
+                  <label><Lock size={13} />{t("auth.passwordLabel")}</label>
+                  <input type="password" placeholder={t("auth.passwordPlaceholder")} value={accountPassword} onChange={(e) => setAccountPassword(e.target.value)} />
+                </div>
+              </>
+            )}
 
             {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
             <button type="submit" className="alf-submit" disabled={!canSubmit || submitting}>

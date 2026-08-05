@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
+import { ClipboardList } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
+import { useCurrency } from "../../i18n/CurrencyContext";
+import AdminEmptyState from "../../components/AdminEmptyState";
+import { tryGrantFounderStatus } from "../../lib/founder";
 
 export default function PendingApprovalsPage() {
+  const { formatPrice } = useCurrency();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +30,7 @@ export default function PendingApprovalsPage() {
   const approve = async (listing) => {
     await supabase.from("listings").update({ status: "approved", reject_reason: null }).eq("id", listing.id);
     await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" was approved and is now live.`, "/my-listings");
+    await tryGrantFounderStatus(listing.host_id);
     load();
   };
 
@@ -54,13 +60,13 @@ export default function PendingApprovalsPage() {
       {loading ? (
         <p>Loading...</p>
       ) : listings.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No pending listings.</p>
+        <AdminEmptyState icon={ClipboardList} message="No pending approvals." actionLabel="View listings" actionTo="/admin/listings" />
       ) : (
         <div className="pending-list">
           {listings.map((l) => (
             <div className="pending-card" key={l.id}>
               <h3>{l.title?.en || l.title?.az} — {l.category}</h3>
-              <p>{l.city} · {l.price} AZN · submitted {new Date(l.created_at).toLocaleDateString()}</p>
+              <p>{l.city} · {formatPrice(l.price)} · submitted {new Date(l.created_at).toLocaleDateString()}</p>
               <div className="pending-actions">
                 <button className="btn-approve" onClick={() => approve(l)}>Approve</button>
                 <button className="btn-reject" onClick={() => reject(l)}>Reject</button>

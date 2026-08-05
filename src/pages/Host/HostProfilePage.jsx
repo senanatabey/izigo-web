@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
@@ -15,6 +16,7 @@ function toPath(row) {
 export default function HostProfilePage() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [host, setHost] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +85,7 @@ export default function HostProfilePage() {
               <div className="hp-body">
                 <div className="hp-city"><MapPin size={12} />{cityLabel(row.city, language)}</div>
                 <div className="hp-title">{row.title[language] || row.title.en}</div>
-                <div className="hp-price">{row.price} AZN</div>
+                <div className="hp-price">{formatPrice(row.price)}</div>
               </div>
             </Link>
           ))}

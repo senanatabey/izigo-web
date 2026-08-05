@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Heart } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useSaved } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId, shortListingCode } from "../../lib/listings";
@@ -17,6 +18,7 @@ function toPath(row) {
 
 export default function SavedPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { saved } = useSaved();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,8 +104,8 @@ export default function SavedPage() {
                 <div className="sp-title">{item.title[language] || item.title.en}</div>
                 <div className="sp-price">
                   {item.priceUnit
-                    ? <>{item.price} AZN <span>{t(item.priceUnit)}</span></>
-                    : (item.price === 0 ? t("eventsPage.free") : `${item.price} AZN`)}
+                    ? <>{formatPrice(item.price)} <span>{t(item.priceUnit)}</span></>
+                    : (item.price === 0 ? t("eventsPage.free") : formatPrice(item.price))}
                 </div>
                 <div className="sp-meta">{item.code}{item.hostName ? ` · ${item.hostName}` : ""}</div>
               </div>

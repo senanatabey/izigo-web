@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, Car, Footprints, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
@@ -12,6 +13,7 @@ import ListingReviews from "../../components/ListingReviews";
 export default function TransferDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -129,7 +131,7 @@ export default function TransferDetail() {
         <aside className="td-sidebar">
           <div className="td-price-row">
             <div className="td-price">
-              {item.discount ? (<><span className="td-price-old">{item.price} AZN</span> {Math.round(item.price * (1 - item.discount / 100))} AZN</>) : `${item.price} AZN`} <span>{t("transfersPage.perPerson")}</span>
+              {item.discount ? (<><span className="td-price-old">{formatPrice(item.price)}</span> {formatPrice(Math.round(item.price * (1 - item.discount / 100)))}</>) : formatPrice(item.price)} <span>{t("transfersPage.perPerson")}</span>
             </div>
             <SaveHeart type="transfer" id={item.id} className="detail-save-btn" />
           </div>

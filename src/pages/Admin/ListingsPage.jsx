@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { Home as HomeIcon } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
+import { useCurrency } from "../../i18n/CurrencyContext";
+import AdminEmptyState from "../../components/AdminEmptyState";
 
 const STATUSES = ["all", "pending", "approved", "rejected"];
 
 export default function ListingsPage() {
+  const { formatPrice } = useCurrency();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
@@ -48,7 +52,7 @@ export default function ListingsPage() {
         ))}
       </div>
       {loading ? <p>Loading...</p> : listings.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No listings.</p>
+        <AdminEmptyState icon={HomeIcon} message="No listings yet." actionLabel="Add listing" actionTo="/add-listing" />
       ) : (
         <table className="admin-listings-table">
           <thead>
@@ -60,7 +64,7 @@ export default function ListingsPage() {
                 <td>{l.title?.en || l.title?.az}</td>
                 <td>{l.category}</td>
                 <td>{l.city}</td>
-                <td>{l.price} AZN</td>
+                <td>{formatPrice(l.price)}</td>
                 <td><span className={`status-pill ${l.status}`}>{l.status}</span></td>
                 <td><button className="delete" onClick={() => remove(l.id)}>Delete</button></td>
               </tr>

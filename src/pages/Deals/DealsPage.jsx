@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { MapPin, Percent } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId, shortListingCode } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
@@ -20,6 +21,7 @@ function saveType(row) {
 
 export default function DealsPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
 
   useSeo({
     title: "Deals & Discounts in Azerbaijan",
@@ -109,8 +111,8 @@ export default function DealsPage() {
                   <div className="dp-city"><MapPin size={12} />{cityLabel(item.city, language)}</div>
                   <div className="dp-title">{item.title[language] || item.title.en}</div>
                   <div className="dp-price-row">
-                    <span className="dp-price-new">{discounted} AZN</span>
-                    <span className="dp-price-old">{item.price} AZN</span>
+                    <span className="dp-price-new">{formatPrice(discounted)}</span>
+                    <span className="dp-price-old">{formatPrice(item.price)}</span>
                   </div>
                   <div className="dp-meta">{item.code}{item.hostName ? ` · ${item.hostName}` : ""}</div>
                 </div>

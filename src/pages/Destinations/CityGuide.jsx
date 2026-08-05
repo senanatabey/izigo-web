@@ -1,7 +1,11 @@
-import { useParams, Link, Navigate } from "react-router-dom";
-import { MapPin, Sparkles, UtensilsCrossed, Compass, Home as HomeIcon, Car, ArrowLeftRight, PartyPopper } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { MapPin, Sparkles, UtensilsCrossed, Compass, Home as HomeIcon, Car, ArrowLeftRight, PartyPopper, MapPinOff } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { useSeo } from "../../lib/seo";
+import { useSeo, schema } from "../../lib/seo";
+import { cityFromSlug, cityLabel } from "../../data/azerbaijanDestinations";
+import { getDestinationContent } from "../../data/destinations";
+import { fetchPublishedGuideBySlug, fetchPlacesByCity } from "../../lib/cms";
 
 const BROWSE_LINKS = [
   { icon: HomeIcon, key: "villas", to: "/villas" },
@@ -10,21 +14,98 @@ const BROWSE_LINKS = [
   { icon: PartyPopper, key: "events", to: "/events" },
 ];
 
-export default function CityGuide() {
-  const { city } = useParams();
+function DestinationNotFound() {
   const { t } = useLanguage();
-  const data = t(`cities.${city}`);
-  const isValid = data && typeof data === "object";
+
+  return (
+    <div className="city-guide-not-found">
+      <style>{`
+        .city-guide-not-found {
+          max-width: 520px; margin: 0 auto; padding: 96px 6vw; text-align: center;
+        }
+        .city-guide-not-found .cgnf-icon {
+          width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 20px; display: flex;
+          align-items: center; justify-content: center; background: var(--bg-soft); color: var(--text-soft);
+        }
+        .city-guide-not-found h1 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
+        .city-guide-not-found p { font-size: 14.5px; color: var(--text-soft); margin: 0 0 24px; }
+        .city-guide-not-found a {
+          display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green); color: #fff;
+          border-radius: 10px; padding: 11px 22px; font-weight: 700; font-size: 14px;
+        }
+      `}</style>
+      <div className="cgnf-icon"><MapPinOff size={24} /></div>
+      <h1>{t("cityGuide.notFoundHeading")}</h1>
+      <p>{t("cityGuide.notFoundText")}</p>
+      <Link to="/destinations">{t("cityGuide.notFoundCta")}</Link>
+    </div>
+  );
+}
+
+export default function CityGuide() {
+  const { city: slug } = useParams();
+  const { t, language } = useLanguage();
+
+  // undefined = still loading from Supabase, null = no CMS guide for this slug
+  const [cmsGuide, setCmsGuide] = useState(undefined);
+  const [mustVisitPlaces, setMustVisitPlaces] = useState([]);
+
+  useEffect(() => {
+    setCmsGuide(undefined);
+    fetchPublishedGuideBySlug(slug, language).then(setCmsGuide);
+  }, [slug, language]);
+
+  const city = cityFromSlug(slug);
+  const staticArticle = city ? getDestinationContent(slug, language) : null;
+  const displayCity = city || cmsGuide?.city || null;
+  const cmsReady = cmsGuide !== undefined;
+
+  // CMS content wins when published; static src/data/destinations/*.js content
+  // (Stage 1) is the fallback for cities that don't have a CMS entry yet, and
+  // also backfills fields the CMS doesn't model (sightseeing/attractions/news).
+  const article = cmsGuide ? {
+    name: cmsGuide.title || (displayCity ? cityLabel(displayCity, language) : slug),
+    tagline: cmsGuide.meta_description || staticArticle?.tagline || "",
+    intro: cmsGuide.content || staticArticle?.intro || "",
+    sightseeing: staticArticle?.sightseeing || [],
+    attractions: staticArticle?.attractions || [],
+    news: staticArticle?.news || [],
+    heroImage: cmsGuide.hero_image_url || null,
+  } : staticArticle ? {
+    name: displayCity ? cityLabel(displayCity, language) : slug,
+    tagline: staticArticle.tagline,
+    intro: staticArticle.intro,
+    sightseeing: staticArticle.sightseeing,
+    attractions: staticArticle.attractions,
+    news: staticArticle.news,
+    heroImage: null,
+  } : null;
+
+  const isValid = !!article;
+  const stillLoading = !cmsReady && !staticArticle;
+
+  useEffect(() => {
+    if (!displayCity) { setMustVisitPlaces([]); return; }
+    fetchPlacesByCity(displayCity, language, { limit: 6 }).then(setMustVisitPlaces);
+  }, [displayCity, language]);
 
   useSeo({
-    title: isValid ? `${data.name} Travel Guide — History, Sightseeing & Attractions` : undefined,
-    description: isValid ? data.intro : undefined,
-    path: `/destinations/${city}`,
+    title: isValid ? `${article.name} Travel Guide — History, Sightseeing & Attractions` : "Destination not found",
+    description: isValid ? article.intro : undefined,
+    path: `/destinations/${slug}`,
+    image: isValid ? article.heroImage || undefined : undefined,
+    structuredData: isValid ? schema.touristDestination({
+      name: article.name,
+      description: article.intro,
+      url: `https://izigo.az/destinations/${slug}`,
+      image: article.heroImage || undefined,
+    }) : null,
   });
 
-  if (!isValid) {
-    return <Navigate to="/" replace />;
-  }
+  if (stillLoading) return null;
+  if (!isValid) return <DestinationNotFound />;
+
+  const data = article;
 
   return (
     <div className="city-guide">
@@ -32,6 +113,8 @@ export default function CityGuide() {
         .city-guide .guide-hero {
           padding: 64px 6vw 56px;
           background: linear-gradient(120deg, #0B3D3B 0%, var(--izigo-green) 55%, var(--izigo-orange) 130%);
+          background-size: cover;
+          background-position: center;
           color: #fff;
         }
         .city-guide .guide-hero-inner { max-width: 1280px; margin: 0 auto; }
@@ -51,13 +134,18 @@ export default function CityGuide() {
         .city-guide .catalog-empty { font-size: 12.5px; color: var(--text-soft); font-style: italic; }
 
         .city-guide .guide-main h2 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
-        .city-guide .guide-intro { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 36px; }
+        .city-guide .guide-intro { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 36px; white-space: pre-wrap; }
 
         .city-guide .news-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
         .city-guide .news-card { display: flex; align-items: flex-start; gap: 12px; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
         .city-guide .news-icon { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
         .city-guide .news-card h3 { font-size: 14.5px; font-weight: 700; margin: 0 0 3px; }
         .city-guide .news-card span { font-size: 12.5px; color: var(--text-soft); }
+
+        .city-guide .must-visit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 36px; }
+        .city-guide .must-visit-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .city-guide .must-visit-thumb { aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--bg-soft); }
+        .city-guide .must-visit-name { padding: 10px 12px; font-size: 13px; font-weight: 700; }
 
         .city-guide .browse-row { display: flex; flex-wrap: wrap; gap: 10px; }
         .city-guide .browse-pill {
@@ -73,7 +161,10 @@ export default function CityGuide() {
         }
       `}</style>
 
-      <section className="guide-hero">
+      <section
+        className="guide-hero"
+        style={data.heroImage ? { backgroundImage: `linear-gradient(120deg, rgba(11,61,59,0.75) 0%, rgba(0,200,151,0.55) 55%, rgba(255,122,0,0.55) 130%), url("${data.heroImage}")` } : undefined}
+      >
         <div className="guide-hero-inner">
           <Link to="/" className="guide-back">{t("cityGuide.backHome")}</Link>
           <h1>{data.name}</h1>
@@ -87,16 +178,20 @@ export default function CityGuide() {
 
           <div className="catalog-group">
             <div className="catalog-group-head"><Compass size={15} />{t("cityGuide.sightseeing")}</div>
-            <ul className="catalog-list">
-              {data.sightseeing.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
-            </ul>
+            {data.sightseeing.length > 0 ? (
+              <ul className="catalog-list">
+                {data.sightseeing.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
+              </ul>
+            ) : <p className="catalog-empty">{t("cityGuide.comingSoon")}</p>}
           </div>
 
           <div className="catalog-group">
             <div className="catalog-group-head"><Sparkles size={15} />{t("cityGuide.attractions")}</div>
-            <ul className="catalog-list">
-              {data.attractions.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
-            </ul>
+            {data.attractions.length > 0 ? (
+              <ul className="catalog-list">
+                {data.attractions.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
+              </ul>
+            ) : <p className="catalog-empty">{t("cityGuide.comingSoon")}</p>}
           </div>
 
           <div className="catalog-group">
@@ -109,18 +204,36 @@ export default function CityGuide() {
           <h2>{data.name}</h2>
           <p className="guide-intro">{data.intro}</p>
 
-          <h2>{t("cityGuide.newsHeading")}</h2>
-          <div className="news-list">
-            {data.news.map(({ title, date }) => (
-              <div className="news-card" key={title}>
-                <div className="news-icon"><Sparkles size={16} /></div>
-                <div>
-                  <h3>{title}</h3>
-                  <span>{date}</span>
-                </div>
+          {mustVisitPlaces.length > 0 && (
+            <>
+              <h2>{t("cityGuide.mustVisitHeading")}</h2>
+              <div className="must-visit-grid">
+                {mustVisitPlaces.map((p) => (
+                  <Link to={`/places/${p.slug}`} className="must-visit-card" key={p.id}>
+                    <div className="must-visit-thumb" style={p.hero_image_url ? { backgroundImage: `url("${p.hero_image_url}")` } : undefined} />
+                    <div className="must-visit-name">{p.name}</div>
+                  </Link>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
+
+          {data.news.length > 0 && (
+            <>
+              <h2>{t("cityGuide.newsHeading")}</h2>
+              <div className="news-list">
+                {data.news.map(({ title, date }) => (
+                  <div className="news-card" key={title}>
+                    <div className="news-icon"><Sparkles size={16} /></div>
+                    <div>
+                      <h3>{title}</h3>
+                      <span>{date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <p style={{ fontSize: 13.5, fontWeight: 700, color: "var(--text)", marginBottom: 12 }}>
             {t("cityGuide.browseListings")} {data.name}

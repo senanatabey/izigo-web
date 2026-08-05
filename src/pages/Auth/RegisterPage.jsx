@@ -8,7 +8,7 @@ export default function RegisterPage() {
 
   return (
     <RegisterForm
-      onSuccess={() => navigate("/profile", { replace: true })}
+      onSuccess={() => navigate("/welcome", { replace: true })}
       footerSwitch={
         <p className="ap-switch">
           {t("auth.haveAccount")} <Link to="/login">{t("auth.loginLink")}</Link>

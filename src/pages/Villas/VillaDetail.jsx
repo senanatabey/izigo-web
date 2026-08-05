@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Users, BedDouble, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
+import { useSeo, schema } from "../../lib/seo";
 import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
@@ -14,6 +16,7 @@ const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, par
 export default function VillaDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +43,21 @@ export default function VillaDetail() {
     images: row.images || [],
   } : null;
 
+  useSeo({
+    title: villa ? `${villa.title?.[language] || villa.title?.en} — ${villa.city}` : undefined,
+    description: villa ? (villa.description?.[language] || villa.description?.en) : undefined,
+    path: `/villas/${id}`,
+    image: villa?.images?.[0],
+    ogType: "product",
+    structuredData: villa ? schema.product({
+      name: villa.title?.[language] || villa.title?.en,
+      description: villa.description?.[language] || villa.description?.en,
+      url: `https://izigo.az/villas/${id}`,
+      image: villa.images?.[0],
+      price: villa.discount ? Math.round(villa.price * (1 - villa.discount / 100)) : villa.price,
+    }) : null,
+  });
+
   if (loading) return null;
 
   if (!villa) {
@@ -65,6 +83,7 @@ export default function VillaDetail() {
         .villa-detail .vd-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .villa-detail .vd-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .villa-detail .vd-gallery-side .vd-thumb { opacity: 0.82; }
+        .villa-detail .vd-thumb-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .villa-detail .vd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .villa-detail .vd-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
@@ -111,14 +130,12 @@ export default function VillaDetail() {
           style={villa.images[0] ? { backgroundImage: `url("${villa.images[0]}")` } : undefined}
         />
         <div className="vd-gallery-side">
-          <div
-            className={`vd-thumb ${villa.images[1] ? "" : villa.tone}`}
-            style={villa.images[1] ? { backgroundImage: `url("${villa.images[1]}")` } : undefined}
-          />
-          <div
-            className={`vd-thumb ${villa.images[2] ? "" : villa.tone}`}
-            style={villa.images[2] ? { backgroundImage: `url("${villa.images[2]}")` } : undefined}
-          />
+          <div className={`vd-thumb ${villa.images[1] ? "" : villa.tone}`}>
+            {villa.images[1] && <img className="vd-thumb-img" src={villa.images[1]} alt="" loading="lazy" decoding="async" />}
+          </div>
+          <div className={`vd-thumb ${villa.images[2] ? "" : villa.tone}`}>
+            {villa.images[2] && <img className="vd-thumb-img" src={villa.images[2]} alt="" loading="lazy" decoding="async" />}
+          </div>
         </div>
       </div>
 
@@ -156,7 +173,7 @@ export default function VillaDetail() {
         <aside className="vd-sidebar">
           <div className="vd-price-row">
             <div className="vd-price">
-              {villa.discount ? (<><span className="vd-price-old">{villa.price} AZN</span> {Math.round(villa.price * (1 - villa.discount / 100))} AZN</>) : `${villa.price} AZN`} <span>{t("villaDetail.perNight")}</span>
+              {villa.discount ? (<><span className="vd-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))}</>) : formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span>
             </div>
             <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
           </div>

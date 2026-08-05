@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, BedDouble, Waves, Thermometer, Flame } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
@@ -18,6 +19,7 @@ const AMENITY_QUICK_FILTERS = [
 
 export default function VillasPage() {
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -211,7 +213,7 @@ export default function VillasPage() {
                 </div>
                 <div className="vp-footer">
                   <div className="vp-price">
-                    {v.discount ? (<><span className="vp-price-old">{v.price} AZN</span> {Math.round(v.price * (1 - v.discount / 100))} AZN</>) : `${v.price} AZN`} <span>{t("villasPage.perNight")}</span>
+                    {v.discount ? (<><span className="vp-price-old">{formatPrice(v.price)}</span> {formatPrice(Math.round(v.price * (1 - v.discount / 100)))}</>) : formatPrice(v.price)} <span>{t("villasPage.perNight")}</span>
                   </div>
                   <span className="vp-link">{t("villasPage.viewDetails")} →</span>
                 </div>

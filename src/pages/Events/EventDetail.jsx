@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Calendar, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
@@ -12,6 +13,7 @@ import ListingReviews from "../../components/ListingReviews";
 export default function EventDetail() {
   const { id } = useParams();
   const { t, language } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -118,7 +120,7 @@ export default function EventDetail() {
         <aside className="ed-sidebar">
           <div className="ed-price-row">
             <div className="ed-price">
-              {event.price === 0 ? t("eventsPage.free") : event.discount ? (<><span className="ed-price-old">{event.price} AZN</span> {Math.round(event.price * (1 - event.discount / 100))} AZN</>) : `${event.price} AZN`}
+              {event.price === 0 ? t("eventsPage.free") : event.discount ? (<><span className="ed-price-old">{formatPrice(event.price)}</span> {formatPrice(Math.round(event.price * (1 - event.discount / 100)))}</>) : formatPrice(event.price)}
             </div>
             <SaveHeart type="event" id={event.id} className="detail-save-btn" />
           </div>
