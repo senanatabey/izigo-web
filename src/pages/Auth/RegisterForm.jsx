@@ -2,17 +2,7 @@ import { useState } from "react";
 import { User, Mail, Smartphone, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
-
-const COUNTRY_CODES = [
-  { code: "+994", country: "Azerbaijan" },
-  { code: "+90", country: "Turkey" },
-  { code: "+995", country: "Georgia" },
-  { code: "+7", country: "Russia" },
-  { code: "+971", country: "UAE" },
-  { code: "+44", country: "UK" },
-  { code: "+49", country: "Germany" },
-  { code: "+1", country: "USA" },
-];
+import { COUNTRY_CODES } from "../../lib/countryCodes";
 
 export default function RegisterForm({ onSuccess, footerSwitch }) {
   const { t } = useLanguage();
@@ -141,7 +131,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
             <Smartphone size={16} />
             <select value={phoneCountry} onChange={(e) => setPhoneCountry(e.target.value)}>
               {COUNTRY_CODES.map(({ code, country }) => (
-                <option key={code} value={code}>{code} {country}</option>
+                <option key={country} value={code}>{code} {country}</option>
               ))}
             </select>
             <input

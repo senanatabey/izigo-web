@@ -413,6 +413,29 @@
   color: var(--text-soft);
 }
 
+.account-menu-badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--izigo-orange, #BA5B2E);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.account-menu-trigger-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--izigo-orange, #BA5B2E);
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .account-menu-dropdown {
     width: 260px;

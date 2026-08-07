@@ -18,7 +18,7 @@ export default function PlanMyTripPage() {
         .plan-trip-page { max-width: 880px; margin: 0 auto; padding: 48px 6vw 80px; }
         .plan-trip-page .pt-head { text-align: center; margin-bottom: 36px; }
         .plan-trip-page .pt-head h1 { font-size: 32px; font-weight: 800; margin: 0 0 10px; }
-        .plan-trip-page .pt-head p { font-size: 15px; color: var(--text-soft); max-width: 560px; margin: 0 auto; line-height: 1.6; }
+        .plan-trip-page .pt-head p { font-size: 15px; color: var(--text-soft); max-width: 560px; margin: 0 auto; line-height: 1.6; white-space: pre-line; }
         .plan-trip-page .pt-tagline { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange); background: var(--bg-soft); padding: 6px 14px; border-radius: 999px; margin-bottom: 16px; }
         .plan-trip-page .pt-trust-row {
           display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 20px; margin-top: 18px;
@@ -30,6 +30,7 @@ export default function PlanMyTripPage() {
 
         .plan-trip-page .pt-form { border: 1px solid var(--border); border-radius: 20px; padding: 32px; }
         .plan-trip-page .pt-section-title { font-size: 15px; font-weight: 800; margin: 0 0 14px; color: var(--text); }
+        .plan-trip-page .pt-section-subtitle { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
         .plan-trip-page .pt-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
         .plan-trip-page .pt-field { display: flex; flex-direction: column; gap: 6px; }
         .plan-trip-page .pt-field.full { grid-column: 1 / -1; }
@@ -41,6 +42,17 @@ export default function PlanMyTripPage() {
           font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
         }
         .plan-trip-page .pt-field textarea { resize: vertical; min-height: 170px; }
+        .plan-trip-page .pt-phone-input {
+          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #fff;
+        }
+        .plan-trip-page .pt-phone-input select {
+          border: none; outline: none; border-right: 1px solid var(--border); background: none;
+          font-size: 13.5px; font-weight: 700; color: var(--text); font-family: var(--sans);
+          padding: 11px 8px 11px 14px; flex-shrink: 0; max-width: 140px;
+        }
+        .plan-trip-page .pt-phone-input input {
+          border: none; outline: none; padding: 11px 14px; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
+        }
         .plan-trip-page .pt-notes-hint { margin: 6px 0 0; font-size: 12px; color: var(--text-soft); }
 
         .plan-trip-page .pt-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }

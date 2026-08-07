@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight,
   PartyPopper, MessageCircle, Mail, Send,
-  Percent, BadgeCheck, PlusCircle, Star, ShoppingBasket,
-  Sparkles, ArrowRight, Award, BedDouble, Crown, Rocket,
+  Percent, Star, ShoppingBasket,
+  Sparkles, ArrowRight, BedDouble,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
@@ -15,8 +15,7 @@ import { useSeo, schema } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings } from "../../lib/heroCampaigns";
 import { SERVICES as CONCIERGE_SERVICES } from "../Concierge/ConciergePage";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
-import FounderBanner from "../../components/FounderBanner";
-import { fetchFounderCampaign, fetchFounderCount } from "../../lib/founder";
+import BecomeHostCta from "../../components/BecomeHostCta";
 
 const LOCAL_SERVICES_PREVIEW_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "birthdayDecor"];
 const LOCAL_SERVICES_PREVIEW = LOCAL_SERVICES_PREVIEW_KEYS
@@ -77,16 +76,7 @@ const LISTINGS_TABS_META = [
   { key: "events", icon: PartyPopper, to: "/events", category: "event", detailTo: (id) => `/events/${id}`, priceUnit: null },
 ];
 
-const COMPARISON_ROWS = ["commission", "hiddenFees", "directContact", "verified", "focus", "freeToList"];
-const COMPARISON_COLUMNS = ["izigo", "airbnb", "booking", "vrbo"];
-
-const HOST_PERKS = [
-  { icon: Award, key: "badge" },
-  { icon: Crown, key: "vip" },
-  { icon: Rocket, key: "priority" },
-];
-
-const HERO_TRUST_ITEMS = ["noFees", "directWhatsapp", "fastReply"];
+const HERO_TRUST_ITEMS = ["noFees", "betterPrices", "directWhatsapp"];
 
 export default function IzigoHomepage() {
   const { t, language } = useLanguage();
@@ -109,27 +99,10 @@ export default function IzigoHomepage() {
   const [campaign, setCampaign] = useState(null);
   const [siteSettings, setSiteSettings] = useState(null);
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
-  // Whether the Founder section renders at all — true unless we can positively
-  // confirm the campaign has ended. A fetch error (e.g. the founder_campaign
-  // migration not applied yet in some environment) must NOT hide the section;
-  // only an explicit "inactive" status or a reached cap should.
-  const [founderSectionVisible, setFounderSectionVisible] = useState(true);
-  const [founderCounts, setFounderCounts] = useState(null); // { count, max } once known, else null
 
   useEffect(() => {
     fetchActiveCampaign().then(setCampaign);
     fetchSiteSettings().then(setSiteSettings);
-    Promise.all([fetchFounderCampaign(), fetchFounderCount()])
-      .then(([c, count]) => {
-        setFounderSectionVisible(c.status === "active" && count < c.max_founder_hosts);
-        setFounderCounts({ count, max: c.max_founder_hosts });
-      })
-      .catch(() => {
-        // Unknown state — fail open (keep showing) rather than hide the
-        // section over an infrastructure issue unrelated to the campaign.
-        setFounderSectionVisible(true);
-        setFounderCounts(null);
-      });
   }, []);
 
   useEffect(() => {
@@ -203,7 +176,6 @@ export default function IzigoHomepage() {
   // background image and this text. Plan My Trip and the search panel
   // always render exactly the same way, campaign or not.
   const heroTitle = campaign?.[`title_${language}`] || campaign?.title_en || t("hero.fixed.title");
-  const heroSubtitle = campaign?.[`subtitle_${language}`] || campaign?.subtitle_en || t("hero.fixed.subtitle");
   const planMyTripText = t("heroButtons.planMyTrip");
   const planMyTripLink = "/plan-my-trip";
 
@@ -276,7 +248,7 @@ export default function IzigoHomepage() {
       <style>{`
         .izigo-home .hero {
           position: relative;
-          padding: 56px 6vw 40px;
+          padding: 56px 0 40px;
           min-height: 560px;
           display: flex;
           flex-direction: column;
@@ -289,7 +261,7 @@ export default function IzigoHomepage() {
           background-position: center;
           color: #fff;
         }
-        .izigo-home .hero-inner { max-width: 1280px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; min-width: 0; }
+        .izigo-home .hero-inner { max-width: 1280px; width: 100%; margin: 0 auto; padding: 0 6vw; display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; }
         .izigo-home .hero-content { max-width: 800px; width: 100%; min-width: 0; margin: 0 auto; transform: translateY(-20px); }
         .izigo-home .hero-eyebrow {
           display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 800; letter-spacing: 0.6px;
@@ -297,22 +269,21 @@ export default function IzigoHomepage() {
           border-radius: 999px; padding: 7px 16px; margin-bottom: 14px;
         }
         .izigo-home .hero h1 {
-          font-size: 44px; font-weight: 800; line-height: 1.14; letter-spacing: -0.5px; margin: 0; color: #fff;
+          font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; margin: 0; color: #fff; max-width: 620px;
         }
         .izigo-home .hero h1 span { display: block; }
-        .izigo-home .hero p {
-          margin-top: 4px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.92); max-width: 640px;
-        }
-        .izigo-home .hero p span { display: block; }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 16px; }
+        .izigo-home .hero h1 p { margin: 0; }
+        .izigo-home .hero h1 p + p { margin-top: 16px; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 22px; }
         .izigo-home .hero-trust-row {
-          display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
-          margin-top: 8px; font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.72);
+          display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
+          margin-top: 10px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.88);
+          text-shadow: 0 1px 3px rgba(0,0,0,0.35);
         }
         .izigo-home .hero-trust-row span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
         .izigo-home .hero-btn {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px;
-          min-width: 230px; height: 60px; padding: 0 30px; font-weight: 700; font-size: 17px; white-space: nowrap;
+          min-width: 230px; height: 62px; padding: 0 30px; font-weight: 700; font-size: 18px; white-space: nowrap;
           transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
         .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; box-shadow: 0 10px 24px rgba(186, 91, 46, 0.32); }
@@ -506,6 +477,17 @@ export default function IzigoHomepage() {
           font-size: 13.5px; color: var(--text); background: #fff; font-family: var(--sans);
         }
         .izigo-home .pt-field textarea { resize: vertical; min-height: 150px; }
+        .izigo-home .pt-phone-input {
+          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #fff;
+        }
+        .izigo-home .pt-phone-input select {
+          border: none; outline: none; border-right: 1px solid var(--border); background: none;
+          font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--sans);
+          padding: 10px 8px 10px 13px; flex-shrink: 0; max-width: 130px;
+        }
+        .izigo-home .pt-phone-input input {
+          border: none; outline: none; padding: 10px 13px; font-size: 13.5px; color: var(--text); width: 100%; font-family: var(--sans);
+        }
         .izigo-home .pt-notes-hint { margin: 6px 0 0; font-size: 11.5px; color: var(--text-soft); }
         .izigo-home .pt-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
         .izigo-home .pt-chip {
@@ -526,65 +508,6 @@ export default function IzigoHomepage() {
         .izigo-home .pt-success-icon { color: var(--izigo-green); margin-bottom: 12px; }
         .izigo-home .pt-success h3 { font-size: 19px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
         .izigo-home .pt-success p { font-size: 13.5px; color: var(--text-soft); line-height: 1.6; }
-
-        .izigo-home .comparison { background: var(--bg); }
-        .izigo-home .comparison-card {
-          max-width: 1280px; margin: 0 auto;
-          background: var(--izigo-green); color: #fff;
-          border-radius: 18px; padding: 32px; box-shadow: var(--shadow-md);
-        }
-        .izigo-home .comparison-card h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 22px; }
-        .izigo-home .comparison-scroll { overflow-x: auto; }
-        .izigo-home .comparison-table { width: 100%; border-collapse: collapse; min-width: 640px; }
-        .izigo-home .comparison-table th, .izigo-home .comparison-table td {
-          padding: 14px 12px; text-align: left; font-size: 14px; white-space: nowrap;
-        }
-        .izigo-home .comparison-table thead th {
-          font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.75);
-          text-transform: uppercase; letter-spacing: 0.3px;
-          border-bottom: 1px solid rgba(255,255,255,0.25); padding-bottom: 12px;
-        }
-        .izigo-home .comparison-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.14); }
-        .izigo-home .comparison-table tbody tr:last-child { border-bottom: none; }
-        .izigo-home .comparison-table td.feature-cell { font-weight: 600; color: rgba(255,255,255,0.9); white-space: normal; }
-        .izigo-home .comparison-table .col-izigo { color: #FFD447; text-align: center; }
-        .izigo-home .comparison-table td.col-izigo { font-weight: 700; }
-        .izigo-home .comparison-footnote { margin-top: 20px; font-size: 12.5px; color: rgba(255,255,255,0.65); text-align: center; }
-
-        .izigo-home .host-cta { background: var(--bg-soft); }
-        .izigo-home .host-cta-card {
-          background: linear-gradient(180deg, rgba(0,200,151,0.08) 0%, rgba(0,200,151,0.02) 100%);
-          border: 1px solid rgba(0,200,151,0.25); border-radius: 18px;
-          padding: 32px; text-align: center; max-width: 860px; margin: 0 auto;
-        }
-        .izigo-home .host-cta-counter {
-          display: inline-flex; align-items: center; font-size: 12px; font-weight: 800; letter-spacing: 0.2px;
-          color: var(--izigo-green); background: rgba(0,200,151,0.12); border: 1px solid rgba(0,200,151,0.25);
-          border-radius: 999px; padding: 6px 16px; margin-bottom: 16px;
-        }
-        .izigo-home .host-cta-icon {
-          width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 14px;
-          display: flex; align-items: center; justify-content: center;
-          background: var(--izigo-green); color: #fff;
-        }
-        .izigo-home .host-cta-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-        .izigo-home .host-cta-card > p { font-size: 14.5px; color: var(--text-soft); line-height: 1.55; margin: 0 auto 22px; max-width: 600px; }
-        .izigo-home .host-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
-        .izigo-home .host-perk { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; }
-        .izigo-home .host-perk svg { color: var(--izigo-green); margin-bottom: 10px; }
-        .izigo-home .host-perk h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
-        .izigo-home .host-perk p { font-size: 12.5px; color: var(--text-soft); }
-        .izigo-home .host-cta-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-        .izigo-home .host-cta-btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
-          padding: 13px 28px; font-weight: 700; font-size: 15px; cursor: pointer;
-        }
-        .izigo-home .host-cta-btn-outline {
-          display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: var(--izigo-green); border: 1.5px solid var(--izigo-green); border-radius: 10px;
-          padding: 13px 28px; font-weight: 700; font-size: 15px; cursor: pointer;
-        }
 
         .izigo-home .newsletter {
           background: var(--izigo-green); color: #fff;
@@ -618,11 +541,12 @@ export default function IzigoHomepage() {
           .izigo-home .discover-az-grid { grid-template-columns: repeat(3, 1fr); }
           .izigo-home .premium-grid { grid-template-columns: 1fr; }
           .izigo-home .plan-trip-layout { grid-template-columns: 1fr; gap: 32px; }
-          .izigo-home .hero h1 { font-size: 42px; }
+          .izigo-home .hero h1 { font-size: 34px; }
         }
         @media (max-width: 640px) {
-          .izigo-home .hero { padding: 40px 5vw 24px; min-height: auto; }
-          .izigo-home .hero h1 { font-size: 28px; }
+          .izigo-home .hero { padding: 40px 0 24px; min-height: 705px; }
+          .izigo-home .hero-inner { padding: 0 5vw; }
+          .izigo-home .hero h1 { font-size: 23px; }
           .izigo-home .hero-cta-row { flex-direction: column; align-items: stretch; }
           .izigo-home .search-card { margin: 20px 0 0; padding: 12px; }
           .izigo-home .search-row { flex-direction: column; gap: 10px; }
@@ -637,17 +561,11 @@ export default function IzigoHomepage() {
           .izigo-home .plan-trip-form-wrap .pt-form { padding: 18px 16px; }
           .izigo-home .feature-cards-grid { grid-template-columns: 1fr; gap: 10px; }
           .izigo-home .pt-row { grid-template-columns: 1fr; gap: 12px; }
-          .izigo-home .host-cta-card { padding: 22px 18px; }
-          .izigo-home .host-perks { grid-template-columns: 1fr; }
-          .izigo-home .host-cta-actions { flex-direction: column; align-items: stretch; }
-          .izigo-home .comparison-card { padding: 20px 16px; border-radius: 16px; }
           .izigo-home .newsletter-inner { flex-direction: column; align-items: stretch; text-align: center; }
           .izigo-home .newsletter-copy { flex-direction: column; text-align: center; }
           .izigo-home .newsletter-form { max-width: none; }
         }
       `}</style>
-
-      <FounderBanner />
 
       <section
         className="hero"
@@ -660,8 +578,11 @@ export default function IzigoHomepage() {
         <div className="hero-inner">
           <div className="hero-content">
             <div className="hero-eyebrow">{t("hero.fixed.eyebrow")}</div>
-            <h1>{heroTitle.split("\n").map((line, i) => <span key={i}>{line}</span>)}</h1>
-            {heroSubtitle && <p>{heroSubtitle.split("\n").map((line, i) => <span key={i}>{line}</span>)}</p>}
+            <h1>
+              {heroTitle.split("\n\n").map((block, i) => (
+                <p key={i}>{block.split("\n").map((line, j) => <span key={j}>{line}</span>)}</p>
+              ))}
+            </h1>
             <div className="hero-cta-row">
               <Link to={planMyTripLink} className="hero-btn primary"><Sparkles size={16} />{planMyTripText}</Link>
             </div>
@@ -796,62 +717,11 @@ export default function IzigoHomepage() {
         </div>
       </section>
 
-      <section className="comparison">
-        <div className="comparison-card">
-          <h2>{t("comparison.heading")}</h2>
-          <div className="comparison-scroll">
-            <table className="comparison-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  {COMPARISON_COLUMNS.map((col) => (
-                    <th key={col} className={col === "izigo" ? "col-izigo" : ""}>{t(`comparison.columns.${col}`)}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARISON_ROWS.map((row) => (
-                  <tr key={row}>
-                    <td className="feature-cell">{t(`comparison.rows.${row}.feature`)}</td>
-                    {COMPARISON_COLUMNS.map((col) => (
-                      <td key={col} className={col === "izigo" ? "col-izigo" : ""}>{t(`comparison.rows.${row}.${col}`)}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="comparison-footnote">{t("comparison.footnote")}</p>
-        </div>
-      </section>
+      {/* TestimonialsSection will render here once real testimonial content
+          exists — component is built (src/components/TestimonialsSection.jsx)
+          but intentionally not wired in yet. */}
 
-      {founderSectionVisible && (
-      <section className="host-cta">
-        <div className="host-cta-card">
-          {founderCounts && (
-            <div className="host-cta-counter">Founder Program — {founderCounts.count}/{founderCounts.max} Founder Hosts Joined</div>
-          )}
-          <div className="host-cta-icon"><Star size={30} /></div>
-          <h2>{t("hostCta.title")}</h2>
-          <p>{t("hostCta.text")}</p>
-
-          <div className="host-perks">
-            {HOST_PERKS.map(({ icon: Icon, key }) => (
-              <div className="host-perk" key={key}>
-                <Icon size={22} />
-                <h4>{t(`hostCta.perks.${key}.title`)}</h4>
-                <p>{t(`hostCta.perks.${key}.text`)}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="host-cta-actions">
-            <Link to="/add-listing" className="host-cta-btn"><PlusCircle size={17} />{t("hostCta.publishButton")}</Link>
-            <Link to="/villas" className="host-cta-btn-outline">{t("hostCta.browseButton")}</Link>
-          </div>
-        </div>
-      </section>
-      )}
+      <BecomeHostCta />
 
       <section className="newsletter">
         <div className="newsletter-inner">

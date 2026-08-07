@@ -47,6 +47,7 @@ const ConciergePage = lazy(() => import("./pages/Concierge/ConciergePage"));
 const PlanMyTripPage = lazy(() => import("./pages/PlanMyTrip/PlanMyTripPage"));
 const LoginPage = lazy(() => import("./pages/Auth/LoginPage"));
 const AddListingPage = lazy(() => import("./pages/AddListing/AddListingPage"));
+const BecomeAHostPage = lazy(() => import("./pages/BecomeAHost/BecomeAHostPage"));
 const AddListingFormPage = lazy(() => import("./pages/AddListing/AddListingFormPage"));
 const RegisterPage = lazy(() => import("./pages/Auth/RegisterPage"));
 const PendingApprovalsPage = lazy(() => import("./pages/Admin/PendingApprovalsPage"));
@@ -414,6 +415,9 @@ function AccountMenu() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
   const rootRef = React.useRef(null);
   const isAdmin = user?.role === "admin";
 
@@ -431,6 +435,34 @@ function AccountMenu() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("read", false)
+      .then(({ count }) => setUnreadCount(count || 0));
+  }, [user?.id, open]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    supabase
+      .from("listings")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending")
+      .then(({ count }) => setPendingCount(count || 0));
+  }, [isAdmin, open]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    supabase
+      .from("trip_requests")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "new")
+      .then(({ count }) => setNewTripRequestsCount(count || 0));
+  }, [isAdmin, open]);
+
   const close = () => setOpen(false);
 
   return (
@@ -444,6 +476,7 @@ function AccountMenu() {
       >
         <User size={16} />
         <span>{t("nav.myAccount")}</span>
+        {(unreadCount + pendingCount + newTripRequestsCount) > 0 && <span className="account-menu-trigger-dot" />}
         <ChevronDown size={14} className={`account-menu-chevron ${open ? "is-open" : ""}`} />
       </button>
 
@@ -453,6 +486,9 @@ function AccountMenu() {
             <Link key={to} to={to} role="menuitem" className="account-menu-item" onClick={close}>
               <Icon size={17} />
               <span>{t(`sidebar.${key}`)}</span>
+              {key === "notifications" && unreadCount > 0 && (
+                <span className="account-menu-badge">{unreadCount}</span>
+              )}
             </Link>
           ))}
         </div>
@@ -466,6 +502,12 @@ function AccountMenu() {
                 <Link key={to} to={to} role="menuitem" className="account-menu-item" onClick={close}>
                   <Icon size={17} />
                   <span>{label}</span>
+                  {to === "/admin/listings/pending" && pendingCount > 0 && (
+                    <span className="account-menu-badge">{pendingCount}</span>
+                  )}
+                  {to === "/admin/trip-requests" && newTripRequestsCount > 0 && (
+                    <span className="account-menu-badge">{newTripRequestsCount}</span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -715,6 +757,28 @@ function AdminTopBar() {
 
 function AdminLayout() {
   const { logout } = useAuth();
+  const [pendingCount, setPendingCount] = useState(0);
+  const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      supabase
+        .from("listings")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+        .then(({ count }) => { if (!cancelled) setPendingCount(count || 0); });
+      supabase
+        .from("trip_requests")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "new")
+        .then(({ count }) => { if (!cancelled) setNewTripRequestsCount(count || 0); });
+    };
+    load();
+    const interval = setInterval(load, 60000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
   return (
     <div className="app-shell">
       <aside className="app-sidebar admin-sidebar">
@@ -728,6 +792,12 @@ function AdminLayout() {
             className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
           >
             <Icon size={17} />{label}
+            {to === "/admin/listings/pending" && pendingCount > 0 && (
+              <span className="account-menu-badge">{pendingCount}</span>
+            )}
+            {to === "/admin/trip-requests" && newTripRequestsCount > 0 && (
+              <span className="account-menu-badge">{newTripRequestsCount}</span>
+            )}
           </NavLink>
         ))}
 
@@ -822,6 +892,7 @@ export default function App() {
             <Route path="destinations" element={<AllDestinationsPage />} />
             <Route path="places" element={<PlacesIndexPage />} />
             <Route path="places/:slug" element={<PlaceDetail />} />
+            <Route path="become-a-host" element={<BecomeAHostPage />} />
           </Route>
 
           {/* Publishing a listing is open to everyone, tap.az-style — no
