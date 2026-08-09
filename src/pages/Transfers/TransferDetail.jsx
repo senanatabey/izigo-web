@@ -35,7 +35,7 @@ export default function TransferDetail() {
     seats: row.details?.seats || 0,
     phone: row.whatsapp_phone,
     host: row.host,
-    code: shortListingCode(row.id),
+    code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
     image: row.images?.[0],
   } : null;

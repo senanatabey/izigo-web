@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import {
-  MapPin, Wallet, MessageCircle, Users, BedDouble, Car, Calendar, Percent,
+  MapPin, Wallet, MessageCircle, Users, BedDouble, Bath, Car, Calendar, Percent, Moon,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
-  Waves, Thermometer, User, Mail, Lock,
+  Waves, Thermometer, User, Mail, Lock, Ruler, Layers, Clock, ChevronDown, Trash2, Eye,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
@@ -19,6 +19,9 @@ const AMENITY_ICONS = {
   pool: Waves, heated_pool: Thermometer,
 };
 const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "guide", "laundry", "babysitter"];
+const BED_TYPE_KEYS = ["double", "single", "bunk"];
+const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];
+const VIEW_TYPE_KEYS = ["mountain", "sea", "forest", "city", "garden", "none"];
 
 const VALID_CATEGORIES = ["villa", "car", "transfer", "event", "service"];
 
@@ -42,7 +45,25 @@ export default function AddListingFormPage() {
 
   const [guests, setGuests] = useState("");
   const [bedrooms, setBedrooms] = useState("");
+  const [bathrooms, setBathrooms] = useState("");
   const [amenities, setAmenities] = useState([]);
+  const [areaSqm, setAreaSqm] = useState("");
+  const [floorCount, setFloorCount] = useState("");
+  const [bedConfigOpen, setBedConfigOpen] = useState(false);
+  const [bedConfiguration, setBedConfiguration] = useState([]);
+  const [checkInTime, setCheckInTime] = useState("14:00");
+  const [checkOutTime, setCheckOutTime] = useState("12:00");
+  const [houseRules, setHouseRules] = useState({ smoking: null, pets: null, parties: null });
+  const [quietHoursEnabled, setQuietHoursEnabled] = useState(false);
+  const [quietHoursFrom, setQuietHoursFrom] = useState("22:00");
+  const [quietHoursTo, setQuietHoursTo] = useState("08:00");
+  const [houseRulesNotes, setHouseRulesNotes] = useState("");
+  const [viewTypes, setViewTypes] = useState([]);
+
+  const [longStayEnabled, setLongStayEnabled] = useState(false);
+  const [longStayMinNights, setLongStayMinNights] = useState("2");
+  const [longStayDiscountType, setLongStayDiscountType] = useState("percentage");
+  const [longStayDiscountValue, setLongStayDiscountValue] = useState("");
 
   const [seats, setSeats] = useState("");
   const [transmission, setTransmission] = useState("automatic");
@@ -84,7 +105,28 @@ export default function AddListingFormPage() {
       const d = row.details || {};
       setGuests(d.guests ? String(d.guests) : "");
       setBedrooms(d.bedrooms ? String(d.bedrooms) : "");
+      setBathrooms(d.bathrooms ? String(d.bathrooms) : "");
       setAmenities(d.amenities || []);
+      setAreaSqm(d.area_sqm ? String(d.area_sqm) : "");
+      setFloorCount(d.floor_count ? String(d.floor_count) : "");
+      setBedConfiguration(d.bed_configuration || []);
+      setBedConfigOpen((d.bed_configuration || []).length > 0);
+      setCheckInTime(d.check_in_time || "14:00");
+      setCheckOutTime(d.check_out_time || "12:00");
+      setHouseRules({
+        smoking: d.house_rules?.smoking ?? null,
+        pets: d.house_rules?.pets ?? null,
+        parties: d.house_rules?.parties ?? null,
+      });
+      setQuietHoursEnabled(!!d.house_rules?.quiet_hours);
+      setQuietHoursFrom(d.house_rules?.quiet_hours?.from || "22:00");
+      setQuietHoursTo(d.house_rules?.quiet_hours?.to || "08:00");
+      setHouseRulesNotes(d.house_rules?.additional_notes || "");
+      setViewTypes(d.view_type || []);
+      setLongStayEnabled(row.long_stay_discount_enabled || false);
+      setLongStayMinNights(row.long_stay_min_nights ? String(row.long_stay_min_nights) : "2");
+      setLongStayDiscountType(row.long_stay_discount_type || "percentage");
+      setLongStayDiscountValue(row.long_stay_discount_value != null ? String(row.long_stay_discount_value) : "");
       setSeats(d.seats ? String(d.seats) : "");
       setTransmission(d.transmission || "automatic");
       setType(d.type || "transfer");
@@ -108,6 +150,24 @@ export default function AddListingFormPage() {
 
   const toggleAmenity = (key) => {
     setAmenities((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  };
+
+  const toggleViewType = (key) => {
+    setViewTypes((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  };
+
+  const addBedRow = () => {
+    setBedConfiguration((prev) => [...prev, { type: "double", count: 1 }]);
+  };
+  const updateBedRow = (index, field, value) => {
+    setBedConfiguration((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
+  };
+  const removeBedRow = (index) => {
+    setBedConfiguration((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const setHouseRule = (key, value) => {
+    setHouseRules((prev) => ({ ...prev, [key]: prev[key] === value ? null : value }));
   };
 
   const totalPhotoCount = existingImages.length + photos.length;
@@ -146,7 +206,25 @@ export default function AddListingFormPage() {
     if (!user && (!accountName || !accountEmail || accountPassword.length < 6)) return false;
     if (!isFree && !price && category !== "event") return false;
     if (category === "event" && !isFree && !price) return false;
-    if (category === "villa") return !!(guests && bedrooms);
+    if (category === "villa") {
+      if (!(guests && bedrooms && bathrooms && Number(bathrooms) > 0)) return false;
+      if (!areaSqm || Number(areaSqm) <= 0) return false;
+      if (!floorCount || Number(floorCount) <= 0) return false;
+      if (longStayEnabled) {
+        if (!longStayMinNights || Number(longStayMinNights) < 2) return false;
+        if (longStayDiscountType === "percentage") {
+          const pct = Number(longStayDiscountValue);
+          if (!longStayDiscountValue || pct < 1 || pct > 100) return false;
+        } else if (longStayDiscountType === "fixed_price") {
+          const fixed = Number(longStayDiscountValue);
+          if (!longStayDiscountValue || fixed <= 0) return false;
+          if (price && fixed >= Number(price)) return false;
+        } else {
+          return false;
+        }
+      }
+      return true;
+    }
     if (category === "car") return !!seats;
     if (category === "transfer") return true;
     if (category === "event") return !!date;
@@ -155,7 +233,23 @@ export default function AddListingFormPage() {
   })();
 
   const buildDetails = () => {
-    if (category === "villa") return { guests: Number(guests), bedrooms: Number(bedrooms), amenities };
+    if (category === "villa") {
+      const hasHouseRules =
+        houseRules.smoking !== null || houseRules.pets !== null || houseRules.parties !== null ||
+        quietHoursEnabled || houseRulesNotes.trim();
+      return {
+        guests: Number(guests), bedrooms: Number(bedrooms), bathrooms: Number(bathrooms), amenities,
+        area_sqm: Number(areaSqm), floor_count: Number(floorCount),
+        bed_configuration: bedConfigOpen && bedConfiguration.length > 0 ? bedConfiguration : null,
+        check_in_time: checkInTime, check_out_time: checkOutTime,
+        house_rules: hasHouseRules ? {
+          smoking: houseRules.smoking, pets: houseRules.pets, parties: houseRules.parties,
+          quiet_hours: quietHoursEnabled ? { from: quietHoursFrom, to: quietHoursTo } : null,
+          additional_notes: houseRulesNotes.trim(),
+        } : null,
+        view_type: viewTypes.length > 0 ? viewTypes : null,
+      };
+    }
     if (category === "car") return { seats: Number(seats), transmission };
     if (category === "transfer") return { type, hasVehicle, seats: Number(seats) || 0 };
     if (category === "event") return { date, isFree };
@@ -205,6 +299,10 @@ export default function AddListingFormPage() {
         details: buildDetails(),
         whatsapp_phone: `+994${whatsapp}`,
         images,
+        long_stay_discount_enabled: category === "villa" && longStayEnabled,
+        long_stay_min_nights: category === "villa" && longStayEnabled ? Number(longStayMinNights) : 2,
+        long_stay_discount_type: category === "villa" && longStayEnabled ? longStayDiscountType : null,
+        long_stay_discount_value: category === "villa" && longStayEnabled ? Number(longStayDiscountValue) : null,
       };
       if (isEdit) {
         const { error: updateError } = await supabase
@@ -252,6 +350,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-section-title:first-child { margin-top: 0; }
         .add-listing-form-page .alf-account-note { font-size: 12.5px; color: var(--text-soft); line-height: 1.5; margin: -6px 0 16px; }
         .add-listing-form-page .alf-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .add-listing-form-page .alf-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .add-listing-form-page .alf-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .add-listing-form-page .alf-field.full { grid-column: 1 / -1; }
         .add-listing-form-page .alf-field label { font-size: 12.5px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
@@ -297,6 +396,8 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-radio { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
 
         .add-listing-form-page .alf-checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); margin-bottom: 16px; cursor: pointer; }
+        .add-listing-form-page .alf-longstay-note { font-size: 12.5px; color: var(--text-soft); margin: -8px 0 16px; }
+        .add-listing-form-page .alf-longstay-warning { font-size: 12.5px; color: #E0553F; margin: -8px 0 16px; font-weight: 600; }
 
         .add-listing-form-page .alf-submit {
           width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
@@ -318,8 +419,29 @@ export default function AddListingFormPage() {
           padding: 11px 20px; text-decoration: none;
         }
 
+        .add-listing-form-page .alf-bedconfig-toggle {
+          display: flex; align-items: center; gap: 6px; min-height: 44px; background: none; border: none;
+          color: var(--izigo-green); font-weight: 700; font-size: 13.5px; cursor: pointer; padding: 0; margin-bottom: 12px;
+        }
+        .add-listing-form-page .alf-bedconfig-toggle svg { transition: transform 0.15s ease; }
+        .add-listing-form-page .alf-bedconfig-toggle svg.open { transform: rotate(180deg); }
+        .add-listing-form-page .alf-bedconfig-panel { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; background: var(--bg-soft); }
+        .add-listing-form-page .alf-bedconfig-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .add-listing-form-page .alf-bedconfig-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fff; font-family: var(--sans); }
+        .add-listing-form-page .alf-bedconfig-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; width: 100%; }
+        .add-listing-form-page .alf-bedconfig-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .add-listing-form-page .alf-bedconfig-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }
+
+        .add-listing-form-page .alf-houserules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
+        .add-listing-form-page .alf-houserule-item { display: flex; flex-direction: column; gap: 8px; }
+        .add-listing-form-page .alf-houserule-item span { font-size: 13.5px; font-weight: 600; color: var(--text); }
+        .add-listing-form-page .alf-houserule-toggles { display: flex; gap: 8px; }
+        .add-listing-form-page .alf-houserule-toggles .alf-chip { padding: 7px 12px; font-size: 12.5px; }
+
         @media (max-width: 640px) {
           .add-listing-form-page .alf-row { grid-template-columns: 1fr; }
+          .add-listing-form-page .alf-row-3 { grid-template-columns: 1fr; }
+          .add-listing-form-page .alf-houserules-grid { grid-template-columns: 1fr; }
           .add-listing-form-page form { padding: 20px; }
         }
       `}</style>
@@ -405,7 +527,7 @@ export default function AddListingFormPage() {
             {category === "villa" && (
               <>
                 <p className="alf-section-title">{t("addListing.categories.villa.title")}</p>
-                <div className="alf-row">
+                <div className="alf-row-3">
                   <div className="alf-field">
                     <label><Users size={13} />{t("addListing.guestsLabel")}</label>
                     <input type="number" min="1" value={guests} onChange={(e) => setGuests(e.target.value)} />
@@ -414,7 +536,52 @@ export default function AddListingFormPage() {
                     <label><BedDouble size={13} />{t("addListing.bedroomsLabel")}</label>
                     <input type="number" min="1" value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} />
                   </div>
+                  <div className="alf-field">
+                    <label><Bath size={13} />{t("addListing.bathroomsLabel")}</label>
+                    <input type="number" min="1" value={bathrooms} onChange={(e) => setBathrooms(e.target.value)} />
+                  </div>
                 </div>
+                <div className="alf-row">
+                  <div className="alf-field">
+                    <label><Ruler size={13} />{t("addListing.areaLabel")}</label>
+                    <input type="number" min="1" value={areaSqm} onChange={(e) => setAreaSqm(e.target.value)} />
+                  </div>
+                  <div className="alf-field">
+                    <label><Layers size={13} />{t("addListing.floorCountLabel")}</label>
+                    <input type="number" min="1" value={floorCount} onChange={(e) => setFloorCount(e.target.value)} />
+                  </div>
+                </div>
+
+                <button type="button" className="alf-bedconfig-toggle" onClick={() => setBedConfigOpen((v) => !v)}>
+                  <ChevronDown size={15} className={bedConfigOpen ? "open" : ""} />{t("addListing.bedConfigToggle")}
+                </button>
+                {bedConfigOpen && (
+                  <div className="alf-bedconfig-panel">
+                    {bedConfiguration.map((row, i) => (
+                      <div className="alf-bedconfig-row" key={i}>
+                        <select value={row.type} onChange={(e) => updateBedRow(i, "type", e.target.value)}>
+                          {BED_TYPE_KEYS.map((key) => <option key={key} value={key}>{t(`bedTypes.${key}`)}</option>)}
+                        </select>
+                        <input type="number" min="1" value={row.count} onChange={(e) => updateBedRow(i, "count", Number(e.target.value))} />
+                        <button type="button" onClick={() => removeBedRow(i)} aria-label={t("addListing.bedRemove")}><Trash2 size={15} /></button>
+                      </div>
+                    ))}
+                    <button type="button" className="alf-bedconfig-add" onClick={addBedRow}>{t("addListing.bedConfigAddRow")}</button>
+                  </div>
+                )}
+
+                <p className="alf-section-title">{t("addListing.checkInOutTitle")}</p>
+                <div className="alf-row">
+                  <div className="alf-field">
+                    <label><Clock size={13} />{t("addListing.checkInLabel")}</label>
+                    <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} />
+                  </div>
+                  <div className="alf-field">
+                    <label><Clock size={13} />{t("addListing.checkOutLabel")}</label>
+                    <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} />
+                  </div>
+                </div>
+
                 <div className="alf-field full">
                   <label>{t("addListing.amenitiesLabel")}</label>
                 </div>
@@ -428,6 +595,120 @@ export default function AddListingFormPage() {
                     );
                   })}
                 </div>
+
+                <p className="alf-section-title">{t("addListing.houseRulesTitle")}</p>
+                <div className="alf-houserules-grid">
+                  {HOUSE_RULE_KEYS.map((key) => (
+                    <div className="alf-houserule-item" key={key}>
+                      <span>{t(`houseRules.${key}`)}</span>
+                      <div className="alf-houserule-toggles">
+                        <button type="button" className={`alf-chip${houseRules[key] === true ? " active" : ""}`} onClick={() => setHouseRule(key, true)}>{t("addListing.ruleAllowed")}</button>
+                        <button type="button" className={`alf-chip${houseRules[key] === false ? " active" : ""}`} onClick={() => setHouseRule(key, false)}>{t("addListing.ruleNotAllowed")}</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <label className="alf-checkbox-row">
+                  <input type="checkbox" checked={quietHoursEnabled} onChange={(e) => setQuietHoursEnabled(e.target.checked)} />
+                  {t("addListing.quietHoursEnable")}
+                </label>
+                {quietHoursEnabled && (
+                  <div className="alf-row">
+                    <div className="alf-field">
+                      <label>{t("addListing.quietHoursFrom")}</label>
+                      <input type="time" value={quietHoursFrom} onChange={(e) => setQuietHoursFrom(e.target.value)} />
+                    </div>
+                    <div className="alf-field">
+                      <label>{t("addListing.quietHoursTo")}</label>
+                      <input type="time" value={quietHoursTo} onChange={(e) => setQuietHoursTo(e.target.value)} />
+                    </div>
+                  </div>
+                )}
+                <div className="alf-field full">
+                  <label>{t("addListing.houseRulesNotesLabel")}</label>
+                  <textarea placeholder={t("addListing.houseRulesNotesPlaceholder")} value={houseRulesNotes} onChange={(e) => setHouseRulesNotes(e.target.value)} />
+                </div>
+
+                <div className="alf-field full">
+                  <label><Eye size={13} />{t("addListing.viewTypeLabel")}</label>
+                </div>
+                <div className="alf-chips">
+                  {VIEW_TYPE_KEYS.map((key) => (
+                    <button type="button" key={key} className={`alf-chip${viewTypes.includes(key) ? " active" : ""}`} onClick={() => toggleViewType(key)}>
+                      {t(`viewTypes.${key}`)}
+                    </button>
+                  ))}
+                </div>
+
+                <p className="alf-section-title">{t("addListing.longStay.title")}</p>
+                <label className="alf-checkbox-row">
+                  <input type="checkbox" checked={longStayEnabled} onChange={(e) => setLongStayEnabled(e.target.checked)} />
+                  {t("addListing.longStay.enableLabel")}
+                </label>
+                {longStayEnabled && (
+                  <>
+                    <div className="alf-row">
+                      <div className="alf-field">
+                        <label><Moon size={13} />{t("addListing.longStay.minNightsLabel")}</label>
+                        <input type="number" min="2" value={longStayMinNights} onChange={(e) => setLongStayMinNights(e.target.value)} />
+                      </div>
+                      <div className="alf-field">
+                        <label>{t("addListing.longStay.discountTypeLabel")}</label>
+                        <div className="alf-radio-row">
+                          <label className="alf-radio">
+                            <input
+                              type="radio"
+                              name="longStayDiscountType"
+                              checked={longStayDiscountType === "percentage"}
+                              onChange={() => setLongStayDiscountType("percentage")}
+                            />
+                            {t("addListing.longStay.percentage")}
+                          </label>
+                          <label className="alf-radio">
+                            <input
+                              type="radio"
+                              name="longStayDiscountType"
+                              checked={longStayDiscountType === "fixed_price"}
+                              onChange={() => setLongStayDiscountType("fixed_price")}
+                            />
+                            {t("addListing.longStay.fixedPrice")}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="alf-field">
+                      <label>
+                        <Percent size={13} />
+                        {longStayDiscountType === "percentage"
+                          ? t("addListing.longStay.percentageValueLabel")
+                          : t("addListing.longStay.fixedPriceValueLabel")}
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max={longStayDiscountType === "percentage" ? "100" : undefined}
+                        placeholder={longStayDiscountType === "percentage" ? "10" : "90"}
+                        value={longStayDiscountValue}
+                        onChange={(e) => setLongStayDiscountValue(e.target.value)}
+                      />
+                    </div>
+                    {longStayDiscountType === "fixed_price" && price && longStayDiscountValue && Number(longStayDiscountValue) >= Number(price) && (
+                      <p className="alf-longstay-warning">{t("addListing.longStay.fixedPriceWarning")}</p>
+                    )}
+                    {price && longStayDiscountValue && !(longStayDiscountType === "fixed_price" && Number(longStayDiscountValue) >= Number(price)) && (
+                      <p className="alf-longstay-note">
+                        {t("addListing.longStay.previewText")
+                          .replace("{regular}", price)
+                          .replace(
+                            "{discounted}",
+                            longStayDiscountType === "percentage"
+                              ? Math.round(Number(price) * (1 - Number(longStayDiscountValue) / 100))
+                              : longStayDiscountValue
+                          )}
+                      </p>
+                    )}
+                  </>
+                )}
               </>
             )}
 

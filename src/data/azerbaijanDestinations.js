@@ -45,6 +45,23 @@ export function cityLabel(city, language) {
   return language === "az" ? (AZ_NAMES[city] || city) : city;
 }
 
+const BACK_VOWELS = new Set(["a", "ı", "o", "u"]);
+const AZ_VOWELS = "aıoueəiöü";
+
+/* Azerbaijani locative case ("in {city}") needs vowel-harmony suffix
+   -da/-də — e.g. "Qəbələdə", "Bakıda". Derived from the label's last vowel
+   rather than hardcoded per city, so it works for all 60+ destinations. */
+export function cityLocative(city, language) {
+  const label = cityLabel(city, language);
+  if (language !== "az") return label;
+  let lastVowel = "a";
+  for (let i = label.length - 1; i >= 0; i--) {
+    const ch = label[i].toLowerCase();
+    if (AZ_VOWELS.includes(ch)) { lastVowel = ch; break; }
+  }
+  return `${label}${BACK_VOWELS.has(lastVowel) ? "da" : "də"}`;
+}
+
 /* City Guide URLs (/destinations/:slug) use a lowercase slug of the
    canonical `city` value above — these two helpers are the only place
    that mapping happens, so every other module stays in sync automatically. */

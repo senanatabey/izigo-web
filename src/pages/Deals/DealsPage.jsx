@@ -47,7 +47,7 @@ export default function DealsPage() {
         discount: row.discount,
         saveType: saveType(row),
         to: toPath(row),
-        code: shortListingCode(row.id),
+        code: shortListingCode(row),
         hostName: row.host?.full_name,
         image: row.images?.[0],
       }))))

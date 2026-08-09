@@ -12,7 +12,7 @@ import { fetchApprovedListings, fetchListingRatings, toneForId } from "../../lib
 import { cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
 import { fetchFeaturedPlaces } from "../../lib/cms";
 import { useSeo, schema } from "../../lib/seo";
-import { fetchActiveCampaign, fetchSiteSettings } from "../../lib/heroCampaigns";
+import { fetchActiveCampaign, fetchSiteSettings, getCachedActiveCampaign, getCachedSiteSettings } from "../../lib/heroCampaigns";
 import { SERVICES as CONCIERGE_SERVICES } from "../Concierge/ConciergePage";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
 import BecomeHostCta from "../../components/BecomeHostCta";
@@ -96,8 +96,11 @@ export default function IzigoHomepage() {
   const [whereOpen, setWhereOpen] = useState(false);
   const [listingsTab, setListingsTab] = useState("villas");
   const [listingsByCategory, setListingsByCategory] = useState({});
-  const [campaign, setCampaign] = useState(null);
-  const [siteSettings, setSiteSettings] = useState(null);
+  // Seeded from the in-memory cache so navigating back to Home from another
+  // page shows the right hero image immediately instead of flashing the
+  // default while fetchActiveCampaign()/fetchSiteSettings() re-resolve.
+  const [campaign, setCampaign] = useState(getCachedActiveCampaign);
+  const [siteSettings, setSiteSettings] = useState(getCachedSiteSettings);
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
 
   useEffect(() => {

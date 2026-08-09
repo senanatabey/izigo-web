@@ -18,13 +18,23 @@ export default function ReviewsPage() {
   useEffect(load, []);
 
   const setStatus = async (id, status) => {
-    await supabase.from("reviews").update({ status }).eq("id", id);
+    const { error } = await supabase.from("reviews").update({ status }).eq("id", id);
+    if (error) {
+      console.error("Failed to update review status:", error);
+      window.alert("Failed to update review — please try again.");
+      return;
+    }
     load();
   };
 
   const remove = async (id) => {
     if (!window.confirm("Bu rəyi silmək istədiyinizə əminsiniz?")) return;
-    await supabase.from("reviews").delete().eq("id", id);
+    const { error } = await supabase.from("reviews").delete().eq("id", id);
+    if (error) {
+      console.error("Failed to delete review:", error);
+      window.alert("Failed to delete review — please try again.");
+      return;
+    }
     load();
   };
 

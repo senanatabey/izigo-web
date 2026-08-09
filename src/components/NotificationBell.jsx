@@ -7,6 +7,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 export default function NotificationBell({ userId }) {
   const { t } = useLanguage();
   const [notifications, setNotifications] = useState([]);
+  const [loadError, setLoadError] = useState(false);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -17,7 +18,15 @@ export default function NotificationBell({ userId }) {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20)
-      .then(({ data }) => setNotifications(data || []));
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Failed to load notifications:", error);
+          setLoadError(true);
+          return;
+        }
+        setLoadError(false);
+        setNotifications(data || []);
+      });
   };
 
   useEffect(() => {
@@ -40,7 +49,11 @@ export default function NotificationBell({ userId }) {
     setOpen(next);
     if (next && unreadCount > 0) {
       const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
-      await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
+      const { error } = await supabase.from("notifications").update({ read: true }).in("id", unreadIds);
+      if (error) {
+        console.error("Failed to mark notifications as read:", error);
+        return;
+      }
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     }
   };
@@ -74,7 +87,9 @@ export default function NotificationBell({ userId }) {
       </button>
       {open && (
         <div className="nb-dropdown">
-          {notifications.length === 0 ? (
+          {loadError ? (
+            <div className="nb-empty">{t("sidebar.notificationsError")}</div>
+          ) : notifications.length === 0 ? (
             <div className="nb-empty">{t("sidebar.noNotifications")}</div>
           ) : (
             notifications.map((n) => (

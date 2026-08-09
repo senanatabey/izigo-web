@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Image as ImageIcon, X, Sparkles } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
-import { fetchSiteSettings, updateDefaultHeroImages } from "../../lib/heroCampaigns";
+import { fetchSiteSettings, updateDefaultHeroImages, invalidateHeroCampaignCache } from "../../lib/heroCampaigns";
 import { compressImage } from "../../lib/imageOptimize";
 
 const STATUSES = ["draft", "scheduled", "published", "archived"];
@@ -71,6 +71,7 @@ export default function HeroCampaignsPage() {
 
   const load = () => {
     setLoading(true);
+    invalidateHeroCampaignCache();
     supabase
       .from("hero_campaigns")
       .select("*")
@@ -144,18 +145,33 @@ export default function HeroCampaignsPage() {
   // automatically on that date (status "scheduled"); otherwise it's live now.
   const publish = async (c) => {
     const isFuture = c.start_date && c.start_date > new Date().toISOString().slice(0, 10);
-    await supabase.from("hero_campaigns").update({ status: isFuture ? "scheduled" : "published" }).eq("id", c.id);
+    const { error: publishError } = await supabase.from("hero_campaigns").update({ status: isFuture ? "scheduled" : "published" }).eq("id", c.id);
+    if (publishError) {
+      console.error("Failed to publish campaign:", publishError);
+      window.alert("Failed to publish campaign — please try again.");
+      return;
+    }
     load();
   };
 
   const setStatus = async (id, status) => {
-    await supabase.from("hero_campaigns").update({ status }).eq("id", id);
+    const { error: statusError } = await supabase.from("hero_campaigns").update({ status }).eq("id", id);
+    if (statusError) {
+      console.error("Failed to update campaign status:", statusError);
+      window.alert("Failed to update campaign status — please try again.");
+      return;
+    }
     load();
   };
 
   const remove = async (id) => {
     if (!window.confirm("Bu kampaniyanı silmək istədiyinizə əminsiniz?")) return;
-    await supabase.from("hero_campaigns").delete().eq("id", id);
+    const { error: deleteError } = await supabase.from("hero_campaigns").delete().eq("id", id);
+    if (deleteError) {
+      console.error("Failed to delete campaign:", deleteError);
+      window.alert("Failed to delete campaign — please try again.");
+      return;
+    }
     load();
   };
 

@@ -7,6 +7,7 @@ import {
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
   ShieldCheck, LogOut, X, Sparkles, Bell, Settings, ChevronDown, Globe, ArrowLeft,
   Map, MapPin, HelpCircle, FileText, Image as ImageIcon, Compass, Trophy,
+  Handshake, Megaphone, Wallet, DollarSign, Receipt,
 } from "lucide-react";
 import "./App.css";
 import "./rtl.css";
@@ -69,6 +70,13 @@ const PlacesPage = lazy(() => import("./pages/Admin/Content/PlacesPage"));
 const FaqPage = lazy(() => import("./pages/Admin/Content/FaqPage"));
 const StaticPagesPage = lazy(() => import("./pages/Admin/Content/StaticPagesPage"));
 const MediaLibraryPage = lazy(() => import("./pages/Admin/Content/MediaLibraryPage"));
+const AdminRegionalPartnersPage = lazy(() => import("./pages/Admin/RegionalPartners/RegionalPartnersPage"));
+const AdminAdCampaignsPage = lazy(() => import("./pages/Admin/RegionalPartners/AdCampaignsPage"));
+const AdminPartnerPaymentsPage = lazy(() => import("./pages/Admin/RegionalPartners/PartnerPaymentsAdminPage"));
+const PartnerDashboardPage = lazy(() => import("./pages/RegionalPartner/PartnerDashboardPage"));
+const PartnerListingsPage = lazy(() => import("./pages/RegionalPartner/PartnerListingsPage"));
+const PartnerRevenuePage = lazy(() => import("./pages/RegionalPartner/PartnerRevenuePage"));
+const PartnerPaymentsPage = lazy(() => import("./pages/RegionalPartner/PartnerPaymentsPage"));
 
 /* =========================================================================
    AUTH — backed by Supabase Auth. Session lives in Supabase's own storage
@@ -129,11 +137,19 @@ function AuthProvider({ children }) {
     if (error) throw error;
   };
 
-  const register = async (email, password, name, phone) => {
+  const register = async (email, password, name, phone, hostType, agencyName, managedPropertiesCount) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: name, phone } },
+      options: {
+        data: {
+          full_name: name,
+          phone,
+          host_type: hostType || "owner",
+          agency_name: agencyName || null,
+          managed_properties_count: managedPropertiesCount || null,
+        },
+      },
     });
     if (error) throw error;
     return { needsEmailConfirmation: !data.session };
@@ -255,7 +271,7 @@ export function useSaved() {
 function RequireAuth({ children }) {
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
-  if (loading) return null;
+  if (loading) return <RouteFallback />;
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
@@ -264,7 +280,7 @@ function RequireAuth({ children }) {
 
 function RequireGuest({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  if (loading) return null;
+  if (loading) return <RouteFallback />;
   if (isAuthenticated) return <Navigate to="/profile" replace />;
   return children;
 }
@@ -273,6 +289,16 @@ function RequireAdmin({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user || user.role !== "admin") return <Navigate to="/" replace />;
+  return children;
+}
+
+// Deliberately its own guard, not "RequireAdmin OR regional_partner" — a
+// regional partner is a distinct, region-scoped role and must never satisfy
+// an admin check anywhere in the app.
+function RequireRegionalPartner({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <RouteFallback />;
+  if (!user || user.role !== "regional_partner") return <Navigate to="/" replace />;
   return children;
 }
 
@@ -411,6 +437,13 @@ const ACCOUNT_MENU_ADMIN_ITEMS = [
   { to: "/admin/founder-campaign", label: "Founder Campaign", icon: Trophy },
 ];
 
+const ACCOUNT_MENU_PARTNER_ITEMS = [
+  { to: "/partner", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/partner/listings", label: "Listings", icon: HomeIcon },
+  { to: "/partner/revenue", label: "Revenue", icon: DollarSign },
+  { to: "/partner/payments", label: "Payments", icon: Receipt },
+];
+
 function AccountMenu() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
@@ -420,6 +453,7 @@ function AccountMenu() {
   const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
   const rootRef = React.useRef(null);
   const isAdmin = user?.role === "admin";
+  const isRegionalPartner = user?.role === "regional_partner";
 
   useEffect(() => {
     if (!open) return undefined;
@@ -508,6 +542,21 @@ function AccountMenu() {
                   {to === "/admin/trip-requests" && newTripRequestsCount > 0 && (
                     <span className="account-menu-badge">{newTripRequestsCount}</span>
                   )}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+
+        {isRegionalPartner && (
+          <>
+            <div className="account-menu-divider" />
+            <div className="account-menu-label">Regional Partner</div>
+            <div className="account-menu-section">
+              {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, label, icon: Icon }) => (
+                <Link key={to} to={to} role="menuitem" className="account-menu-item" onClick={close}>
+                  <Icon size={17} />
+                  <span>{label}</span>
                 </Link>
               ))}
             </div>
@@ -625,6 +674,7 @@ const APP_NAV_ITEMS = [
 function AppLayout() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const isRegionalPartner = user?.role === "regional_partner";
   return (
     <div className="app-shell">
       <aside className="app-sidebar">
@@ -638,6 +688,23 @@ function AppLayout() {
             <Icon size={17} />{t(`sidebar.${key}`)}
           </NavLink>
         ))}
+
+        {isRegionalPartner && (
+          <>
+            <div className="sidebar-section-label">Regional Partner</div>
+            {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/partner"}
+                className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
+              >
+                <Icon size={17} />{label}
+              </NavLink>
+            ))}
+          </>
+        )}
+
         <NotificationBell userId={user?.id} />
         <LocaleSwitcher />
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
@@ -681,6 +748,16 @@ const CONTENT_NAV_ITEMS = [
   { to: "/admin/content/faq", label: "FAQ", icon: HelpCircle },
   { to: "/admin/content/pages", label: "Static Pages", icon: FileText },
   { to: "/admin/content/media", label: "Media Library", icon: ImageIcon },
+];
+
+// Regional Partner program — admin side. Assigning partners/regions, entering
+// ad revenue, and marking payouts paid all stay admin-only; a regional
+// partner only ever reads what these pages produce, through its own /partner
+// route tree and RLS, never through this one.
+const REGIONAL_NAV_ITEMS = [
+  { to: "/admin/regional-partners", label: "Regional Partners", icon: Handshake },
+  { to: "/admin/ad-campaigns", label: "Ad Campaigns", icon: Megaphone },
+  { to: "/admin/partner-payments", label: "Partner Payments", icon: Wallet },
 ];
 
 function AdminProfileMenu() {
@@ -812,6 +889,17 @@ function AdminLayout() {
           </NavLink>
         ))}
 
+        <div className="sidebar-section-label">Regional Partner Program</div>
+        {REGIONAL_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
+          >
+            <Icon size={17} />{label}
+          </NavLink>
+        ))}
+
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Log out</button>
       </aside>
       <main className="app-main">
@@ -919,6 +1007,14 @@ export default function App() {
             <Route path="my-listings" element={<MyListingsPage />} />
             <Route path="reviews" element={<ReviewsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+
+            {/* Regional Partner pages — same persistent sidebar as the rest of
+                the account area (AppLayout), just gated per-route so the
+                sidebar/header never disappears when navigating between them. */}
+            <Route path="partner" element={<RequireRegionalPartner><PartnerDashboardPage /></RequireRegionalPartner>} />
+            <Route path="partner/listings" element={<RequireRegionalPartner><PartnerListingsPage /></RequireRegionalPartner>} />
+            <Route path="partner/revenue" element={<RequireRegionalPartner><PartnerRevenuePage /></RequireRegionalPartner>} />
+            <Route path="partner/payments" element={<RequireRegionalPartner><PartnerPaymentsPage /></RequireRegionalPartner>} />
           </Route>
 
           {/* Admin pages */}
@@ -940,6 +1036,10 @@ export default function App() {
             <Route path="admin/content/faq" element={<FaqPage />} />
             <Route path="admin/content/pages" element={<StaticPagesPage />} />
             <Route path="admin/content/media" element={<MediaLibraryPage />} />
+
+            <Route path="admin/regional-partners" element={<AdminRegionalPartnersPage />} />
+            <Route path="admin/ad-campaigns" element={<AdminAdCampaignsPage />} />
+            <Route path="admin/partner-payments" element={<AdminPartnerPaymentsPage />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

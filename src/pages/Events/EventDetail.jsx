@@ -33,7 +33,7 @@ export default function EventDetail() {
     discount: row.discount,
     phone: row.whatsapp_phone,
     host: row.host,
-    code: shortListingCode(row.id),
+    code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
     image: row.images?.[0],
   } : null;

@@ -49,6 +49,13 @@ export default function CityGuide() {
   // undefined = still loading from Supabase, null = no CMS guide for this slug
   const [cmsGuide, setCmsGuide] = useState(undefined);
   const [mustVisitPlaces, setMustVisitPlaces] = useState([]);
+  // Sidebar "Kəşf et" links — real, clickable CMS Places per category (added
+  // via Admin → Places, category = nature/attraction/restaurant + this
+  // city). Empty until an admin adds matching places; each group falls back
+  // to the static (unlinked) copy from src/data/destinations/*.js until then.
+  const [cmsSightseeing, setCmsSightseeing] = useState([]);
+  const [cmsAttractions, setCmsAttractions] = useState([]);
+  const [cmsRestaurants, setCmsRestaurants] = useState([]);
 
   useEffect(() => {
     setCmsGuide(undefined);
@@ -87,6 +94,18 @@ export default function CityGuide() {
   useEffect(() => {
     if (!displayCity) { setMustVisitPlaces([]); return; }
     fetchPlacesByCity(displayCity, language, { limit: 6 }).then(setMustVisitPlaces);
+  }, [displayCity, language]);
+
+  useEffect(() => {
+    if (!displayCity) {
+      setCmsSightseeing([]);
+      setCmsAttractions([]);
+      setCmsRestaurants([]);
+      return;
+    }
+    fetchPlacesByCity(displayCity, language, { category: "nature", limit: 8 }).then(setCmsSightseeing);
+    fetchPlacesByCity(displayCity, language, { category: "attraction", limit: 8 }).then(setCmsAttractions);
+    fetchPlacesByCity(displayCity, language, { category: "restaurant", limit: 8 }).then(setCmsRestaurants);
   }, [displayCity, language]);
 
   useSeo({
@@ -131,6 +150,8 @@ export default function CityGuide() {
         .city-guide .catalog-group-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .city-guide .catalog-list { list-style: none; margin: 0; padding: 0; }
         .city-guide .catalog-list li { font-size: 13.5px; color: var(--text-soft); padding: 5px 0; }
+        .city-guide .catalog-list li a { display: flex; align-items: center; color: inherit; }
+        .city-guide .catalog-list li a:hover { color: var(--izigo-green); }
         .city-guide .catalog-empty { font-size: 12.5px; color: var(--text-soft); font-style: italic; }
 
         .city-guide .guide-main h2 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
@@ -178,7 +199,15 @@ export default function CityGuide() {
 
           <div className="catalog-group">
             <div className="catalog-group-head"><Compass size={15} />{t("cityGuide.sightseeing")}</div>
-            {data.sightseeing.length > 0 ? (
+            {cmsSightseeing.length > 0 ? (
+              <ul className="catalog-list">
+                {cmsSightseeing.map((p) => (
+                  <li key={p.id}>
+                    <Link to={`/places/${p.slug}`}><MapPin size={11} style={{ marginRight: 6 }} />{p.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            ) : data.sightseeing.length > 0 ? (
               <ul className="catalog-list">
                 {data.sightseeing.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
               </ul>
@@ -187,7 +216,15 @@ export default function CityGuide() {
 
           <div className="catalog-group">
             <div className="catalog-group-head"><Sparkles size={15} />{t("cityGuide.attractions")}</div>
-            {data.attractions.length > 0 ? (
+            {cmsAttractions.length > 0 ? (
+              <ul className="catalog-list">
+                {cmsAttractions.map((p) => (
+                  <li key={p.id}>
+                    <Link to={`/places/${p.slug}`}><MapPin size={11} style={{ marginRight: 6 }} />{p.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            ) : data.attractions.length > 0 ? (
               <ul className="catalog-list">
                 {data.attractions.map((item) => <li key={item}><MapPin size={11} style={{ marginRight: 6 }} />{item}</li>)}
               </ul>
@@ -196,7 +233,15 @@ export default function CityGuide() {
 
           <div className="catalog-group">
             <div className="catalog-group-head"><UtensilsCrossed size={15} />{t("cityGuide.restaurants")}</div>
-            <p className="catalog-empty">{t("cityGuide.comingSoon")}</p>
+            {cmsRestaurants.length > 0 ? (
+              <ul className="catalog-list">
+                {cmsRestaurants.map((p) => (
+                  <li key={p.id}>
+                    <Link to={`/places/${p.slug}`}><MapPin size={11} style={{ marginRight: 6 }} />{p.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            ) : <p className="catalog-empty">{t("cityGuide.comingSoon")}</p>}
           </div>
         </aside>
 
@@ -240,7 +285,7 @@ export default function CityGuide() {
           </p>
           <div className="browse-row">
             {BROWSE_LINKS.map(({ icon: Icon, key, to }) => (
-              <Link key={key} to={`${to}?city=${encodeURIComponent(data.name)}`} className="browse-pill">
+              <Link key={key} to={`${to}?city=${encodeURIComponent(displayCity || data.name)}`} className="browse-pill">
                 <Icon size={15} />{t(`nav.${key}`)}
               </Link>
             ))}

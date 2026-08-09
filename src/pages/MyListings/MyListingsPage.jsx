@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
@@ -15,6 +15,7 @@ export default function MyListingsPage() {
   const { user } = useAuth();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -37,12 +38,27 @@ export default function MyListingsPage() {
       .finally(() => setLoading(false));
   }, [user]);
 
+  const filteredListings = search.trim()
+    ? listings.filter((item) => {
+        const title = item.title?.[language] || item.title?.en || "";
+        return title.toLowerCase().includes(search.trim().toLowerCase());
+      })
+    : listings;
+
   return (
     <div className="my-listings-page">
       <style>{`
         .my-listings-page .mlp-head { margin-bottom: 24px; }
         .my-listings-page .mlp-head h1 { font-size: 22px; font-weight: 800; margin: 0 0 8px; }
         .my-listings-page .mlp-head p { font-size: 13.5px; color: var(--text-soft); margin: 0; }
+        .my-listings-page .mlp-search {
+          display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px;
+          padding: 10px 14px; margin-bottom: 18px; background: #fff; position: sticky; top: 8px; z-index: 1;
+        }
+        .my-listings-page .mlp-search svg { color: var(--text-soft); flex-shrink: 0; }
+        .my-listings-page .mlp-search input {
+          border: none; outline: none; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
+        }
 
         .my-listings-page .mlp-list { display: flex; flex-direction: column; gap: 14px; }
         .my-listings-page .mlp-row {
@@ -79,8 +95,20 @@ export default function MyListingsPage() {
       {loading ? null : listings.length === 0 ? (
         <p style={{ color: "var(--text-soft)", fontSize: 14 }}>{t("myListingsPage.subtitle")}</p>
       ) : (
-        <div className="mlp-list">
-          {listings.map((item) => (
+        <>
+          {listings.length > 6 && (
+            <div className="mlp-search">
+              <Search size={16} />
+              <input
+                type="text"
+                placeholder={t("myListingsPage.searchPlaceholder")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          )}
+          <div className="mlp-list">
+          {filteredListings.map((item) => (
             <div className="mlp-row" key={item.id}>
               <Link
                 to={`/${TYPE_TO_PATH[item.type]}/${item.id}`}
@@ -100,7 +128,8 @@ export default function MyListingsPage() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

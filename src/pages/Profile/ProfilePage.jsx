@@ -45,10 +45,18 @@ export default function ProfilePage() {
   const [passwordMessage, setPasswordMessage] = useState("");
 
   const [stats, setStats] = useState({ listings: 0, rating: null, reviewCount: 0 });
+  const [statsError, setStatsError] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     if (!user?.id) return;
-    supabase.from("listings").select("id").eq("host_id", user.id).then(async ({ data: listings }) => {
+    supabase.from("listings").select("id").eq("host_id", user.id).then(async ({ data: listings, error }) => {
+      if (error) {
+        console.error("Failed to load listing stats:", error);
+        setStatsError(true);
+        return;
+      }
+      setStatsError(false);
       const ids = (listings || []).map((l) => l.id);
       const ratings = await fetchListingRatings(ids);
       const entries = Object.values(ratings);
@@ -65,7 +73,14 @@ export default function ProfilePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    await supabase.from("profiles").update({ full_name: name, phone }).eq("id", user.id);
+    setSaveError("");
+    const { error: profileError } = await supabase.from("profiles").update({ full_name: name, phone }).eq("id", user.id);
+    if (profileError) {
+      console.error("Failed to save profile:", profileError);
+      setSaveError(t("profilePage.saveError"));
+      setSaving(false);
+      return;
+    }
 
     if (newPassword) {
       if (newPassword !== confirmPassword) {
@@ -235,7 +250,7 @@ export default function ProfilePage() {
           </div>
           <div className="pp-stat-card">
             <div className="pp-stat-label">{t("profilePage.listingsLabel")}</div>
-            <div className="pp-stat-value">{stats.listings}</div>
+            <div className="pp-stat-value">{statsError ? "—" : stats.listings}</div>
           </div>
           <div className="pp-stat-card">
             <div className="pp-stat-label">{t("profilePage.reviewsLabel")}</div>
@@ -379,6 +394,7 @@ export default function ProfilePage() {
           <span className={`pp-save-status ${saved ? "saved" : dirty ? "dirty" : ""}`}>
             {saved ? <><Check size={15} />{t("profilePage.saved")}</> : dirty ? t("profilePage.unsavedChanges") : t("profilePage.allSaved")}
           </span>
+          {saveError && <p className="pp-password-message">{saveError}</p>}
           <button type="submit" className="pp-save" disabled={!dirty || saving}>{t("profilePage.save")}</button>
         </div>
       </form>

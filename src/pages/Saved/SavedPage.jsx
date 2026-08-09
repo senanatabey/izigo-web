@@ -42,7 +42,7 @@ export default function SavedPage() {
         saveType: saved.find((s) => s.id === row.id)?.type,
         to: toPath(row),
         priceUnit: PRICE_UNITS[saved.find((s) => s.id === row.id)?.type],
-        code: shortListingCode(row.id),
+        code: shortListingCode(row),
         hostName: row.host?.full_name,
         image: row.images?.[0],
       }))))

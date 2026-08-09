@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { MapPin, Users, BedDouble, Waves, Thermometer, Flame } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { Waves, Thermometer, Flame } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { useCurrency } from "../../i18n/CurrencyContext";
-import { fetchApprovedListings, toneForId } from "../../lib/listings";
+import { fetchApprovedListings, mapVillaListing } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
-import SaveHeart from "../../components/SaveHeart";
+import VillaCard from "../../components/VillaCard";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 const CITIES = ALL_DESTINATIONS;
@@ -19,7 +18,6 @@ const AMENITY_QUICK_FILTERS = [
 
 export default function VillasPage() {
   const { t, language } = useLanguage();
-  const { formatPrice } = useCurrency();
   const [searchParams, setSearchParams] = useSearchParams();
   const cityParam = searchParams.get("city") || "";
 
@@ -37,18 +35,7 @@ export default function VillasPage() {
 
   useEffect(() => {
     fetchApprovedListings("villa")
-      .then((rows) => setVillas(rows.map((row) => ({
-        id: row.id,
-        city: row.city,
-        tone: toneForId(row.id),
-        title: row.title,
-        price: row.price,
-        discount: row.discount,
-        guests: row.details?.guests || 0,
-        bedrooms: row.details?.bedrooms || 0,
-        amenities: row.details?.amenities || [],
-        image: row.images?.[0],
-      }))))
+      .then((rows) => setVillas(rows.map(mapVillaListing)))
       .finally(() => setLoading(false));
   }, []);
 
@@ -109,23 +96,6 @@ export default function VillasPage() {
         .villas-page .vp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
         .villas-page .vp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .villas-page .vp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
-        .villas-page .vp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .villas-page .vp-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
-        .villas-page .vp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
-        .villas-page .vp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
-        .villas-page .vp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .villas-page .vp-body { padding: 18px; }
-        .villas-page .vp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
-        .villas-page .vp-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
-        .villas-page .vp-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; flex-wrap: wrap; }
-        .villas-page .vp-meta span { display: flex; align-items: center; gap: 5px; }
-        .villas-page .vp-meta span.vp-amenity-badge { color: var(--izigo-green); font-weight: 700; }
-        .villas-page .vp-footer { display: flex; align-items: center; justify-content: space-between; }
-        .villas-page .vp-price { font-size: 16px; font-weight: 800; color: var(--text); }
-        .villas-page .vp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
-        .villas-page .vp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .villas-page .vp-link { font-size: 13px; font-weight: 700; color: var(--izigo-green); }
 
         .villas-page .vp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
 
@@ -195,31 +165,7 @@ export default function VillasPage() {
         <div className="vp-empty">{t("villasPage.noResults")}</div>
       ) : (
         <div className="vp-grid">
-          {filtered.map((v) => (
-            <Link to={`/villas/${v.id}`} className="vp-card" key={v.id}>
-              <SaveHeart type="villa" id={v.id} />
-              <div className={`vp-thumb ${v.image ? "" : v.tone}`} style={v.image ? { backgroundImage: `url("${v.image}")` } : undefined} />
-              <div className="vp-body">
-                <div className="vp-city"><MapPin size={12} />{cityLabel(v.city, language)}</div>
-                <div className="vp-title">{v.title[language] || v.title.en}</div>
-                <div className="vp-meta">
-                  <span><Users size={14} />{v.guests} {t("villasPage.guestsUnit")}</span>
-                  <span><BedDouble size={14} />{v.bedrooms} {t("villasPage.bedroomsUnit")}</span>
-                  {v.amenities.includes("heated_pool") ? (
-                    <span className="vp-amenity-badge"><Thermometer size={14} />{t("amenities.heated_pool")}</span>
-                  ) : v.amenities.includes("pool") ? (
-                    <span className="vp-amenity-badge"><Waves size={14} />{t("amenities.pool")}</span>
-                  ) : null}
-                </div>
-                <div className="vp-footer">
-                  <div className="vp-price">
-                    {v.discount ? (<><span className="vp-price-old">{formatPrice(v.price)}</span> {formatPrice(Math.round(v.price * (1 - v.discount / 100)))}</>) : formatPrice(v.price)} <span>{t("villasPage.perNight")}</span>
-                  </div>
-                  <span className="vp-link">{t("villasPage.viewDetails")} →</span>
-                </div>
-              </div>
-            </Link>
-          ))}
+          {filtered.map((v) => <VillaCard villa={v} key={v.id} />)}
         </div>
       )}
     </div>

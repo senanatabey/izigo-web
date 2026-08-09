@@ -23,7 +23,13 @@ export default function WelcomePage() {
     supabase.from("listings").select("id", { count: "exact", head: true }).eq("host_id", user.id)
       .then(({ count }) => setListingCount(count || 0));
     isFounderCampaignJoinable().then(setCampaignJoinable).catch(() => setCampaignJoinable(false));
-    supabase.from("profiles").update({ welcome_seen: true }).eq("id", user.id).then(() => refreshUser());
+    supabase.from("profiles").update({ welcome_seen: true }).eq("id", user.id).then(({ error }) => {
+      if (error) {
+        console.error("Failed to mark welcome as seen:", error);
+        return;
+      }
+      refreshUser();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 

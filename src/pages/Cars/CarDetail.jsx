@@ -34,7 +34,7 @@ export default function CarDetail() {
     transmission: row.details?.transmission || "automatic",
     phone: row.whatsapp_phone,
     host: row.host,
-    code: shortListingCode(row.id),
+    code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
     image: row.images?.[0],
   } : null;

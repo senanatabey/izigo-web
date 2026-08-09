@@ -43,7 +43,10 @@ export async function fetchApprovedListingsByCity(category, city, limit = 6) {
     .eq("city", city)
     .order("created_at", { ascending: false })
     .limit(limit);
-  if (error) return [];
+  if (error) {
+    console.error("fetchApprovedListingsByCity failed:", error);
+    return [];
+  }
   return data || [];
 }
 
@@ -81,14 +84,81 @@ export async function fetchListingRatings(listingIds) {
 export async function fetchListingById(id) {
   const { data, error } = await supabase
     .from("listings")
-    .select("*, host:profiles(id, full_name)")
+    .select("*, host:profiles(id, full_name, host_type, agency_name)")
     .eq("id", id)
     .single();
   if (error) return null;
   return data;
 }
 
-export function shortListingCode(id) {
+/** Shapes a raw `listings` row into the flat object VillaCard/VillasPage
+ *  expect — used everywhere a villa grid is built so the mapping only lives
+ *  in one place. */
+export function mapVillaListing(row) {
+  return {
+    id: row.id,
+    city: row.city,
+    tone: toneForId(row.id),
+    title: row.title,
+    price: row.price,
+    discount: row.discount,
+    guests: row.details?.guests || 0,
+    bedrooms: row.details?.bedrooms || 0,
+    amenities: row.details?.amenities || [],
+    image: row.images?.[0],
+    createdAt: row.created_at,
+    longStayEnabled: row.long_stay_discount_enabled || false,
+    longStayMinNights: row.long_stay_min_nights || 2,
+    longStayDiscountType: row.long_stay_discount_type || null,
+    longStayDiscountValue: row.long_stay_discount_value ?? null,
+  };
+}
+
+/**
+ * Scores how similar `candidate` is to `current` (both shaped by
+ * mapVillaListing) so "Similar listings" can be ranked instead of random —
+ * same city first, then price/bedroom/guest closeness, then amenity
+ * overlap. Every candidate gets a score (never a hard filter), so if the
+ * city has few villas the ranking still returns the closest matches rather
+ * than an empty/incomplete section.
+ */
+function villaSimilarityScore(current, candidate) {
+  let score = 0;
+  if (candidate.city === current.city) score += 50;
+
+  const price = current.price || 0;
+  const priceDiff = Math.abs((candidate.price || 0) - price);
+  const priceTolerance = Math.max(price * 0.3, 20);
+  score += priceDiff <= priceTolerance ? 20 : Math.max(0, 20 - (priceDiff / (price || 1)) * 20);
+
+  const bedroomDiff = Math.abs((candidate.bedrooms || 0) - (current.bedrooms || 0));
+  score += Math.max(0, 15 - bedroomDiff * 5);
+
+  const guestDiff = Math.abs((candidate.guests || 0) - (current.guests || 0));
+  score += Math.max(0, 10 - guestDiff * 2);
+
+  if (current.amenities?.length && candidate.amenities?.length) {
+    const overlap = candidate.amenities.filter((a) => current.amenities.includes(a)).length;
+    score += overlap * 3;
+  }
+
+  return score;
+}
+
+/** Ranks `candidates` (shaped by mapVillaListing) by similarity to `current`,
+ *  excluding `current` itself, and returns the top `limit`. */
+export function rankSimilarVillas(current, candidates, limit = 4) {
+  return candidates
+    .filter((c) => c.id !== current.id)
+    .map((c) => ({ item: c, score: villaSimilarityScore(current, c) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.item);
+}
+
+export function shortListingCode(row) {
+  if (row?.listing_number) return `IZ-${row.listing_number}`;
+  const id = typeof row === "string" ? row : row?.id;
   return `IZ-${id.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
 }
 

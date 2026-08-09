@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Mail, Smartphone, Lock, ShieldCheck } from "lucide-react";
+import { User, Mail, Smartphone, Lock, ShieldCheck, Home, Briefcase } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { COUNTRY_CODES } from "../../lib/countryCodes";
@@ -14,6 +14,9 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [hostType, setHostType] = useState("owner");
+  const [agencyName, setAgencyName] = useState("");
+  const [managedPropertiesCount, setManagedPropertiesCount] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
@@ -27,7 +30,10 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
     setError("");
     setSubmitting(true);
     try {
-      const { needsEmailConfirmation } = await register(email, password, name, `${phoneCountry}${phone}`);
+      const { needsEmailConfirmation } = await register(
+        email, password, name, `${phoneCountry}${phone}`,
+        hostType, hostType === "agent" ? agencyName : null, hostType === "agent" ? managedPropertiesCount : null,
+      );
       if (needsEmailConfirmation) {
         setNeedsConfirmation(true);
       } else {
@@ -88,8 +94,9 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         }
         .auth-form .ap-phone-input select {
           border: none; outline: none; font-size: 13.5px; font-weight: 700; color: var(--text); background: none;
-          font-family: var(--sans); flex-shrink: 0; padding-right: 6px; border-right: 1px solid var(--border);
+          font-family: var(--sans); flex-shrink: 0; max-width: 140px; padding-right: 6px; border-right: 1px solid var(--border);
         }
+        .auth-form .ap-phone-input input { min-width: 0; }
         .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
 
         .auth-form .ap-submit {
@@ -104,6 +111,19 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
           background: var(--bg-soft); border-radius: 10px; padding: 10px 12px; margin-top: 16px; line-height: 1.5;
         }
         .auth-form .ap-note svg { flex-shrink: 0; color: var(--izigo-green); margin-top: 1px; }
+
+        .auth-form .ap-hosttype-row { display: flex; gap: 10px; }
+        .auth-form .ap-hosttype-btn {
+          flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px;
+          border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--text);
+          font-size: 13px; font-weight: 700; cursor: pointer; padding: 10px 12px; text-align: center; font-family: var(--sans);
+        }
+        .auth-form .ap-hosttype-btn.active { border-color: var(--izigo-green); background: rgba(0,200,151,0.08); color: var(--izigo-green); }
+
+        @media (max-width: 480px) {
+          .auth-form .ap-hosttype-row { flex-direction: column; }
+          .auth-form .ap-hosttype-btn { width: 100%; }
+        }
 
         .auth-form .ap-switch { text-align: center; font-size: 13.5px; color: var(--text-soft); margin-top: 20px; }
         .auth-form .ap-switch a, .auth-form .ap-switch button {
@@ -166,6 +186,44 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
             <input type="password" placeholder={t("auth.passwordPlaceholder")} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
         </div>
+        <div className="ap-field">
+          <label>{t("auth.hostTypeLabel")}</label>
+          <div className="ap-hosttype-row">
+            <button
+              type="button"
+              className={`ap-hosttype-btn${hostType === "owner" ? " active" : ""}`}
+              onClick={() => setHostType("owner")}
+            >
+              <Home size={16} />{t("auth.hostTypeOwner")}
+            </button>
+            <button
+              type="button"
+              className={`ap-hosttype-btn${hostType === "agent" ? " active" : ""}`}
+              onClick={() => setHostType("agent")}
+            >
+              <Briefcase size={16} />{t("auth.hostTypeAgent")}
+            </button>
+          </div>
+        </div>
+
+        {hostType === "agent" && (
+          <>
+            <div className="ap-field">
+              <label>{t("auth.agencyNameLabel")}</label>
+              <div className="ap-input">
+                <Briefcase size={16} />
+                <input type="text" placeholder={t("auth.agencyNamePlaceholder")} value={agencyName} onChange={(e) => setAgencyName(e.target.value)} />
+              </div>
+            </div>
+            <div className="ap-field">
+              <label>{t("auth.managedPropertiesLabel")}</label>
+              <div className="ap-input">
+                <input type="number" min="0" value={managedPropertiesCount} onChange={(e) => setManagedPropertiesCount(e.target.value)} />
+              </div>
+            </div>
+          </>
+        )}
+
         {mismatch && <p className="ap-error-text">{t("auth.passwordMismatch")}</p>}
         {error && <p className="ap-error-text">{error}</p>}
 
