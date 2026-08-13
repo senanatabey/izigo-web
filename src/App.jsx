@@ -7,7 +7,7 @@ import {
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
   ShieldCheck, LogOut, X, Sparkles, Bell, Settings, ChevronDown, Globe, ArrowLeft,
   Map, MapPin, HelpCircle, FileText, Image as ImageIcon, Compass, Trophy,
-  Handshake, Megaphone, Wallet, DollarSign, Receipt,
+  Handshake, Megaphone, Wallet, DollarSign, Receipt, MessageSquareText,
 } from "lucide-react";
 import "./App.css";
 import "./rtl.css";
@@ -17,6 +17,7 @@ import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { CurrencyProvider, useCurrency, CURRENCIES } from "./i18n/CurrencyContext";
 import { LANGUAGES } from "./i18n/translations";
 import { supabase } from "./lib/supabaseClient";
+import { fetchMyPartnerProfile, fetchAgentRequests } from "./lib/regionalPartner";
 import NotificationBell from "./components/NotificationBell";
 
 /* =========================================================================
@@ -38,7 +39,6 @@ const SavedPage = lazy(() => import("./pages/Saved/SavedPage"));
 const ProfilePage = lazy(() => import("./pages/Profile/ProfilePage"));
 const WelcomePage = lazy(() => import("./pages/Welcome/WelcomePage"));
 const MyListingsPage = lazy(() => import("./pages/MyListings/MyListingsPage"));
-const ReviewsPage = lazy(() => import("./pages/Reviews/ReviewsPage"));
 const NotificationsPage = lazy(() => import("./pages/Notifications/NotificationsPage"));
 const TransfersPage = lazy(() => import("./pages/Transfers/TransfersPage"));
 const TransferDetailPage = lazy(() => import("./pages/Transfers/TransferDetail"));
@@ -56,6 +56,7 @@ const AdminDashboardPage = lazy(() => import("./pages/Admin/DashboardPage"));
 const AdminListingsPage = lazy(() => import("./pages/Admin/ListingsPage"));
 const AdminUsersPage = lazy(() => import("./pages/Admin/UsersPage"));
 const AdminReviewsPage = lazy(() => import("./pages/Admin/ReviewsPage"));
+const AdminPendingReviewsPage = lazy(() => import("./pages/Admin/PendingReviewsPage"));
 const AdminStatisticsPage = lazy(() => import("./pages/Admin/StatisticsPage"));
 const AdminHeroCampaignsPage = lazy(() => import("./pages/Admin/HeroCampaignsPage"));
 const FounderCampaignPage = lazy(() => import("./pages/Admin/FounderCampaignPage"));
@@ -77,6 +78,7 @@ const PartnerDashboardPage = lazy(() => import("./pages/RegionalPartner/PartnerD
 const PartnerListingsPage = lazy(() => import("./pages/RegionalPartner/PartnerListingsPage"));
 const PartnerRevenuePage = lazy(() => import("./pages/RegionalPartner/PartnerRevenuePage"));
 const PartnerPaymentsPage = lazy(() => import("./pages/RegionalPartner/PartnerPaymentsPage"));
+const AgentRequestsPage = lazy(() => import("./pages/RegionalPartner/AgentRequestsPage"));
 
 /* =========================================================================
    AUTH — backed by Supabase Auth. Session lives in Supabase's own storage
@@ -137,7 +139,7 @@ function AuthProvider({ children }) {
     if (error) throw error;
   };
 
-  const register = async (email, password, name, phone, hostType, agencyName, managedPropertiesCount) => {
+  const register = async (email, password, name, phone, wantsAgent, region, agencyName, managedPropertiesCount) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -145,9 +147,11 @@ function AuthProvider({ children }) {
         data: {
           full_name: name,
           phone,
-          host_type: hostType || "owner",
-          agency_name: agencyName || null,
-          managed_properties_count: managedPropertiesCount || null,
+          host_type: wantsAgent ? "agent" : "owner",
+          wants_agent: !!wantsAgent,
+          region: wantsAgent ? region || null : null,
+          agency_name: wantsAgent ? agencyName || null : null,
+          managed_properties_count: wantsAgent ? managedPropertiesCount || null : null,
         },
       },
     });
@@ -421,27 +425,28 @@ const ACCOUNT_MENU_ITEMS = [
   { to: "/profile", key: "profile", icon: User },
   { to: "/my-listings", key: "myListings", icon: ListChecks },
   { to: "/add-listing", key: "addListing", icon: PlusCircle },
-  { to: "/reviews", key: "reviews", icon: Star },
   { to: "/notifications", key: "notifications", icon: Bell },
 ];
 
 const ACCOUNT_MENU_ADMIN_ITEMS = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/listings/pending", label: "Pending approvals", icon: ClipboardList },
-  { to: "/admin/listings", label: "Listings", icon: HomeIcon },
-  { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/reviews", label: "Reviews", icon: Star },
-  { to: "/admin/statistics", label: "Statistics", icon: BarChart3 },
-  { to: "/admin/hero", label: "Hero campaigns", icon: Sparkles },
-  { to: "/admin/trip-requests", label: "Travel Concierge", icon: Compass },
-  { to: "/admin/founder-campaign", label: "Founder Campaign", icon: Trophy },
+  { to: "/admin", label: "İdarə paneli", icon: LayoutDashboard },
+  { to: "/admin/listings/pending", label: "Gözləyən təsdiqlər", icon: ClipboardList },
+  { to: "/admin/listings", label: "Elanlar", icon: HomeIcon },
+  { to: "/admin/users", label: "İstifadəçilər", icon: Users },
+  { to: "/admin/reviews/pending", label: "Gözləyən Rəylər", icon: MessageSquareText },
+  { to: "/admin/reviews", label: "Rəylər", icon: Star },
+  { to: "/admin/statistics", label: "Statistika", icon: BarChart3 },
+  { to: "/admin/hero", label: "Hero kampaniyaları", icon: Sparkles },
+  { to: "/admin/trip-requests", label: "Səyahət Konsyerji", icon: Compass },
+  { to: "/admin/founder-campaign", label: "Founder Kampaniyası", icon: Trophy },
 ];
 
 const ACCOUNT_MENU_PARTNER_ITEMS = [
-  { to: "/partner", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/partner/listings", label: "Listings", icon: HomeIcon },
-  { to: "/partner/revenue", label: "Revenue", icon: DollarSign },
-  { to: "/partner/payments", label: "Payments", icon: Receipt },
+  { to: "/partner", key: "navDashboard", icon: LayoutDashboard },
+  { to: "/partner/listings", key: "navListings", icon: HomeIcon },
+  { to: "/partner/agent-requests", key: "navAgentRequests", icon: Users },
+  { to: "/partner/revenue", key: "navRevenue", icon: DollarSign },
+  { to: "/partner/payments", key: "navPayments", icon: Receipt },
 ];
 
 function AccountMenu() {
@@ -451,6 +456,8 @@ function AccountMenu() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
   const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+  const [pendingAgentRequestsCount, setPendingAgentRequestsCount] = useState(0);
   const rootRef = React.useRef(null);
   const isAdmin = user?.role === "admin";
   const isRegionalPartner = user?.role === "regional_partner";
@@ -497,6 +504,23 @@ function AccountMenu() {
       .then(({ count }) => setNewTripRequestsCount(count || 0));
   }, [isAdmin, open]);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+    supabase
+      .from("reviews")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending_moderation")
+      .then(({ count }) => setPendingReviewsCount(count || 0));
+  }, [isAdmin, open]);
+
+  useEffect(() => {
+    if (!isRegionalPartner) return;
+    fetchMyPartnerProfile().then((partner) => {
+      if (!partner?.region) return;
+      fetchAgentRequests(partner.region).then((rows) => setPendingAgentRequestsCount(rows.length));
+    });
+  }, [isRegionalPartner, open]);
+
   const close = () => setOpen(false);
 
   return (
@@ -510,7 +534,7 @@ function AccountMenu() {
       >
         <User size={16} />
         <span>{t("nav.myAccount")}</span>
-        {(unreadCount + pendingCount + newTripRequestsCount) > 0 && <span className="account-menu-trigger-dot" />}
+        {(unreadCount + pendingCount + newTripRequestsCount + pendingReviewsCount + pendingAgentRequestsCount) > 0 && <span className="account-menu-trigger-dot" />}
         <ChevronDown size={14} className={`account-menu-chevron ${open ? "is-open" : ""}`} />
       </button>
 
@@ -530,7 +554,7 @@ function AccountMenu() {
         {isAdmin && (
           <>
             <div className="account-menu-divider" />
-            <div className="account-menu-label">Admin</div>
+            <div className="account-menu-label">İdarəetmə</div>
             <div className="account-menu-section">
               {ACCOUNT_MENU_ADMIN_ITEMS.map(({ to, label, icon: Icon }) => (
                 <Link key={to} to={to} role="menuitem" className="account-menu-item" onClick={close}>
@@ -542,6 +566,9 @@ function AccountMenu() {
                   {to === "/admin/trip-requests" && newTripRequestsCount > 0 && (
                     <span className="account-menu-badge">{newTripRequestsCount}</span>
                   )}
+                  {to === "/admin/reviews/pending" && pendingReviewsCount > 0 && (
+                    <span className="account-menu-badge">{pendingReviewsCount}</span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -551,12 +578,15 @@ function AccountMenu() {
         {isRegionalPartner && (
           <>
             <div className="account-menu-divider" />
-            <div className="account-menu-label">Regional Partner</div>
+            <div className="account-menu-label">{t("regionalPartner.navSectionLabel")}</div>
             <div className="account-menu-section">
-              {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, label, icon: Icon }) => (
+              {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, key, icon: Icon }) => (
                 <Link key={to} to={to} role="menuitem" className="account-menu-item" onClick={close}>
                   <Icon size={17} />
-                  <span>{label}</span>
+                  <span>{t(`regionalPartner.${key}`)}</span>
+                  {to === "/partner/agent-requests" && pendingAgentRequestsCount > 0 && (
+                    <span className="account-menu-badge">{pendingAgentRequestsCount}</span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -668,13 +698,30 @@ const APP_NAV_ITEMS = [
   { to: "/profile", key: "profile", icon: User },
   { to: "/my-listings", key: "myListings", icon: ListChecks },
   { to: "/add-listing", key: "addListing", icon: PlusCircle },
-  { to: "/reviews", key: "reviews", icon: Star },
 ];
 
 function AppLayout() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const isRegionalPartner = user?.role === "regional_partner";
+  const [pendingAgentRequestsCount, setPendingAgentRequestsCount] = useState(0);
+
+  useEffect(() => {
+    if (!isRegionalPartner) return undefined;
+    let cancelled = false;
+    const load = () => {
+      fetchMyPartnerProfile().then((partner) => {
+        if (!partner?.region) return;
+        fetchAgentRequests(partner.region).then((rows) => {
+          if (!cancelled) setPendingAgentRequestsCount(rows.length);
+        });
+      });
+    };
+    load();
+    const interval = setInterval(load, 60000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, [isRegionalPartner]);
+
   return (
     <div className="app-shell">
       <aside className="app-sidebar">
@@ -691,15 +738,18 @@ function AppLayout() {
 
         {isRegionalPartner && (
           <>
-            <div className="sidebar-section-label">Regional Partner</div>
-            {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, label, icon: Icon }) => (
+            <div className="sidebar-section-label">{t("regionalPartner.navSectionLabel")}</div>
+            {ACCOUNT_MENU_PARTNER_ITEMS.map(({ to, key, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === "/partner"}
                 className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
               >
-                <Icon size={17} />{label}
+                <Icon size={17} />{t(`regionalPartner.${key}`)}
+                {to === "/partner/agent-requests" && pendingAgentRequestsCount > 0 && (
+                  <span className="account-menu-badge">{pendingAgentRequestsCount}</span>
+                )}
               </NavLink>
             ))}
           </>
@@ -730,24 +780,25 @@ function AddListingLayout() {
 }
 
 const ADMIN_NAV_ITEMS = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/admin/listings/pending", label: "Pending approvals", icon: ClipboardList },
-  { to: "/admin/listings", label: "Listings", icon: HomeIcon },
-  { to: "/admin/users", label: "Users", icon: Users },
-  { to: "/admin/reviews", label: "Reviews", icon: Star },
-  { to: "/admin/statistics", label: "Statistics", icon: BarChart3 },
-  { to: "/admin/hero", label: "Hero campaigns", icon: Sparkles },
-  { to: "/admin/trip-requests", label: "Travel Concierge", icon: Compass },
-  { to: "/admin/founder-campaign", label: "Founder Campaign", icon: Trophy },
+  { to: "/admin", label: "İdarə paneli", icon: LayoutDashboard, end: true },
+  { to: "/admin/listings/pending", label: "Gözləyən təsdiqlər", icon: ClipboardList },
+  { to: "/admin/listings", label: "Elanlar", icon: HomeIcon },
+  { to: "/admin/users", label: "İstifadəçilər", icon: Users },
+  { to: "/admin/reviews/pending", label: "Gözləyən Rəylər", icon: MessageSquareText },
+  { to: "/admin/reviews", label: "Rəylər", icon: Star },
+  { to: "/admin/statistics", label: "Statistika", icon: BarChart3 },
+  { to: "/admin/hero", label: "Hero kampaniyaları", icon: Sparkles },
+  { to: "/admin/trip-requests", label: "Səyahət Konsyerji", icon: Compass },
+  { to: "/admin/founder-campaign", label: "Founder Kampaniyası", icon: Trophy },
 ];
 
 // Stage 1 CMS foundation — admin-only CRUD, not yet wired to the public site.
 const CONTENT_NAV_ITEMS = [
-  { to: "/admin/content/guides", label: "Travel Guides", icon: Map },
-  { to: "/admin/content/places", label: "Places", icon: MapPin },
+  { to: "/admin/content/guides", label: "Səyahət Bələdçiləri", icon: Map },
+  { to: "/admin/content/places", label: "Yerlər", icon: MapPin },
   { to: "/admin/content/faq", label: "FAQ", icon: HelpCircle },
-  { to: "/admin/content/pages", label: "Static Pages", icon: FileText },
-  { to: "/admin/content/media", label: "Media Library", icon: ImageIcon },
+  { to: "/admin/content/pages", label: "Statik Səhifələr", icon: FileText },
+  { to: "/admin/content/media", label: "Media Kitabxanası", icon: ImageIcon },
 ];
 
 // Regional Partner program — admin side. Assigning partners/regions, entering
@@ -755,9 +806,9 @@ const CONTENT_NAV_ITEMS = [
 // partner only ever reads what these pages produce, through its own /partner
 // route tree and RLS, never through this one.
 const REGIONAL_NAV_ITEMS = [
-  { to: "/admin/regional-partners", label: "Regional Partners", icon: Handshake },
-  { to: "/admin/ad-campaigns", label: "Ad Campaigns", icon: Megaphone },
-  { to: "/admin/partner-payments", label: "Partner Payments", icon: Wallet },
+  { to: "/admin/regional-partners", label: "Regional Partnyorlar", icon: Handshake },
+  { to: "/admin/ad-campaigns", label: "Reklam Kampaniyaları", icon: Megaphone },
+  { to: "/admin/partner-payments", label: "Partnyor Ödənişləri", icon: Wallet },
 ];
 
 function AdminProfileMenu() {
@@ -792,24 +843,24 @@ function AdminProfileMenu() {
         <span className="admin-profile-avatar">{initials}</span>
         <span className="admin-profile-text">
           <span className="admin-profile-name">{user?.name || "Admin"}</span>
-          <span className="admin-profile-role">{user?.role === "admin" ? "Super Admin" : user?.role}</span>
+          <span className="admin-profile-role">{user?.role === "admin" ? "Baş Admin" : user?.role}</span>
         </span>
         <ChevronDown size={14} className={`account-menu-chevron ${open ? "is-open" : ""}`} />
       </button>
 
       <div className={`admin-profile-dropdown ${open ? "is-open" : ""}`} role="menu">
         <Link to="/profile" role="menuitem" className="account-menu-item" onClick={() => setOpen(false)}>
-          <User size={16} /><span>Profile</span>
+          <User size={16} /><span>Profil</span>
         </Link>
         <Link to="/profile" role="menuitem" className="account-menu-item" onClick={() => setOpen(false)}>
-          <ShieldCheck size={16} /><span>Change password</span>
+          <ShieldCheck size={16} /><span>Şifrəni dəyiş</span>
         </Link>
         <Link to="/profile" role="menuitem" className="account-menu-item" onClick={() => setOpen(false)}>
-          <Settings size={16} /><span>Settings</span>
+          <Settings size={16} /><span>Tənzimləmələr</span>
         </Link>
         <div className="account-menu-divider" />
         <button type="button" role="menuitem" className="account-menu-item account-menu-item-danger" onClick={() => { setOpen(false); logout(); }}>
-          <LogOut size={16} /><span>Log out</span>
+          <LogOut size={16} /><span>Çıxış</span>
         </button>
       </div>
     </div>
@@ -824,7 +875,7 @@ function AdminTopBar() {
   return (
     <div className="admin-topbar">
       <div className="admin-topbar-right">
-        {lastLogin && <span className="admin-topbar-lastlogin">Last login: {lastLogin}</span>}
+        {lastLogin && <span className="admin-topbar-lastlogin">Son giriş: {lastLogin}</span>}
         <NotificationBell userId={user?.id} />
         <span className="admin-topbar-name">{user?.name}</span>
       </div>
@@ -836,6 +887,7 @@ function AdminLayout() {
   const { logout } = useAuth();
   const [pendingCount, setPendingCount] = useState(0);
   const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -850,6 +902,11 @@ function AdminLayout() {
         .select("*", { count: "exact", head: true })
         .eq("status", "new")
         .then(({ count }) => { if (!cancelled) setNewTripRequestsCount(count || 0); });
+      supabase
+        .from("reviews")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending_moderation")
+        .then(({ count }) => { if (!cancelled) setPendingReviewsCount(count || 0); });
     };
     load();
     const interval = setInterval(load, 60000);
@@ -875,10 +932,13 @@ function AdminLayout() {
             {to === "/admin/trip-requests" && newTripRequestsCount > 0 && (
               <span className="account-menu-badge">{newTripRequestsCount}</span>
             )}
+            {to === "/admin/reviews/pending" && pendingReviewsCount > 0 && (
+              <span className="account-menu-badge">{pendingReviewsCount}</span>
+            )}
           </NavLink>
         ))}
 
-        <div className="sidebar-section-label">Content Management</div>
+        <div className="sidebar-section-label">Kontent İdarəetməsi</div>
         {CONTENT_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
@@ -889,7 +949,7 @@ function AdminLayout() {
           </NavLink>
         ))}
 
-        <div className="sidebar-section-label">Regional Partner Program</div>
+        <div className="sidebar-section-label">Regional Partnyor Proqramı</div>
         {REGIONAL_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
@@ -900,7 +960,7 @@ function AdminLayout() {
           </NavLink>
         ))}
 
-        <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Log out</button>
+        <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Çıxış</button>
       </aside>
       <main className="app-main">
         <AdminTopBar />
@@ -1005,7 +1065,6 @@ export default function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="edit-listing/:id" element={<AddListingFormPage />} />
             <Route path="my-listings" element={<MyListingsPage />} />
-            <Route path="reviews" element={<ReviewsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
 
             {/* Regional Partner pages — same persistent sidebar as the rest of
@@ -1013,6 +1072,7 @@ export default function App() {
                 sidebar/header never disappears when navigating between them. */}
             <Route path="partner" element={<RequireRegionalPartner><PartnerDashboardPage /></RequireRegionalPartner>} />
             <Route path="partner/listings" element={<RequireRegionalPartner><PartnerListingsPage /></RequireRegionalPartner>} />
+            <Route path="partner/agent-requests" element={<RequireRegionalPartner><AgentRequestsPage /></RequireRegionalPartner>} />
             <Route path="partner/revenue" element={<RequireRegionalPartner><PartnerRevenuePage /></RequireRegionalPartner>} />
             <Route path="partner/payments" element={<RequireRegionalPartner><PartnerPaymentsPage /></RequireRegionalPartner>} />
           </Route>
@@ -1023,6 +1083,7 @@ export default function App() {
             <Route path="admin/users" element={<AdminUsersPage />} />
             <Route path="admin/listings" element={<AdminListingsPage />} />
             <Route path="admin/listings/pending" element={<PendingApprovalsPage />} />
+            <Route path="admin/reviews/pending" element={<AdminPendingReviewsPage />} />
             <Route path="admin/reviews" element={<AdminReviewsPage />} />
             <Route path="admin/statistics" element={<AdminStatisticsPage />} />
             <Route path="admin/hero" element={<AdminHeroCampaignsPage />} />

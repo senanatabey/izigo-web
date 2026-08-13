@@ -1,13 +1,55 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Search, Star, ChevronDown, MessageCircle } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId } from "../../lib/listings";
+import { fetchHostReviews, replyToReview } from "../../lib/reviews";
 
 const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events", service: "concierge" };
+
+function ListingReviewsPanel({ reviews, onReplied }) {
+  const { t } = useLanguage();
+  const [replyDrafts, setReplyDrafts] = useState({});
+
+  const submitReply = async (id) => {
+    const draft = (replyDrafts[id] || "").trim();
+    if (!draft) return;
+    await replyToReview(id, draft);
+    onReplied();
+  };
+
+  return (
+    <div className="mlp-reviews-panel">
+      {reviews.map((r) => (
+        <div className="mlp-review-card" key={r.id}>
+          <div className="mlp-review-head">
+            <span className="mlp-review-stars">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+            <span className={`mlp-review-status ${r.status}`}>{t(`myListingsPage.reviewStatus.${r.status}`) || r.status}</span>
+          </div>
+          <p className="mlp-review-text">{r.text}</p>
+          {r.host_reply ? (
+            <div className="mlp-review-reply"><strong>{t("myListingsPage.yourReply")}:</strong> {r.host_reply}</div>
+          ) : (
+            <div className="mlp-review-reply-form">
+              <input
+                type="text"
+                placeholder={t("myListingsPage.replyPlaceholder")}
+                value={replyDrafts[r.id] || ""}
+                onChange={(e) => setReplyDrafts((prev) => ({ ...prev, [r.id]: e.target.value }))}
+              />
+              <button type="button" onClick={() => submitReply(r.id)}>
+                <MessageCircle size={13} />{t("myListingsPage.replySubmit")}
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function MyListingsPage() {
   const { t, language } = useLanguage();
@@ -16,6 +58,19 @@ export default function MyListingsPage() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [reviewsByListing, setReviewsByListing] = useState({});
+  const [openReviewsFor, setOpenReviewsFor] = useState(null);
+
+  const loadReviews = () => {
+    if (!user) return;
+    fetchHostReviews(user.id).then((rows) => {
+      const grouped = {};
+      rows.forEach((r) => {
+        (grouped[r.listing_id] ||= []).push(r);
+      });
+      setReviewsByListing(grouped);
+    });
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -36,6 +91,8 @@ export default function MyListingsPage() {
         rejectReason: row.reject_reason,
       }))))
       .finally(() => setLoading(false));
+    loadReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const filteredListings = search.trim()
@@ -61,8 +118,32 @@ export default function MyListingsPage() {
         }
 
         .my-listings-page .mlp-list { display: flex; flex-direction: column; gap: 14px; }
+        .my-listings-page .mlp-item { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
         .my-listings-page .mlp-row {
-          display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+          display: flex; align-items: center; gap: 16px; padding: 14px;
+        }
+        .my-listings-page .mlp-reviews-toggle {
+          display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; border: none; background: none;
+          padding: 0; font-size: 12px; font-weight: 700; color: var(--izigo-green); cursor: pointer;
+        }
+        .my-listings-page .mlp-reviews-toggle svg.is-open { transform: rotate(180deg); }
+        .my-listings-page .mlp-reviews-panel { border-top: 1px solid var(--border); background: var(--bg-soft); padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+        .my-listings-page .mlp-review-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+        .my-listings-page .mlp-review-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .my-listings-page .mlp-review-stars { color: #FFB800; font-size: 13px; }
+        .my-listings-page .mlp-review-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--bg-soft); color: var(--text-soft); }
+        .my-listings-page .mlp-review-status.published { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .my-listings-page .mlp-review-status.pending_moderation, .my-listings-page .mlp-review-status.queued { background: rgba(255,180,0,0.16); color: #B87700; }
+        .my-listings-page .mlp-review-status.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
+        .my-listings-page .mlp-review-text { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin: 0 0 8px; }
+        .my-listings-page .mlp-review-reply { background: var(--bg-soft); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; }
+        .my-listings-page .mlp-review-reply-form { display: flex; gap: 8px; }
+        .my-listings-page .mlp-review-reply-form input {
+          flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; font-family: var(--sans);
+        }
+        .my-listings-page .mlp-review-reply-form button {
+          display: inline-flex; align-items: center; gap: 4px; border: none; background: var(--izigo-green); color: #fff;
+          border-radius: 8px; padding: 0 12px; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .my-listings-page .mlp-thumb { width: 76px; height: 60px; border-radius: 10px; flex-shrink: 0; background-size: cover; background-position: center; }
         .my-listings-page .mlp-reject-reason { font-size: 12px; color: #E0553F; margin-top: 6px; }
@@ -108,26 +189,44 @@ export default function MyListingsPage() {
             </div>
           )}
           <div className="mlp-list">
-          {filteredListings.map((item) => (
-            <div className="mlp-row" key={item.id}>
-              <Link
-                to={`/${TYPE_TO_PATH[item.type]}/${item.id}`}
-                className={`mlp-thumb ${item.image ? "" : item.tone}`}
-                style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}
-              />
-              <div className="mlp-body">
-                <div className="mlp-title">{item.title[language] || item.title.en}</div>
-                <div className="mlp-meta"><MapPin size={12} />{item.city} · {formatPrice(item.price)}</div>
-                {item.status === "rejected" && item.rejectReason && (
-                  <div className="mlp-reject-reason">{t("myListingsPage.rejectReasonLabel")}: {item.rejectReason}</div>
-                )}
+          {filteredListings.map((item) => {
+            const itemReviews = reviewsByListing[item.id] || [];
+            const isOpen = openReviewsFor === item.id;
+            return (
+            <div className="mlp-item" key={item.id}>
+              <div className="mlp-row">
+                <Link
+                  to={`/${TYPE_TO_PATH[item.type]}/${item.id}`}
+                  className={`mlp-thumb ${item.image ? "" : item.tone}`}
+                  style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}
+                />
+                <div className="mlp-body">
+                  <div className="mlp-title">{item.title[language] || item.title.en}</div>
+                  <div className="mlp-meta"><MapPin size={12} />{item.city} · {formatPrice(item.price)}</div>
+                  {item.status === "rejected" && item.rejectReason && (
+                    <div className="mlp-reject-reason">{t("myListingsPage.rejectReasonLabel")}: {item.rejectReason}</div>
+                  )}
+                  {itemReviews.length > 0 && (
+                    <button
+                      type="button"
+                      className="mlp-reviews-toggle"
+                      onClick={() => setOpenReviewsFor(isOpen ? null : item.id)}
+                    >
+                      <Star size={12} />
+                      {t("myListingsPage.reviewsToggle").replace("{count}", itemReviews.length)}
+                      <ChevronDown size={13} className={isOpen ? "is-open" : ""} />
+                    </button>
+                  )}
+                </div>
+                <div className="mlp-side">
+                  <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
+                  <Link to={`/edit-listing/${item.id}`} className="mlp-edit">{t("myListingsPage.edit")}</Link>
+                </div>
               </div>
-              <div className="mlp-side">
-                <span className={`mlp-badge ${item.status}`}>{t(`myListingsPage.status.${item.status}`)}</span>
-                <Link to={`/edit-listing/${item.id}`} className="mlp-edit">{t("myListingsPage.edit")}</Link>
-              </div>
+              {isOpen && <ListingReviewsPanel reviews={itemReviews} onReplied={loadReviews} />}
             </div>
-          ))}
+            );
+          })}
           </div>
         </>
       )}

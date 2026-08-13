@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
+import { useAuth } from "../App";
+import { recordListingContact } from "../lib/reviews";
 
 function formatPhone(raw, mask) {
   const digits = raw.replace(/\D/g, "");
@@ -12,10 +14,19 @@ function formatPhone(raw, mask) {
   return `+${cc} ${p1} ${p2} ${p3} ${p4}`;
 }
 
-export default function PhoneReveal({ phone }) {
+// listingId is optional so this component still works anywhere it doesn't
+// apply (none currently) without becoming required everywhere at once.
+export default function PhoneReveal({ phone, listingId }) {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [revealed, setRevealed] = useState(false);
   const digits = phone.replace(/\D/g, "");
+
+  // Invisible, background-only: no UI change, no login prompt for guests —
+  // logged-out visitors just don't get a listing_contacts row.
+  const handleWhatsappClick = () => {
+    if (user?.id && listingId) recordListingContact(listingId, user.id);
+  };
 
   return (
     <div className="phone-reveal">
@@ -49,7 +60,7 @@ export default function PhoneReveal({ phone }) {
       </div>
 
       {revealed && (
-        <a href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer" className="pr-whatsapp">
+        <a href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer" className="pr-whatsapp" onClick={handleWhatsappClick}>
           <MessageCircle size={17} />{t("villaDetail.contactWhatsapp")}
         </a>
       )}
