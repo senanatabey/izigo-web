@@ -53,6 +53,8 @@ export default function PlanMyTripPage() {
         .plan-trip-page .pt-phone-input input {
           border: none; outline: none; padding: 11px 14px; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
         }
+        .plan-trip-page .pt-phone-input.error { border-color: #E0553F; }
+        .plan-trip-page .pt-field-error { margin: 4px 0 0; font-size: 12px; color: #E0553F; }
         .plan-trip-page .pt-notes-hint { margin: 6px 0 0; font-size: 12px; color: var(--text-soft); }
 
         .plan-trip-page .pt-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }

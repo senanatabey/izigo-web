@@ -1,20 +1,25 @@
 import { useState } from "react";
-import { User, Mail, Smartphone, Lock, ShieldCheck, Home, Briefcase } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { User, Mail, Smartphone, Lock, ShieldCheck, Briefcase, MapPin } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { COUNTRY_CODES } from "../../lib/countryCodes";
+import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 export default function RegisterForm({ onSuccess, footerSwitch }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { register } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [name, setName] = useState("");
   const [phoneCountry, setPhoneCountry] = useState("+994");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(searchParams.get("email") || "");
+  const [emailTouched, setEmailTouched] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [hostType, setHostType] = useState("owner");
+  const [wantsAgent, setWantsAgent] = useState(false);
+  const [region, setRegion] = useState("");
   const [agencyName, setAgencyName] = useState("");
   const [managedPropertiesCount, setManagedPropertiesCount] = useState("");
   const [error, setError] = useState("");
@@ -22,7 +27,10 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
-  const canSubmit = name && phone && email && password && confirmPassword && !mismatch;
+  const isAzPhone = phoneCountry === "+994";
+  const phoneInvalid = isAzPhone && phone.length > 0 && phone.length !== 9;
+  const emailInvalid = emailTouched && email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const canSubmit = name && phone && email && password && confirmPassword && !mismatch && !phoneInvalid && !emailInvalid && (!wantsAgent || region);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +40,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
     try {
       const { needsEmailConfirmation } = await register(
         email, password, name, `${phoneCountry}${phone}`,
-        hostType, hostType === "agent" ? agencyName : null, hostType === "agent" ? managedPropertiesCount : null,
+        wantsAgent, region, agencyName, managedPropertiesCount,
       );
       if (needsEmailConfirmation) {
         setNeedsConfirmation(true);
@@ -89,8 +97,9 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         }
         .auth-form .ap-input.error { border-color: #E0553F; }
         .auth-form .ap-input svg { color: var(--text-soft); flex-shrink: 0; }
-        .auth-form .ap-input input {
-          border: none; outline: none; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
+        .auth-form .ap-input input,
+        .auth-form .ap-input select {
+          border: none; outline: none; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans); background: none;
         }
         .auth-form .ap-phone-input select {
           border: none; outline: none; font-size: 13.5px; font-weight: 700; color: var(--text); background: none;
@@ -112,17 +121,18 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         }
         .auth-form .ap-note svg { flex-shrink: 0; color: var(--izigo-green); margin-top: 1px; }
 
-        .auth-form .ap-hosttype-row { display: flex; gap: 10px; }
-        .auth-form .ap-hosttype-btn {
-          flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px;
-          border: 1.5px solid var(--border); border-radius: 10px; background: #fff; color: var(--text);
-          font-size: 13px; font-weight: 700; cursor: pointer; padding: 10px 12px; text-align: center; font-family: var(--sans);
+        .auth-form .ap-checkbox-row {
+          display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text);
+          cursor: pointer; margin-bottom: 12px; min-height: 44px;
         }
-        .auth-form .ap-hosttype-btn.active { border-color: var(--izigo-green); background: rgba(0,200,151,0.08); color: var(--izigo-green); }
+        .auth-form .ap-checkbox-row input { width: 18px; height: 18px; flex-shrink: 0; }
+        .auth-form .ap-agent-note {
+          font-size: 12px; color: var(--text-soft); line-height: 1.5; background: var(--bg-soft);
+          border-radius: 10px; padding: 10px 12px; margin: -4px 0 16px;
+        }
 
         @media (max-width: 480px) {
-          .auth-form .ap-hosttype-row { flex-direction: column; }
-          .auth-form .ap-hosttype-btn { width: 100%; }
+          .auth-form .ap-checkbox-row { width: 100%; }
         }
 
         .auth-form .ap-switch { text-align: center; font-size: 13.5px; color: var(--text-soft); margin-top: 20px; }
@@ -136,78 +146,113 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         <p>{t("auth.registerSubtitle")}</p>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="on">
         <div className="ap-field">
-          <label>{t("auth.nameLabel")}</label>
+          <label htmlFor="register-name">{t("auth.nameLabel")}</label>
           <div className="ap-input">
             <User size={16} />
-            <input type="text" placeholder={t("auth.namePlaceholder")} value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-        </div>
-
-        <div className="ap-field">
-          <label>{t("auth.phoneLabelRegister")}</label>
-          <div className="ap-input ap-phone-input">
-            <Smartphone size={16} />
-            <select value={phoneCountry} onChange={(e) => setPhoneCountry(e.target.value)}>
-              {COUNTRY_CODES.map(({ code, country }) => (
-                <option key={country} value={code}>{code} {country}</option>
-              ))}
-            </select>
             <input
-              type="tel"
-              placeholder="50 123 45 67"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ""))}
+              id="register-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder={t("auth.namePlaceholder")}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
         </div>
 
         <div className="ap-field">
-          <label>{t("auth.emailLabel")}</label>
-          <div className="ap-input">
-            <Mail size={16} />
-            <input type="email" placeholder={t("auth.emailPlaceholder")} value={email} onChange={(e) => setEmail(e.target.value)} />
+          <label htmlFor="register-phone">{t("auth.phoneLabelRegister")}</label>
+          <div className={`ap-input ap-phone-input${phoneInvalid ? " error" : ""}`}>
+            <Smartphone size={16} />
+            <select name="phone-country" aria-label={t("auth.phoneLabelRegister")} value={phoneCountry} onChange={(e) => setPhoneCountry(e.target.value)}>
+              {COUNTRY_CODES.map(({ code, country }) => (
+                <option key={country} value={code}>{code} {country}</option>
+              ))}
+            </select>
+            <input
+              id="register-phone"
+              name="tel"
+              type="tel"
+              autoComplete="tel"
+              placeholder="50 123 45 67"
+              value={phone}
+              maxLength={isAzPhone ? 9 : undefined}
+              onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ""))}
+            />
           </div>
+          {phoneInvalid && <p className="ap-error-text">{t("auth.phoneInvalidLength")}</p>}
         </div>
 
         <div className="ap-field">
-          <label>{t("auth.passwordLabel")}</label>
+          <label htmlFor="register-email">{t("auth.emailLabel")}</label>
+          <div className={`ap-input${emailInvalid ? " error" : ""}`}>
+            <Mail size={16} />
+            <input
+              id="register-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder={t("auth.emailPlaceholder")}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setEmailTouched(true)}
+            />
+          </div>
+          {emailInvalid && <p className="ap-error-text">{t("auth.emailInvalid")}</p>}
+        </div>
+
+        <div className="ap-field">
+          <label htmlFor="register-password">{t("auth.passwordLabel")}</label>
           <div className="ap-input">
             <Lock size={16} />
-            <input type="password" placeholder={t("auth.passwordPlaceholder")} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input
+              id="register-password"
+              name="new-password"
+              type="password"
+              autoComplete="new-password"
+              placeholder={t("auth.passwordPlaceholder")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
         </div>
 
         <div className="ap-field">
-          <label>{t("auth.confirmPasswordLabel")}</label>
+          <label htmlFor="register-confirm-password">{t("auth.confirmPasswordLabel")}</label>
           <div className={`ap-input${mismatch ? " error" : ""}`}>
             <Lock size={16} />
-            <input type="password" placeholder={t("auth.passwordPlaceholder")} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <input
+              id="register-confirm-password"
+              name="confirm-new-password"
+              type="password"
+              autoComplete="new-password"
+              placeholder={t("auth.passwordPlaceholder")}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
           </div>
         </div>
-        <div className="ap-field">
-          <label>{t("auth.hostTypeLabel")}</label>
-          <div className="ap-hosttype-row">
-            <button
-              type="button"
-              className={`ap-hosttype-btn${hostType === "owner" ? " active" : ""}`}
-              onClick={() => setHostType("owner")}
-            >
-              <Home size={16} />{t("auth.hostTypeOwner")}
-            </button>
-            <button
-              type="button"
-              className={`ap-hosttype-btn${hostType === "agent" ? " active" : ""}`}
-              onClick={() => setHostType("agent")}
-            >
-              <Briefcase size={16} />{t("auth.hostTypeAgent")}
-            </button>
-          </div>
-        </div>
+        <label className="ap-checkbox-row">
+          <input type="checkbox" checked={wantsAgent} onChange={(e) => setWantsAgent(e.target.checked)} />
+          {t("auth.wantsAgentLabel")}
+        </label>
 
-        {hostType === "agent" && (
+        {wantsAgent && (
           <>
+            <p className="ap-agent-note">{t("auth.wantsAgentNote")}</p>
+            <div className="ap-field">
+              <label>{t("auth.regionLabel")}</label>
+              <div className="ap-input">
+                <MapPin size={16} />
+                <select value={region} onChange={(e) => setRegion(e.target.value)}>
+                  <option value="">{t("auth.chooseRegion")}</option>
+                  {ALL_DESTINATIONS.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
+                </select>
+              </div>
+            </div>
             <div className="ap-field">
               <label>{t("auth.agencyNameLabel")}</label>
               <div className="ap-input">

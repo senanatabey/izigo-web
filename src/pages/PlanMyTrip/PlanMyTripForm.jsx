@@ -88,7 +88,9 @@ export default function PlanMyTripForm() {
     });
   };
 
-  const canSubmit = name && destination && budget && guests && checkIn && checkOut && nights > 0 && whatsapp;
+  const isAzWhatsapp = whatsappCountry === "+994";
+  const whatsappInvalid = isAzWhatsapp && whatsapp.length > 0 && whatsapp.length !== 9;
+  const canSubmit = name && destination && budget && guests && checkIn && checkOut && nights > 0 && whatsapp && !whatsappInvalid;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -174,7 +176,7 @@ export default function PlanMyTripForm() {
         </div>
         <div className="pt-field full">
           <label><MessageCircle size={13} />{t("planTrip.whatsapp")}</label>
-          <div className="pt-phone-input">
+          <div className={`pt-phone-input${whatsappInvalid ? " error" : ""}`}>
             <select value={whatsappCountry} onChange={(e) => setWhatsappCountry(e.target.value)}>
               {COUNTRY_CODES.map(({ code, country }) => (
                 <option key={country} value={code}>{code} {country}</option>
@@ -184,9 +186,11 @@ export default function PlanMyTripForm() {
               type="tel"
               placeholder="55 123 45 67"
               value={whatsapp}
+              maxLength={isAzWhatsapp ? 9 : undefined}
               onChange={(e) => setWhatsapp(e.target.value.replace(/[^0-9]/g, ""))}
             />
           </div>
+          {whatsappInvalid && <p className="pt-field-error">{t("planTrip.phoneInvalidLength")}</p>}
         </div>
         <div className="pt-field full">
           <label>{t("planTrip.notes")}</label>
