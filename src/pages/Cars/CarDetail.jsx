@@ -130,11 +130,10 @@ export default function CarDetail() {
             <div className="cd-host-avatar"><ShieldCheck size={20} /></div>
             <div>
               <div className="cd-host-name">{car.host?.full_name || t("villaDetail.hostName")}</div>
-              <div className="cd-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
           </Link>
 
-          <PhoneReveal phone={car.phone} />
+          <PhoneReveal phone={car.phone} listingId={car.id} />
         </aside>
       </div>
     </div>

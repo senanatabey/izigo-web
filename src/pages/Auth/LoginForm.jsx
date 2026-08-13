@@ -1,29 +1,61 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { useAuth } from "../../App";
+import { useAuth, useAuthModal } from "../../App";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function LoginForm({ onSuccess, footerSwitch }) {
   const { t } = useLanguage();
   const { login } = useAuth();
+  const navigate = useNavigate();
+  const authModal = useAuthModal();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  // Set only right after a login attempt fails with this specific reason —
+  // never shown speculatively, and cleared the moment either field changes
+  // so it can't linger and apply to a different email/password pair.
+  const [showReregister, setShowReregister] = useState(false);
+  const [reregistering, setReregistering] = useState(false);
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (!identifier || !password) return;
     setError("");
+    setShowReregister(false);
     setSubmitting(true);
     try {
       await login(identifier, password);
       onSuccess?.();
     } catch (err) {
-      setError(err.message || "Login failed");
+      if (err.message === "Email not confirmed") {
+        setShowReregister(true);
+      } else {
+        setError(err.message || "Login failed");
+      }
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleReregister = async () => {
+    if (!window.confirm(t("auth.reregisterConfirm"))) return;
+    setReregistering(true);
+    setError("");
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("reregister-unverified-account", {
+        body: { email: identifier, password },
+      });
+      if (fnError || data?.error) throw new Error(t("auth.reregisterFailed"));
+      authModal.close();
+      navigate(`/register?email=${encodeURIComponent(identifier)}`);
+    } catch (err) {
+      setError(err.message || t("auth.reregisterFailed"));
+    } finally {
+      setReregistering(false);
     }
   };
 
@@ -63,6 +95,15 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
         }
 
         .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
+        .auth-form .ap-reregister-note {
+          background: var(--bg-soft); border-radius: 10px; padding: 12px 14px; margin: -6px 0 16px;
+        }
+        .auth-form .ap-reregister-note p { font-size: 13px; color: var(--text); margin: 0 0 10px; line-height: 1.5; }
+        .auth-form .ap-reregister-btn {
+          border: none; background: var(--izigo-green); color: #fff; border-radius: 8px;
+          padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer;
+        }
+        .auth-form .ap-reregister-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .auth-form .ap-submit {
           width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
@@ -97,7 +138,7 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
               type="email"
               placeholder={t("auth.identifierPlaceholder")}
               value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              onChange={(e) => { setIdentifier(e.target.value); setShowReregister(false); }}
             />
           </div>
         </div>
@@ -109,11 +150,19 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
               type="password"
               placeholder={t("auth.passwordPlaceholder")}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => { setPassword(e.target.value); setShowReregister(false); }}
             />
           </div>
         </div>
         {error && <p className="ap-error-text">{error}</p>}
+        {showReregister && (
+          <div className="ap-reregister-note">
+            <p>{t("auth.emailNotConfirmedText")}</p>
+            <button type="button" className="ap-reregister-btn" disabled={reregistering} onClick={handleReregister}>
+              {reregistering ? "..." : t("auth.reregisterButton")}
+            </button>
+          </div>
+        )}
         <button type="submit" className="ap-submit" disabled={!identifier || !password || submitting}>
           {submitting ? "..." : t("auth.loginButton")}
         </button>

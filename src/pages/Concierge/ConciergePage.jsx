@@ -46,7 +46,7 @@ export default function ConciergePage() {
 
   useSeo({
     title: "Local Services in Azerbaijan — Bring",
-    description: "Ice, firewood, private chefs, photographers and more — arranged by verified locals in Baku, Gabala and Guba, something Airbnb and Booking don't offer.",
+    description: "Ice, firewood, private chefs, photographers and more — arranged by locals in Baku, Gabala and Guba, something Airbnb and Booking don't offer.",
     path: "/concierge",
   });
 
@@ -202,7 +202,7 @@ export default function ConciergePage() {
                   {item.details?.serviceType ? ` · ${t(`conciergePage.services.${item.details.serviceType}`)}` : ""}
                 </div>
                 <div className="cg-item-title">{item.title?.[language] || item.title?.en}</div>
-                <PhoneReveal phone={item.whatsapp_phone} />
+                <PhoneReveal phone={item.whatsapp_phone} listingId={item.id} />
               </div>
             </div>
           ))}

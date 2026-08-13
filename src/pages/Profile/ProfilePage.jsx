@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  User, Mail, Phone, MessageCircle, Send, Globe, ShieldCheck, Check, Circle,
+  User, Mail, Phone, MessageCircle, Send, Globe, Check, Circle,
   Star, PlusCircle, ListChecks, Bell, Heart, Languages, Coins, LayoutDashboard,
   Award, Crown,
 } from "lucide-react";
@@ -14,7 +14,7 @@ import { fetchListingRatings } from "../../lib/listings";
 const QUICK_ACTIONS = [
   { key: "quickAddListing", to: "/add-listing", icon: PlusCircle },
   { key: "quickMyListings", to: "/my-listings", icon: ListChecks },
-  { key: "quickReviews", to: "/reviews", icon: Star },
+  { key: "quickReviews", to: "/my-listings", icon: Star },
   { key: "quickNotifications", to: "/notifications", icon: Bell },
   { key: "quickSaved", to: "/saved", icon: Heart },
 ];
@@ -235,7 +235,6 @@ export default function ProfilePage() {
           <div>
             <h1>{user?.name}</h1>
             <div className="pp-badge-row">
-              <span className="pp-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</span>
               <span className="pp-role">{roleLabel}</span>
             </div>
             {user?.role === "admin" && (
@@ -372,7 +371,7 @@ export default function ProfilePage() {
                   </div>
                   <div className={`pp-founder-item${user?.verified ? " done" : ""}`}>
                     {user?.verified ? <Check size={15} className="pp-founder-icon-done" /> : <Circle size={13} className="pp-founder-icon-pending" />}
-                    Host Verified
+                    Profile Ready
                   </div>
                   <div className="pp-founder-item">🎁 Founder Benefits Unlocked</div>
                 </div>

@@ -9,7 +9,7 @@ export default function AllDestinationsPage() {
 
   useSeo({
     title: "Destinations in Azerbaijan",
-    description: "Explore Baku, Gabala, Guba and every region of Azerbaijan — travel guides, sightseeing and verified local listings.",
+    description: "Explore Baku, Gabala, Guba and every region of Azerbaijan — travel guides, sightseeing and local listings.",
     path: "/destinations",
   });
 

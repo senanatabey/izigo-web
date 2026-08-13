@@ -129,11 +129,10 @@ export default function EventDetail() {
             <div className="ed-host-avatar"><ShieldCheck size={20} /></div>
             <div>
               <div className="ed-host-name">{event.host?.full_name || t("villaDetail.hostName")}</div>
-              <div className="ed-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
           </Link>
 
-          <PhoneReveal phone={event.phone} />
+          <PhoneReveal phone={event.phone} listingId={event.id} />
         </aside>
       </div>
     </div>

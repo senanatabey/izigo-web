@@ -20,7 +20,7 @@ export default function CarsPage() {
 
   useSeo({
     title: "Rent a Car in Azerbaijan — No Agency Markup",
-    description: "Rent a car directly from verified local owners in Baku, Gabala and Guba — no agency markup, no hidden fees, contact on WhatsApp.",
+    description: "Rent a car directly from local owners in Baku, Gabala and Guba — no agency markup, no hidden fees, contact on WhatsApp.",
     path: "/cars",
   });
 

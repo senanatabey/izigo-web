@@ -25,7 +25,7 @@ export default function DealsPage() {
 
   useSeo({
     title: "Deals & Discounts in Azerbaijan",
-    description: "Limited-time discounts on villas, cars, transfers and events across Azerbaijan — booked directly with verified local hosts.",
+    description: "Limited-time discounts on villas, cars, transfers and events across Azerbaijan — booked directly with local hosts.",
     path: "/deals",
   });
 

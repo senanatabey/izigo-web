@@ -9,7 +9,7 @@ const BENEFITS = [
   { icon: Award, title: "Lifetime Founder Badge", text: "A permanent badge on your profile and listings." },
   { icon: Crown, title: "1 Year Launch VIP Membership", text: "VIP status for your first year on IZIGO." },
   { icon: Rocket, title: "Priority Visibility", text: "Your listings get priority placement in search results." },
-  { icon: ShieldCheck, title: "Early Verification Priority", text: "Your host verification gets reviewed first." },
+  { icon: ShieldCheck, title: "Priority Review", text: "Your profile gets reviewed first." },
   { icon: Gift, title: "Access to Future VIP Features", text: "First access to anything we launch during your first year." },
 ];
 
@@ -43,7 +43,7 @@ export default function WelcomePage() {
     { label: "Create your account", done: true },
     { label: "Complete your profile", done: profileComplete },
     { label: "Publish your first listing", done: hasListings },
-    { label: "Get verified", done: user.verified },
+    { label: "Profile ready", done: user.verified },
     { label: "Unlock Founder Benefits", done: user.founderHost, isFounder: true },
   ];
 

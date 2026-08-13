@@ -140,11 +140,10 @@ export default function TransferDetail() {
             <div className="td-host-avatar"><ShieldCheck size={20} /></div>
             <div>
               <div className="td-host-name">{item.host?.full_name || t("villaDetail.hostName")}</div>
-              <div className="td-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
           </Link>
 
-          <PhoneReveal phone={item.phone} />
+          <PhoneReveal phone={item.phone} listingId={item.id} />
         </aside>
       </div>
     </div>

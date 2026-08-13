@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Ruler, Layers, Clock, CheckCircle2, XCircle, BedSingle, X } from "lucide-react";
+import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Ruler, Layers, Clock, CheckCircle2, XCircle, X } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
@@ -18,6 +18,9 @@ import VillaCard from "../../components/VillaCard";
 
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
 const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];
+// Purely a mathematical rollup of the host's declared bed types — never a
+// booking guarantee, never merged with the official "guests" count above.
+const BED_TYPE_SLEEPS = { double: 2, single: 1, sofa_bed: 2, bunk: 2 };
 
 export default function VillaDetail() {
   const { id } = useParams();
@@ -70,7 +73,8 @@ export default function VillaDetail() {
     amenities: row.details?.amenities || [],
     areaSqm: row.details?.area_sqm ?? null,
     floorCount: row.details?.floor_count ?? null,
-    bedConfiguration: row.details?.bed_configuration || null,
+    bedTypes: row.details?.bed_types || null,
+    bedCapacity: (row.details?.bed_types || []).reduce((sum, r) => sum + (BED_TYPE_SLEEPS[r.type] || 0) * (r.count || 0), 0),
     checkInTime: row.details?.check_in_time || null,
     checkOutTime: row.details?.check_out_time || null,
     houseRules: row.details?.house_rules || null,
@@ -139,6 +143,11 @@ export default function VillaDetail() {
         .villa-detail .vd-edit-link { color: var(--izigo-green); font-weight: 700; }
         .villa-detail .vd-meta { display: flex; flex-wrap: wrap; row-gap: 8px; gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
         .villa-detail .vd-meta span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-soft); }
+        .villa-detail .vd-bedtypes { margin: -16px 0 24px; }
+        /* pulls up under vd-meta's own 24px bottom margin so the two related
+           lines (guest stats, then bed breakdown) read as one connected block */
+        .villa-detail .vd-bedtypes-line { font-size: 13.5px; color: var(--text); margin-bottom: 3px; }
+        .villa-detail .vd-bedcapacity-line { font-size: 11.5px; color: var(--text-soft); }
         .villa-detail .vd-main h2 { font-size: 19px; font-weight: 800; margin: 0 0 14px; }
         .villa-detail .vd-main h2.vd-subheading { margin: 8px 0 14px; }
         .villa-detail .vd-desc { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 16px; }
@@ -148,9 +157,6 @@ export default function VillaDetail() {
         .villa-detail .vd-amenity { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text); }
         .villa-detail .vd-amenity svg { color: var(--izigo-green); }
 
-        .villa-detail .vd-bedconfig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
-        .villa-detail .vd-bedconfig-card { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-        .villa-detail .vd-bedconfig-card svg { color: var(--izigo-green); flex-shrink: 0; }
 
         .villa-detail .vd-checkinout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
         .villa-detail .vd-checkinout div { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-soft); }
@@ -232,7 +238,6 @@ export default function VillaDetail() {
           .villa-detail .vd-gallery-side { display: none; }
           .villa-detail .vd-amenities { grid-template-columns: 1fr; }
           .villa-detail .vd-related-grid { grid-template-columns: 1fr; }
-          .villa-detail .vd-bedconfig-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-houserules-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-checkinout { font-size: 13px; }
           .villa-detail .vd-checkinout div { font-size: 13px; }
@@ -272,6 +277,17 @@ export default function VillaDetail() {
             {villa.floorCount != null && <span><Layers size={15} />{villa.floorCount} {t("villaDetail.floorsUnit")}</span>}
           </div>
 
+          {villa.bedTypes?.length > 0 && (
+            <div className="vd-bedtypes">
+              <div className="vd-bedtypes-line">
+                🛏️ {villa.bedTypes.map((row) => `${row.count} ${t(`bedTypes.${row.type}`)}`).join(" · ")}
+              </div>
+              <div className="vd-bedcapacity-line">
+                {t("villaDetail.bedCapacityLabel").replace("{count}", villa.bedCapacity)}
+              </div>
+            </div>
+          )}
+
           <h2>{t("villaDetail.aboutHeading")}</h2>
           <p className="vd-desc">{villa.description[language] || villa.description.en}</p>
           {villa.viewType?.length > 0 && (
@@ -292,18 +308,6 @@ export default function VillaDetail() {
             })}
           </div>
 
-          {villa.bedConfiguration?.length > 0 && (
-            <>
-              <h2 className="vd-subheading">{t("villaDetail.bedConfigHeading")}</h2>
-              <div className="vd-bedconfig-grid">
-                {villa.bedConfiguration.map((row, i) => (
-                  <div className="vd-bedconfig-card" key={i}>
-                    <BedSingle size={17} />{row.count} {t(`bedTypes.${row.type}`)}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
 
           {(villa.checkInTime || villa.checkOutTime) && (
             <>
@@ -389,16 +393,15 @@ export default function VillaDetail() {
             <div>
               <div className="vd-host-name-row">
                 <span className="vd-host-name">{villa.host?.full_name || t("villaDetail.hostName")}</span>
-                {villa.host?.host_type === "agent" && <span className="vd-agent-badge">{t("villaDetail.agentBadge")}</span>}
+                {villa.host?.agent_status === "approved" && <span className="vd-agent-badge">{t("villaDetail.agentBadge")}</span>}
               </div>
-              {villa.host?.host_type === "agent" && villa.host?.agency_name && (
+              {villa.host?.agent_status === "approved" && villa.host?.agency_name && (
                 <div className="vd-agency-name">{villa.host.agency_name}</div>
               )}
-              <div className="vd-host-badge"><ShieldCheck size={13} />{t("villaDetail.hostBadge")}</div>
             </div>
           </Link>
 
-          <PhoneReveal phone={villa.phone} />
+          <PhoneReveal phone={villa.phone} listingId={villa.id} />
         </aside>
       </div>
 

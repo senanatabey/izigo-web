@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Percent, MessageCircle, BadgeCheck, MapPin } from "lucide-react";
+import { Percent, MessageCircle, MapPin } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useSeo } from "../../lib/seo";
 import FounderBanner from "../../components/FounderBanner";
@@ -12,7 +12,6 @@ import { fetchFounderCampaign, fetchFounderCount } from "../../lib/founder";
 const WHY_CARDS = [
   { icon: Percent, key: "commission", tone: "green" },
   { icon: MessageCircle, key: "whatsapp", tone: "orange" },
-  { icon: BadgeCheck, key: "verified", tone: "green" },
   { icon: MapPin, key: "marketplace", tone: "orange" },
 ];
 

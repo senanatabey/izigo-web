@@ -71,7 +71,6 @@ export default function HostProfilePage() {
         <div className="hp-avatar"><ShieldCheck size={28} /></div>
         <div>
           <h1 className="hp-name">{host.full_name || "IZIGO Host"}</h1>
-          <div className="hp-badge"><ShieldCheck size={13} />Verified Host</div>
         </div>
       </div>
 

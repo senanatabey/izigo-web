@@ -3,7 +3,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 // Extracted as-is from the homepage so both the homepage (previously) and the
 // Become a Host page can render the exact same comparison table without
 // duplicating the JSX/CSS. Fully self-contained — no props required.
-const COMPARISON_ROWS = ["commission", "hiddenFees", "directContact", "verified", "focus", "freeToList"];
+const COMPARISON_ROWS = ["commission", "hiddenFees", "directContact", "focus", "freeToList"];
 const COMPARISON_COLUMNS = ["izigo", "airbnb", "booking", "vrbo"];
 
 export default function ComparisonTable() {
