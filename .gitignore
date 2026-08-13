@@ -24,3 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local reference material / Supabase CLI cache — not part of the app
+design-references/
+supabase/.temp/
