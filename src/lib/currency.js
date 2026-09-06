@@ -10,8 +10,7 @@ export const CURRENCIES = [
   { code: "AZN", symbol: "₼" },
   { code: "USD", symbol: "$" },
   { code: "EUR", symbol: "€" },
-  { code: "GBP", symbol: "£" },
-  { code: "TRY", symbol: "₺" },
+  { code: "RUB", symbol: "₽" },
   { code: "SAR", symbol: "﷼" },
 ];
 
@@ -19,9 +18,9 @@ export const CURRENCIES = [
  *  applied when the user hasn't manually picked a currency yet — see
  *  CurrencyContext.setCurrencyForLanguage). Language and currency stay
  *  fully independent after that. */
-export const DEFAULT_CURRENCY_BY_LANGUAGE = { ar: "SAR" };
+export const DEFAULT_CURRENCY_BY_LANGUAGE = { ar: "SAR", ru: "RUB" };
 
-export const DEFAULT_CURRENCY = "USD";
+export const DEFAULT_CURRENCY = "AZN";
 
 const SYMBOLS = Object.fromEntries(CURRENCIES.map((c) => [c.code, c.symbol]));
 
@@ -88,7 +87,7 @@ function roundNaturally(amount, currency) {
   if (currency === "AZN") {
     return Math.round(amount * 100) / 100;
   }
-  // USD/EUR/GBP/TRY — whole numbers, or a .99 psychological price once
+  // USD/EUR/RUB/SAR — whole numbers, or a .99 psychological price once
   // the amount is large enough for that to read as intentional.
   if (amount >= 10) return Math.floor(amount) - 0.01 >= 0 ? Math.floor(amount) + 0.99 : Math.round(amount);
   return Math.round(amount);
