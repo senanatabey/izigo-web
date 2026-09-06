@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { tryGrantFounderStatus } from "../../lib/founder";
+import { approveAgentRequest, rejectAgentRequest } from "../../lib/regionalPartner";
+
+const ROLE_LABELS = { admin: "Admin", host: "Host", regional_partner: "Regional Partnyor" };
+const AGENT_STATUS_LABELS = { none: "—", pending: "Gözləyir", approved: "Təsdiqlənib", rejected: "Rədd edilib" };
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirmingId, setConfirmingId] = useState(null);
+  const [actingAgentId, setActingAgentId] = useState(null);
   const [hostTypeFilter, setHostTypeFilter] = useState("all");
+  const [agentStatusFilter, setAgentStatusFilter] = useState("all");
 
   const load = () => {
     setLoading(true);
@@ -22,7 +28,36 @@ export default function UsersPage() {
 
   useEffect(load, []);
 
-  const filteredUsers = hostTypeFilter === "all" ? users : users.filter((u) => (u.host_type || "owner") === hostTypeFilter);
+  const filteredUsers = users
+    .filter((u) => hostTypeFilter === "all" || (u.host_type || "owner") === hostTypeFilter)
+    .filter((u) => agentStatusFilter === "all" || (u.agent_status || "none") === agentStatusFilter);
+
+  // Same RPCs the Regional Partner panel uses (supabase/030_agent_status_approval.sql)
+  // — admin is authorized for every region, not just one, but the underlying
+  // agent_status write path is identical either way.
+  const approveAgent = async (id) => {
+    setActingAgentId(id);
+    try {
+      await approveAgentRequest(id);
+      load();
+    } catch (err) {
+      window.alert(err.message || "Failed to approve agent request.");
+    } finally {
+      setActingAgentId(null);
+    }
+  };
+
+  const rejectAgent = async (id) => {
+    setActingAgentId(id);
+    try {
+      await rejectAgentRequest(id);
+      load();
+    } catch (err) {
+      window.alert(err.message || "Failed to reject agent request.");
+    } finally {
+      setActingAgentId(null);
+    }
+  };
 
   const toggleRole = async (id, currentRole) => {
     const nextRole = currentRole === "admin" ? "host" : "admin";
@@ -49,7 +84,7 @@ export default function UsersPage() {
       if (error || data?.error) throw new Error(data?.error || error.message);
       window.alert("E-poçt təsdiqləndi.");
     } catch (err) {
-      window.alert(err.message || "Failed to confirm email — please try again.");
+      window.alert(err.message || "E-poçt təsdiqlənmədi — yenidən cəhd edin.");
     } finally {
       setConfirmingId(null);
     }
@@ -72,44 +107,75 @@ export default function UsersPage() {
         .host-type-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
         .host-type-pill.owner { background: var(--bg-soft); color: var(--text-soft); }
         .host-type-pill.agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
-        .admin-users-filter { margin-bottom: 16px; font-size: 13px; }
+        .agent-status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+        .agent-status-pill.none { background: var(--bg-soft); color: var(--text-soft); }
+        .agent-status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
+        .agent-status-pill.approved { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .agent-status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
+        .admin-users-filter { margin-bottom: 16px; font-size: 13px; display: flex; gap: 20px; }
         .admin-users-filter select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+        .agent-action-btns { display: flex; gap: 6px; }
+        .agent-action-btns button { border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .agent-action-btns .approve { background: var(--izigo-green); color: #fff; }
+        .agent-action-btns .reject { background: #F1F1F1; color: #333; }
+        .agent-action-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Users</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>İstifadəçilər</h1>
       <div className="admin-users-filter">
-        <label>Host type: </label>
-        <select value={hostTypeFilter} onChange={(e) => setHostTypeFilter(e.target.value)}>
-          <option value="all">All</option>
-          <option value="owner">Owner</option>
-          <option value="agent">Agent</option>
-        </select>
+        <div>
+          <label>Host tipi: </label>
+          <select value={hostTypeFilter} onChange={(e) => setHostTypeFilter(e.target.value)}>
+            <option value="all">Hamısı</option>
+            <option value="owner">Sahib</option>
+            <option value="agent">Agent</option>
+          </select>
+        </div>
+        <div>
+          <label>Vasitəçi statusu: </label>
+          <select value={agentStatusFilter} onChange={(e) => setAgentStatusFilter(e.target.value)}>
+            <option value="all">Hamısı</option>
+            <option value="pending">Gözləyir</option>
+            <option value="approved">Təsdiqlənib</option>
+            <option value="rejected">Rədd edilib</option>
+            <option value="none">Müraciət etməyib</option>
+          </select>
+        </div>
       </div>
-      {loading ? <p>Loading...</p> : filteredUsers.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No users.</p>
+      {loading ? <p>Yüklənir...</p> : filteredUsers.length === 0 ? (
+        <p style={{ color: "var(--text-soft)" }}>İstifadəçi yoxdur.</p>
       ) : (
         <table className="admin-users-table">
           <thead>
-            <tr><th>Name</th><th>Phone</th><th>Role</th><th>Host Type</th><th>Listings</th><th>Verified</th><th>Founder</th><th>Joined</th><th></th><th></th></tr>
+            <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Host Tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Təsdiqlənib</th><th>Founder</th><th>Qoşulub</th><th></th><th></th></tr>
           </thead>
           <tbody>
             {filteredUsers.map((u) => (
               <tr key={u.id}>
                 <td>{u.full_name || "—"}</td>
                 <td>{u.phone || "—"}</td>
-                <td><span className={`role-pill ${u.role}`}>{u.role}</span></td>
-                <td><span className={`host-type-pill ${u.host_type || "owner"}`}>{u.host_type === "agent" ? "Agent" : "Owner"}</span></td>
+                <td><span className={`role-pill ${u.role}`}>{ROLE_LABELS[u.role] || u.role}</span></td>
+                <td><span className={`host-type-pill ${u.host_type || "owner"}`}>{u.host_type === "agent" ? "Agent" : "Sahib"}</span></td>
+                <td>
+                  <span className={`agent-status-pill ${u.agent_status || "none"}`}>{AGENT_STATUS_LABELS[u.agent_status || "none"]}</span>
+                  {u.agent_status === "pending" && (
+                    <div className="agent-action-btns" style={{ marginTop: 4 }}>
+                      <button className="approve" disabled={actingAgentId === u.id} onClick={() => approveAgent(u.id)}>Təsdiqlə</button>
+                      <button className="reject" disabled={actingAgentId === u.id} onClick={() => rejectAgent(u.id)}>Rədd et</button>
+                    </div>
+                  )}
+                </td>
                 <td>{u.listingCount}</td>
                 <td>
                   <button className="toggle" onClick={() => toggleVerified(u.id, u.verified)}>
-                    <span className={`verified-pill ${u.verified ? "yes" : "no"}`}>{u.verified ? "Verified" : "Not verified"}</span>
+                    <span className={`verified-pill ${u.verified ? "yes" : "no"}`}>{u.verified ? "Təsdiqlənib" : "Təsdiqlənməyib"}</span>
                   </button>
                 </td>
                 <td>{u.founder_host ? <span className="founder-pill">🏅 Founder</span> : "—"}</td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
-                <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Revoke admin" : "Make admin"}</button></td>
+                <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Admin rolunu ləğv et" : "Admin et"}</button></td>
                 <td>
                   <button className="toggle" disabled={confirmingId === u.id} onClick={() => confirmEmail(u.id)}>
-                    {confirmingId === u.id ? "..." : "Confirm email"}
+                    {confirmingId === u.id ? "..." : "E-poçtu təsdiqlə"}
                   </button>
                 </td>
               </tr>

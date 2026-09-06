@@ -79,6 +79,53 @@ export async function fetchMyPayments(partnerId) {
   return data || [];
 }
 
+/** Pending agent (vasitəçi) requests in a region — RLS ("Regional partners
+ *  can view agent applicants in their region") scopes this to the calling
+ *  partner's own region regardless of what's passed here. */
+export async function fetchAgentRequests(region) {
+  if (!region) return [];
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("region", region)
+    .eq("agent_status", "pending")
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("fetchAgentRequests failed:", error);
+    return [];
+  }
+  return data || [];
+}
+
+/** Real listing count per host — used alongside fetchAgentRequests so a
+ *  partner can compare a claimed "managed properties" number against what
+ *  the applicant has actually published. */
+export async function fetchListingCountsByHost(hostIds) {
+  if (!hostIds?.length) return {};
+  const { data, error } = await supabase.from("listings").select("host_id").in("host_id", hostIds);
+  if (error) {
+    console.error("fetchListingCountsByHost failed:", error);
+    return {};
+  }
+  const counts = {};
+  (data || []).forEach((l) => { counts[l.host_id] = (counts[l.host_id] || 0) + 1; });
+  return counts;
+}
+
+/** Approve/reject go through the approve_agent_request / reject_agent_request
+ *  RPCs (supabase/030_agent_status_approval.sql) — a partner (or admin) can
+ *  never flip agent_status via a direct profiles UPDATE, only through these,
+ *  which re-check region ownership server-side. */
+export async function approveAgentRequest(userId) {
+  const { error } = await supabase.rpc("approve_agent_request", { p_user_id: userId });
+  if (error) throw error;
+}
+
+export async function rejectAgentRequest(userId) {
+  const { error } = await supabase.rpc("reject_agent_request", { p_user_id: userId });
+  if (error) throw error;
+}
+
 export async function fetchRegionAdCampaigns(region) {
   const { data, error } = await supabase
     .from("ad_campaigns")
