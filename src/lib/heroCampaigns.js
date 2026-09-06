@@ -54,6 +54,16 @@ export async function updateDefaultHeroImages({ desktopUrl, mobileUrl }) {
   siteSettingsCache = null;
 }
 
+export async function updateLocalServiceImage(key, url) {
+  const current = (await fetchSiteSettings())?.local_service_images || {};
+  const { error } = await supabase
+    .from("site_settings")
+    .update({ local_service_images: { ...current, [key]: url } })
+    .eq("id", 1);
+  if (error) throw error;
+  siteSettingsCache = null;
+}
+
 // Admin hero campaign CRUD (HeroCampaignsPage) writes to hero_campaigns
 // directly via supabase, bypassing this module — call this after any such
 // write so the Home page doesn't keep serving a stale cached campaign.

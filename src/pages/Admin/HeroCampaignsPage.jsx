@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import { Image as ImageIcon, X, Sparkles } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
-import { fetchSiteSettings, updateDefaultHeroImages, invalidateHeroCampaignCache } from "../../lib/heroCampaigns";
+import { fetchSiteSettings, updateDefaultHeroImages, updateLocalServiceImage, invalidateHeroCampaignCache } from "../../lib/heroCampaigns";
 import { compressImage } from "../../lib/imageOptimize";
 
 const STATUSES = ["draft", "scheduled", "published", "archived"];
+const STATUS_LABELS = { draft: "Qaralama", scheduled: "Planlaşdırılıb", published: "Dərc edilib", archived: "Arxivləşdirilib" };
+
+const LOCAL_SERVICE_CARD_KEYS = [
+  { key: "bbq", label: "Aşbaz" },
+  { key: "market", label: "Market Çatdırılması" },
+  { key: "airportTransfer", label: "Transfer & Sürücü" },
+  { key: "guide", label: "Yerli Bələdçi" },
+  { key: "photographer", label: "Foto-tur" },
+];
 
 // Storage keys must stay ASCII-safe — the original filename (accents, spaces,
 // parentheses) can otherwise be rejected by Supabase Storage as an "Invalid key".
@@ -38,6 +47,8 @@ export default function HeroCampaignsPage() {
   const [defaultDesktopFile, setDefaultDesktopFile] = useState(null);
   const [defaultMobileFile, setDefaultMobileFile] = useState(null);
   const [savingDefault, setSavingDefault] = useState(false);
+  const [localServiceFiles, setLocalServiceFiles] = useState({});
+  const [savingLocalServiceKey, setSavingLocalServiceKey] = useState(null);
 
   const loadSettings = () => fetchSiteSettings().then(setSettings);
 
@@ -61,13 +72,29 @@ export default function HeroCampaignsPage() {
       setDefaultMobileFile(null);
       loadSettings();
     } catch (err) {
-      setError(err.message || "Failed to save default hero image");
+      setError(err.message || "Default hero şəklini yadda saxlamaq mümkün olmadı");
     } finally {
       setSavingDefault(false);
     }
   };
 
   useEffect(() => { loadSettings(); }, []);
+
+  const saveLocalServiceImage = async (key) => {
+    const file = localServiceFiles[key];
+    if (!file) return;
+    setSavingLocalServiceKey(key);
+    try {
+      const url = await uploadDefaultImage(file);
+      await updateLocalServiceImage(key, url);
+      setLocalServiceFiles((prev) => ({ ...prev, [key]: null }));
+      loadSettings();
+    } catch (err) {
+      setError(err.message || "Yerli xidmət şəklini yadda saxlamaq mümkün olmadı");
+    } finally {
+      setSavingLocalServiceKey(null);
+    }
+  };
 
   const load = () => {
     setLoading(true);
@@ -135,7 +162,7 @@ export default function HeroCampaignsPage() {
       closeForm();
       load();
     } catch (err) {
-      setError(err.message || "Failed to save campaign");
+      setError(err.message || "Kampaniyanı yadda saxlamaq mümkün olmadı");
     } finally {
       setSaving(false);
     }
@@ -148,7 +175,7 @@ export default function HeroCampaignsPage() {
     const { error: publishError } = await supabase.from("hero_campaigns").update({ status: isFuture ? "scheduled" : "published" }).eq("id", c.id);
     if (publishError) {
       console.error("Failed to publish campaign:", publishError);
-      window.alert("Failed to publish campaign — please try again.");
+      window.alert("Kampaniyanı dərc etmək mümkün olmadı — zəhmət olmasa yenidən cəhd edin.");
       return;
     }
     load();
@@ -158,7 +185,7 @@ export default function HeroCampaignsPage() {
     const { error: statusError } = await supabase.from("hero_campaigns").update({ status }).eq("id", id);
     if (statusError) {
       console.error("Failed to update campaign status:", statusError);
-      window.alert("Failed to update campaign status — please try again.");
+      window.alert("Kampaniyanın statusunu yeniləmək mümkün olmadı — zəhmət olmasa yenidən cəhd edin.");
       return;
     }
     load();
@@ -169,7 +196,7 @@ export default function HeroCampaignsPage() {
     const { error: deleteError } = await supabase.from("hero_campaigns").delete().eq("id", id);
     if (deleteError) {
       console.error("Failed to delete campaign:", deleteError);
-      window.alert("Failed to delete campaign — please try again.");
+      window.alert("Kampaniyanı silmək mümkün olmadı — zəhmət olmasa yenidən cəhd edin.");
       return;
     }
     load();
@@ -228,14 +255,14 @@ export default function HeroCampaignsPage() {
       `}</style>
 
       <div className="hc-head">
-        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Hero campaigns</h1>
-        <button className="hc-new-btn" onClick={openNew}>+ New campaign</button>
+        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Hero kampaniyaları</h1>
+        <button className="hc-new-btn" onClick={openNew}>+ Yeni kampaniya</button>
       </div>
-      <p className="hc-subtitle">Change the homepage hero's image and text — the layout always stays the same.</p>
+      <p className="hc-subtitle">Əsas səhifənin hero şəklini və mətnini dəyişin — layout həmişə eyni qalır.</p>
 
       <div className="hc-default-box">
-        <h2>Default hero image</h2>
-        <p>Shown whenever no campaign is published. Upload a new image to replace it anytime — no code changes needed.</p>
+        <h2>Default hero şəkli</h2>
+        <p>Heç bir kampaniya dərc edilmədikdə göstərilir. İstənilən vaxt yeni şəkil yükləyərək əvəz edə bilərsiniz — kod dəyişikliyi tələb olunmur.</p>
         <div className="hc-default-row">
           <div className="hc-default-thumb" style={settings?.default_hero_desktop_url ? { backgroundImage: `url("${settings.default_hero_desktop_url}")` } : undefined}>
             {!settings?.default_hero_desktop_url && <ImageIcon size={20} />}
@@ -243,12 +270,12 @@ export default function HeroCampaignsPage() {
           <div className="hc-default-uploads">
             <label className="hc-upload">
               <ImageIcon size={16} />
-              {defaultDesktopFile ? defaultDesktopFile.name : "Desktop image (leave empty to keep current)"}
+              {defaultDesktopFile ? defaultDesktopFile.name : "Desktop şəkli (hazırkını saxlamaq üçün boş buraxın)"}
               <input type="file" accept="image/*" hidden onChange={(e) => setDefaultDesktopFile(e.target.files?.[0] || null)} />
             </label>
             <label className="hc-upload">
               <ImageIcon size={16} />
-              {defaultMobileFile ? defaultMobileFile.name : "Mobile image (leave empty to keep current)"}
+              {defaultMobileFile ? defaultMobileFile.name : "Mobil şəkli (hazırkını saxlamaq üçün boş buraxın)"}
               <input type="file" accept="image/*" hidden onChange={(e) => setDefaultMobileFile(e.target.files?.[0] || null)} />
             </label>
             <button
@@ -257,20 +284,52 @@ export default function HeroCampaignsPage() {
               disabled={(!defaultDesktopFile && !defaultMobileFile) || savingDefault}
               onClick={saveDefaultImages}
             >
-              {savingDefault ? "..." : "Save default image"}
+              {savingDefault ? "..." : "Default şəkli yadda saxla"}
             </button>
           </div>
         </div>
       </div>
 
+      <div className="hc-default-box">
+        <h2>Yerli Xidmətlər kart şəkilləri</h2>
+        <p>Əsas səhifədəki "Yerli Xidmətlər" bölməsindəki 5 kartın şəkli. Yükləmə edilməyən kartlar hazırkı rəng gradientini göstərməyə davam edir.</p>
+        {LOCAL_SERVICE_CARD_KEYS.map(({ key, label }) => (
+          <div className="hc-default-row" key={key} style={{ marginBottom: 14 }}>
+            <div className="hc-default-thumb" style={settings?.local_service_images?.[key] ? { backgroundImage: `url("${settings.local_service_images[key]}")` } : undefined}>
+              {!settings?.local_service_images?.[key] && <ImageIcon size={20} />}
+            </div>
+            <div className="hc-default-uploads">
+              <label className="hc-upload">
+                <ImageIcon size={16} />
+                {localServiceFiles[key] ? localServiceFiles[key].name : `${label} — şəkil seç`}
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => setLocalServiceFiles((prev) => ({ ...prev, [key]: e.target.files?.[0] || null }))}
+                />
+              </label>
+              <button
+                type="button"
+                className="hc-new-btn"
+                disabled={!localServiceFiles[key] || savingLocalServiceKey === key}
+                onClick={() => saveLocalServiceImage(key)}
+              >
+                {savingLocalServiceKey === key ? "..." : `${label} şəklini saxla`}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {loading ? (
-        <p>Loading...</p>
+        <p>Yüklənir...</p>
       ) : campaigns.length === 0 ? (
         <div className="hc-empty">
           <Sparkles size={32} />
-          <h2>No hero campaigns yet</h2>
-          <p>Upload an image, write a title and subtitle, and publish — the homepage hero updates instantly, without touching any code.</p>
-          <button className="hc-new-btn" onClick={openNew}>+ Add new campaign</button>
+          <h2>Hələ hero kampaniyası yoxdur</h2>
+          <p>Şəkil yükləyin, başlıq və subtitle yazın, sonra dərc edin — əsas səhifənin hero-su kod dəyişikliyi olmadan dərhal yenilənir.</p>
+          <button className="hc-new-btn" onClick={openNew}>+ Yeni kampaniya əlavə et</button>
         </div>
       ) : (
         <div className="hc-list">
@@ -280,24 +339,24 @@ export default function HeroCampaignsPage() {
               <div className="hc-info">
                 <div className="hc-name">
                   {c.name}
-                  <span className={`hc-pill ${c.status}`}>{c.status}</span>
+                  <span className={`hc-pill ${c.status}`}>{STATUS_LABELS[c.status] || c.status}</span>
                 </div>
                 <div className="hc-meta">
-                  {c.start_date || "no start"} → {c.end_date || "no end"}
+                  {c.start_date || "başlanğıc yoxdur"} → {c.end_date || "bitmə yoxdur"}
                 </div>
               </div>
               <div className="hc-actions">
                 {(c.status === "draft" || c.status === "archived") && (
-                  <button className="btn-publish" onClick={() => publish(c)}>Publish</button>
+                  <button className="btn-publish" onClick={() => publish(c)}>Dərc et</button>
                 )}
                 {(c.status === "published" || c.status === "scheduled") && (
-                  <button className="btn-edit" onClick={() => setStatus(c.id, "archived")}>Unpublish</button>
+                  <button className="btn-edit" onClick={() => setStatus(c.id, "archived")}>Dərcdən çıxar</button>
                 )}
                 <select className="hc-status-select" value={c.status} onChange={(e) => setStatus(c.id, e.target.value)}>
-                  {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                 </select>
-                <button className="btn-edit" onClick={() => openEdit(c)}>Edit</button>
-                <button className="btn-remove" onClick={() => remove(c.id)}>Delete</button>
+                <button className="btn-edit" onClick={() => openEdit(c)}>Redaktə et</button>
+                <button className="btn-remove" onClick={() => remove(c.id)}>Sil</button>
               </div>
             </div>
           ))}
@@ -308,26 +367,26 @@ export default function HeroCampaignsPage() {
         <div className="hc-modal-overlay" onClick={closeForm}>
           <div className="hc-modal" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="hc-modal-close" onClick={closeForm}><X size={14} /></button>
-            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "Edit campaign" : "New campaign"}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "Kampaniyanı redaktə et" : "Yeni kampaniya"}</h2>
             <form onSubmit={save}>
               <div className="hc-field">
-                <label>Internal name</label>
+                <label>Daxili ad</label>
                 <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               </div>
               <div className="hc-field">
                 <label>Status</label>
                 <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                  {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                 </select>
               </div>
 
               <div className="hc-row">
                 <div className="hc-field">
-                  <label>Title (EN)</label>
+                  <label>Başlıq (EN)</label>
                   <input value={form.title_en} onChange={(e) => setForm({ ...form, title_en: e.target.value })} />
                 </div>
                 <div className="hc-field">
-                  <label>Title (AZ)</label>
+                  <label>Başlıq (AZ)</label>
                   <input value={form.title_az} onChange={(e) => setForm({ ...form, title_az: e.target.value })} />
                 </div>
               </div>
@@ -344,28 +403,28 @@ export default function HeroCampaignsPage() {
 
               <div className="hc-row">
                 <div className="hc-field">
-                  <label>Start date (optional)</label>
+                  <label>Başlanğıc tarixi (istəyə bağlı)</label>
                   <input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} />
                 </div>
                 <div className="hc-field">
-                  <label>End date (optional)</label>
+                  <label>Bitmə tarixi (istəyə bağlı)</label>
                   <input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} />
                 </div>
               </div>
               <label className="hc-upload">
                 <ImageIcon size={16} />
-                {desktopFile ? desktopFile.name : "Desktop image (leave empty to keep current)"}
+                {desktopFile ? desktopFile.name : "Desktop şəkli (hazırkını saxlamaq üçün boş buraxın)"}
                 <input type="file" accept="image/*" hidden onChange={(e) => setDesktopFile(e.target.files?.[0] || null)} />
               </label>
               <div style={{ height: 10 }} />
               <label className="hc-upload">
                 <ImageIcon size={16} />
-                {mobileFile ? mobileFile.name : "Mobile image (leave empty to keep current)"}
+                {mobileFile ? mobileFile.name : "Mobil şəkli (hazırkını saxlamaq üçün boş buraxın)"}
                 <input type="file" accept="image/*" hidden onChange={(e) => setMobileFile(e.target.files?.[0] || null)} />
               </label>
 
               {error && <p style={{ color: "#E0553F", fontSize: 13, marginTop: 12 }}>{error}</p>}
-              <button type="submit" className="hc-save-btn" disabled={saving}>{saving ? "..." : "Save"}</button>
+              <button type="submit" className="hc-save-btn" disabled={saving}>{saving ? "..." : "Yadda saxla"}</button>
             </form>
           </div>
         </div>
