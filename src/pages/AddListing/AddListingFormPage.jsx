@@ -82,6 +82,7 @@ export default function AddListingFormPage() {
 
   const [accountName, setAccountName] = useState("");
   const [accountEmail, setAccountEmail] = useState("");
+  const [accountEmailTouched, setAccountEmailTouched] = useState(false);
   const [accountPassword, setAccountPassword] = useState("");
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 
@@ -247,8 +248,10 @@ export default function AddListingFormPage() {
     return true;
   })();
 
+  const whatsappInvalid = whatsapp.length > 0 && whatsapp.length !== 9;
+
   const step2Valid = (() => {
-    if (!description || !whatsapp) return false;
+    if (!description || !whatsapp || whatsappInvalid) return false;
     if (totalPhotoCount < MIN_PHOTOS) return false;
     if (category === "villa" && longStayEnabled) {
       if (!longStayMinNights || Number(longStayMinNights) < 2) return false;
@@ -266,9 +269,11 @@ export default function AddListingFormPage() {
     return true;
   })();
 
+  const accountEmailInvalid = accountEmailTouched && accountEmail.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(accountEmail);
+
   const step3Valid = (() => {
     if (!isEdit && !agreedToRules) return false;
-    if (!user && (!accountName || !accountEmail || accountPassword.length < 6)) return false;
+    if (!user && (!accountName || !accountEmail || accountEmailInvalid || accountPassword.length < 6)) return false;
     return true;
   })();
 
@@ -420,6 +425,9 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-phone-input input {
           border: none; padding: 11px 14px; font-size: 14px; color: var(--text); width: 100%; font-family: var(--sans);
         }
+
+        .add-listing-form-page .alf-phone-input.error { border-color: #E0553F; }
+        .add-listing-form-page .alf-field-error { color: #E0553F; }
 
         .add-listing-form-page .alf-photos {
           display: flex; align-items: flex-start; gap: 12px; border: 1px dashed var(--border); border-radius: 12px;
@@ -940,15 +948,17 @@ export default function AddListingFormPage() {
 
             <div className="alf-field full">
               <label><MessageCircle size={13} />{t("addListing.whatsappLabel")}</label>
-              <div className="alf-phone-input">
+              <div className={`alf-phone-input${whatsappInvalid ? " error" : ""}`}>
                 <span>+994</span>
                 <input
                   type="tel"
                   placeholder="50 123 45 67"
                   value={whatsapp}
+                  maxLength={9}
                   onChange={(e) => setWhatsapp(e.target.value.replace(/[^0-9]/g, ""))}
                 />
               </div>
+              {whatsappInvalid && <p className="alf-field-note alf-field-error">{t("addListing.phoneInvalidLength")}</p>}
             </div>
 
             <div className="alf-step-nav">
@@ -970,7 +980,15 @@ export default function AddListingFormPage() {
                 </div>
                 <div className="alf-field full">
                   <label><Mail size={13} />{t("auth.emailLabel")}</label>
-                  <input type="email" placeholder={t("auth.emailPlaceholder")} value={accountEmail} onChange={(e) => setAccountEmail(e.target.value)} />
+                  <input
+                    type="email"
+                    className={accountEmailInvalid ? "error" : ""}
+                    placeholder={t("auth.emailPlaceholder")}
+                    value={accountEmail}
+                    onChange={(e) => setAccountEmail(e.target.value)}
+                    onBlur={() => setAccountEmailTouched(true)}
+                  />
+                  {accountEmailInvalid && <p className="alf-field-note alf-field-error">{t("auth.emailInvalid")}</p>}
                 </div>
                 <div className="alf-field full">
                   <label><Lock size={13} />{t("auth.passwordLabel")}</label>
