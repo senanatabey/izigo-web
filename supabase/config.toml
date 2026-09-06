@@ -1,0 +1,7 @@
+# Per-function settings for Edge Functions deployed via `supabase functions deploy`.
+# Only watermark-listing-image needs an explicit entry (require a valid user
+# JWT — no anonymous calls). confirm-user-email and generate-content already
+# check auth manually inside their own code and don't need one here.
+
+[functions.watermark-listing-image]
+verify_jwt = true
