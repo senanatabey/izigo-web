@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
 import {
   MapPin, Wallet, MessageCircle, Users, BedDouble, Bath, Car, Calendar, Percent, Moon,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
-  Waves, Thermometer, User, Mail, Lock, Ruler, Layers, Clock, ChevronDown, Trash2, Eye,
+  Waves, Thermometer, User, Mail, Lock, Ruler, Layers, Clock, Eye, Check, ChevronLeft,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
@@ -19,11 +19,14 @@ const AMENITY_ICONS = {
   pool: Waves, heated_pool: Thermometer,
 };
 const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "guide", "laundry", "babysitter"];
-const BED_TYPE_KEYS = ["double", "single", "bunk"];
 const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];
+const BED_TYPE_KEYS = ["double", "single", "sofa_bed", "bunk"];
+const BED_TYPE_SLEEPS = { double: 2, single: 1, sofa_bed: 2, bunk: 2 };
 const VIEW_TYPE_KEYS = ["mountain", "sea", "forest", "city", "garden", "none"];
 
 const VALID_CATEGORIES = ["villa", "car", "transfer", "event", "service"];
+const MIN_PHOTOS = 4;
+const MAX_PHOTOS_BY_CATEGORY = { villa: 20, car: 12, transfer: 10, event: 10, service: 10 };
 
 export default function AddListingFormPage() {
   const params = useParams();
@@ -35,6 +38,7 @@ export default function AddListingFormPage() {
   const [category, setCategory] = useState(params.category || "");
   const [loadingExisting, setLoadingExisting] = useState(isEdit);
   const [existingImages, setExistingImages] = useState([]);
+  const [step, setStep] = useState(1);
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
@@ -49,8 +53,8 @@ export default function AddListingFormPage() {
   const [amenities, setAmenities] = useState([]);
   const [areaSqm, setAreaSqm] = useState("");
   const [floorCount, setFloorCount] = useState("");
-  const [bedConfigOpen, setBedConfigOpen] = useState(false);
-  const [bedConfiguration, setBedConfiguration] = useState([]);
+  const [landAreaSot, setLandAreaSot] = useState("");
+  const [bedTypes, setBedTypes] = useState([]);
   const [checkInTime, setCheckInTime] = useState("14:00");
   const [checkOutTime, setCheckOutTime] = useState("12:00");
   const [houseRules, setHouseRules] = useState({ smoking: null, pets: null, parties: null });
@@ -82,6 +86,7 @@ export default function AddListingFormPage() {
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 
   const [photos, setPhotos] = useState([]);
+  const [agreedToRules, setAgreedToRules] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -109,8 +114,8 @@ export default function AddListingFormPage() {
       setAmenities(d.amenities || []);
       setAreaSqm(d.area_sqm ? String(d.area_sqm) : "");
       setFloorCount(d.floor_count ? String(d.floor_count) : "");
-      setBedConfiguration(d.bed_configuration || []);
-      setBedConfigOpen((d.bed_configuration || []).length > 0);
+      setLandAreaSot(d.land_area_sot ? String(d.land_area_sot) : "");
+      setBedTypes(d.bed_types || []);
       setCheckInTime(d.check_in_time || "14:00");
       setCheckOutTime(d.check_out_time || "12:00");
       setHouseRules({
@@ -156,14 +161,14 @@ export default function AddListingFormPage() {
     setViewTypes((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
   };
 
-  const addBedRow = () => {
-    setBedConfiguration((prev) => [...prev, { type: "double", count: 1 }]);
+  const addBedType = () => {
+    setBedTypes((prev) => [...prev, { type: "double", count: 1 }]);
   };
-  const updateBedRow = (index, field, value) => {
-    setBedConfiguration((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
+  const updateBedType = (index, field, value) => {
+    setBedTypes((prev) => prev.map((row, i) => (i === index ? { ...row, [field]: value } : row)));
   };
-  const removeBedRow = (index) => {
-    setBedConfiguration((prev) => prev.filter((_, i) => i !== index));
+  const removeBedType = (index) => {
+    setBedTypes((prev) => prev.filter((_, i) => i !== index));
   };
 
   const setHouseRule = (key, value) => {
@@ -171,10 +176,11 @@ export default function AddListingFormPage() {
   };
 
   const totalPhotoCount = existingImages.length + photos.length;
+  const maxPhotos = MAX_PHOTOS_BY_CATEGORY[category] || MIN_PHOTOS;
 
   const handlePhotosChange = (e) => {
-    const files = Array.from(e.target.files || []).slice(0, 6 - totalPhotoCount);
-    setPhotos((prev) => [...prev, ...files].slice(0, 6 - existingImages.length));
+    const files = Array.from(e.target.files || []).slice(0, maxPhotos - totalPhotoCount);
+    setPhotos((prev) => [...prev, ...files].slice(0, maxPhotos - existingImages.length));
     e.target.value = "";
   };
 
@@ -182,55 +188,97 @@ export default function AddListingFormPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const uploadPhotos = async (uploaderId) => {
+  const uploadPhotos = async () => {
     const urls = [];
     for (const file of photos) {
       // Resize + re-encode as WebP before it ever leaves the browser —
       // smaller uploads, smaller storage, smaller downloads for every visitor.
       const optimized = await compressImage(file);
-      // Storage keys must stay ASCII-safe — the original filename (accents,
-      // spaces, parentheses) can otherwise be rejected as an "Invalid key".
-      const extMatch = /\.([a-zA-Z0-9]+)$/.exec(optimized.name);
-      const ext = extMatch ? extMatch[1].toLowerCase() : "jpg";
-      const path = `${uploaderId}/${crypto.randomUUID()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("listing-images").upload(path, optimized);
-      if (uploadError) throw uploadError;
-      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
-      urls.push(data.publicUrl);
+      // The watermark-listing-image edge function draws "IZIGO.AZ" onto the
+      // photo server-side and uploads the result itself (service-role key
+      // never leaves the server) — this is the only place listing photos
+      // reach Storage from, so every listing image is watermarked before it
+      // ever becomes public. See supabase/functions/watermark-listing-image.
+      const formData = new FormData();
+      formData.append("file", optimized);
+      const { data, error: fnError } = await supabase.functions.invoke("watermark-listing-image", { body: formData });
+      if (fnError) {
+        // fnError.context is the raw Response for an HTTP-level failure (bad
+        // file type, processing error, upload error — all sent back as
+        // { error: "..." } JSON by the function); a network-level failure
+        // (offline, timeout) has no context and only a generic .message.
+        let message = "Failed to upload photo — please try again.";
+        if (fnError.context && typeof fnError.context.json === "function") {
+          try {
+            const body = await fnError.context.json();
+            if (body?.error) message = body.error;
+          } catch {
+            // response body wasn't JSON — keep the generic message
+          }
+        } else if (fnError.message) {
+          message = fnError.message;
+        }
+        throw new Error(message);
+      }
+      if (!data?.url) throw new Error("Failed to upload photo — please try again.");
+      urls.push(data.url);
     }
     return urls;
   };
 
-  const canSubmit = (() => {
-    if (!title || !city || !description || !whatsapp) return false;
-    if (!user && (!accountName || !accountEmail || accountPassword.length < 6)) return false;
+  // Split into per-step checkpoints purely so the stepper's "Next" buttons can
+  // gate on just that step's own fields — the combined result (step1Valid &&
+  // step2Valid && step3Valid) is exactly the same boolean the old single
+  // canSubmit IIFE computed, just partitioned by which step each field lives
+  // in now. No rule changed, nothing added or removed.
+  const step1Valid = (() => {
+    if (!title || !city) return false;
     if (!isFree && !price && category !== "event") return false;
     if (category === "event" && !isFree && !price) return false;
+    if (category === "event") return !!date;
     if (category === "villa") {
       if (!(guests && bedrooms && bathrooms && Number(bathrooms) > 0)) return false;
       if (!areaSqm || Number(areaSqm) <= 0) return false;
       if (!floorCount || Number(floorCount) <= 0) return false;
-      if (longStayEnabled) {
-        if (!longStayMinNights || Number(longStayMinNights) < 2) return false;
-        if (longStayDiscountType === "percentage") {
-          const pct = Number(longStayDiscountValue);
-          if (!longStayDiscountValue || pct < 1 || pct > 100) return false;
-        } else if (longStayDiscountType === "fixed_price") {
-          const fixed = Number(longStayDiscountValue);
-          if (!longStayDiscountValue || fixed <= 0) return false;
-          if (price && fixed >= Number(price)) return false;
-        } else {
-          return false;
-        }
-      }
       return true;
     }
     if (category === "car") return !!seats;
-    if (category === "transfer") return true;
-    if (category === "event") return !!date;
     if (category === "service") return !!serviceType;
     return true;
   })();
+
+  const step2Valid = (() => {
+    if (!description || !whatsapp) return false;
+    if (totalPhotoCount < MIN_PHOTOS) return false;
+    if (category === "villa" && longStayEnabled) {
+      if (!longStayMinNights || Number(longStayMinNights) < 2) return false;
+      if (longStayDiscountType === "percentage") {
+        const pct = Number(longStayDiscountValue);
+        if (!longStayDiscountValue || pct < 1 || pct > 100) return false;
+      } else if (longStayDiscountType === "fixed_price") {
+        const fixed = Number(longStayDiscountValue);
+        if (!longStayDiscountValue || fixed <= 0) return false;
+        if (price && fixed >= Number(price)) return false;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  })();
+
+  const step3Valid = (() => {
+    if (!isEdit && !agreedToRules) return false;
+    if (!user && (!accountName || !accountEmail || accountPassword.length < 6)) return false;
+    return true;
+  })();
+
+  const canSubmit = step1Valid && step2Valid && step3Valid;
+
+  // A step is reachable (clickable in the stepper, or advance-able via
+  // "Next") once every step before it is valid — this is what stops someone
+  // jumping straight to step 3 with step 1 incomplete via the stepper.
+  const maxReachableStep = step1Valid ? (step2Valid ? 3 : 2) : 1;
+  const goToStep = (n) => { if (n <= maxReachableStep || n < step) setStep(n); };
 
   const buildDetails = () => {
     if (category === "villa") {
@@ -240,7 +288,8 @@ export default function AddListingFormPage() {
       return {
         guests: Number(guests), bedrooms: Number(bedrooms), bathrooms: Number(bathrooms), amenities,
         area_sqm: Number(areaSqm), floor_count: Number(floorCount),
-        bed_configuration: bedConfigOpen && bedConfiguration.length > 0 ? bedConfiguration : null,
+        land_area_sot: landAreaSot ? Number(landAreaSot) : null,
+        bed_types: bedTypes.length > 0 ? bedTypes : null,
         check_in_time: checkInTime, check_out_time: checkOutTime,
         house_rules: hasHouseRules ? {
           smoking: houseRules.smoking, pets: houseRules.pets, parties: houseRules.parties,
@@ -287,7 +336,7 @@ export default function AddListingFormPage() {
         hostId = data.user.id;
       }
 
-      const uploaded = await uploadPhotos(hostId);
+      const uploaded = await uploadPhotos();
       const images = [...existingImages, ...uploaded];
       const payload = {
         category,
@@ -361,6 +410,7 @@ export default function AddListingFormPage() {
           font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
         }
         .add-listing-form-page .alf-field textarea { resize: vertical; min-height: 90px; }
+        .add-listing-form-page .alf-field input.error { border-color: #E0553F; }
         .add-listing-form-page .alf-phone-input {
           display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
         }
@@ -377,6 +427,10 @@ export default function AddListingFormPage() {
         }
         .add-listing-form-page .alf-photos svg { color: var(--text-soft); flex-shrink: 0; margin-top: 2px; }
         .add-listing-form-page .alf-photos p { font-size: 12.5px; color: var(--text-soft); line-height: 1.5; margin: 0; }
+        .add-listing-form-page .alf-photo-rules { font-size: 12px; color: var(--text-soft); line-height: 1.5; margin: -8px 0 12px; }
+        .add-listing-form-page .alf-photo-count { font-size: 12px; color: var(--text-soft); margin: -4px 0 16px; }
+        .add-listing-form-page .alf-photo-count.short { color: #E0553F; font-weight: 600; }
+        .add-listing-form-page .alf-field-note { font-size: 11.5px; color: var(--text-soft); margin: 4px 0 0; line-height: 1.4; }
         .add-listing-form-page .alf-photo-previews { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
         .add-listing-form-page .alf-photo-thumb { position: relative; width: 84px; height: 84px; border-radius: 10px; overflow: hidden; }
         .add-listing-form-page .alf-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -396,6 +450,54 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-radio { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
 
         .add-listing-form-page .alf-checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); margin-bottom: 16px; cursor: pointer; }
+        .add-listing-form-page .alf-rules-box { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: var(--bg-soft); }
+        .add-listing-form-page .alf-rules-title { font-size: 13px; font-weight: 800; margin: 0 0 8px; }
+        .add-listing-form-page .alf-rules-list { margin: 0 0 14px; padding-left: 18px; font-size: 12.5px; color: var(--text-soft); line-height: 1.7; }
+        .add-listing-form-page .alf-rules-box .alf-checkbox-row { margin-bottom: 0; font-size: 13px; }
+
+        .add-listing-form-page .alf-stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; max-width: 640px; }
+        .add-listing-form-page .alf-stepper-item {
+          display: flex; align-items: center; gap: 8px; background: none; border: none; padding: 4px 0; cursor: pointer;
+          font-family: var(--sans); flex: 1;
+        }
+        .add-listing-form-page .alf-stepper-item:disabled { cursor: not-allowed; opacity: 0.5; }
+        .add-listing-form-page .alf-stepper-item:not(:last-child)::after {
+          content: ""; flex: 1; height: 2px; background: var(--border); margin-left: 8px;
+        }
+        .add-listing-form-page .alf-stepper-item.done:not(:last-child)::after { background: var(--izigo-green); }
+        .add-listing-form-page .alf-stepper-dot {
+          width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+          font-size: 12.5px; font-weight: 700; background: var(--bg-soft); color: var(--text-soft); border: 2px solid var(--border);
+        }
+        .add-listing-form-page .alf-stepper-item.active .alf-stepper-dot { background: var(--izigo-orange); border-color: var(--izigo-orange); color: #fff; }
+        .add-listing-form-page .alf-stepper-item.done .alf-stepper-dot { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .add-listing-form-page .alf-stepper-label { font-size: 12.5px; font-weight: 700; color: var(--text-soft); white-space: nowrap; }
+        .add-listing-form-page .alf-stepper-item.active .alf-stepper-label { color: var(--text); }
+        .add-listing-form-page .alf-stepper-mobile { display: none; font-size: 12.5px; font-weight: 700; color: var(--text-soft); margin: 0 0 8px; }
+        .add-listing-form-page .alf-stepper-bar { display: none; height: 4px; border-radius: 999px; background: var(--bg-soft); overflow: hidden; margin-bottom: 20px; max-width: 640px; }
+        .add-listing-form-page .alf-stepper-bar-fill { height: 100%; background: var(--izigo-orange); transition: width 0.2s ease; }
+
+        .add-listing-form-page .alf-step-heading { font-size: 16px; font-weight: 800; margin: 0 0 4px; }
+        .add-listing-form-page .alf-step-subheading { font-size: 12.5px; color: var(--text-soft); margin: 0 0 20px; }
+
+        .add-listing-form-page .alf-step-nav { display: flex; justify-content: space-between; gap: 12px; margin: 24px 0 8px; }
+        .add-listing-form-page .alf-btn-next {
+          margin-left: auto; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          padding: 12px 24px; font-weight: 700; font-size: 14px; cursor: pointer;
+        }
+        .add-listing-form-page .alf-btn-next:disabled { opacity: 0.45; cursor: not-allowed; }
+        .add-listing-form-page .alf-btn-back {
+          display: flex; align-items: center; gap: 4px; background: none; border: 1.5px solid var(--border); border-radius: 10px;
+          padding: 11px 18px; font-weight: 700; font-size: 14px; cursor: pointer; color: var(--text); font-family: var(--sans);
+        }
+
+        @media (max-width: 640px) {
+          .add-listing-form-page .alf-stepper { display: none; }
+          .add-listing-form-page .alf-stepper-mobile { display: block; }
+          .add-listing-form-page .alf-stepper-bar { display: block; }
+          .add-listing-form-page .alf-step-nav { flex-direction: column-reverse; }
+          .add-listing-form-page .alf-btn-next, .add-listing-form-page .alf-btn-back { width: 100%; justify-content: center; min-height: 44px; }
+        }
         .add-listing-form-page .alf-longstay-note { font-size: 12.5px; color: var(--text-soft); margin: -8px 0 16px; }
         .add-listing-form-page .alf-longstay-warning { font-size: 12.5px; color: #E0553F; margin: -8px 0 16px; font-weight: 600; }
 
@@ -419,18 +521,12 @@ export default function AddListingFormPage() {
           padding: 11px 20px; text-decoration: none;
         }
 
-        .add-listing-form-page .alf-bedconfig-toggle {
-          display: flex; align-items: center; gap: 6px; min-height: 44px; background: none; border: none;
-          color: var(--izigo-green); font-weight: 700; font-size: 13.5px; cursor: pointer; padding: 0; margin-bottom: 12px;
-        }
-        .add-listing-form-page .alf-bedconfig-toggle svg { transition: transform 0.15s ease; }
-        .add-listing-form-page .alf-bedconfig-toggle svg.open { transform: rotate(180deg); }
-        .add-listing-form-page .alf-bedconfig-panel { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; background: var(--bg-soft); }
-        .add-listing-form-page .alf-bedconfig-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .add-listing-form-page .alf-bedconfig-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fff; font-family: var(--sans); }
-        .add-listing-form-page .alf-bedconfig-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; width: 100%; }
-        .add-listing-form-page .alf-bedconfig-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .add-listing-form-page .alf-bedconfig-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }
+
+        .add-listing-form-page .alf-bedtype-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .add-listing-form-page .alf-bedtype-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fff; font-family: var(--sans); }
+        .add-listing-form-page .alf-bedtype-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; width: 100%; }
+        .add-listing-form-page .alf-bedtype-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .add-listing-form-page .alf-bedtype-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }
 
         .add-listing-form-page .alf-houserules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
         .add-listing-form-page .alf-houserule-item { display: flex; flex-direction: column; gap: 8px; }
@@ -476,7 +572,26 @@ export default function AddListingFormPage() {
             <p>{t("addListing.formSubtitle")}</p>
           </div>
 
+          <div className="alf-stepper">
+            {[1, 2, 3].map((n) => (
+              <button
+                type="button"
+                key={n}
+                className={`alf-stepper-item${n === step ? " active" : ""}${n < step ? " done" : ""}`}
+                disabled={n > maxReachableStep && n > step}
+                onClick={() => goToStep(n)}
+              >
+                <span className="alf-stepper-dot">{n < step ? <Check size={12} /> : n}</span>
+                <span className="alf-stepper-label">{t(`addListing.step${n}Title`)}</span>
+              </button>
+            ))}
+          </div>
+          <p className="alf-stepper-mobile">{t("addListing.stepOfLabel").replace("{step}", step)}</p>
+          <div className="alf-stepper-bar"><div className="alf-stepper-bar-fill" style={{ width: `${(step / 3) * 100}%` }} /></div>
+
           <form onSubmit={handleSubmit}>
+            {step === 1 && (
+            <>
             <div className="alf-field full">
               <label>{t("addListing.titleLabel")}</label>
               <input type="text" placeholder={t("addListing.titlePlaceholder")} value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -551,25 +666,97 @@ export default function AddListingFormPage() {
                     <input type="number" min="1" value={floorCount} onChange={(e) => setFloorCount(e.target.value)} />
                   </div>
                 </div>
+                <div className="alf-field">
+                  <label><Ruler size={13} />{t("addListing.landAreaLabel")}</label>
+                  <input type="number" min="0" step="0.1" placeholder={t("addListing.landAreaPlaceholder")} value={landAreaSot} onChange={(e) => setLandAreaSot(e.target.value)} />
+                </div>
+                <div className="alf-field full">
+                  <label><BedDouble size={13} />{t("addListing.bedTypesLabel")}</label>
+                  <p className="alf-field-note" style={{ marginTop: 0, marginBottom: 10 }}>{t("addListing.bedTypesNote")}</p>
+                  {bedTypes.map((row, i) => (
+                    <div className="alf-bedtype-row" key={i}>
+                      <select value={row.type} onChange={(e) => updateBedType(i, "type", e.target.value)}>
+                        {BED_TYPE_KEYS.map((key) => <option key={key} value={key}>{t(`bedTypes.${key}`)}</option>)}
+                      </select>
+                      <input type="number" min="1" value={row.count} onChange={(e) => updateBedType(i, "count", Number(e.target.value))} />
+                      <button type="button" onClick={() => removeBedType(i)} aria-label={t("addListing.bedRemove")}><X size={15} /></button>
+                    </div>
+                  ))}
+                  <button type="button" className="alf-bedtype-add" onClick={addBedType}>{t("addListing.bedConfigAddRow")}</button>
+                </div>
+              </>
+            )}
 
-                <button type="button" className="alf-bedconfig-toggle" onClick={() => setBedConfigOpen((v) => !v)}>
-                  <ChevronDown size={15} className={bedConfigOpen ? "open" : ""} />{t("addListing.bedConfigToggle")}
-                </button>
-                {bedConfigOpen && (
-                  <div className="alf-bedconfig-panel">
-                    {bedConfiguration.map((row, i) => (
-                      <div className="alf-bedconfig-row" key={i}>
-                        <select value={row.type} onChange={(e) => updateBedRow(i, "type", e.target.value)}>
-                          {BED_TYPE_KEYS.map((key) => <option key={key} value={key}>{t(`bedTypes.${key}`)}</option>)}
-                        </select>
-                        <input type="number" min="1" value={row.count} onChange={(e) => updateBedRow(i, "count", Number(e.target.value))} />
-                        <button type="button" onClick={() => removeBedRow(i)} aria-label={t("addListing.bedRemove")}><Trash2 size={15} /></button>
-                      </div>
-                    ))}
-                    <button type="button" className="alf-bedconfig-add" onClick={addBedRow}>{t("addListing.bedConfigAddRow")}</button>
+            {category === "car" && (
+              <>
+                <p className="alf-section-title">{t("addListing.categories.car.title")}</p>
+                <div className="alf-row">
+                  <div className="alf-field">
+                    <label><Car size={13} />{t("addListing.seatsLabel")}</label>
+                    <input type="number" min="1" value={seats} onChange={(e) => setSeats(e.target.value)} />
                   </div>
-                )}
+                  <div className="alf-field">
+                    <label>{t("addListing.transmissionLabel")}</label>
+                    <select value={transmission} onChange={(e) => setTransmission(e.target.value)}>
+                      <option value="automatic">{t("addListing.automatic")}</option>
+                      <option value="manual">{t("addListing.manual")}</option>
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
 
+            {category === "transfer" && (
+              <>
+                <p className="alf-section-title">{t("addListing.categories.transfer.title")}</p>
+                <div className="alf-field">
+                  <label>{t("addListing.typeLabel")}</label>
+                  <div className="alf-radio-row">
+                    <label className="alf-radio"><input type="radio" name="type" checked={type === "transfer"} onChange={() => setType("transfer")} />{t("addListing.typeTransfer")}</label>
+                    <label className="alf-radio"><input type="radio" name="type" checked={type === "tour"} onChange={() => setType("tour")} />{t("addListing.typeTour")}</label>
+                  </div>
+                </div>
+                <div className="alf-field">
+                  <label>{t("addListing.vehicleLabel")}</label>
+                  <div className="alf-radio-row">
+                    <label className="alf-radio"><input type="radio" name="vehicle" checked={hasVehicle} onChange={() => setHasVehicle(true)} />{t("addListing.withVehicle")}</label>
+                    <label className="alf-radio"><input type="radio" name="vehicle" checked={!hasVehicle} onChange={() => setHasVehicle(false)} />{t("addListing.withoutVehicle")}</label>
+                  </div>
+                </div>
+                <div className="alf-field">
+                  <label><Users size={13} />{t("addListing.seatsLabel")}</label>
+                  <input type="number" min="1" value={seats} onChange={(e) => setSeats(e.target.value)} />
+                </div>
+              </>
+            )}
+
+            {category === "service" && (
+              <>
+                <p className="alf-section-title">{t("addListing.categories.service.title")}</p>
+                <div className="alf-field full">
+                  <label>{t("addListing.serviceTypeLabel")}</label>
+                  <select value={serviceType} onChange={(e) => setServiceType(e.target.value)}>
+                    <option value="">{t("addListing.chooseService")}</option>
+                    {SERVICE_KEYS.map((key) => <option key={key} value={key}>{t(`conciergePage.services.${key}`)}</option>)}
+                  </select>
+                </div>
+              </>
+            )}
+
+            <div className="alf-step-nav">
+              <button type="button" className="alf-btn-next" disabled={!step1Valid} onClick={() => goToStep(2)}>{t("addListing.nextStep")}</button>
+            </div>
+            </>
+            )}
+
+            {step === 2 && (
+            <>
+            <div className="alf-head">
+              <h2 className="alf-step-heading">{t(category === "villa" ? "addListing.step2TitleVilla" : "addListing.step2TitleOther")}</h2>
+              <p className="alf-step-subheading">{t(category === "villa" ? "addListing.step2SubVilla" : "addListing.step2SubOther")}</p>
+            </div>
+            {category === "villa" && (
+              <>
                 <p className="alf-section-title">{t("addListing.checkInOutTitle")}</p>
                 <div className="alf-row">
                   <div className="alf-field">
@@ -712,63 +899,9 @@ export default function AddListingFormPage() {
               </>
             )}
 
-            {category === "car" && (
-              <>
-                <p className="alf-section-title">{t("addListing.categories.car.title")}</p>
-                <div className="alf-row">
-                  <div className="alf-field">
-                    <label><Car size={13} />{t("addListing.seatsLabel")}</label>
-                    <input type="number" min="1" value={seats} onChange={(e) => setSeats(e.target.value)} />
-                  </div>
-                  <div className="alf-field">
-                    <label>{t("addListing.transmissionLabel")}</label>
-                    <select value={transmission} onChange={(e) => setTransmission(e.target.value)}>
-                      <option value="automatic">{t("addListing.automatic")}</option>
-                      <option value="manual">{t("addListing.manual")}</option>
-                    </select>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {category === "transfer" && (
-              <>
-                <p className="alf-section-title">{t("addListing.categories.transfer.title")}</p>
-                <div className="alf-field">
-                  <label>{t("addListing.typeLabel")}</label>
-                  <div className="alf-radio-row">
-                    <label className="alf-radio"><input type="radio" name="type" checked={type === "transfer"} onChange={() => setType("transfer")} />{t("addListing.typeTransfer")}</label>
-                    <label className="alf-radio"><input type="radio" name="type" checked={type === "tour"} onChange={() => setType("tour")} />{t("addListing.typeTour")}</label>
-                  </div>
-                </div>
-                <div className="alf-field">
-                  <label>{t("addListing.vehicleLabel")}</label>
-                  <div className="alf-radio-row">
-                    <label className="alf-radio"><input type="radio" name="vehicle" checked={hasVehicle} onChange={() => setHasVehicle(true)} />{t("addListing.withVehicle")}</label>
-                    <label className="alf-radio"><input type="radio" name="vehicle" checked={!hasVehicle} onChange={() => setHasVehicle(false)} />{t("addListing.withoutVehicle")}</label>
-                  </div>
-                </div>
-                <div className="alf-field">
-                  <label><Users size={13} />{t("addListing.seatsLabel")}</label>
-                  <input type="number" min="1" value={seats} onChange={(e) => setSeats(e.target.value)} />
-                </div>
-              </>
-            )}
-
-            {category === "service" && (
-              <>
-                <p className="alf-section-title">{t("addListing.categories.service.title")}</p>
-                <div className="alf-field full">
-                  <label>{t("addListing.serviceTypeLabel")}</label>
-                  <select value={serviceType} onChange={(e) => setServiceType(e.target.value)}>
-                    <option value="">{t("addListing.chooseService")}</option>
-                    {SERVICE_KEYS.map((key) => <option key={key} value={key}>{t(`conciergePage.services.${key}`)}</option>)}
-                  </select>
-                </div>
-              </>
-            )}
 
             <p className="alf-section-title">{t("addListing.photosLabel")}</p>
+            <p className="alf-photo-rules">{t("addListing.photoRulesNote")}</p>
             {(existingImages.length > 0 || photos.length > 0) && (
               <div className="alf-photo-previews">
                 {existingImages.map((url, i) => (
@@ -785,17 +918,24 @@ export default function AddListingFormPage() {
                 ))}
               </div>
             )}
-            {totalPhotoCount < 6 && (
+            {totalPhotoCount < maxPhotos && (
               <label className="alf-photos">
                 <ImageIcon size={18} />
                 <p>{t("addListing.photosNote")}</p>
                 <input type="file" accept="image/*" multiple onChange={handlePhotosChange} hidden />
               </label>
             )}
+            <p className={`alf-photo-count${totalPhotoCount < MIN_PHOTOS ? " short" : ""}`}>
+              {t("addListing.photoCountNote")
+                .replace("{count}", totalPhotoCount)
+                .replace("{max}", maxPhotos)
+                .replace("{min}", MIN_PHOTOS)}
+            </p>
 
             <div className="alf-field full">
               <label>{t("addListing.descriptionLabel")}</label>
               <textarea placeholder={t("addListing.descriptionPlaceholder")} value={description} onChange={(e) => setDescription(e.target.value)} />
+              <p className="alf-field-note">{t("addListing.descriptionContactWarning")}</p>
             </div>
 
             <div className="alf-field full">
@@ -811,6 +951,15 @@ export default function AddListingFormPage() {
               </div>
             </div>
 
+            <div className="alf-step-nav">
+              <button type="button" className="alf-btn-back" onClick={() => setStep(1)}><ChevronLeft size={15} />{t("addListing.backStep")}</button>
+              <button type="button" className="alf-btn-next" disabled={!step2Valid} onClick={() => goToStep(3)}>{t("addListing.nextStep")}</button>
+            </div>
+            </>
+            )}
+
+            {step === 3 && (
+            <>
             {!user && (
               <>
                 <p className="alf-section-title">{t("addListing.accountSectionTitle")}</p>
@@ -830,10 +979,32 @@ export default function AddListingFormPage() {
               </>
             )}
 
+            {!isEdit && (
+              <div className="alf-rules-box">
+                <p className="alf-rules-title">{t("addListing.rulesTitle")}</p>
+                <ul className="alf-rules-list">
+                  <li>{t("addListing.rule1")}</li>
+                  <li>{t("addListing.rule2")}</li>
+                  <li>{t("addListing.rule3")}</li>
+                  <li>{t("addListing.rule4")}</li>
+                  <li>{t("addListing.rule5")}</li>
+                </ul>
+                <label className="alf-checkbox-row">
+                  <input type="checkbox" checked={agreedToRules} onChange={(e) => setAgreedToRules(e.target.checked)} />
+                  {t("addListing.agreeToRules")}
+                </label>
+              </div>
+            )}
+
             {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
+            <div className="alf-step-nav">
+              <button type="button" className="alf-btn-back" onClick={() => setStep(2)}><ChevronLeft size={15} />{t("addListing.backStep")}</button>
+            </div>
             <button type="submit" className="alf-submit" disabled={!canSubmit || submitting}>
               {submitting ? "..." : t("addListing.submit")}
             </button>
+            </>
+            )}
           </form>
         </>
       )}
