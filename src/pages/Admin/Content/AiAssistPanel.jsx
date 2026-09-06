@@ -26,7 +26,7 @@ export default function AiAssistPanel({ entityLabel, name, city, category, langu
       const text = await generateAiContent({ type: field.promptType, entityLabel, name, city, category, language });
       setResults((r) => ({ ...r, [field.id]: { text, loading: false, error: "" } }));
     } catch (err) {
-      setResults((r) => ({ ...r, [field.id]: { ...r[field.id], loading: false, error: err.message || "Generation failed." } }));
+      setResults((r) => ({ ...r, [field.id]: { ...r[field.id], loading: false, error: err.message || "Yaratma alınmadı." } }));
     }
   };
 
@@ -44,13 +44,13 @@ export default function AiAssistPanel({ entityLabel, name, city, category, langu
     <div className="ai-panel">
       <button type="button" className="ai-panel-toggle" onClick={() => setOpen((v) => !v)}>
         <Sparkles size={15} />
-        Generate with AI
+        AI ilə yarat
         <ChevronDown size={14} className={`ai-panel-chevron${open ? " open" : ""}`} />
       </button>
 
       {open && (
         <div className="ai-panel-body">
-          {!canGenerate && <p className="ai-panel-hint">Enter a title/name above first — AI needs something to write about.</p>}
+          {!canGenerate && <p className="ai-panel-hint">Əvvəlcə yuxarıda başlıq/ad daxil edin — AI-nin yazmaq üçün nəyəsə ehtiyacı var.</p>}
           {fields.map((field) => {
             const result = results[field.id];
             return (
@@ -64,7 +64,7 @@ export default function AiAssistPanel({ entityLabel, name, city, category, langu
                     onClick={() => generate(field)}
                   >
                     {result?.loading ? <Loader2 size={13} className="ai-spin" /> : <Sparkles size={13} />}
-                    {result?.text ? "Regenerate" : "Generate"}
+                    {result?.text ? "Yenidən yarat" : "Yarat"}
                   </button>
                 </div>
 
@@ -73,13 +73,13 @@ export default function AiAssistPanel({ entityLabel, name, city, category, langu
                 {result?.text && (
                   <div className="ai-field-preview">
                     <textarea value={result.text} onChange={(e) => editPreview(field.id, e.target.value)} />
-                    <button type="button" className="ai-insert-btn" onClick={() => insert(field)}>Insert into field</button>
+                    <button type="button" className="ai-insert-btn" onClick={() => insert(field)}>Sahəyə əlavə et</button>
                   </div>
                 )}
               </div>
             );
           })}
-          <p className="ai-panel-hint">Generated text is a starting point only — nothing is saved until you review it and click Save below.</p>
+          <p className="ai-panel-hint">Yaradılan mətn yalnız başlanğıc nöqtəsidir — siz onu nəzərdən keçirib aşağıda "Yadda saxla" düyməsini basana qədər heç nə yadda saxlanmır.</p>
         </div>
       )}
     </div>

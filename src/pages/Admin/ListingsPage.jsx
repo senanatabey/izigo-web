@@ -5,6 +5,7 @@ import { useCurrency } from "../../i18n/CurrencyContext";
 import AdminEmptyState from "../../components/AdminEmptyState";
 
 const STATUSES = ["all", "pending", "approved", "rejected"];
+const STATUS_LABELS = { all: "hamısı", pending: "gözləmədə", approved: "təsdiqlənib", rejected: "rədd edilib" };
 
 export default function ListingsPage() {
   const { formatPrice } = useCurrency();
@@ -45,18 +46,18 @@ export default function ListingsPage() {
         .status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
         .admin-listings-table button.delete { border: none; background: none; color: #E0553F; font-weight: 700; cursor: pointer; font-size: 12.5px; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Listings</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Elanlar</h1>
       <div className="admin-listings-filters">
         {STATUSES.map((s) => (
-          <button key={s} className={statusFilter === s ? "active" : ""} onClick={() => setStatusFilter(s)}>{s}</button>
+          <button key={s} className={statusFilter === s ? "active" : ""} onClick={() => setStatusFilter(s)}>{STATUS_LABELS[s]}</button>
         ))}
       </div>
-      {loading ? <p>Loading...</p> : listings.length === 0 ? (
-        <AdminEmptyState icon={HomeIcon} message="No listings yet." actionLabel="Add listing" actionTo="/add-listing" />
+      {loading ? <p>Yüklənir...</p> : listings.length === 0 ? (
+        <AdminEmptyState icon={HomeIcon} message="Hələ heç bir elan yoxdur." actionLabel="Elan əlavə et" actionTo="/add-listing" />
       ) : (
         <table className="admin-listings-table">
           <thead>
-            <tr><th>Title</th><th>Category</th><th>City</th><th>Price</th><th>Status</th><th></th></tr>
+            <tr><th>Başlıq</th><th>Kateqoriya</th><th>Şəhər</th><th>Qiymət</th><th>Status</th><th></th></tr>
           </thead>
           <tbody>
             {listings.map((l) => (
@@ -65,8 +66,8 @@ export default function ListingsPage() {
                 <td>{l.category}</td>
                 <td>{l.city}</td>
                 <td>{formatPrice(l.price)}</td>
-                <td><span className={`status-pill ${l.status}`}>{l.status}</span></td>
-                <td><button className="delete" onClick={() => remove(l.id)}>Delete</button></td>
+                <td><span className={`status-pill ${l.status}`}>{STATUS_LABELS[l.status] || l.status}</span></td>
+                <td><button className="delete" onClick={() => remove(l.id)}>Sil</button></td>
               </tr>
             ))}
           </tbody>

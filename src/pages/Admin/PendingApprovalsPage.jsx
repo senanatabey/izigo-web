@@ -88,10 +88,10 @@ export default function PendingApprovalsPage() {
     const { error } = await supabase.from("listings").update({ status: "approved", reject_reason: null }).eq("id", listing.id);
     if (error) {
       console.error("Failed to approve listing:", error);
-      window.alert("Failed to approve listing — please try again.");
+      window.alert("Elanı təsdiqləmək mümkün olmadı — yenidən cəhd edin.");
       return;
     }
-    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" was approved and is now live.`, "/my-listings");
+    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" təsdiqləndi və artıq aktivdir.`, "/my-listings");
     await tryGrantFounderStatus(listing.host_id);
     load();
   };
@@ -102,10 +102,10 @@ export default function PendingApprovalsPage() {
     const { error } = await supabase.from("listings").update({ status: "rejected", reject_reason: reason || null }).eq("id", listing.id);
     if (error) {
       console.error("Failed to reject listing:", error);
-      window.alert("Failed to reject listing — please try again.");
+      window.alert("Elanı rədd etmək mümkün olmadı — yenidən cəhd edin.");
       return;
     }
-    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" was rejected${reason ? `: ${reason}` : "."}`, "/my-listings");
+    await notifyHost(listing.host_id, `"${listing.title?.en || listing.title?.az}" rədd edildi${reason ? `: ${reason}` : "."}`, "/my-listings");
     load();
   };
 
@@ -139,11 +139,11 @@ export default function PendingApprovalsPage() {
         .btn-approve { background: var(--izigo-green); color: #fff; }
         .btn-reject { background: #F1F1F1; color: #333; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Pending approvals</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Gözləyən təsdiqlər</h1>
       {loading ? (
-        <p>Loading...</p>
+        <p>Yüklənir...</p>
       ) : listings.length === 0 ? (
-        <AdminEmptyState icon={ClipboardList} message="No pending approvals." actionLabel="View listings" actionTo="/admin/listings" />
+        <AdminEmptyState icon={ClipboardList} message="Gözləyən təsdiq yoxdur." actionLabel="Elanlara bax" actionTo="/admin/listings" />
       ) : (
         <div className="pending-list">
           {listings.map((l) => {
@@ -154,7 +154,7 @@ export default function PendingApprovalsPage() {
                 <div className="pending-head">
                   <div>
                     <h3>{l.title?.en || l.title?.az} — {l.category}</h3>
-                    <p>{l.city} · {formatPrice(l.price)}{l.discount ? ` (-${l.discount}%)` : ""} · submitted {new Date(l.created_at).toLocaleDateString()}</p>
+                    <p>{l.city} · {formatPrice(l.price)}{l.discount ? ` (-${l.discount}%)` : ""} · göndərilib {new Date(l.created_at).toLocaleDateString()}</p>
                   </div>
                   {detailPath && (
                     <a className="pending-preview-link" href={`${detailPath}/${l.id}`} target="_blank" rel="noopener noreferrer">
@@ -182,8 +182,8 @@ export default function PendingApprovalsPage() {
                 <p className="pending-whatsapp">WhatsApp: {l.whatsapp_phone || "—"}</p>
 
                 <div className="pending-actions">
-                  <button className="btn-approve" onClick={() => approve(l)}>Approve</button>
-                  <button className="btn-reject" onClick={() => reject(l)}>Reject</button>
+                  <button className="btn-approve" onClick={() => approve(l)}>Təsdiqlə</button>
+                  <button className="btn-reject" onClick={() => reject(l)}>Rədd et</button>
                 </div>
               </div>
             );

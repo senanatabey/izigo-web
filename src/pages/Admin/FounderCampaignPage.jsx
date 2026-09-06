@@ -32,7 +32,7 @@ export default function FounderCampaignPage() {
     load();
   };
 
-  if (!campaign) return <p>Loading...</p>;
+  if (!campaign) return <p>Yüklənir...</p>;
 
   const percent = Math.min(100, Math.round((count / campaign.max_founder_hosts) * 100));
 
@@ -64,35 +64,35 @@ export default function FounderCampaignPage() {
         }
         .fc-note { font-size: 12px; color: var(--text-soft); margin-top: 14px; line-height: 1.5; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}><Trophy size={20} style={{ verticalAlign: "-4px", marginRight: 8 }} />Founder Campaign</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}><Trophy size={20} style={{ verticalAlign: "-4px", marginRight: 8 }} />Founder Kampaniyası</h1>
 
       <div className="fc-card">
         <div className="fc-status-row">
           <h2 style={{ margin: 0 }}>Status</h2>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span className={`fc-status-pill ${campaign.status}`}>{campaign.status}</span>
+            <span className={`fc-status-pill ${campaign.status}`}>{campaign.status === "active" ? "Aktiv" : "Deaktiv"}</span>
             <button className="fc-toggle-btn" onClick={toggleStatus}>
-              {campaign.status === "active" ? "Disable campaign" : "Enable campaign"}
+              {campaign.status === "active" ? "Kampaniyanı deaktiv et" : "Kampaniyanı aktiv et"}
             </button>
           </div>
         </div>
 
         <div className="fc-progress-label">
-          <span>Current Founder Hosts</span>
+          <span>Hazırkı Founder Hostlar</span>
           <span>{count} / {campaign.max_founder_hosts}</span>
         </div>
         <div className="fc-progress-bar"><div className="fc-progress-fill" style={{ width: `${percent}%` }} /></div>
 
         <div className="fc-max-row">
-          <label>Maximum Founder Hosts</label>
+          <label>Maksimum Founder Host sayı</label>
           <input type="number" min={count} value={maxInput} onChange={(e) => setMaxInput(e.target.value)} />
-          <button onClick={saveMax} disabled={saving}>{saving ? "Saving..." : "Save"}</button>
+          <button onClick={saveMax} disabled={saving}>{saving ? "Yadda saxlanılır..." : "Yadda saxla"}</button>
         </div>
 
         <p className="fc-note">
-          Only VERIFIED hosts with an approved listing count toward this cap, each host counts once.
-          The campaign automatically switches to Inactive the moment the cap is reached — existing
-          Founder Hosts keep their benefits regardless of campaign status.
+          Yalnız TƏSDİQLƏNMİŞ elanı olan VERIFIED hostlar bu limitə daxil edilir, hər host bir dəfə
+          hesablanır. Limitə çatan kimi kampaniya avtomatik olaraq Deaktiv statusuna keçir — mövcud
+          Founder Hostlar kampaniyanın statusundan asılı olmayaraq öz üstünlüklərini saxlayırlar.
         </p>
       </div>
     </div>

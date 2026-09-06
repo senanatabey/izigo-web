@@ -4,10 +4,10 @@ import { listMedia, uploadMedia, updateMedia, deleteMedia, listMediaFolders } fr
 import { CONTENT_ADMIN_STYLES } from "./contentAdminStyles";
 
 const SORT_OPTIONS = [
-  { value: "newest", label: "Newest first" },
-  { value: "oldest", label: "Oldest first" },
-  { value: "name", label: "Name (A-Z)" },
-  { value: "size", label: "Largest first" },
+  { value: "newest", label: "Əvvəlcə ən yeni" },
+  { value: "oldest", label: "Əvvəlcə ən köhnə" },
+  { value: "name", label: "Ad (A-Z)" },
+  { value: "size", label: "Əvvəlcə ən böyük" },
 ];
 
 export default function MediaLibraryPage() {
@@ -56,13 +56,13 @@ export default function MediaLibraryPage() {
         await uploadMedia(file, { folder: uploadFolder || "general" });
         uploaded += 1;
       } catch (err) {
-        failures.push(err.message || `Failed to upload "${file.name}"`);
+        failures.push(err.message || `"${file.name}" yüklənə bilmədi`);
       }
     }
     setUploading(false);
     e.target.value = "";
     if (uploaded > 0) {
-      setSuccess(`Uploaded ${uploaded} file${uploaded === 1 ? "" : "s"}.`);
+      setSuccess(`${uploaded} fayl yükləndi.`);
       load();
     }
     if (failures.length > 0) setError(failures.join(" "));
@@ -76,12 +76,12 @@ export default function MediaLibraryPage() {
       folder: selected.folder || "general",
     });
     setSelected(null);
-    setSuccess("Media details saved.");
+    setSuccess("Media məlumatları yadda saxlanıldı.");
     load();
   };
 
   const remove = async (item) => {
-    if (!window.confirm(`Delete "${item.filename}"?`)) return;
+    if (!window.confirm(`"${item.filename}" silinsin?`)) return;
     await deleteMedia(item);
     if (selected?.id === item.id) setSelected(null);
     load();
@@ -102,35 +102,35 @@ export default function MediaLibraryPage() {
       `}</style>
 
       <div className="ca-head">
-        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Media Library</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Media Kitabxanası</h1>
         <label className="ca-new-btn ml-upload-btn">
-          <Upload size={14} />{uploading ? "Uploading..." : "Upload"}
+          <Upload size={14} />{uploading ? "Yüklənir..." : "Yüklə"}
           <input type="file" accept="image/*" multiple hidden disabled={uploading} onChange={handleUpload} />
         </label>
       </div>
-      <p className="ca-subtitle">Shared image library used across Travel Guides, Places and future content.</p>
+      <p className="ca-subtitle">Travel Guides, Places və digər kontentlərdə istifadə olunan ortaq şəkil kitabxanası.</p>
 
       <form className="ca-toolbar" onSubmit={runSearch}>
-        <input placeholder="Upload folder (e.g. travel-guides)" value={uploadFolder} onChange={(e) => setUploadFolder(e.target.value)} style={{ width: 200 }} />
+        <input placeholder="Yükləmə qovluğu (məs. travel-guides)" value={uploadFolder} onChange={(e) => setUploadFolder(e.target.value)} style={{ width: 200 }} />
         <select value={folderFilter} onChange={(e) => setFolderFilter(e.target.value)}>
-          <option value="">All folders</option>
+          <option value="">Bütün qovluqlar</option>
           {folders.map((f) => <option key={f} value={f}>{f}</option>)}
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
           {SORT_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
-        <input placeholder="Search filename, alt text, caption..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 200 }} />
-        <button type="submit" className="ca-btn-edit" style={{ border: "1px solid var(--border)" }}>Search</button>
+        <input placeholder="Fayl adı, alt mətn, izahat üzrə axtar..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ flex: 1, minWidth: 200 }} />
+        <button type="submit" className="ca-btn-edit" style={{ border: "1px solid var(--border)" }}>Axtar</button>
       </form>
 
       {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
       {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 12, fontWeight: 700 }}>{success}</p>}
 
-      {loading ? <p>Loading...</p> : items.length === 0 ? (
+      {loading ? <p>Yüklənir...</p> : items.length === 0 ? (
         <div className="ca-empty">
           <ImageIcon size={32} />
-          <h2>No media yet</h2>
-          <p>Upload images here to reuse them across travel guides, places and other content.</p>
+          <h2>Hələ media yoxdur</h2>
+          <p>Travel guides, places və digər kontentlərdə təkrar istifadə etmək üçün burada şəkil yükləyin.</p>
         </div>
       ) : (
         <div className="ml-grid">
@@ -153,25 +153,25 @@ export default function MediaLibraryPage() {
             <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 14 }}>{selected.filename}</h2>
             <img src={selected.url} alt={selected.alt_text || ""} loading="lazy" decoding="async" style={{ width: "100%", borderRadius: 10, marginBottom: 16, maxHeight: 260, objectFit: "cover" }} />
             <div className="ca-field">
-              <label>Folder</label>
+              <label>Qovluq</label>
               <input value={selected.folder} onChange={(e) => setSelected({ ...selected, folder: e.target.value })} />
             </div>
             <div className="ca-field">
-              <label>Alt text</label>
+              <label>Alt mətn</label>
               <input value={selected.alt_text || ""} onChange={(e) => setSelected({ ...selected, alt_text: e.target.value })} />
             </div>
             <div className="ca-field">
-              <label>Caption</label>
+              <label>İzahat</label>
               <input value={selected.caption || ""} onChange={(e) => setSelected({ ...selected, caption: e.target.value })} />
             </div>
             <div className="ca-field">
-              <label>Tags (comma-separated)</label>
+              <label>Etiketlər (vergüllə ayrılmış)</label>
               <input value={selected.tagsInput} onChange={(e) => setSelected({ ...selected, tagsInput: e.target.value })} />
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <button type="button" className="ca-save-btn" onClick={saveDetails}>Save</button>
+              <button type="button" className="ca-save-btn" onClick={saveDetails}>Yadda saxla</button>
               <button type="button" className="ca-btn-remove" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} onClick={() => remove(selected)}>
-                <Trash2 size={14} /> Delete
+                <Trash2 size={14} /> Sil
               </button>
             </div>
           </div>

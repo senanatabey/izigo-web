@@ -8,11 +8,11 @@ const DEFAULT_LANG = LANGUAGES[0].code;
 const EMPTY_TRANSLATION = { title: "", seo_title: "", meta_description: "", content: "" };
 
 const PAGE_LABELS = {
-  about: "About",
-  privacy: "Privacy",
-  terms: "Terms",
-  contact: "Contact",
-  "become-a-host": "Become a Host",
+  about: "Haqqımızda",
+  privacy: "Məxfilik",
+  terms: "Şərtlər",
+  contact: "Əlaqə",
+  "become-a-host": "Host olun",
 };
 
 function rowToForm(row) {
@@ -53,7 +53,7 @@ export default function StaticPagesPage() {
   const closeFormSilently = () => { setForm(null); initialFormRef.current = null; };
   const closeForm = () => {
     const isDirty = form && JSON.stringify(form) !== initialFormRef.current;
-    if (isDirty && !window.confirm("Discard unsaved changes?")) return;
+    if (isDirty && !window.confirm("Yadda saxlanılmamış dəyişikliklər ləğv edilsin?")) return;
     closeFormSilently();
   };
 
@@ -74,10 +74,10 @@ export default function StaticPagesPage() {
         ),
       });
       closeFormSilently();
-      setSuccess(`${PAGE_LABELS[form.slug] || form.slug} saved.`);
+      setSuccess(`${PAGE_LABELS[form.slug] || form.slug} yadda saxlanıldı.`);
       load();
     } catch (err) {
-      setError(err.message || "Failed to save page");
+      setError(err.message || "Səhifə yadda saxlanıla bilmədi");
     } finally {
       setSaving(false);
     }
@@ -93,13 +93,13 @@ export default function StaticPagesPage() {
       <style>{CONTENT_ADMIN_STYLES}</style>
 
       <div className="ca-head">
-        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Static Pages</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Statik Səhifələr</h1>
       </div>
-      <p className="ca-subtitle">A fixed set of legal/company pages — edit their content per language, no add/delete needed.</p>
+      <p className="ca-subtitle">Sabit hüquqi/şirkət səhifələri toplusu — hər dil üçün kontenti redaktə edin, əlavə etmə/silmə tələb olunmur.</p>
 
       {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
-      {loading ? <p>Loading...</p> : (
+      {loading ? <p>Yüklənir...</p> : (
         <div className="ca-list">
           {pages.map((p) => (
             <div className="ca-card" key={p.id}>
@@ -107,13 +107,13 @@ export default function StaticPagesPage() {
               <div className="ca-info">
                 <div className="ca-name">
                   {PAGE_LABELS[p.slug] || p.slug}
-                  <span className={`ca-pill ${p.status}`}>{p.status}</span>
+                  <span className={`ca-pill ${p.status}`}>{p.status === "published" ? "Dərc edilib" : "Qaralama"}</span>
                 </div>
                 <div className="ca-meta">/{p.slug}</div>
               </div>
               <div className="ca-actions">
-                <button className="ca-btn-publish" onClick={() => toggleStatus(p)}>{p.status === "published" ? "Unpublish" : "Publish"}</button>
-                <button className="ca-btn-edit" onClick={() => openEdit(p)}>Edit</button>
+                <button className="ca-btn-publish" onClick={() => toggleStatus(p)}>{p.status === "published" ? "Dərcdən çıxar" : "Dərc et"}</button>
+                <button className="ca-btn-edit" onClick={() => openEdit(p)}>Redaktə et</button>
               </div>
             </div>
           ))}
@@ -124,13 +124,13 @@ export default function StaticPagesPage() {
         <div className="ca-modal-overlay" onClick={closeForm}>
           <div className="ca-modal" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="ca-modal-close" onClick={closeForm}><X size={14} /></button>
-            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>Edit {PAGE_LABELS[form.slug] || form.slug}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>Redaktə: {PAGE_LABELS[form.slug] || form.slug}</h2>
             <form onSubmit={save}>
               <div className="ca-field">
                 <label>Status</label>
                 <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
+                  <option value="draft">Qaralama</option>
+                  <option value="published">Dərc edilib</option>
                 </select>
               </div>
 
@@ -148,19 +148,19 @@ export default function StaticPagesPage() {
                 return (
                   <>
                     <div className="ca-field">
-                      <label>Title</label>
+                      <label>Başlıq</label>
                       <input value={t.title} onChange={setF("title")} />
                     </div>
                     <div className="ca-field">
-                      <label>SEO Title <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.seo_title.length}/60)</span></label>
+                      <label>SEO Başlığı <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.seo_title.length}/60)</span></label>
                       <input value={t.seo_title} onChange={setF("seo_title")} maxLength={60} />
                     </div>
                     <div className="ca-field">
-                      <label>Meta Description <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.meta_description.length}/160)</span></label>
+                      <label>Meta Təsvir <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.meta_description.length}/160)</span></label>
                       <textarea value={t.meta_description} onChange={setF("meta_description")} maxLength={160} />
                     </div>
                     <div className="ca-field">
-                      <label>Content</label>
+                      <label>Kontent</label>
                       <textarea style={{ minHeight: 200 }} value={t.content} onChange={setF("content")} />
                     </div>
                   </>
@@ -168,7 +168,7 @@ export default function StaticPagesPage() {
               })()}
 
               {error && <p style={{ color: "#E0553F", fontSize: 13, marginTop: 4 }}>{error}</p>}
-              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Save"}</button>
+              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Yadda saxla"}</button>
             </form>
           </div>
         </div>

@@ -12,12 +12,12 @@ const CATEGORIES = ["attraction", "restaurant", "hotel", "activity", "shopping",
 const EMPTY_TRANSLATION = { name: "", seo_title: "", meta_description: "", keywords: "", content: "", faq: [] };
 
 const AI_FIELDS = [
-  { id: "content", label: "Place Description", promptType: "content" },
+  { id: "content", label: "Yer Təsviri", promptType: "content" },
   { id: "faq", label: "FAQ", promptType: "faq" },
-  { id: "seo_title", label: "SEO Title", promptType: "seo_title" },
-  { id: "meta_description", label: "Meta Description", promptType: "meta_description" },
-  { id: "keywords", label: "Keywords", promptType: "keywords" },
-  { id: "hero_image_alt", label: "Image ALT Text", promptType: "alt_text" },
+  { id: "seo_title", label: "SEO Başlığı", promptType: "seo_title" },
+  { id: "meta_description", label: "Meta Təsvir", promptType: "meta_description" },
+  { id: "keywords", label: "Açar sözlər", promptType: "keywords" },
+  { id: "hero_image_alt", label: "Şəkil ALT mətni", promptType: "alt_text" },
 ];
 
 function emptyForm() {
@@ -114,7 +114,7 @@ export default function PlacesPage() {
   const closeFormSilently = () => { setForm(null); initialFormRef.current = null; };
   const closeForm = () => {
     const isDirty = form && (JSON.stringify(form) !== initialFormRef.current || heroFile || galleryFiles.length > 0);
-    if (isDirty && !window.confirm("Discard unsaved changes?")) return;
+    if (isDirty && !window.confirm("Yadda saxlanılmamış dəyişikliklər ləğv edilsin?")) return;
     closeFormSilently();
   };
 
@@ -162,7 +162,7 @@ export default function PlacesPage() {
           }));
         }
       } catch {
-        setError("Could not parse the generated FAQ — try regenerating.");
+        setError("Yaradılan FAQ oxuna bilmədi — yenidən yaratmağı sınayın.");
       }
       return;
     }
@@ -175,9 +175,9 @@ export default function PlacesPage() {
 
   const save = async (e) => {
     e.preventDefault();
-    if (!form.slug.trim()) { setError("Slug is required."); return; }
+    if (!form.slug.trim()) { setError("Slug tələb olunur."); return; }
     if (!form.translations[DEFAULT_LANG].name.trim()) {
-      setError(`Name is required (at least in ${DEFAULT_LANG.toUpperCase()}).`);
+      setError(`Ad tələb olunur (ən azı ${DEFAULT_LANG.toUpperCase()} dilində).`);
       return;
     }
     setSaving(true);
@@ -220,17 +220,17 @@ export default function PlacesPage() {
         translations,
       });
       closeFormSilently();
-      setSuccess(`"${form.translations[DEFAULT_LANG].name || form.slug}" saved.`);
+      setSuccess(`"${form.translations[DEFAULT_LANG].name || form.slug}" yadda saxlanıldı.`);
       load();
     } catch (err) {
-      setError(err.message || "Failed to save place");
+      setError(err.message || "Yer yadda saxlanıla bilmədi");
     } finally {
       setSaving(false);
     }
   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete this place?")) return;
+    if (!window.confirm("Bu yer silinsin?")) return;
     await placesApi.remove(id);
     load();
   };
@@ -245,29 +245,29 @@ export default function PlacesPage() {
       <style>{CONTENT_ADMIN_STYLES}</style>
 
       <div className="ca-head">
-        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Places</h1>
-        <button className="ca-new-btn" onClick={openNew}>+ New place</button>
+        <h1 style={{ fontSize: 22, fontWeight: 800 }}>Yerlər</h1>
+        <button className="ca-new-btn" onClick={openNew}>+ Yeni yer</button>
       </div>
-      <p className="ca-subtitle">Points of interest — attractions, restaurants and more, tied to a city and category.</p>
+      <p className="ca-subtitle">Maraqlı yerlər — cəlbedici məkanlar, restoranlar və s., şəhər və kateqoriya ilə əlaqəli.</p>
 
       <form className="ca-toolbar" onSubmit={runSearch}>
         <input
-          placeholder="Search by slug, city, region or category..."
+          placeholder="Slug, şəhər, region və ya kateqoriya üzrə axtar..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           style={{ flex: 1, minWidth: 240 }}
         />
-        <button type="submit" className="ca-btn-edit" style={{ border: "1px solid var(--border)" }}>Search</button>
+        <button type="submit" className="ca-btn-edit" style={{ border: "1px solid var(--border)" }}>Axtar</button>
       </form>
 
       {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginTop: -12, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
-      {loading ? <p>Loading...</p> : places.length === 0 ? (
+      {loading ? <p>Yüklənir...</p> : places.length === 0 ? (
         <div className="ca-empty">
           <MapPin size={32} />
-          <h2>{search ? "No places match that search" : "No places yet"}</h2>
-          <p>{search ? "Try a different search term." : "Add attractions, restaurants and points of interest to build out each destination."}</p>
-          {!search && <button className="ca-new-btn" onClick={openNew}>+ Add place</button>}
+          <h2>{search ? "Bu axtarışa uyğun yer yoxdur" : "Hələ yer yoxdur"}</h2>
+          <p>{search ? "Fərqli axtarış sözü sınayın." : "Hər destinasiyanı zənginləşdirmək üçün cəlbedici məkanlar, restoranlar və maraqlı yerlər əlavə edin."}</p>
+          {!search && <button className="ca-new-btn" onClick={openNew}>+ Yer əlavə et</button>}
         </div>
       ) : (
         <>
@@ -282,12 +282,12 @@ export default function PlacesPage() {
                     {nameFor(p)}
                     <span className={`ca-pill ${p.status}`}>{p.status}</span>
                   </div>
-                  <div className="ca-meta">/{p.slug} · {p.city || "no city"} · {p.category}{p.region ? ` · ${p.region}` : ""}</div>
+                  <div className="ca-meta">/{p.slug} · {p.city || "şəhər yoxdur"} · {p.category}{p.region ? ` · ${p.region}` : ""}</div>
                 </div>
                 <div className="ca-actions">
-                  <button className="ca-btn-publish" onClick={() => toggleStatus(p)}>{p.status === "published" ? "Unpublish" : "Publish"}</button>
-                  <button className="ca-btn-edit" onClick={() => openEdit(p)}>Edit</button>
-                  <button className="ca-btn-remove" onClick={() => remove(p.id)}>Delete</button>
+                  <button className="ca-btn-publish" onClick={() => toggleStatus(p)}>{p.status === "published" ? "Dərcdən çıxar" : "Dərc et"}</button>
+                  <button className="ca-btn-edit" onClick={() => openEdit(p)}>Redaktə et</button>
+                  <button className="ca-btn-remove" onClick={() => remove(p.id)}>Sil</button>
                 </div>
               </div>
             ))}
@@ -295,9 +295,9 @@ export default function PlacesPage() {
 
           {pageCount > 1 && (
             <div className="ca-toolbar" style={{ justifyContent: "center", marginTop: 18, marginBottom: 0 }}>
-              <button type="button" className="ca-btn-edit" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>← Prev</button>
-              <span style={{ fontSize: 13, color: "var(--text-soft)" }}>Page {page + 1} of {pageCount} ({totalCount} total)</span>
-              <button type="button" className="ca-btn-edit" disabled={page >= pageCount - 1} onClick={() => setPage((p) => p + 1)}>Next →</button>
+              <button type="button" className="ca-btn-edit" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>← Əvvəlki</button>
+              <span style={{ fontSize: 13, color: "var(--text-soft)" }}>Səhifə {page + 1} / {pageCount} (cəmi {totalCount})</span>
+              <button type="button" className="ca-btn-edit" disabled={page >= pageCount - 1} onClick={() => setPage((p) => p + 1)}>Növbəti →</button>
             </div>
           )}
         </>
@@ -307,20 +307,20 @@ export default function PlacesPage() {
         <div className="ca-modal-overlay" onClick={closeForm}>
           <div className="ca-modal" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="ca-modal-close" onClick={closeForm}><X size={14} /></button>
-            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "Edit place" : "New place"}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "Yeri redaktə et" : "Yeni yer"}</h2>
             <form onSubmit={save}>
               <div className="ca-row">
                 <div className="ca-field">
                   <label>Slug *</label>
-                  <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value.trim().toLowerCase() })} placeholder="e.g. flame-towers" required />
+                  <input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value.trim().toLowerCase() })} placeholder="məs. flame-towers" required />
                 </div>
                 <div className="ca-field">
-                  <label>City</label>
+                  <label>Şəhər</label>
                   <input
                     list="place-city-options"
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    placeholder="e.g. Baku, or any future destination"
+                    placeholder="məs. Baku, və ya digər gələcək destinasiya"
                   />
                   <datalist id="place-city-options">
                     {ALL_DESTINATIONS.map((c) => <option key={c} value={c} />)}
@@ -333,7 +333,7 @@ export default function PlacesPage() {
                   <input value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} />
                 </div>
                 <div className="ca-field">
-                  <label>Category</label>
+                  <label>Kateqoriya</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -343,21 +343,21 @@ export default function PlacesPage() {
                 <div className="ca-field">
                   <label>Status</label>
                   <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
+                    <option value="draft">Qaralama</option>
+                    <option value="published">Dərc edilib</option>
                   </select>
                 </div>
                 <div className="ca-field">
                   <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} style={{ width: "auto" }} />
-                    Featured (shown in homepage "Discover Azerbaijan")
+                    Seçilmiş (ana səhifədə "Discover Azerbaijan" bölməsində göstərilir)
                   </label>
                 </div>
               </div>
 
               <label className="ca-upload">
                 <ImageIcon size={16} />
-                {heroFile ? heroFile.name : form.hero_image_url ? "Hero image set — choose a file to replace" : "Hero image"}
+                {heroFile ? heroFile.name : form.hero_image_url ? "Hero şəkil təyin olunub — əvəz etmək üçün fayl seçin" : "Hero şəkil"}
                 <input type="file" accept="image/*" hidden onChange={(e) => setHeroFile(e.target.files?.[0] || null)} />
               </label>
               <div style={{ height: 10 }} />
@@ -379,15 +379,15 @@ export default function PlacesPage() {
               )}
               <label className="ca-upload">
                 <ImageIcon size={16} />
-                {galleryFiles.length > 0 ? `${galleryFiles.length} new photo(s) selected` : "Add gallery photos"}
+                {galleryFiles.length > 0 ? `${galleryFiles.length} yeni foto seçildi` : "Qalereya şəkilləri əlavə et"}
                 <input type="file" accept="image/*" multiple hidden onChange={(e) => setGalleryFiles(Array.from(e.target.files || []))} />
               </label>
               <div className="ca-field" style={{ marginTop: 10 }}>
-                <label>Hero image ALT text</label>
+                <label>Hero şəkil ALT mətni</label>
                 <input value={form.hero_image_alt} onChange={(e) => setForm({ ...form, hero_image_alt: e.target.value })} maxLength={125} />
               </div>
               <div className="ca-field">
-                <label>Canonical URL (optional)</label>
+                <label>Kanonik URL (istəyə bağlı)</label>
                 <input type="url" value={form.canonical_url} onChange={(e) => setForm({ ...form, canonical_url: e.target.value })} placeholder="https://izigo.az/places/flame-towers" />
               </div>
               <div style={{ height: 4 }} />
@@ -416,23 +416,23 @@ export default function PlacesPage() {
                 return (
                   <>
                     <div className="ca-field">
-                      <label>Name{activeLang === DEFAULT_LANG ? " *" : ""}</label>
+                      <label>Ad{activeLang === DEFAULT_LANG ? " *" : ""}</label>
                       <input value={t.name} onChange={setF("name")} maxLength={200} required={activeLang === DEFAULT_LANG} />
                     </div>
                     <div className="ca-field">
-                      <label>SEO Title <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.seo_title.length}/60)</span></label>
+                      <label>SEO Başlığı <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.seo_title.length}/60)</span></label>
                       <input value={t.seo_title} onChange={setF("seo_title")} maxLength={60} />
                     </div>
                     <div className="ca-field">
-                      <label>Meta Description <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.meta_description.length}/160)</span></label>
+                      <label>Meta Təsvir <span style={{ fontWeight: 400, color: "var(--text-soft)" }}>({t.meta_description.length}/160)</span></label>
                       <textarea value={t.meta_description} onChange={setF("meta_description")} maxLength={160} />
                     </div>
                     <div className="ca-field">
-                      <label>Keywords (comma-separated)</label>
+                      <label>Açar sözlər (vergüllə ayrılmış)</label>
                       <input value={t.keywords} onChange={setF("keywords")} />
                     </div>
                     <div className="ca-field">
-                      <label>Content</label>
+                      <label>Kontent</label>
                       <textarea style={{ minHeight: 140 }} value={t.content} onChange={setF("content")} />
                     </div>
 
@@ -441,14 +441,14 @@ export default function PlacesPage() {
                       {t.faq.map((row, i) => (
                         <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-start" }}>
                           <div style={{ flex: 1 }}>
-                            <input placeholder="Question" value={row.question} onChange={(e) => updateFaqRow(activeLang, i, "question", e.target.value)} style={{ marginBottom: 6, width: "100%" }} />
-                            <textarea placeholder="Answer" value={row.answer} onChange={(e) => updateFaqRow(activeLang, i, "answer", e.target.value)} style={{ width: "100%" }} />
+                            <input placeholder="Sual" value={row.question} onChange={(e) => updateFaqRow(activeLang, i, "question", e.target.value)} style={{ marginBottom: 6, width: "100%" }} />
+                            <textarea placeholder="Cavab" value={row.answer} onChange={(e) => updateFaqRow(activeLang, i, "answer", e.target.value)} style={{ width: "100%" }} />
                           </div>
                           <button type="button" className="ca-btn-remove" onClick={() => removeFaqRow(activeLang, i)}><Trash2 size={14} /></button>
                         </div>
                       ))}
                       <button type="button" className="ca-btn-edit" onClick={() => addFaqRow(activeLang)} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <Plus size={13} /> Add FAQ item
+                        <Plus size={13} /> FAQ maddəsi əlavə et
                       </button>
                     </div>
                   </>
@@ -456,7 +456,7 @@ export default function PlacesPage() {
               })()}
 
               {error && <p style={{ color: "#E0553F", fontSize: 13, marginTop: 4 }}>{error}</p>}
-              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Save"}</button>
+              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Yadda saxla"}</button>
             </form>
           </div>
         </div>

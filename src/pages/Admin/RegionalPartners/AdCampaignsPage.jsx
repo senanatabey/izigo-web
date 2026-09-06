@@ -3,6 +3,7 @@ import { ALL_DESTINATIONS } from "../../../data/azerbaijanDestinations";
 import { fetchAllAdCampaigns, createAdCampaign, updateAdCampaign, deleteAdCampaign } from "../../../lib/regionalPartner";
 
 const STATUSES = ["active", "completed", "cancelled"];
+const STATUS_LABELS = { active: "Aktiv", completed: "Tamamlanıb", cancelled: "Ləğv edilib" };
 
 // Internal revenue bookkeeping only — this is not a payment processor. Admin
 // records what a region's ad inventory earned; the Regional Partner
@@ -45,7 +46,7 @@ export default function AdCampaignsPage() {
       setTitle(""); setPeriodStart(""); setPeriodEnd(""); setGrossRevenue(""); setStatus("active");
       load();
     } catch (err) {
-      setError(err.message || "Failed to save campaign.");
+      setError(err.message || "Kampaniyanı yadda saxlamaq mümkün olmadı.");
     } finally {
       setSaving(false);
     }
@@ -57,7 +58,7 @@ export default function AdCampaignsPage() {
   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete this ad campaign?")) return;
+    if (!window.confirm("Bu reklam kampaniyasını silmək istəyirsiniz?")) return;
     await deleteAdCampaign(id);
     load();
   };
@@ -82,14 +83,14 @@ export default function AdCampaignsPage() {
         .ac-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .ac-save-btn { border: none; background: var(--izigo-orange); color: #fff; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Ad Campaigns</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Reklam Kampaniyaları</h1>
 
-      <button className="ac-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Cancel" : "+ New ad campaign"}</button>
+      <button className="ac-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Ləğv et" : "+ Yeni reklam kampaniyası"}</button>
 
       {showForm && (
         <form className="ac-form" onSubmit={submit}>
           <div className="ac-field">
-            <label>Title</label>
+            <label>Başlıq</label>
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
           </div>
           <div className="ac-field">
@@ -100,35 +101,35 @@ export default function AdCampaignsPage() {
           </div>
           <div className="ac-row">
             <div className="ac-field">
-              <label>Period start</label>
+              <label>Dövrün başlanğıcı</label>
               <input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} />
             </div>
             <div className="ac-field">
-              <label>Period end</label>
+              <label>Dövrün bitməsi</label>
               <input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
             </div>
           </div>
           <div className="ac-field">
-            <label>Gross revenue (AZN)</label>
+            <label>Ümumi gəlir (AZN)</label>
             <input type="number" min="0" value={grossRevenue} onChange={(e) => setGrossRevenue(e.target.value)} required />
           </div>
           <div className="ac-field">
             <label>Status</label>
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
-              {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
             </select>
           </div>
           {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
-          <button className="ac-save-btn" type="submit" disabled={saving}>{saving ? "Saving..." : "Save campaign"}</button>
+          <button className="ac-save-btn" type="submit" disabled={saving}>{saving ? "Yadda saxlanılır..." : "Kampaniyanı yadda saxla"}</button>
         </form>
       )}
 
-      {loading ? <p>Loading...</p> : campaigns.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No ad campaigns yet.</p>
+      {loading ? <p>Yüklənir...</p> : campaigns.length === 0 ? (
+        <p style={{ color: "var(--text-soft)" }}>Hələ reklam kampaniyası yoxdur.</p>
       ) : (
         <table className="ac-table">
           <thead>
-            <tr><th>Title</th><th>Region</th><th>Period</th><th>Gross Revenue</th><th>Status</th><th></th></tr>
+            <tr><th>Başlıq</th><th>Region</th><th>Dövr</th><th>Ümumi Gəlir</th><th>Status</th><th></th></tr>
           </thead>
           <tbody>
             {campaigns.map((c) => (
@@ -139,10 +140,10 @@ export default function AdCampaignsPage() {
                 <td>{c.gross_revenue} AZN</td>
                 <td>
                   <select className="inline" value={c.status} onChange={(e) => setCampaignStatus(c, e.target.value)}>
-                    {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                   </select>
                 </td>
-                <td><button className="delete" onClick={() => remove(c.id)}>Delete</button></td>
+                <td><button className="delete" onClick={() => remove(c.id)}>Sil</button></td>
               </tr>
             ))}
           </tbody>

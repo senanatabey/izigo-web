@@ -8,26 +8,26 @@ import AdminEmptyState from "../../../components/AdminEmptyState";
 const FILTERS = ["all", ...TRIP_STATUSES];
 
 const STATUS_LABEL = {
-  new: "New",
-  in_progress: "In Progress",
-  offer_sent: "Offer Sent",
-  confirmed: "Confirmed",
-  completed: "Completed",
-  cancelled: "Cancelled",
+  new: "Yeni",
+  in_progress: "İcra olunur",
+  offer_sent: "Təklif göndərilib",
+  confirmed: "Təsdiqlənib",
+  completed: "Tamamlanıb",
+  cancelled: "Ləğv edilib",
 };
 
 const SOURCE_LABEL = {
   plan_my_trip: "Plan My Trip",
-  website: "Website",
+  website: "Sayt",
   whatsapp: "WhatsApp",
   instagram: "Instagram",
   facebook: "Facebook",
-  manual: "Manual",
+  manual: "Əl ilə",
 };
 
 function tripDates(r) {
   if (r.check_in && r.check_out) return `${r.check_in} → ${r.check_out}`;
-  if (r.trip_length_days) return `${r.trip_length_days} days (dates TBD)`;
+  if (r.trip_length_days) return `${r.trip_length_days} gün (tarixlər dəqiqləşdirilməyib)`;
   return "—";
 }
 
@@ -98,13 +98,13 @@ export default function TripRequestsListPage() {
         }
         .trip-view-btn:hover { background: var(--bg-soft); }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Travel Concierge — Trip Requests</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Travel Concierge — Səyahət Sorğuları</h1>
 
       <div className="trip-requests-toolbar">
         <div className="trip-requests-search">
           <Search size={14} color="var(--text-soft)" />
           <input
-            placeholder="Search by guest, WhatsApp, city, country or request number..."
+            placeholder="Qonaq, WhatsApp, şəhər, ölkə və ya sorğu nömrəsi üzrə axtar..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -114,36 +114,36 @@ export default function TripRequestsListPage() {
           className="trip-requests-sort"
           onClick={() => setSortOrder((s) => (s === "newest" ? "oldest" : "newest"))}
         >
-          <ArrowUpDown size={14} />{sortOrder === "newest" ? "Newest First" : "Oldest First"}
+          <ArrowUpDown size={14} />{sortOrder === "newest" ? "Əvvəlcə ən yeni" : "Əvvəlcə ən köhnə"}
         </button>
       </div>
 
       <div className="trip-requests-filters">
         {FILTERS.map((s) => (
           <button key={s} className={statusFilter === s ? "active" : ""} onClick={() => setStatusFilter(s)}>
-            {s === "all" ? "All" : STATUS_LABEL[s]}
+            {s === "all" ? "Hamısı" : STATUS_LABEL[s]}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>Yüklənir...</p>
       ) : visible.length === 0 ? (
-        <AdminEmptyState icon={Compass} message="No trip requests match." />
+        <AdminEmptyState icon={Compass} message="Uyğun səyahət sorğusu tapılmadı." />
       ) : (
         <table className="trip-requests-table">
           <thead>
             <tr>
-              <th>Request #</th>
-              <th>Created</th>
-              <th>Guest Name</th>
-              <th>Source</th>
-              <th>Country</th>
-              <th>Travel Dates</th>
-              <th>Guests</th>
-              <th>Budget</th>
+              <th>Sorğu №</th>
+              <th>Yaradılıb</th>
+              <th>Qonaq adı</th>
+              <th>Mənbə</th>
+              <th>Ölkə</th>
+              <th>Səyahət tarixləri</th>
+              <th>Qonaq sayı</th>
+              <th>Büdcə</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Əməliyyatlar</th>
             </tr>
           </thead>
           <tbody>
@@ -160,7 +160,7 @@ export default function TripRequestsListPage() {
                 <td><span className={`trip-status-pill ${r.status}`}>{STATUS_LABEL[r.status] || r.status}</span></td>
                 <td>
                   <Link className="trip-view-btn" to={`/admin/trip-requests/${r.id}`}>
-                    <Eye size={13} />View
+                    <Eye size={13} />Bax
                   </Link>
                 </td>
               </tr>

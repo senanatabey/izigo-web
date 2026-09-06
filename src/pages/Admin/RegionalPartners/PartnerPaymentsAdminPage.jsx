@@ -4,6 +4,8 @@ import { fetchAllPartners, fetchAllPartnerPayments, createPartnerPayment, update
 // The only place regional_partner_payments rows get written or their status
 // changed — RLS backs this up (only is_admin() may insert/update that
 // table), so this isn't just a UI convention.
+const PAYMENT_STATUS_LABELS = { paid: "Ödənilib", pending: "Gözləmədə" };
+
 export default function PartnerPaymentsAdminPage() {
   const [payments, setPayments] = useState([]);
   const [partners, setPartners] = useState([]);
@@ -43,14 +45,14 @@ export default function PartnerPaymentsAdminPage() {
       setPartnerId(""); setPeriodStart(""); setPeriodEnd(""); setAmount("");
       load();
     } catch (err) {
-      setError(err.message || "Failed to create payment.");
+      setError(err.message || "Ödənişi yaratmaq mümkün olmadı.");
     } finally {
       setSaving(false);
     }
   };
 
   const markPaid = async (p) => {
-    const reference = window.prompt("Payment reference (optional):", p.payment_reference || "");
+    const reference = window.prompt("Ödəniş nömrəsi (istəyə bağlı):", p.payment_reference || "");
     if (reference === null) return;
     await updatePartnerPaymentStatus(p.id, "paid", reference);
     load();
@@ -79,16 +81,16 @@ export default function PartnerPaymentsAdminPage() {
         .pp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .pp-save-btn { border: none; background: var(--izigo-orange); color: #fff; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Partner Payments</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Partnyor Ödənişləri</h1>
 
-      <button className="pp-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Cancel" : "+ New payment"}</button>
+      <button className="pp-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Ləğv et" : "+ Yeni ödəniş"}</button>
 
       {showForm && (
         <form className="pp-form" onSubmit={submit}>
           <div className="pp-field">
-            <label>Partner</label>
+            <label>Partnyor</label>
             <select value={partnerId} onChange={(e) => setPartnerId(e.target.value)} required>
-              <option value="">Choose a partner</option>
+              <option value="">Partnyor seçin</option>
               {partners.map((p) => (
                 <option key={p.id} value={p.id}>{p.profile?.full_name || p.user_id} — {p.region}</option>
               ))}
@@ -96,29 +98,29 @@ export default function PartnerPaymentsAdminPage() {
           </div>
           <div className="pp-row">
             <div className="pp-field">
-              <label>Period start</label>
+              <label>Dövrün başlanğıcı</label>
               <input type="date" value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} />
             </div>
             <div className="pp-field">
-              <label>Period end</label>
+              <label>Dövrün bitməsi</label>
               <input type="date" value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
             </div>
           </div>
           <div className="pp-field">
-            <label>Amount (AZN)</label>
+            <label>Məbləğ (AZN)</label>
             <input type="number" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} required />
           </div>
           {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
-          <button className="pp-save-btn" type="submit" disabled={saving}>{saving ? "Saving..." : "Create payment (pending)"}</button>
+          <button className="pp-save-btn" type="submit" disabled={saving}>{saving ? "Yadda saxlanılır..." : "Ödəniş yarat (gözləmədə)"}</button>
         </form>
       )}
 
-      {loading ? <p>Loading...</p> : payments.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No payments recorded yet.</p>
+      {loading ? <p>Yüklənir...</p> : payments.length === 0 ? (
+        <p style={{ color: "var(--text-soft)" }}>Hələ ödəniş qeydə alınmayıb.</p>
       ) : (
         <table className="pp-table">
           <thead>
-            <tr><th>Partner</th><th>Region</th><th>Period</th><th>Amount</th><th>Status</th><th>Reference</th><th></th></tr>
+            <tr><th>Partnyor</th><th>Region</th><th>Dövr</th><th>Məbləğ</th><th>Status</th><th>Nömrə</th><th></th></tr>
           </thead>
           <tbody>
             {payments.map((p) => (
@@ -127,13 +129,13 @@ export default function PartnerPaymentsAdminPage() {
                 <td>{p.partner?.region || "—"}</td>
                 <td>{p.period_start || "—"} → {p.period_end || "—"}</td>
                 <td>{p.amount} AZN</td>
-                <td><span className={`status-pill ${p.status}`}>{p.status}</span></td>
+                <td><span className={`status-pill ${p.status}`}>{PAYMENT_STATUS_LABELS[p.status] || p.status}</span></td>
                 <td>{p.payment_reference || "—"}</td>
                 <td>
                   {p.status === "pending" ? (
-                    <button className="toggle" onClick={() => markPaid(p)}>Mark paid</button>
+                    <button className="toggle" onClick={() => markPaid(p)}>Ödənilib kimi qeyd et</button>
                   ) : (
-                    <button className="toggle" onClick={() => markPending(p)}>Mark pending</button>
+                    <button className="toggle" onClick={() => markPending(p)}>Gözləmədə kimi qeyd et</button>
                   )}
                 </td>
               </tr>

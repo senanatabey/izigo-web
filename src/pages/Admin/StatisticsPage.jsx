@@ -3,6 +3,8 @@ import { supabase } from "../../lib/supabaseClient";
 
 const CATEGORIES = ["villa", "car", "transfer", "event", "service"];
 const STATUSES = ["pending", "approved", "rejected"];
+const CATEGORY_LABELS = { villa: "Villa", car: "Avtomobil", transfer: "Transfer", event: "Tədbir", service: "Xidmət" };
+const STATUS_LABELS = { pending: "Gözləmədə", approved: "Təsdiqlənib", rejected: "Rədd edilib" };
 
 export default function StatisticsPage() {
   const [stats, setStats] = useState(null);
@@ -41,28 +43,28 @@ export default function StatisticsPage() {
         .stats-kpi-label { font-size: 13px; color: var(--text-soft); margin-top: 4px; }
         @media (max-width: 900px) { .stats-grid { grid-template-columns: 1fr; } }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Statistics</h1>
-      {!stats ? <p>Loading...</p> : (
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Statistika</h1>
+      {!stats ? <p>Yüklənir...</p> : (
         <div className="stats-grid">
           <div className="stats-card">
-            <h3>Listings by category</h3>
+            <h3>Kateqoriya üzrə elanlar</h3>
             {CATEGORIES.map((c) => (
-              <div className="stats-row" key={c}><span>{c}</span><strong>{stats.byCategory[c]}</strong></div>
+              <div className="stats-row" key={c}><span>{CATEGORY_LABELS[c]}</span><strong>{stats.byCategory[c]}</strong></div>
             ))}
           </div>
           <div className="stats-card">
-            <h3>Listings by status</h3>
+            <h3>Status üzrə elanlar</h3>
             {STATUSES.map((s) => (
-              <div className="stats-row" key={s}><span>{s}</span><strong>{stats.byStatus[s]}</strong></div>
+              <div className="stats-row" key={s}><span>{STATUS_LABELS[s]}</span><strong>{stats.byStatus[s]}</strong></div>
             ))}
           </div>
           <div className="stats-card">
             <div className="stats-kpi">{stats.totalReviews}</div>
-            <div className="stats-kpi-label">Total reviews</div>
+            <div className="stats-kpi-label">Ümumi rəylər</div>
           </div>
           <div className="stats-card">
             <div className="stats-kpi">{stats.avgRating}</div>
-            <div className="stats-kpi-label">Average rating</div>
+            <div className="stats-kpi-label">Orta reytinq</div>
           </div>
         </div>
       )}

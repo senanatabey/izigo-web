@@ -27,7 +27,7 @@ function rowToForm(row) {
 
 function questionFor(row) {
   const t = (row.translations || []).find((tr) => tr.language === DEFAULT_LANG) || (row.translations || [])[0];
-  return t?.question || "(no question)";
+  return t?.question || "(sual yoxdur)";
 }
 
 export default function FaqPage() {
@@ -60,7 +60,7 @@ export default function FaqPage() {
   const closeFormSilently = () => { setForm(null); initialFormRef.current = null; };
   const closeForm = () => {
     const isDirty = form && JSON.stringify(form) !== initialFormRef.current;
-    if (isDirty && !window.confirm("Discard unsaved changes?")) return;
+    if (isDirty && !window.confirm("Yadda saxlanılmamış dəyişikliklər ləğv edilsin?")) return;
     closeFormSilently();
   };
 
@@ -70,9 +70,9 @@ export default function FaqPage() {
 
   const save = async (e) => {
     e.preventDefault();
-    if (!form.category.trim()) { setError("Category is required."); return; }
+    if (!form.category.trim()) { setError("Kateqoriya tələb olunur."); return; }
     if (!form.translations[DEFAULT_LANG].question.trim()) {
-      setError(`Question is required (at least in ${DEFAULT_LANG.toUpperCase()}).`);
+      setError(`Sual tələb olunur (ən azı ${DEFAULT_LANG.toUpperCase()} dilində).`);
       return;
     }
     setSaving(true);
@@ -84,17 +84,17 @@ export default function FaqPage() {
         translations: form.translations,
       });
       closeFormSilently();
-      setSuccess("FAQ saved.");
+      setSuccess("FAQ yadda saxlanıldı.");
       load();
     } catch (err) {
-      setError(err.message || "Failed to save FAQ");
+      setError(err.message || "FAQ yadda saxlanıla bilmədi");
     } finally {
       setSaving(false);
     }
   };
 
   const remove = async (id) => {
-    if (!window.confirm("Delete this FAQ entry?")) return;
+    if (!window.confirm("Bu FAQ maddəsi silinsin?")) return;
     await faqsApi.remove(id);
     load();
   };
@@ -110,26 +110,26 @@ export default function FaqPage() {
 
       <div className="ca-head">
         <h1 style={{ fontSize: 22, fontWeight: 800 }}>FAQ</h1>
-        <button className="ca-new-btn" onClick={openNew}>+ New FAQ</button>
+        <button className="ca-new-btn" onClick={openNew}>+ Yeni FAQ</button>
       </div>
-      <p className="ca-subtitle">Grouped by category — used later to power FAQ sections across the site.</p>
+      <p className="ca-subtitle">Kateqoriyaya görə qruplaşdırılıb — daha sonra sayt üzrə FAQ bölmələrini idarə etmək üçün istifadə olunacaq.</p>
 
       {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
       {faqs.length > 0 && (
         <div className="ca-toolbar">
           <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-            {categories.map((c) => <option key={c} value={c}>{c === "all" ? "All categories" : c}</option>)}
+            {categories.map((c) => <option key={c} value={c}>{c === "all" ? "Bütün kateqoriyalar" : c}</option>)}
           </select>
         </div>
       )}
 
-      {loading ? <p>Loading...</p> : filtered.length === 0 ? (
+      {loading ? <p>Yüklənir...</p> : filtered.length === 0 ? (
         <div className="ca-empty">
           <HelpCircle size={32} />
-          <h2>No FAQ entries yet</h2>
-          <p>Add common questions and answers, grouped by category, per language.</p>
-          <button className="ca-new-btn" onClick={openNew}>+ Add FAQ</button>
+          <h2>Hələ FAQ maddəsi yoxdur</h2>
+          <p>Hər dil üçün, kateqoriyaya görə qruplaşdırılmış tez-tez verilən sual və cavabları əlavə edin.</p>
+          <button className="ca-new-btn" onClick={openNew}>+ FAQ əlavə et</button>
         </div>
       ) : (
         <div className="ca-list">
@@ -138,14 +138,14 @@ export default function FaqPage() {
               <div className="ca-info">
                 <div className="ca-name">
                   {questionFor(f)}
-                  <span className={`ca-pill ${f.status}`}>{f.status}</span>
+                  <span className={`ca-pill ${f.status}`}>{f.status === "published" ? "Dərc edilib" : "Qaralama"}</span>
                 </div>
-                <div className="ca-meta">{f.category} · order {f.sort_order}</div>
+                <div className="ca-meta">{f.category} · sıra {f.sort_order}</div>
               </div>
               <div className="ca-actions">
-                <button className="ca-btn-publish" onClick={() => toggleStatus(f)}>{f.status === "published" ? "Unpublish" : "Publish"}</button>
-                <button className="ca-btn-edit" onClick={() => openEdit(f)}>Edit</button>
-                <button className="ca-btn-remove" onClick={() => remove(f.id)}>Delete</button>
+                <button className="ca-btn-publish" onClick={() => toggleStatus(f)}>{f.status === "published" ? "Dərcdən çıxar" : "Dərc et"}</button>
+                <button className="ca-btn-edit" onClick={() => openEdit(f)}>Redaktə et</button>
+                <button className="ca-btn-remove" onClick={() => remove(f.id)}>Sil</button>
               </div>
             </div>
           ))}
@@ -156,23 +156,23 @@ export default function FaqPage() {
         <div className="ca-modal-overlay" onClick={closeForm}>
           <div className="ca-modal" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="ca-modal-close" onClick={closeForm}><X size={14} /></button>
-            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "Edit FAQ" : "New FAQ"}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 18 }}>{form.id ? "FAQ-nu redaktə et" : "Yeni FAQ"}</h2>
             <form onSubmit={save}>
               <div className="ca-row">
                 <div className="ca-field">
-                  <label>Category *</label>
-                  <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="e.g. booking, payments" required />
+                  <label>Kateqoriya *</label>
+                  <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="məs. booking, payments" required />
                 </div>
                 <div className="ca-field">
-                  <label>Sort order</label>
+                  <label>Sıra nömrəsi</label>
                   <input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: e.target.value })} />
                 </div>
               </div>
               <div className="ca-field">
                 <label>Status</label>
                 <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
+                  <option value="draft">Qaralama</option>
+                  <option value="published">Dərc edilib</option>
                 </select>
               </div>
 
@@ -189,11 +189,11 @@ export default function FaqPage() {
                 return (
                   <>
                     <div className="ca-field">
-                      <label>Question{activeLang === DEFAULT_LANG ? " *" : ""}</label>
+                      <label>Sual{activeLang === DEFAULT_LANG ? " *" : ""}</label>
                       <input value={t.question} onChange={(e) => setTranslationField(activeLang, "question", e.target.value)} required={activeLang === DEFAULT_LANG} />
                     </div>
                     <div className="ca-field">
-                      <label>Answer</label>
+                      <label>Cavab</label>
                       <textarea style={{ minHeight: 100 }} value={t.answer} onChange={(e) => setTranslationField(activeLang, "answer", e.target.value)} />
                     </div>
                   </>
@@ -201,7 +201,7 @@ export default function FaqPage() {
               })()}
 
               {error && <p style={{ color: "#E0553F", fontSize: 13, marginTop: 4 }}>{error}</p>}
-              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Save"}</button>
+              <button type="submit" className="ca-save-btn" disabled={saving}>{saving ? "..." : "Yadda saxla"}</button>
             </form>
           </div>
         </div>

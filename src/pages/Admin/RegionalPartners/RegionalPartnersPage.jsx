@@ -11,6 +11,8 @@ import { fetchAllPartners, assignRegionalPartner, updatePartner } from "../../..
 // protection is server-side: assignRegionalPartner() refuses outright (and
 // a profiles trigger backs it up) if the target user is an admin — see
 // supabase/025_regional_partner_admin_protection.sql.
+const PARTNER_STATUS_LABELS = { active: "Aktiv", inactive: "Qeyri-aktiv" };
+
 export default function RegionalPartnersPage() {
   const [partners, setPartners] = useState([]);
   const [candidates, setCandidates] = useState([]);
@@ -47,7 +49,7 @@ export default function RegionalPartnersPage() {
       setSharePercent("20");
       load();
     } catch (err) {
-      setError(err.message || "Failed to create regional partner.");
+      setError(err.message || "Regional partnyoru yaratmaq mümkün olmadı.");
     } finally {
       setSaving(false);
     }
@@ -75,16 +77,16 @@ export default function RegionalPartnersPage() {
         .rp-field input, .rp-field select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: var(--sans); }
         .rp-save-btn { border: none; background: var(--izigo-orange); color: #fff; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Regional Partners</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Regional Partnyorlar</h1>
 
-      <button className="rp-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Cancel" : "+ Assign new partner"}</button>
+      <button className="rp-new-btn" onClick={() => setShowForm((v) => !v)}>{showForm ? "Ləğv et" : "+ Yeni partnyor təyin et"}</button>
 
       {showForm && (
         <form className="rp-form" onSubmit={submit}>
           <div className="rp-field">
-            <label>User</label>
+            <label>İstifadəçi</label>
             <select value={userId} onChange={(e) => setUserId(e.target.value)} required>
-              <option value="">Choose a user</option>
+              <option value="">İstifadəçi seçin</option>
               {candidates.map((c) => <option key={c.id} value={c.id}>{c.full_name || c.id}</option>)}
             </select>
           </div>
@@ -95,20 +97,20 @@ export default function RegionalPartnersPage() {
             </select>
           </div>
           <div className="rp-field">
-            <label>Revenue share (%)</label>
+            <label>Gəlir payı (%)</label>
             <input type="number" min="0" max="100" value={sharePercent} onChange={(e) => setSharePercent(e.target.value)} />
           </div>
           {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
-          <button className="rp-save-btn" type="submit" disabled={saving}>{saving ? "Saving..." : "Assign partner"}</button>
+          <button className="rp-save-btn" type="submit" disabled={saving}>{saving ? "Yadda saxlanılır..." : "Partnyor təyin et"}</button>
         </form>
       )}
 
-      {loading ? <p>Loading...</p> : partners.length === 0 ? (
-        <p style={{ color: "var(--text-soft)" }}>No regional partners yet.</p>
+      {loading ? <p>Yüklənir...</p> : partners.length === 0 ? (
+        <p style={{ color: "var(--text-soft)" }}>Hələ regional partnyor yoxdur.</p>
       ) : (
         <table className="rp-table">
           <thead>
-            <tr><th>User</th><th>Region</th><th>Revenue Share</th><th>Status</th><th>Assigned</th><th></th></tr>
+            <tr><th>İstifadəçi</th><th>Region</th><th>Gəlir Payı</th><th>Status</th><th>Təyin edilib</th><th></th></tr>
           </thead>
           <tbody>
             {partners.map((p) => (
@@ -116,9 +118,9 @@ export default function RegionalPartnersPage() {
                 <td>{p.profile?.full_name || p.user_id}</td>
                 <td>{p.region}</td>
                 <td>{p.revenue_share_percent}%</td>
-                <td><span className={`status-pill ${p.status}`}>{p.status}</span></td>
+                <td><span className={`status-pill ${p.status}`}>{PARTNER_STATUS_LABELS[p.status] || p.status}</span></td>
                 <td>{new Date(p.created_at).toLocaleDateString()}</td>
-                <td><button className="toggle" onClick={() => toggleStatus(p)}>{p.status === "active" ? "Deactivate" : "Activate"}</button></td>
+                <td><button className="toggle" onClick={() => toggleStatus(p)}>{p.status === "active" ? "Deaktiv et" : "Aktiv et"}</button></td>
               </tr>
             ))}
           </tbody>

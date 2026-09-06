@@ -7,10 +7,10 @@ import {
 import { supabase } from "../../lib/supabaseClient";
 
 const QUICK_ACTIONS = [
-  { label: "Approve listings", to: "/admin/listings/pending", icon: ClipboardList },
-  { label: "Create hero campaign", to: "/admin/hero", icon: Sparkles },
-  { label: "Add listing", to: "/add-listing", icon: PlusCircle },
-  { label: "View users", to: "/admin/users", icon: Users },
+  { label: "Elanları təsdiqlə", to: "/admin/listings/pending", icon: ClipboardList },
+  { label: "Hero kampaniyası yarat", to: "/admin/hero", icon: Sparkles },
+  { label: "Elan əlavə et", to: "/add-listing", icon: PlusCircle },
+  { label: "İstifadəçilərə bax", to: "/admin/users", icon: Users },
 ];
 
 const ACTIVITY_ICONS = {
@@ -21,10 +21,10 @@ const ACTIVITY_ICONS = {
 };
 
 const ACTIVITY_LABELS = {
-  submitted: (a) => `New listing submitted: "${a.title}"`,
-  approved: (a) => `Listing approved: "${a.title}"`,
-  user: (a) => `New user registered: ${a.title}`,
-  review: (a) => `Review received (${a.rating}★)`,
+  submitted: (a) => `Yeni elan göndərildi: "${a.title}"`,
+  approved: (a) => `Elan təsdiqləndi: "${a.title}"`,
+  user: (a) => `Yeni istifadəçi qeydiyyatdan keçdi: ${a.title}`,
+  review: (a) => `Rəy alındı (${a.rating}★)`,
 };
 
 async function fetchRecentActivity() {
@@ -66,10 +66,10 @@ export default function DashboardPage() {
   }, []);
 
   const cards = stats ? [
-    { label: "Total listings", value: stats.total, icon: HomeIcon, to: "/admin/listings" },
-    { label: "Pending approval", value: stats.pending, icon: ClipboardList, to: "/admin/listings/pending", priority: stats.pending > 0 },
-    { label: "Approved listings", value: stats.approved, icon: CheckCircle2, to: "/admin/listings" },
-    { label: "Registered users", value: stats.users, icon: Users, to: "/admin/users" },
+    { label: "Ümumi elanlar", value: stats.total, icon: HomeIcon, to: "/admin/listings" },
+    { label: "Təsdiq gözləyir", value: stats.pending, icon: ClipboardList, to: "/admin/listings/pending", priority: stats.pending > 0 },
+    { label: "Təsdiqlənmiş elanlar", value: stats.approved, icon: CheckCircle2, to: "/admin/listings" },
+    { label: "Qeydiyyatlı istifadəçilər", value: stats.users, icon: Users, to: "/admin/users" },
   ] : [];
 
   return (
@@ -116,9 +116,9 @@ export default function DashboardPage() {
         .admin-activity-time { font-size: 12px; color: var(--text-soft); white-space: nowrap; }
         .admin-activity-empty { padding: 20px 0; font-size: 13.5px; color: var(--text-soft); text-align: center; }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Dashboard</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>İdarə paneli</h1>
 
-      {!stats ? <p>Loading...</p> : (
+      {!stats ? <p>Yüklənir...</p> : (
         <div className="admin-kpi-grid">
           {cards.map(({ label, value, icon: Icon, to, priority }) => (
             <Link to={to} className={`admin-kpi-card${priority ? " priority" : ""}`} key={label}>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <h2 className="admin-section-title">Quick actions</h2>
+      <h2 className="admin-section-title">Sürətli əməliyyatlar</h2>
       <div className="admin-quick-actions">
         {QUICK_ACTIONS.map(({ label, to, icon: Icon }) => (
           <Link key={label} to={to} className="admin-quick-action">
@@ -140,12 +140,12 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <h2 className="admin-section-title">Recent activity</h2>
+      <h2 className="admin-section-title">Son fəaliyyət</h2>
       <div className="admin-activity-card">
         {activity === null ? (
-          <p className="admin-activity-empty">Loading...</p>
+          <p className="admin-activity-empty">Yüklənir...</p>
         ) : activity.length === 0 ? (
-          <p className="admin-activity-empty">No recent activity.</p>
+          <p className="admin-activity-empty">Son fəaliyyət yoxdur.</p>
         ) : (
           activity.map((a) => {
             const Icon = ACTIVITY_ICONS[a.type];

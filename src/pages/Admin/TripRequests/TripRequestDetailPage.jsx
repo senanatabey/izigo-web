@@ -9,31 +9,31 @@ import { fetchApprovedListings } from "../../../lib/listings";
 import { useCurrency } from "../../../i18n/CurrencyContext";
 
 const STATUS_LABEL = {
-  new: "New",
-  in_progress: "In Progress",
-  offer_sent: "Offer Sent",
-  confirmed: "Confirmed",
-  completed: "Completed",
-  cancelled: "Cancelled",
+  new: "Yeni",
+  in_progress: "İcra olunur",
+  offer_sent: "Təklif göndərilib",
+  confirmed: "Təsdiqlənib",
+  completed: "Tamamlanıb",
+  cancelled: "Ləğv edilib",
 };
 
-const SERVICE_LABEL = { villa: "Villa", transfer: "Transfer", tour: "Tour", extra: "Extra" };
+const SERVICE_LABEL = { villa: "Villa", transfer: "Transfer", tour: "Tur", extra: "Əlavə" };
 
 const SOURCE_LABEL = {
   plan_my_trip: "Plan My Trip",
-  website: "Website",
+  website: "Sayt",
   whatsapp: "WhatsApp",
   instagram: "Instagram",
   facebook: "Facebook",
-  manual: "Manual",
+  manual: "Əl ilə",
 };
 
 const RESULT_LABEL = {
-  completed: "Completed",
-  cancelled: "Cancelled",
-  no_reply: "No Reply",
-  budget_too_low: "Budget Too Low",
-  guest_changed_mind: "Guest Changed Mind",
+  completed: "Tamamlanıb",
+  cancelled: "Ləğv edilib",
+  no_reply: "Cavab yoxdur",
+  budget_too_low: "Büdcə kifayət etmir",
+  guest_changed_mind: "Qonaq fikrini dəyişdi",
 };
 
 // The happy-path progression shown in the timeline — "cancelled" is a
@@ -150,7 +150,7 @@ export default function TripRequestDetailPage() {
   };
 
   const removeService = async (serviceId) => {
-    if (!window.confirm("Remove this service?")) return;
+    if (!window.confirm("Bu xidməti silmək istəyirsiniz?")) return;
     await deleteTripService(serviceId);
     setServices(await fetchTripServices(id));
   };
@@ -163,16 +163,16 @@ export default function TripRequestDetailPage() {
 
   const whatsappMessage = useMemo(() => {
     if (!trip) return "";
-    const lines = [`Hi ${trip.guest_name || "there"}! Here is your IZIGO trip summary:`];
-    if (form?.check_in && form?.check_out) lines.push(`Dates: ${form.check_in} to ${form.check_out}`);
-    else if (trip.trip_length_days) lines.push(`Trip length: ${trip.trip_length_days} days in ${trip.city || ""}`);
+    const lines = [`Salam ${trip.guest_name || "dəyərli qonaq"}! Budur IZIGO səyahət xülasəniz:`];
+    if (form?.check_in && form?.check_out) lines.push(`Tarixlər: ${form.check_in} - ${form.check_out}`);
+    else if (trip.trip_length_days) lines.push(`Səyahət müddəti: ${trip.trip_length_days} gün, ${trip.city || ""}`);
     const villa = services.find((s) => s.service_type === "villa");
-    if (villa) lines.push(`Villa: ${villa.title || "Selected villa"} — ${formatPrice(villa.price || 0)}`);
+    if (villa) lines.push(`Villa: ${villa.title || "Seçilmiş villa"} — ${formatPrice(villa.price || 0)}`);
     const transfer = services.find((s) => s.service_type === "transfer");
-    if (transfer) lines.push(`Transfer: ${transfer.driver_name || "Driver"}${transfer.pickup_time ? ` (pickup ${transfer.pickup_time})` : ""} — ${formatPrice(transfer.price || 0)}`);
-    services.filter((s) => s.service_type === "tour").forEach((t) => lines.push(`Tour: ${t.title || "Tour"} — ${formatPrice(t.price || 0)}`));
-    services.filter((s) => s.service_type === "extra").forEach((e) => lines.push(`${e.title || "Extra"} — ${formatPrice(e.price || 0)}`));
-    lines.push(`Total: ${formatPrice(totalCost)}`);
+    if (transfer) lines.push(`Transfer: ${transfer.driver_name || "Sürücü"}${transfer.pickup_time ? ` (götürülmə ${transfer.pickup_time})` : ""} — ${formatPrice(transfer.price || 0)}`);
+    services.filter((s) => s.service_type === "tour").forEach((t) => lines.push(`Tur: ${t.title || "Tur"} — ${formatPrice(t.price || 0)}`));
+    services.filter((s) => s.service_type === "extra").forEach((e) => lines.push(`${e.title || "Əlavə"} — ${formatPrice(e.price || 0)}`));
+    lines.push(`Cəmi: ${formatPrice(totalCost)}`);
     return lines.join("\n");
   }, [trip, services, totalCost, formatPrice, form]);
 
@@ -187,7 +187,7 @@ export default function TripRequestDetailPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (loading || !trip || !form) return <p>Loading...</p>;
+  if (loading || !trip || !form) return <p>Yüklənir...</p>;
 
   return (
     <div className="trip-detail">
@@ -277,24 +277,24 @@ export default function TripRequestDetailPage() {
         }
       `}</style>
 
-      <Link to="/admin/trip-requests" className="trip-detail-back"><ArrowLeft size={14} />Back to Trip Requests</Link>
+      <Link to="/admin/trip-requests" className="trip-detail-back"><ArrowLeft size={14} />Səyahət Sorğularına qayıt</Link>
 
       <div className="trip-detail-head">
         <div className="trip-detail-head-left">
-          <h1>{trip.guest_name || "Trip Request"}</h1>
+          <h1>{trip.guest_name || "Səyahət Sorğusu"}</h1>
           <span className="trip-detail-request-number">{trip.request_number || "—"}</span>
         </div>
         <div className="trip-detail-head-right">
           <div className="trip-detail-head-field">
-            <label>Source</label>
+            <label>Mənbə</label>
             <select value={trip.source} onChange={(e) => changeSource(e.target.value)}>
               {TRIP_SOURCES.map((s) => <option key={s} value={s}>{SOURCE_LABEL[s]}</option>)}
             </select>
           </div>
           <div className="trip-detail-head-field">
-            <label>Result</label>
+            <label>Nəticə</label>
             <select value={trip.result || ""} onChange={(e) => changeResult(e.target.value)}>
-              <option value="">Not set</option>
+              <option value="">Təyin edilməyib</option>
               {TRIP_RESULTS.map((r) => <option key={r} value={r}>{RESULT_LABEL[r]}</option>)}
             </select>
           </div>
@@ -309,7 +309,7 @@ export default function TripRequestDetailPage() {
 
       <div className="trip-section trip-timeline-wrap">
         {trip.status === "cancelled" ? (
-          <p className="trip-cancelled-note">This trip request was cancelled.</p>
+          <p className="trip-cancelled-note">Bu səyahət sorğusu ləğv edilib.</p>
         ) : (
           <>
             <div className="trip-timeline">
@@ -337,10 +337,10 @@ export default function TripRequestDetailPage() {
       </div>
 
       <div className="trip-section">
-        <h2>Guest Information</h2>
+        <h2>Qonaq Məlumatı</h2>
         <div className="trip-grid">
           <div className="trip-field">
-            <label>Name</label>
+            <label>Ad</label>
             <input value={form.guest_name} onChange={(e) => setForm({ ...form, guest_name: e.target.value })} />
           </div>
           <div className="trip-field">
@@ -348,87 +348,87 @@ export default function TripRequestDetailPage() {
             <input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
           </div>
           <div className="trip-field">
-            <label>Country</label>
-            <input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} placeholder="Not provided yet" />
+            <label>Ölkə</label>
+            <input value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} placeholder="Hələ göstərilməyib" />
           </div>
         </div>
       </div>
 
       <div className="trip-section">
-        <h2>Trip Information</h2>
+        <h2>Səyahət Məlumatı</h2>
         <div className="trip-grid">
           <div className="trip-field">
-            <label>City</label>
+            <label>Şəhər</label>
             <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
           </div>
           <div className="trip-field">
-            <label>Guests</label>
+            <label>Qonaq sayı</label>
             <input type="number" min="1" value={form.guests_count} onChange={(e) => setForm({ ...form, guests_count: e.target.value })} />
           </div>
           <div className="trip-field">
-            <label>Requested trip length</label>
-            <p className="trip-readonly">{trip.trip_length_days ? `${trip.trip_length_days} days` : "—"}</p>
+            <label>Sorğu edilən səyahət müddəti</label>
+            <p className="trip-readonly">{trip.trip_length_days ? `${trip.trip_length_days} gün` : "—"}</p>
           </div>
           <div className="trip-field">
-            <label>Check-in</label>
+            <label>Giriş tarixi</label>
             <input type="date" value={form.check_in} onChange={(e) => setForm({ ...form, check_in: e.target.value })} />
           </div>
           <div className="trip-field">
-            <label>Check-out</label>
+            <label>Çıxış tarixi</label>
             <input type="date" value={form.check_out} onChange={(e) => setForm({ ...form, check_out: e.target.value })} />
           </div>
           <div className="trip-field">
-            <label>Traveler type / occasion</label>
+            <label>Səyahətçi tipi / məqsəd</label>
             <p className="trip-readonly">{[trip.traveler_type, trip.occasion].filter(Boolean).join(" · ") || "—"}</p>
           </div>
         </div>
       </div>
 
       <div className="trip-section">
-        <h2>Budget</h2>
+        <h2>Büdcə</h2>
         <div className="trip-grid">
           <div className="trip-field">
-            <label>Guest budget</label>
+            <label>Qonaq büdcəsi</label>
             <input type="number" min="0" value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} />
           </div>
         </div>
       </div>
 
       <div className="trip-section">
-        <h2>Special Requests</h2>
-        <p className="trip-readonly">{trip.special_requests || "No special requests submitted."}</p>
+        <h2>Xüsusi İstəklər</h2>
+        <p className="trip-readonly">{trip.special_requests || "Heç bir xüsusi istək göndərilməyib."}</p>
       </div>
 
       <div className="trip-section">
-        <h2>Internal Notes</h2>
+        <h2>Daxili Qeydlər</h2>
         <div className="trip-field">
           <textarea
             value={form.internal_notes}
             onChange={(e) => setForm({ ...form, internal_notes: e.target.value })}
-            placeholder="Working notes for the team — not visible to the guest."
+            placeholder="Komanda üçün iş qeydləri — qonağa görünmür."
           />
         </div>
       </div>
 
       <div className="trip-section">
         <button className="trip-save-btn" onClick={saveForm} disabled={saving}>
-          {saving ? "Saving..." : "Save Trip Details"}
+          {saving ? "Yadda saxlanılır..." : "Səyahət Detallarını Yadda Saxla"}
         </button>
-        {savedFlash && <span className="trip-saved-flash">Saved ✓</span>}
+        {savedFlash && <span className="trip-saved-flash">Yadda saxlanıldı ✓</span>}
       </div>
 
       <div className="trip-section">
-        <h2>Services</h2>
+        <h2>Xidmətlər</h2>
         {services.length > 0 && (
           <div className="service-list">
             {services.map((s) => (
               <div className="service-row" key={s.id}>
                 <div>
                   <span className="service-row-type">{SERVICE_LABEL[s.service_type]}</span>
-                  <strong>{s.title || (s.service_type === "transfer" ? s.driver_name : "Untitled")}</strong>
+                  <strong>{s.title || (s.service_type === "transfer" ? s.driver_name : "Adsız")}</strong>
                   {s.service_type === "transfer" && (
                     <span className="service-row-meta">
-                      {" "}· {s.pickup_location || "pickup TBD"}{s.pickup_time ? ` at ${s.pickup_time}` : ""}
+                      {" "}· {s.pickup_location || "götürülmə yeri dəqiqləşdirilməyib"}{s.pickup_time ? ` saat ${s.pickup_time}` : ""}
                     </span>
                   )}
                   {s.notes && <span className="service-row-meta"> · {s.notes}</span>}
@@ -453,46 +453,46 @@ export default function TripRequestDetailPage() {
 
             {newService.service_type === "villa" && (
               <select value={newService.listing_id} onChange={(e) => setNewService({ ...newService, listing_id: e.target.value })}>
-                <option value="">Select listing...</option>
+                <option value="">Elan seçin...</option>
                 {villaListings.map((l) => <option key={l.id} value={l.id}>{l.title?.en || l.title?.az}</option>)}
               </select>
             )}
             {newService.service_type === "transfer" && (
               <>
-                <input placeholder="Driver name" value={newService.driver_name} onChange={(e) => setNewService({ ...newService, driver_name: e.target.value })} />
-                <input placeholder="Phone number" value={newService.driver_phone} onChange={(e) => setNewService({ ...newService, driver_phone: e.target.value })} />
+                <input placeholder="Sürücü adı" value={newService.driver_name} onChange={(e) => setNewService({ ...newService, driver_name: e.target.value })} />
+                <input placeholder="Telefon nömrəsi" value={newService.driver_phone} onChange={(e) => setNewService({ ...newService, driver_phone: e.target.value })} />
               </>
             )}
             {(newService.service_type === "tour" || newService.service_type === "extra") && (
               <input
-                placeholder={newService.service_type === "tour" ? "Tour name" : "Item name"}
+                placeholder={newService.service_type === "tour" ? "Tur adı" : "Element adı"}
                 value={newService.title}
                 onChange={(e) => setNewService({ ...newService, title: e.target.value })}
               />
             )}
 
-            <input type="number" min="0" placeholder="Price (AZN)" value={newService.price} onChange={(e) => setNewService({ ...newService, price: e.target.value })} />
+            <input type="number" min="0" placeholder="Qiymət (AZN)" value={newService.price} onChange={(e) => setNewService({ ...newService, price: e.target.value })} />
           </div>
 
           {newService.service_type === "transfer" && (
             <div className="new-service-row">
-              <input placeholder="Pickup location" value={newService.pickup_location} onChange={(e) => setNewService({ ...newService, pickup_location: e.target.value })} />
-              <input placeholder="Pickup time" value={newService.pickup_time} onChange={(e) => setNewService({ ...newService, pickup_time: e.target.value })} />
-              <input placeholder="Notes" value={newService.notes} onChange={(e) => setNewService({ ...newService, notes: e.target.value })} />
+              <input placeholder="Götürülmə yeri" value={newService.pickup_location} onChange={(e) => setNewService({ ...newService, pickup_location: e.target.value })} />
+              <input placeholder="Götürülmə vaxtı" value={newService.pickup_time} onChange={(e) => setNewService({ ...newService, pickup_time: e.target.value })} />
+              <input placeholder="Qeydlər" value={newService.notes} onChange={(e) => setNewService({ ...newService, notes: e.target.value })} />
             </div>
           )}
           {newService.service_type !== "transfer" && (
             <div className="new-service-row">
-              <input placeholder="Notes" value={newService.notes} onChange={(e) => setNewService({ ...newService, notes: e.target.value })} />
+              <input placeholder="Qeydlər" value={newService.notes} onChange={(e) => setNewService({ ...newService, notes: e.target.value })} />
             </div>
           )}
 
-          <button type="submit" className="new-service-add"><Plus size={15} />Add Service</button>
+          <button type="submit" className="new-service-add"><Plus size={15} />Xidmət Əlavə Et</button>
         </form>
       </div>
 
       <div className="trip-section">
-        <h2>Cost Summary</h2>
+        <h2>Xərc Xülasəsi</h2>
         {["villa", "transfer", "tour", "extra"].map((type) => {
           const subtotal = services.filter((s) => s.service_type === type).reduce((sum, s) => sum + (Number(s.price) || 0), 0);
           if (subtotal === 0 && !services.some((s) => s.service_type === type)) return null;
@@ -504,30 +504,30 @@ export default function TripRequestDetailPage() {
           );
         })}
         <div className="cost-summary-row total">
-          <span>Total Trip Cost</span>
+          <span>Ümumi Səyahət Xərci</span>
           <span>{formatPrice(totalCost)}</span>
         </div>
         <div className="cost-summary-row">
-          <span>Guest Budget</span>
-          <span>{trip.budget != null ? formatPrice(trip.budget) : "Not set"}</span>
+          <span>Qonaq Büdcəsi</span>
+          <span>{trip.budget != null ? formatPrice(trip.budget) : "Təyin edilməyib"}</span>
         </div>
         {remaining != null && (
           <div className={`cost-summary-row ${remaining < 0 ? "exceeded" : "ok"}`}>
-            <span>{remaining < 0 ? "Budget Exceeded" : "Remaining Budget"}</span>
+            <span>{remaining < 0 ? "Büdcə Aşılıb" : "Qalıq Büdcə"}</span>
             <span>{formatPrice(Math.abs(remaining))}</span>
           </div>
         )}
       </div>
 
       <div className="trip-section">
-        <h2><MessageCircle size={16} style={{ verticalAlign: "-3px", marginRight: 6 }} />WhatsApp Summary</h2>
+        <h2><MessageCircle size={16} style={{ verticalAlign: "-3px", marginRight: 6 }} />WhatsApp Xülasəsi</h2>
         <div className="wa-message">{whatsappMessage}</div>
         <div className="wa-actions">
           <button type="button" className="wa-copy-btn" onClick={copyMessage}>
-            {copied ? <Check size={15} /> : <Copy size={15} />}{copied ? "Copied" : "Copy message"}
+            {copied ? <Check size={15} /> : <Copy size={15} />}{copied ? "Kopyalandı" : "Mesajı kopyala"}
           </button>
           <a className="wa-send-btn" href={whatsappHref} target="_blank" rel="noopener noreferrer">
-            <MessageCircle size={15} />Send via WhatsApp
+            <MessageCircle size={15} />WhatsApp ilə göndər
           </a>
         </div>
       </div>
