@@ -123,9 +123,17 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
   return (
     <div className="listing-gallery">
       <style>{`
-        .listing-gallery { margin-bottom: 32px; }
+        .listing-gallery {
+          margin-bottom: 32px;
+          /* Cap the stage on large screens by BOTH axes together, so the
+             visible box stays a true 4:3 instead of getting wide-and-short
+             when only max-height bit. max-width = max-height * 4 / 3. */
+          --lg-max-h: 520px;
+          --lg-max-w: calc(520px * 4 / 3);
+        }
         .listing-gallery .lg-stage {
-          position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 520px;
+          position: relative; width: 100%; aspect-ratio: 4 / 3;
+          max-width: var(--lg-max-w); max-height: var(--lg-max-h); margin: 0 auto;
           border-radius: 16px; overflow: hidden; background: var(--bg-soft);
         }
         .listing-gallery .lg-stage.tone-dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -161,7 +169,8 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
         }
 
         .listing-gallery .lg-thumbs {
-          display: flex; gap: 10px; margin-top: 12px;
+          display: flex; gap: 10px; margin: 12px auto 0;
+          max-width: var(--lg-max-w);
           overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px;
           scroll-behavior: smooth;
         }
