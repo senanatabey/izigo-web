@@ -24,8 +24,6 @@ import {
   MagickColor,
   MagickFormat,
   Drawables,
-  TextAlignment,
-  Quantum,
 } from "npm:@imagemagick/magick-wasm@0.0.43";
 import { ROBOTO_BOLD_BASE64 } from "./font-data.ts";
 
@@ -108,10 +106,14 @@ function ensureMagickReady(): Promise<void> {
  *    range), computed via a measure-then-scale pass so it's responsive
  *    instead of a fixed point size that would look huge on a small photo
  *    and tiny on a large one.
- *  - centered horizontally, sitting a bit below the vertical center
- *    (~58% down) rather than in a corner, so a simple crop can't remove it.
- *  - white text at ~18% opacity with a soft dark shadow copy drawn first,
- *    for legibility on both light and dark photos without being loud.
+ *  - centered horizontally (x offset computed by hand from the measured text
+ *    width — magick-wasm 0.0.43 does not honour Drawables.textAlignment,
+ *    which left-anchored the text off to the right), sitting a bit below the
+ *    vertical center (~58% down) rather than in a corner, so a simple crop
+ *    can't remove it.
+ *  - white text at ~40% opacity over a soft dark shadow copy — kept subtle,
+ *    but actually visible at normal viewing (the old ~18% only showed under
+ *    heavy contrast boost).
  */
 function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
   return ImageMagick.read(content, (img): Uint8Array => {
@@ -131,26 +133,29 @@ function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
 
     const finalMetrics = new Drawables().font(FONT_NAME).fontPointSize(pointSize).fontTypeMetrics(WATERMARK_TEXT);
     const textHeight = finalMetrics?.textHeight ?? pointSize;
+    const textWidth = finalMetrics?.textWidth ?? measured.textWidth * scale;
 
-    const centerX = img.width * 0.50;
+    // Left edge of the (left-anchored) text so its mid-point lands on the
+    // image's horizontal center — done here rather than via textAlignment,
+    // which this magick-wasm build ignores.
+    const startX = img.width * 0.5 - textWidth / 2;
     // 58% down the image, nudged by a fraction of the text height so the
     // text is vertically centered on that line rather than sitting on it.
-    const centerY = img.height * 0.58 + textHeight * 0.3;
+    const baselineY = img.height * 0.58 + textHeight * 0.3;
 
-    const shadowAlpha = Math.round(Quantum.max * 0.12);
-    const textAlpha = Math.round(Quantum.max * 0.18);
-    const shadowColor = new MagickColor(0, 0, 0, shadowAlpha);
-    const textColor = new MagickColor(255, 255, 255, textAlpha);
+    // Alpha as a 0-255 byte, not Quantum.max * fraction — the byte overload
+    // of MagickColor is stable across the Q8/Q16 builds; Quantum.max is not.
+    const shadowColor = new MagickColor(0, 0, 0, Math.round(255 * 0.30));
+    const textColor = new MagickColor(255, 255, 255, Math.round(255 * 0.40));
     const shadowOffset = Math.max(1, Math.round(pointSize * 0.03));
 
     new Drawables()
       .font(FONT_NAME)
       .fontPointSize(pointSize)
-      .textAlignment(TextAlignment.Center)
       .fillColor(shadowColor)
-      .text(centerX + shadowOffset, centerY + shadowOffset, WATERMARK_TEXT)
+      .text(startX + shadowOffset, baselineY + shadowOffset, WATERMARK_TEXT)
       .fillColor(textColor)
-      .text(centerX, centerY, WATERMARK_TEXT)
+      .text(startX, baselineY, WATERMARK_TEXT)
       .draw(img);
 
     // magick-wasm hands the callback a Uint8Array that is a VIEW into WASM
