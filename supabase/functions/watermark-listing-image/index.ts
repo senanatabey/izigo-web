@@ -26,8 +26,19 @@ import {
   Drawables,
   TextAlignment,
   Quantum,
-} from "npm:@imagemagick/magick-wasm@^0";
+} from "npm:@imagemagick/magick-wasm@0.0.43";
 import { ROBOTO_BOLD_BASE64 } from "./font-data.ts";
+
+// The WASM binary is fetched from a CDN at the exact same version as the
+// import above, rather than read from the package on disk: Supabase's edge
+// runtime bundler mangles `import.meta.resolve("npm:...")` paths (they come
+// out as `node_modules/localhost/...` and fail), so Deno.readFile can't find
+// magick.wasm inside the deployed bundle.
+// 0.0.43 splits the binary in two: dist/x64 is a memory64 (wasm64) build
+// that Supabase's Deno edge runtime refuses to instantiate ("invalid table
+// limits flags 0x4 ... --experimental-wasm-memory64"); dist/x86 is the plain
+// wasm32 build, which is the one that works here.
+const MAGICK_WASM_URL = "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.43/dist/x86/magick.wasm";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
@@ -74,13 +85,18 @@ let magickReady: Promise<void> | null = null;
 function ensureMagickReady(): Promise<void> {
   if (!magickReady) {
     magickReady = (async () => {
-      const wasmBytes = await Deno.readFile(
-        new URL("magick.wasm", import.meta.resolve("npm:@imagemagick/magick-wasm@^0")),
-      );
+      const res = await fetch(MAGICK_WASM_URL);
+      if (!res.ok) throw new Error(`Failed to fetch magick.wasm: ${res.status} ${res.statusText}`);
+      const wasmBytes = new Uint8Array(await res.arrayBuffer());
       await initializeImageMagick(wasmBytes);
       const fontBytes = Uint8Array.from(atob(ROBOTO_BOLD_BASE64), (c) => c.charCodeAt(0));
       Magick.addFont(FONT_NAME, fontBytes);
-    })();
+    })().catch((err) => {
+      // Don't let one failed init poison the warm isolate forever — clear
+      // the cached promise so the next request retries from scratch.
+      magickReady = null;
+      throw err;
+    });
   }
   return magickReady;
 }
@@ -137,7 +153,13 @@ function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
       .text(centerX, centerY, WATERMARK_TEXT)
       .draw(img);
 
-    return img.write(format, (data) => data);
+    // magick-wasm hands the callback a Uint8Array that is a VIEW into WASM
+    // memory, valid only for the duration of this callback — ImageMagick
+    // reuses that memory afterwards. Returning `data` directly leaks a
+    // dangling view whose bytes get overwritten before the upload, which is
+    // what produced the intermittently corrupt .webp files. Copy the bytes
+    // out so the returned array owns its own buffer.
+    return img.write(format, (data) => new Uint8Array(data));
   });
 }
 
