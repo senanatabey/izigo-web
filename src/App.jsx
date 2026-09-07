@@ -99,7 +99,7 @@ function AuthProvider({ children }) {
     }
     const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name, role, phone, created_at, verified, founder_host, founder_granted_at, vip_expires_at, welcome_seen")
+      .select("full_name, role, phone, created_at, verified, founder_host, founder_granted_at, vip_expires_at, welcome_seen, agent_status")
       .eq("id", session.user.id)
       .single();
     setUser({
@@ -115,6 +115,7 @@ function AuthProvider({ children }) {
       founderGrantedAt: profile?.founder_granted_at || null,
       vipExpiresAt: profile?.vip_expires_at || null,
       welcomeSeen: profile?.welcome_seen || false,
+      agentStatus: profile?.agent_status || "none",
     });
   };
 

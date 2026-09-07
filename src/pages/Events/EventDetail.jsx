@@ -4,7 +4,7 @@ import { MapPin, Calendar, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
-import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
+import { fetchListingById, toneForId, shortListingCode, relativeDate, fetchAgentPrice } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
@@ -17,10 +17,20 @@ export default function EventDetail() {
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [agentPrice, setAgentPrice] = useState(null);
 
   useEffect(() => {
     fetchListingById(id).then(setRow).finally(() => setLoading(false));
   }, [id]);
+
+  // B2B agent price — separate RLS-guarded query, only for logged-in users;
+  // null (badge hidden) for anyone not eligible.
+  useEffect(() => {
+    if (!user || !id) return undefined;
+    let cancelled = false;
+    fetchAgentPrice(id).then((p) => { if (!cancelled) setAgentPrice(p); });
+    return () => { cancelled = true; };
+  }, [id, user]);
 
   const event = row ? {
     id: row.id,
@@ -77,6 +87,11 @@ export default function EventDetail() {
         .event-detail .ed-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .event-detail .ed-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .event-detail .ed-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .event-detail .ed-agent-price {
+          margin-top: 12px; padding: 8px 12px; border-radius: 10px;
+          font-size: 13.5px; font-weight: 700;
+          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+        }
         .event-detail .detail-save-btn { position: static; }
         .event-detail .ed-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .event-detail .ed-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
@@ -124,6 +139,12 @@ export default function EventDetail() {
             </div>
             <SaveHeart type="event" id={event.id} className="detail-save-btn" />
           </div>
+
+          {agentPrice != null && (
+            <div className="ed-agent-price">
+              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
+            </div>
+          )}
 
           <Link to={`/host/${event.host?.id}`} className="ed-host">
             <div className="ed-host-avatar"><ShieldCheck size={20} /></div>

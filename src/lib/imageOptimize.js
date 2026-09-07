@@ -36,6 +36,31 @@ function loadImage(file) {
 }
 
 /**
+ * Builds a small data-URL thumbnail (~320px) for showing a picked file in a
+ * form preview WITHOUT keeping the full-resolution image in the render tree —
+ * decoding many multi-megapixel photos at once makes the browser drop some to
+ * blank. The tiny data URL decodes trivially and needs no revoke bookkeeping.
+ * Falls back to a plain object URL if the source can't be decoded.
+ */
+export async function makePreviewDataUrl(file, { maxDimension = 320, quality = 0.7 } = {}) {
+  if (!file.type.startsWith("image/") || file.type === "image/svg+xml") {
+    return URL.createObjectURL(file);
+  }
+  try {
+    const img = await loadImage(file);
+    const scale = Math.min(1, maxDimension / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(img.width * scale));
+    canvas.height = Math.max(1, Math.round(img.height * scale));
+    canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(img.src);
+    return canvas.toDataURL("image/webp", quality);
+  } catch {
+    return URL.createObjectURL(file);
+  }
+}
+
+/**
  * Resizes an image to fit within MAX_DIMENSION and re-encodes it as WebP.
  * Falls back to the original file untouched if the browser can't produce a
  * WebP blob (very old browsers) or the input isn't a raster image (e.g. SVG,

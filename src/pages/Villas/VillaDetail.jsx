@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Ruler, Layers, Clock, CheckCircle2, XCircle, X } from "lucide-react";
+import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Waves, Thermometer, Ruler, Layers, Clock, CheckCircle2, XCircle, X, Check } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { useSeo, schema } from "../../lib/seo";
 import {
   fetchListingById, fetchApprovedListings, mapVillaListing, rankSimilarVillas,
-  toneForId, shortListingCode, relativeDate,
+  toneForId, shortListingCode, relativeDate, fetchAgentPrice,
 } from "../../lib/listings";
 import { cityLabel, cityLocative } from "../../data/azerbaijanDestinations";
 import { isLongStayDiscountActive, longStayDiscountedPrice } from "../../lib/pricing";
@@ -16,7 +16,10 @@ import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
 import VillaCard from "../../components/VillaCard";
 
-const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees };
+// Must stay in sync with AMENITY_ICONS in AddListingFormPage — a key the host
+// can pick there but that is missing here would render as `undefined` and
+// crash the whole page. Check is the fallback for any future unmapped key.
+const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees, pool: Waves, heated_pool: Thermometer };
 const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];
 // Purely a mathematical rollup of the host's declared bed types — never a
 // booking guarantee, never merged with the official "guests" count above.
@@ -32,10 +35,21 @@ export default function VillaDetail() {
   const [similarVillas, setSimilarVillas] = useState([]);
   const [moreInCity, setMoreInCity] = useState([]);
   const [mapOpen, setMapOpen] = useState(false);
+  const [agentPrice, setAgentPrice] = useState(null);
 
   useEffect(() => {
     fetchListingById(id).then(setRow).finally(() => setLoading(false));
   }, [id]);
+
+  // B2B agent price — a separate, RLS-guarded query, fired only for a
+  // logged-in user. Returns null for anyone not eligible (ordinary guests,
+  // unapproved agents), so the badge simply never renders for them.
+  useEffect(() => {
+    if (!user || !id) return undefined;
+    let cancelled = false;
+    fetchAgentPrice(id).then((p) => { if (!cancelled) setAgentPrice(p); });
+    return () => { cancelled = true; };
+  }, [id, user]);
 
   // Similar/more-listings sections read from the same approved-villas list
   // (mapVillaListing gives every villa the shape VillaCard expects), so no
@@ -177,6 +191,11 @@ export default function VillaDetail() {
         .villa-detail .vd-price-regular { font-size: 13px; font-weight: 500; color: var(--text-soft); text-decoration: line-through; margin-bottom: 2px; }
         .villa-detail .vd-price-regular span { font-size: 12px; }
         .villa-detail .vd-longstay-note { font-size: 12px; font-weight: 600; color: var(--izigo-green); margin-top: 4px; }
+        .villa-detail .vd-agent-price {
+          margin-top: 12px; padding: 8px 12px; border-radius: 10px;
+          font-size: 13.5px; font-weight: 700;
+          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+        }
         .villa-detail .detail-save-btn { position: static; }
         .villa-detail .vd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .villa-detail .vd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
@@ -299,7 +318,7 @@ export default function VillaDetail() {
           <h2>{t("villaDetail.amenitiesHeading")}</h2>
           <div className="vd-amenities">
             {villa.amenities.map((key) => {
-              const Icon = AMENITY_ICONS[key];
+              const Icon = AMENITY_ICONS[key] || Check;
               return (
                 <div className="vd-amenity" key={key}>
                   <Icon size={17} />{t(`amenities.${key}`)}
@@ -387,6 +406,12 @@ export default function VillaDetail() {
             </div>
             <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
           </div>
+
+          {agentPrice != null && (
+            <div className="vd-agent-price">
+              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
+            </div>
+          )}
 
           <Link to={`/host/${villa.host?.id}`} className="vd-host">
             <div className="vd-host-avatar"><ShieldCheck size={20} /></div>

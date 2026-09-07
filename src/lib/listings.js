@@ -94,6 +94,26 @@ export async function fetchListingById(id) {
 /** Shapes a raw `listings` row into the flat object VillaCard/VillasPage
  *  expect — used everywhere a villa grid is built so the mapping only lives
  *  in one place. */
+/**
+ * Fetches the B2B "agent price" for one listing from listing_agent_prices —
+ * a SEPARATE query from the listing itself, never folded into select("*").
+ * RLS returns a row only for admins, approved agents, active regional
+ * partners, and the listing's own host; everyone else (including anon) gets
+ * null, so a non-eligible viewer never receives the number in any response.
+ * Call this only when there is a logged-in user — there is nothing to show
+ * an anonymous visitor and no reason to fire the request.
+ */
+export async function fetchAgentPrice(listingId) {
+  if (!listingId) return null;
+  const { data, error } = await supabase
+    .from("listing_agent_prices")
+    .select("agent_price")
+    .eq("listing_id", listingId)
+    .maybeSingle();
+  if (error || !data) return null;
+  return data.agent_price;
+}
+
 export function mapVillaListing(row) {
   return {
     id: row.id,

@@ -9,7 +9,7 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
-import { compressImage } from "../../lib/imageOptimize";
+import { compressImage, makePreviewDataUrl } from "../../lib/imageOptimize";
 import { isFounderCampaignJoinable } from "../../lib/founder";
 
 const CITIES = ALL_DESTINATIONS;
@@ -44,6 +44,8 @@ export default function AddListingFormPage() {
   const [city, setCity] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
+  const [agentPriceEnabled, setAgentPriceEnabled] = useState(false);
+  const [agentPrice, setAgentPrice] = useState("");
   const [description, setDescription] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
 
@@ -105,6 +107,18 @@ export default function AddListingFormPage() {
       setCity(row.city || "");
       setPrice(row.price ? String(row.price) : "");
       setDiscount(row.discount ? String(row.discount) : "");
+      // Agent price lives in its own RLS-protected table — load it separately.
+      supabase
+        .from("listing_agent_prices")
+        .select("agent_price")
+        .eq("listing_id", params.id)
+        .maybeSingle()
+        .then(({ data: ap }) => {
+          if (ap?.agent_price != null) {
+            setAgentPriceEnabled(true);
+            setAgentPrice(String(ap.agent_price));
+          }
+        });
       setDescription(row.description?.en || row.description?.az || "");
       setWhatsapp((row.whatsapp_phone || "").replace(/^\+994/, ""));
       setExistingImages(row.images || []);
@@ -179,51 +193,76 @@ export default function AddListingFormPage() {
   const totalPhotoCount = existingImages.length + photos.length;
   const maxPhotos = MAX_PHOTOS_BY_CATEGORY[category] || MIN_PHOTOS;
 
-  const handlePhotosChange = (e) => {
-    const files = Array.from(e.target.files || []).slice(0, maxPhotos - totalPhotoCount);
-    setPhotos((prev) => [...prev, ...files].slice(0, maxPhotos - existingImages.length));
+  // Each entry is { file, previewUrl }. previewUrl is a SMALL (~320px) data
+  // URL built once when the file is picked — never the full-resolution image.
+  // Rendering many multi-megapixel photos at once (the old way, via an inline
+  // URL.createObjectURL in the .map()) both leaked blob URLs and pushed the
+  // browser's image decoder past its limit, so some thumbnails came back
+  // blank and adding/removing photos reshuffled which ones. A data URL needs
+  // no revoke bookkeeping; the big File is still uploaded untouched.
+  const handlePhotosChange = async (e) => {
+    const picked = Array.from(e.target.files || []).slice(0, maxPhotos - totalPhotoCount);
     e.target.value = "";
+    const withPreviews = await Promise.all(
+      picked.map(async (file) => ({ file, previewUrl: await makePreviewDataUrl(file) })),
+    );
+    setPhotos((prev) => [...prev, ...withPreviews].slice(0, maxPhotos - existingImages.length));
   };
 
   const removePhoto = (index) => {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const uploadPhotos = async () => {
-    const urls = [];
-    for (const file of photos) {
-      // Resize + re-encode as WebP before it ever leaves the browser —
-      // smaller uploads, smaller storage, smaller downloads for every visitor.
-      const optimized = await compressImage(file);
-      // The watermark-listing-image edge function draws "IZIGO.AZ" onto the
-      // photo server-side and uploads the result itself (service-role key
-      // never leaves the server) — this is the only place listing photos
-      // reach Storage from, so every listing image is watermarked before it
-      // ever becomes public. See supabase/functions/watermark-listing-image.
-      const formData = new FormData();
-      formData.append("file", optimized);
-      const { data, error: fnError } = await supabase.functions.invoke("watermark-listing-image", { body: formData });
-      if (fnError) {
-        // fnError.context is the raw Response for an HTTP-level failure (bad
-        // file type, processing error, upload error — all sent back as
-        // { error: "..." } JSON by the function); a network-level failure
-        // (offline, timeout) has no context and only a generic .message.
-        let message = "Failed to upload photo — please try again.";
-        if (fnError.context && typeof fnError.context.json === "function") {
-          try {
-            const body = await fnError.context.json();
-            if (body?.error) message = body.error;
-          } catch {
-            // response body wasn't JSON — keep the generic message
-          }
-        } else if (fnError.message) {
-          message = fnError.message;
+  // Compress one photo in the browser, then hand it to the watermark-listing-
+  // image edge function, which draws "IZIGO.AZ" server-side and uploads the
+  // result itself (service-role key never leaves the server) — the only path
+  // listing photos reach Storage by. Returns the public URL.
+  const uploadOnePhoto = async ({ file }) => {
+    // Resize + re-encode as WebP before it ever leaves the browser —
+    // smaller uploads, smaller storage, smaller downloads for every visitor.
+    const optimized = await compressImage(file);
+    const formData = new FormData();
+    formData.append("file", optimized);
+    const { data, error: fnError } = await supabase.functions.invoke("watermark-listing-image", { body: formData });
+    if (fnError) {
+      // fnError.context is the raw Response for an HTTP-level failure (bad
+      // file type, processing error, upload error — all sent back as
+      // { error: "..." } JSON by the function); a network-level failure
+      // (offline, timeout) has no context and only a generic .message.
+      let message = "Failed to upload photo — please try again.";
+      if (fnError.context && typeof fnError.context.json === "function") {
+        try {
+          const body = await fnError.context.json();
+          if (body?.error) message = body.error;
+        } catch {
+          // response body wasn't JSON — keep the generic message
         }
-        throw new Error(message);
+      } else if (fnError.message) {
+        message = fnError.message;
       }
-      if (!data?.url) throw new Error("Failed to upload photo — please try again.");
-      urls.push(data.url);
+      throw new Error(message);
     }
+    if (!data?.url) throw new Error("Failed to upload photo — please try again.");
+    return data.url;
+  };
+
+  // Upload a few photos at a time rather than one-after-another — a listing
+  // with 10+ photos was taking 30-40s of sequential round trips. A small
+  // concurrency cap keeps us from firing a dozen cold edge-function isolates
+  // (each re-fetching the WASM binary) at once. Result order is preserved.
+  const uploadPhotos = async () => {
+    const CONCURRENCY = 4;
+    const urls = new Array(photos.length);
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < photos.length) {
+        const i = cursor++;
+        urls[i] = await uploadOnePhoto(photos[i]);
+      }
+    };
+    await Promise.all(
+      Array.from({ length: Math.min(CONCURRENCY, photos.length) }, worker),
+    );
     return urls;
   };
 
@@ -358,6 +397,7 @@ export default function AddListingFormPage() {
         long_stay_discount_type: category === "villa" && longStayEnabled ? longStayDiscountType : null,
         long_stay_discount_value: category === "villa" && longStayEnabled ? Number(longStayDiscountValue) : null,
       };
+      let listingId = params.id;
       if (isEdit) {
         const { error: updateError } = await supabase
           .from("listings")
@@ -365,8 +405,32 @@ export default function AddListingFormPage() {
           .eq("id", params.id);
         if (updateError) throw updateError;
       } else {
-        const { error: insertError } = await supabase.from("listings").insert({ ...payload, host_id: hostId });
+        const { data: inserted, error: insertError } = await supabase
+          .from("listings")
+          .insert({ ...payload, host_id: hostId })
+          .select("id")
+          .single();
         if (insertError) throw insertError;
+        listingId = inserted.id;
+      }
+
+      // Agent (B2B) price — written to its own RLS-protected table, never
+      // into the listings row. Filled + enabled → upsert; cleared or the
+      // toggle turned off → delete any existing row.
+      if (agentPriceEnabled && agentPrice && Number(agentPrice) > 0) {
+        const { error: apError } = await supabase
+          .from("listing_agent_prices")
+          .upsert(
+            { listing_id: listingId, agent_price: Number(agentPrice) },
+            { onConflict: "listing_id" },
+          );
+        if (apError) throw apError;
+      } else if (isEdit) {
+        const { error: apError } = await supabase
+          .from("listing_agent_prices")
+          .delete()
+          .eq("listing_id", listingId);
+        if (apError) throw apError;
       }
 
       // Founder benefits only apply to Villa, Cars, Transfers and Local
@@ -458,6 +522,10 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-radio { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
 
         .add-listing-form-page .alf-checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); margin-bottom: 16px; cursor: pointer; }
+        .add-listing-form-page .alf-agentprice { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: var(--bg-soft); }
+        .add-listing-form-page .alf-agentprice .alf-checkbox-row { margin-bottom: 0; }
+        .add-listing-form-page .alf-agentprice .alf-field { margin-top: 14px; }
+        .add-listing-form-page .alf-agentprice-hint { font-size: 12px; color: var(--text-soft); margin: 6px 0 0; line-height: 1.5; }
         .add-listing-form-page .alf-rules-box { border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: var(--bg-soft); }
         .add-listing-form-page .alf-rules-title { font-size: 13px; font-weight: 800; margin: 0 0 8px; }
         .add-listing-form-page .alf-rules-list { margin: 0 0 14px; padding-left: 18px; font-size: 12.5px; color: var(--text-soft); line-height: 1.7; }
@@ -644,6 +712,32 @@ export default function AddListingFormPage() {
               <div className="alf-field">
                 <label><Percent size={13} />Endirim (%) — istəyə bağlı</label>
                 <input type="number" min="0" max="90" placeholder="məs. 15" value={discount} onChange={(e) => setDiscount(e.target.value)} />
+              </div>
+            )}
+
+            {!(category === "event" && isFree) && (
+              <div className="alf-agentprice">
+                <label className="alf-checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={agentPriceEnabled}
+                    onChange={(e) => setAgentPriceEnabled(e.target.checked)}
+                  />
+                  {t("addListing.agentPrice.toggle")}
+                </label>
+                {agentPriceEnabled && (
+                  <div className="alf-field">
+                    <label><Wallet size={13} />{t("addListing.agentPrice.label")}</label>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="AZN"
+                      value={agentPrice}
+                      onChange={(e) => setAgentPrice(e.target.value)}
+                    />
+                    <p className="alf-agentprice-hint">{t("addListing.agentPrice.hint")}</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -918,9 +1012,9 @@ export default function AddListingFormPage() {
                     <button type="button" onClick={() => removeExistingImage(i)}><X size={12} /></button>
                   </div>
                 ))}
-                {photos.map((file, i) => (
+                {photos.map(({ previewUrl }, i) => (
                   <div className="alf-photo-thumb" key={i}>
-                    <img src={URL.createObjectURL(file)} alt="" loading="lazy" decoding="async" />
+                    <img src={previewUrl} alt="" loading="lazy" decoding="async" />
                     <button type="button" onClick={() => removePhoto(i)}><X size={12} /></button>
                   </div>
                 ))}

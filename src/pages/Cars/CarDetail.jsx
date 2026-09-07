@@ -4,7 +4,7 @@ import { MapPin, Users, Settings2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
-import { fetchListingById, toneForId, shortListingCode, relativeDate } from "../../lib/listings";
+import { fetchListingById, toneForId, shortListingCode, relativeDate, fetchAgentPrice } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
@@ -17,10 +17,20 @@ export default function CarDetail() {
   const { user } = useAuth();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [agentPrice, setAgentPrice] = useState(null);
 
   useEffect(() => {
     fetchListingById(id).then(setRow).finally(() => setLoading(false));
   }, [id]);
+
+  // B2B agent price — separate RLS-guarded query, only for logged-in users;
+  // null (badge hidden) for anyone not eligible.
+  useEffect(() => {
+    if (!user || !id) return undefined;
+    let cancelled = false;
+    fetchAgentPrice(id).then((p) => { if (!cancelled) setAgentPrice(p); });
+    return () => { cancelled = true; };
+  }, [id, user]);
 
   const car = row ? {
     id: row.id,
@@ -77,6 +87,11 @@ export default function CarDetail() {
         .car-detail .cd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
         .car-detail .cd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
         .car-detail .cd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .car-detail .cd-agent-price {
+          margin-top: 12px; padding: 8px 12px; border-radius: 10px;
+          font-size: 13.5px; font-weight: 700;
+          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+        }
         .car-detail .detail-save-btn { position: static; }
         .car-detail .cd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .car-detail .cd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
@@ -125,6 +140,12 @@ export default function CarDetail() {
             </div>
             <SaveHeart type="car" id={car.id} className="detail-save-btn" />
           </div>
+
+          {agentPrice != null && (
+            <div className="cd-agent-price">
+              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
+            </div>
+          )}
 
           <Link to={`/host/${car.host?.id}`} className="cd-host">
             <div className="cd-host-avatar"><ShieldCheck size={20} /></div>
