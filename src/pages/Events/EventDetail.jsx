@@ -9,6 +9,7 @@ import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
+import ListingGallery from "../../components/ListingGallery";
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -45,7 +46,7 @@ export default function EventDetail() {
     host: row.host,
     code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
-    image: row.images?.[0],
+    images: row.images || [],
   } : null;
 
   if (loading) return null;
@@ -67,12 +68,6 @@ export default function EventDetail() {
       <style>{`
         .event-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .event-detail .ed-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
-        .event-detail .ed-gallery { border-radius: 16px; overflow: hidden; height: 320px; margin-bottom: 32px; }
-        .event-detail .ed-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
-        .event-detail .ed-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
-        .event-detail .ed-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .event-detail .ed-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
-
         .event-detail .ed-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .event-detail .ed-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .event-detail .ed-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
@@ -104,15 +99,12 @@ export default function EventDetail() {
         }
         @media (max-width: 640px) {
           .event-detail { padding: 20px 5vw 56px; }
-          .event-detail .ed-gallery { height: 200px; }
         }
       `}</style>
 
       <Link to="/events" className="ed-back">{t("eventDetail.back")}</Link>
 
-      <div className="ed-gallery">
-        <div className={`ed-thumb ${event.image ? "" : event.tone}`} style={event.image ? { backgroundImage: `url("${event.image}")` } : undefined} />
-      </div>
+      <ListingGallery images={event.images} tone={event.tone} alt={event.title[language] || event.title.en} />
 
       <div className="ed-layout">
         <div className="ed-main">

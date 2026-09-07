@@ -14,6 +14,7 @@ import { isLongStayDiscountActive, longStayDiscountedPrice } from "../../lib/pri
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
+import ListingGallery from "../../components/ListingGallery";
 import VillaCard from "../../components/VillaCard";
 
 // Must stay in sync with AMENITY_ICONS in AddListingFormPage — a key the host
@@ -140,16 +141,6 @@ export default function VillaDetail() {
       <style>{`
         .villa-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .villa-detail .vd-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
-        .villa-detail .vd-gallery { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 32px; border-radius: 16px; overflow: hidden; height: 380px; }
-        .villa-detail .vd-gallery-main { grid-row: span 2; }
-        .villa-detail .vd-gallery-side { display: grid; grid-template-rows: 1fr 1fr; gap: 12px; }
-        .villa-detail .vd-thumb { background-size: cover; background-position: center; }
-        .villa-detail .vd-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
-        .villa-detail .vd-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
-        .villa-detail .vd-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .villa-detail .vd-gallery-side .vd-thumb { opacity: 0.82; }
-        .villa-detail .vd-thumb-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
         .villa-detail .vd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .villa-detail .vd-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .villa-detail .vd-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
@@ -252,9 +243,6 @@ export default function VillaDetail() {
         }
         @media (max-width: 640px) {
           .villa-detail { padding: 20px 5vw 56px; }
-          .villa-detail .vd-gallery { grid-template-columns: 1fr; height: auto; }
-          .villa-detail .vd-gallery-main { height: 220px; }
-          .villa-detail .vd-gallery-side { display: none; }
           .villa-detail .vd-amenities { grid-template-columns: 1fr; }
           .villa-detail .vd-related-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-houserules-grid { grid-template-columns: 1fr; }
@@ -265,20 +253,7 @@ export default function VillaDetail() {
 
       <Link to="/villas" className="vd-back">{t("villaDetail.back")}</Link>
 
-      <div className="vd-gallery">
-        <div
-          className={`vd-thumb vd-gallery-main ${villa.images[0] ? "" : villa.tone}`}
-          style={villa.images[0] ? { backgroundImage: `url("${villa.images[0]}")` } : undefined}
-        />
-        <div className="vd-gallery-side">
-          <div className={`vd-thumb ${villa.images[1] ? "" : villa.tone}`}>
-            {villa.images[1] && <img className="vd-thumb-img" src={villa.images[1]} alt="" loading="lazy" decoding="async" />}
-          </div>
-          <div className={`vd-thumb ${villa.images[2] ? "" : villa.tone}`}>
-            {villa.images[2] && <img className="vd-thumb-img" src={villa.images[2]} alt="" loading="lazy" decoding="async" />}
-          </div>
-        </div>
-      </div>
+      <ListingGallery images={villa.images} tone={villa.tone} alt={villa.title[language] || villa.title.en} />
 
       <div className="vd-layout">
         <div className="vd-main">

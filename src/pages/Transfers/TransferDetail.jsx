@@ -9,6 +9,7 @@ import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
+import ListingGallery from "../../components/ListingGallery";
 
 export default function TransferDetail() {
   const { id } = useParams();
@@ -47,7 +48,7 @@ export default function TransferDetail() {
     host: row.host,
     code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
-    image: row.images?.[0],
+    images: row.images || [],
   } : null;
 
   if (loading) return null;
@@ -67,12 +68,6 @@ export default function TransferDetail() {
       <style>{`
         .transfer-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .transfer-detail .td-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
-        .transfer-detail .td-gallery { border-radius: 16px; overflow: hidden; height: 320px; margin-bottom: 32px; }
-        .transfer-detail .td-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
-        .transfer-detail .td-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
-        .transfer-detail .td-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .transfer-detail .td-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
-
         .transfer-detail .td-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .transfer-detail .td-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .transfer-detail .td-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
@@ -109,15 +104,12 @@ export default function TransferDetail() {
         }
         @media (max-width: 640px) {
           .transfer-detail { padding: 20px 5vw 56px; }
-          .transfer-detail .td-gallery { height: 200px; }
         }
       `}</style>
 
       <Link to="/transfers" className="td-back">{t("transferDetail.back")}</Link>
 
-      <div className="td-gallery">
-        <div className={`td-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
-      </div>
+      <ListingGallery images={item.images} tone={item.tone} alt={item.title[language] || item.title.en} />
 
       <div className="td-layout">
         <div className="td-main">

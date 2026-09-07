@@ -44,6 +44,10 @@ export const translations = {
       longStayTag: "{nights}+ nights",
       viewDetails: "View details",
     },
+    listingGallery: {
+      prevImage: "Previous photo",
+      nextImage: "Next photo",
+    },
     villaDetail: {
       back: "← Back to villas",
       perNight: "/ night",
@@ -822,6 +826,10 @@ export const translations = {
       bedroomsUnit: "yataq otağı",
       longStayTag: "{nights}+ gecə",
       viewDetails: "Ətraflı bax",
+    },
+    listingGallery: {
+      prevImage: "Əvvəlki şəkil",
+      nextImage: "Növbəti şəkil",
     },
     villaDetail: {
       back: "← Villalara qayıt",
@@ -1602,6 +1610,10 @@ export const translations = {
       longStayTag: "{nights}+ ночей",
       viewDetails: "Подробнее",
     },
+    listingGallery: {
+      prevImage: "Предыдущее фото",
+      nextImage: "Следующее фото",
+    },
     villaDetail: {
       back: "← Назад к виллам",
       perNight: "/ ночь",
@@ -2353,6 +2365,10 @@ export const translations = {
       bedroomsUnit: "غرف نوم",
       longStayTag: "{nights}+ ليالٍ",
       viewDetails: "عرض التفاصيل",
+    },
+    listingGallery: {
+      prevImage: "الصورة السابقة",
+      nextImage: "الصورة التالية",
     },
     villaDetail: {
       back: "← العودة إلى الفيلات",

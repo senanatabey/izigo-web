@@ -9,6 +9,7 @@ import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
+import ListingGallery from "../../components/ListingGallery";
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -46,7 +47,7 @@ export default function CarDetail() {
     host: row.host,
     code: shortListingCode(row),
     postedAt: relativeDate(row.created_at, language),
-    image: row.images?.[0],
+    images: row.images || [],
   } : null;
 
   if (loading) return null;
@@ -66,12 +67,6 @@ export default function CarDetail() {
       <style>{`
         .car-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .car-detail .cd-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
-        .car-detail .cd-gallery { border-radius: 16px; overflow: hidden; height: 380px; margin-bottom: 32px; }
-        .car-detail .cd-thumb { width: 100%; height: 100%; background-size: cover; background-position: center; }
-        .car-detail .cd-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
-        .car-detail .cd-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
-        .car-detail .cd-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-
         .car-detail .cd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
         .car-detail .cd-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
         .car-detail .cd-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
@@ -104,15 +99,12 @@ export default function CarDetail() {
         }
         @media (max-width: 640px) {
           .car-detail { padding: 20px 5vw 56px; }
-          .car-detail .cd-gallery { height: 220px; }
         }
       `}</style>
 
       <Link to="/cars" className="cd-back">{t("carDetail.back")}</Link>
 
-      <div className="cd-gallery">
-        <div className={`cd-thumb ${car.image ? "" : car.tone}`} style={car.image ? { backgroundImage: `url("${car.image}")` } : undefined} />
-      </div>
+      <ListingGallery images={car.images} tone={car.tone} alt={car.title[language] || car.title.en} />
 
       <div className="cd-layout">
         <div className="cd-main">
