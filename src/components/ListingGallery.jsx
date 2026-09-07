@@ -7,16 +7,18 @@ import { useLanguage } from "../i18n/LanguageContext";
  * Transfer / Event). Replaces the old fixed 2-3 image grid that had no way
  * to reach the rest of a listing's photos.
  *
- * The main stage is a fixed 16:9 box with two layers of the SAME image:
+ * The main stage is a fixed 4:3 box with two layers of the SAME image:
  *  - a blurred, darkened `cover` layer that fills the box, so a tall/portrait
  *    photo gets soft matching bars instead of empty gaps;
  *  - a `contain` layer on top that shows the whole photo, never cropped —
  *    which matters because the IZIGO.AZ watermark sits inside the frame and
  *    `cover` could clip it.
  *
- * Thumbnails below scroll horizontally; arrows (desktop, on hover) and swipe
- * (touch) move between photos. Purely presentational — no change to how
- * photos are stored, optimized or watermarked.
+ * Thumbnails below scroll horizontally; on a real pointer device hovering a
+ * thumbnail swaps the main image (tap.az style), click always works as a
+ * fallback. Arrows (desktop, on hover) and swipe (touch) move between photos.
+ * Purely presentational — no change to how photos are stored, optimized or
+ * watermarked.
  */
 export default function ListingGallery({ images = [], tone = "forest", alt = "" }) {
   const { t } = useLanguage();
@@ -24,6 +26,20 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
   const [active, setActive] = useState(0);
   const thumbsRef = useRef(null);
   const touchStartX = useRef(null);
+
+  // Only wire thumbnail hover-to-preview on devices with a real hovering
+  // pointer — never on touch, where "hover" would fire on scroll/tap and
+  // fight the existing tap/swipe behaviour.
+  const [canHover, setCanHover] = useState(
+    () => typeof window !== "undefined"
+      && window.matchMedia?.("(hover: hover) and (pointer: fine)").matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const onChange = (e) => setCanHover(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   // Derived, never stored out of range — so a shorter `images` prop can't
   // leave a stale index behind (and no clamp-in-effect).
@@ -59,7 +75,7 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
       <style>{`
         .listing-gallery { margin-bottom: 32px; }
         .listing-gallery .lg-stage {
-          position: relative; width: 100%; aspect-ratio: 16 / 9;
+          position: relative; width: 100%; aspect-ratio: 4 / 3;
           border-radius: 16px; overflow: hidden; background: var(--bg-soft);
         }
         .listing-gallery .lg-stage.tone-dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -145,6 +161,7 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
                   type="button" key={i}
                   className={`lg-thumb${i === idx ? " is-active" : ""}`}
                   onClick={() => setActive(i)}
+                  onMouseEnter={canHover ? () => setActive(i) : undefined}
                   aria-label={`${i + 1} / ${photos.length}`}
                 >
                   <img src={url} alt="" loading="lazy" decoding="async" />
