@@ -47,6 +47,7 @@ export const translations = {
     listingGallery: {
       prevImage: "Previous photo",
       nextImage: "Next photo",
+      close: "Close",
     },
     villaDetail: {
       back: "← Back to villas",
@@ -830,6 +831,7 @@ export const translations = {
     listingGallery: {
       prevImage: "Əvvəlki şəkil",
       nextImage: "Növbəti şəkil",
+      close: "Bağla",
     },
     villaDetail: {
       back: "← Villalara qayıt",
@@ -1613,6 +1615,7 @@ export const translations = {
     listingGallery: {
       prevImage: "Предыдущее фото",
       nextImage: "Следующее фото",
+      close: "Закрыть",
     },
     villaDetail: {
       back: "← Назад к виллам",
@@ -2369,6 +2372,7 @@ export const translations = {
     listingGallery: {
       prevImage: "الصورة السابقة",
       nextImage: "الصورة التالية",
+      close: "إغلاق",
     },
     villaDetail: {
       back: "← العودة إلى الفيلات",
