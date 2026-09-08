@@ -25,7 +25,7 @@ import {
   MagickFormat,
   Drawables,
 } from "npm:@imagemagick/magick-wasm@0.0.43";
-import { ROBOTO_BOLD_BASE64 } from "./font-data.ts";
+import { ROBOTO_MEDIUM_BASE64 } from "./font-data.ts";
 
 // The WASM binary is fetched from a CDN at the exact same version as the
 // import above, rather than read from the package on disk: Supabase's edge
@@ -37,6 +37,14 @@ import { ROBOTO_BOLD_BASE64 } from "./font-data.ts";
 // limits flags 0x4 ... --experimental-wasm-memory64"); dist/x86 is the plain
 // wasm32 build, which is the one that works here.
 const MAGICK_WASM_URL = "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.43/dist/x86/magick.wasm";
+
+// Watermark width as a fraction of the photo's displayed width, and the
+// aspect ratio of the box the detail-page gallery shows photos in
+// (object-fit: contain, see src/components/ListingGallery.jsx). The size is
+// normalised to that box below so the mark reads the same on screen for
+// every photo regardless of its own pixel dimensions.
+const WATERMARK_WIDTH_FRACTION = 0.10;
+const GALLERY_ASPECT = 4 / 3;
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
@@ -87,8 +95,12 @@ function ensureMagickReady(): Promise<void> {
       if (!res.ok) throw new Error(`Failed to fetch magick.wasm: ${res.status} ${res.statusText}`);
       const wasmBytes = new Uint8Array(await res.arrayBuffer());
       await initializeImageMagick(wasmBytes);
-      const fontBytes = Uint8Array.from(atob(ROBOTO_BOLD_BASE64), (c) => c.charCodeAt(0));
+      const fontBytes = Uint8Array.from(atob(ROBOTO_MEDIUM_BASE64), (c) => c.charCodeAt(0));
       Magick.addFont(FONT_NAME, fontBytes);
+      // Warm up text metrics once so the very first real request measures the
+      // registered font, not a fallback — a fallback's different glyph widths
+      // would give that one photo a slightly off watermark size.
+      try { new Drawables().font(FONT_NAME).fontPointSize(100).fontTypeMetrics(WATERMARK_TEXT); } catch { /* non-fatal */ }
     })().catch((err) => {
       // Don't let one failed init poison the warm isolate forever — clear
       // the cached promise so the next request retries from scratch.
@@ -99,21 +111,36 @@ function ensureMagickReady(): Promise<void> {
   return magickReady;
 }
 
+// magick-wasm is single-threaded and NOT reentrant — the frontend uploads
+// several photos at once, and Supabase can hand those concurrent requests to
+// the same warm isolate, where interleaved applyWatermark() calls would
+// corrupt each other's ImageMagick state (this showed up as one photo in a
+// batch getting a wrong-sized watermark). Serialize every call through this
+// promise chain so only one runs at a time per isolate.
+let magickQueue: Promise<unknown> = Promise.resolve();
+function runExclusive<T>(fn: () => T): Promise<T> {
+  const result = magickQueue.then(fn);
+  magickQueue = result.catch(() => {});
+  return result;
+}
+
 /**
  * Draws "IZIGO.AZ" onto `content` and returns the watermarked bytes in the
  * same `format` the image was uploaded as. Sizing/position:
- *  - width ≈ 10% of the image's own width (middle of the requested 8-12%
- *    range), computed via a measure-then-scale pass so it's responsive
- *    instead of a fixed point size that would look huge on a small photo
- *    and tiny on a large one.
+ *  - width ≈ 10% of the width the photo OCCUPIES in the detail page's 4:3
+ *    contain-fit gallery box — not 10% of the photo's own width, which made
+ *    the mark shrink on portrait photos (they scale down harder to fit the
+ *    box). Computed via a measure-then-scale pass so it stays responsive.
  *  - centered horizontally (x offset computed by hand from the measured text
  *    width — magick-wasm 0.0.43 does not honour Drawables.textAlignment,
  *    which left-anchored the text off to the right), sitting a bit below the
  *    vertical center (~58% down) rather than in a corner, so a simple crop
  *    can't remove it.
- *  - white text at ~40% opacity over a soft dark shadow copy — kept subtle,
- *    but actually visible at normal viewing (the old ~18% only showed under
- *    heavy contrast boost).
+ *  - medium-weight text over a barely-there 4-point dark halo (5%) — solid
+ *    but soft like bina.az's mark (regular weight read too thin). TWO
+ *    stamps, drawn independently: a big one centred at ~58% down
+ *    (crop-resistant, ~36% white) and a half-size one in the bottom-right
+ *    corner (~46% white).
  */
 function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
   return ImageMagick.read(content, (img): Uint8Array => {
@@ -125,7 +152,16 @@ function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
     const measured = new Drawables().font(FONT_NAME).fontPointSize(measureAt).fontTypeMetrics(WATERMARK_TEXT);
     if (!measured) throw new Error("Unable to measure watermark text metrics.");
 
-    const targetWidth = img.width * 0.10;
+    // Base the size on the width the photo OCCUPIES in the 4:3 gallery box
+    // (contain-fit), not its own width, so the mark is the same on-screen
+    // size for every photo:
+    //   - landscape (w/h >= 4/3): the photo fills the box by width  -> use img.width
+    //   - portrait  (w/h <  4/3): the photo fills the box by height -> use the
+    //     width it would have at that height (img.height * 4/3)
+    const displayWidth = Math.max(img.width, img.height * GALLERY_ASPECT);
+    // Never let the mark exceed 90% of the actual pixel width — guards the
+    // pathological case of an extremely tall, narrow source image.
+    const targetWidth = Math.min(displayWidth * WATERMARK_WIDTH_FRACTION, img.width * 0.9);
     const scale = targetWidth / measured.textWidth;
     // Clamp so a degenerate (near-zero) source image never yields an
     // unreadable or negative point size.
@@ -145,18 +181,51 @@ function applyWatermark(content: Uint8Array, format: MagickFormat): Uint8Array {
 
     // Alpha as a 0-255 byte, not Quantum.max * fraction — the byte overload
     // of MagickColor is stable across the Q8/Q16 builds; Quantum.max is not.
-    const shadowColor = new MagickColor(0, 0, 0, Math.round(255 * 0.30));
-    const textColor = new MagickColor(255, 255, 255, Math.round(255 * 0.40));
-    const shadowOffset = Math.max(1, Math.round(pointSize * 0.03));
+    //
+    // Soft like bina.az: medium-weight text over a barely-there 4-point dark
+    // halo. The halo isn't a drop shadow — it exists only so the white glyphs
+    // don't disappear on a near-white wall; on everything else it's
+    // imperceptible.
+    const haloColor = new MagickColor(0, 0, 0, Math.round(255 * 0.05));
+    const centreColor = new MagickColor(255, 255, 255, Math.round(255 * 0.36));
+    // The corner stamp is small and out of the way, so a touch more solid.
+    const cornerColor = new MagickColor(255, 255, 255, Math.round(255 * 0.46));
+    const haloOffsets: [number, number][] = [
+      [-1, 0], [1, 0], [0, -1], [0, 1],
+    ];
 
-    new Drawables()
-      .font(FONT_NAME)
-      .fontPointSize(pointSize)
-      .fillColor(shadowColor)
-      .text(startX + shadowOffset, baselineY + shadowOffset, WATERMARK_TEXT)
-      .fillColor(textColor)
-      .text(startX, baselineY, WATERMARK_TEXT)
-      .draw(img);
+    // Each stamp is its OWN Drawables with a SINGLE fontPointSize, applied by
+    // its own .draw(). Sharing one Drawables and switching fontPointSize
+    // mid-chain (for the centre + corner marks) was unreliable in this
+    // magick-wasm build — the corner mark sometimes didn't render, or both
+    // came out the wrong size.
+    const stamp = (pt: number, tlX: number, baseY: number, fill: MagickColor) => {
+      const r = Math.max(1, Math.round(pt * 0.014));
+      const d = new Drawables().font(FONT_NAME).fontPointSize(pt);
+      d.fillColor(haloColor);
+      for (const [dx, dy] of haloOffsets) d.text(tlX + dx * r, baseY + dy * r, WATERMARK_TEXT);
+      d.fillColor(fill).text(tlX, baseY, WATERMARK_TEXT);
+      d.draw(img);
+    };
+
+    // 1. Big, centred mark (crop-resistant).
+    stamp(pointSize, startX, baselineY, centreColor);
+
+    // 2. Small mark in the bottom-right corner (bina.az style) — half the
+    // centre mark. Metrics scale ~linearly with point size, so derive its box
+    // from the centre mark's rather than re-measuring.
+    const cornerPt = Math.max(8, Math.round(pointSize * 0.5));
+    const cs = cornerPt / pointSize;
+    const cornerW = textWidth * cs;
+    const cornerH = textHeight * cs;
+    // Tucked right into the corner, bina.az-style — ~1.2% in from the right,
+    // ~1.8% up from the bottom (of the baseline; "IZIGO.AZ" has no descenders
+    // so that's roughly the visible edge).
+    const marginX = Math.round(img.width * 0.012);
+    const marginY = Math.round(img.height * 0.018);
+    const cornerX = Math.max(0, img.width - marginX - cornerW);
+    const cornerY = Math.max(cornerH, img.height - marginY);
+    stamp(cornerPt, cornerX, cornerY, cornerColor);
 
     // magick-wasm hands the callback a Uint8Array that is a VIEW into WASM
     // memory, valid only for the duration of this callback — ImageMagick
@@ -216,7 +285,7 @@ Deno.serve(async (req: Request) => {
   let watermarked: Uint8Array;
   try {
     const content = new Uint8Array(await file.arrayBuffer());
-    watermarked = applyWatermark(content, format);
+    watermarked = await runExclusive(() => applyWatermark(content, format));
   } catch (err) {
     console.error("watermark-listing-image: processing failed:", err);
     return json({ error: "Failed to process this image — please try a different photo." }, 422);
