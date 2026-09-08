@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Waves, Thermometer, Ruler, Layers, Clock, CheckCircle2, XCircle, X, Check } from "lucide-react";
+import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Waves, Thermometer, Ruler, Layers, Clock, CheckCircle2, XCircle, X, Check, Mountain, Building2, Sprout, Eye } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
@@ -21,6 +21,10 @@ import VillaCard from "../../components/VillaCard";
 // can pick there but that is missing here would render as `undefined` and
 // crash the whole page. Check is the fallback for any future unmapped key.
 const AMENITY_ICONS = { wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees, pool: Waves, heated_pool: Thermometer };
+const VIEW_ICONS = { mountain: Mountain, sea: Waves, forest: Trees, city: Building2, garden: Sprout };
+// View-type labels carry a leading emoji in the AZ strings ("🏔 Dağ mənzərəsi")
+// — strip it so the combined pill grid reads uniformly with a lucide icon.
+const stripEmoji = (s) => s.replace(/^[^\p{L}]+/u, "");
 const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];
 // Purely a mathematical rollup of the host's declared bed types — never a
 // booking guarantee, never merged with the official "guests" count above.
@@ -141,26 +145,50 @@ export default function VillaDetail() {
       <style>{`
         .villa-detail { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .villa-detail .vd-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 20px; }
-        .villa-detail .vd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 48px; align-items: start; }
-        .villa-detail .vd-city { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
-        .villa-detail .vd-title { font-size: 28px; font-weight: 800; margin: 0 0 16px; }
-        .villa-detail .vd-listing-meta { font-size: 12.5px; color: var(--text-soft); margin: -10px 0 16px; }
-        .villa-detail .vd-edit-link { color: var(--izigo-green); font-weight: 700; }
-        .villa-detail .vd-meta { display: flex; flex-wrap: wrap; row-gap: 8px; gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
-        .villa-detail .vd-meta span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-soft); }
-        .villa-detail .vd-bedtypes { margin: -16px 0 24px; }
-        /* pulls up under vd-meta's own 24px bottom margin so the two related
-           lines (guest stats, then bed breakdown) read as one connected block */
-        .villa-detail .vd-bedtypes-line { font-size: 13.5px; color: var(--text); margin-bottom: 3px; }
+
+        .villa-detail .vd-header { margin-bottom: 20px; }
+        .villa-detail .vd-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .villa-detail .vd-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
+        .villa-detail .vd-badge-founder { background: var(--izigo-green); color: #fff; }
+        .villa-detail .vd-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .villa-detail .vd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
+        .villa-detail .vd-city {
+          display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600;
+          color: var(--text-soft); background: none; border: none; padding: 0; cursor: pointer;
+          font-family: var(--sans);
+        }
+        .villa-detail .vd-city:hover { color: var(--izigo-green); text-decoration: underline; }
+        .villa-detail .vd-city svg { color: var(--izigo-orange); flex-shrink: 0; }
+
+        /* Gallery + amenities in the left column, sidebar in the right column
+           spanning the full height and sticking as you scroll. */
+        .villa-detail .vd-layout { display: grid; grid-template-columns: 1fr 340px; column-gap: 48px; align-items: start; }
+        .villa-detail .vd-gallery-col { grid-column: 1; grid-row: 1; min-width: 0; }
+        .villa-detail .vd-main { grid-column: 1; grid-row: 2; min-width: 0; }
+        .villa-detail .vd-sidebar { grid-column: 2; grid-row: 1 / span 2; align-self: start; position: sticky; top: 88px; }
+
+        /* Compact amenities inside the sidebar: a borderless 2-column grid. */
+        .villa-detail .vd-sb-amenities-label { font-size: 12px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
+        .villa-detail .vd-sb-amenities-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 9px; }
+        .villa-detail .vd-sb-amenity { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.35; color: var(--text); }
+        .villa-detail .vd-sb-amenity svg { color: var(--izigo-green); flex-shrink: 0; margin-top: 1px; }
+
+        .villa-detail .vd-bedtypes { margin-top: 10px; }
+        .villa-detail .vd-bedtypes-line { font-size: 13px; color: var(--text); margin-bottom: 3px; }
         .villa-detail .vd-bedcapacity-line { font-size: 11.5px; color: var(--text-soft); }
         .villa-detail .vd-main h2 { font-size: 19px; font-weight: 800; margin: 0 0 14px; }
         .villa-detail .vd-main h2.vd-subheading { margin: 8px 0 14px; }
-        .villa-detail .vd-desc { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 16px; }
-        .villa-detail .vd-viewtype-chips { margin: 0 0 32px; }
-        .villa-detail .vd-viewtype-chip { display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 600; color: var(--text); background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; }
-        .villa-detail .vd-amenities { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
-        .villa-detail .vd-amenity { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text); }
-        .villa-detail .vd-amenity svg { color: var(--izigo-green); }
+        .villa-detail .vd-desc { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 32px; }
+
+        .villa-detail .vd-footer-meta {
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+          font-size: 12.5px; color: var(--text-soft);
+          margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--border);
+        }
+        .villa-detail .vd-edit-btn {
+          font-size: 12.5px; font-weight: 700; color: var(--izigo-green);
+          border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
+        }
 
 
         .villa-detail .vd-checkinout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
@@ -173,7 +201,11 @@ export default function VillaDetail() {
         .villa-detail .vd-rule-no { color: #E0553F; flex-shrink: 0; }
         .villa-detail .vd-houserules-notes { font-size: 13px; color: var(--text-soft); margin: -20px 0 32px; line-height: 1.6; }
 
-        .villa-detail .vd-sidebar { position: sticky; top: 90px; border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+        .villa-detail .vd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--bg); }
+        .villa-detail .vd-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
+        .villa-detail .vd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
+        .villa-detail .vd-facts svg { color: var(--izigo-green); flex-shrink: 0; }
+        .villa-detail .vd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .villa-detail .vd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .villa-detail .vd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
         .villa-detail .vd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
@@ -188,21 +220,13 @@ export default function VillaDetail() {
           background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
         }
         .villa-detail .detail-save-btn { position: static; }
-        .villa-detail .vd-host { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .villa-detail .vd-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
         .villa-detail .vd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
         .villa-detail .vd-host-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; }
-        .villa-detail .vd-agent-badge {
-          font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
-          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
-        }
+        .villa-detail .vd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); }
         .villa-detail .vd-agency-name { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
         .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
-
-        .villa-detail .vd-location { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-        .villa-detail .vd-location-place { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--text); font-weight: 600; }
-        .villa-detail .vd-location-place svg { color: var(--izigo-orange); flex-shrink: 0; }
-        .villa-detail .vd-map-link { font-size: 13.5px; font-weight: 700; color: var(--izigo-green); white-space: nowrap; background: none; border: none; cursor: pointer; padding: 0; font-family: var(--sans); }
 
         .villa-detail .vd-map-overlay {
           position: fixed; inset: 0; background: rgba(11, 61, 59, 0.55); z-index: 1000;
@@ -236,14 +260,17 @@ export default function VillaDetail() {
 
         @media (max-width: 900px) {
           .villa-detail .vd-layout { grid-template-columns: 1fr; }
-          .villa-detail .vd-sidebar { position: static; }
+          /* Single column, no sticky: gallery, then the sidebar card
+             (facts / price / amenities / contact), then the description. */
+          .villa-detail .vd-gallery-col { grid-column: 1; grid-row: 1; }
+          .villa-detail .vd-sidebar { grid-column: 1; grid-row: 2; position: static; }
+          .villa-detail .vd-main { grid-column: 1; grid-row: 3; }
         }
         @media (max-width: 1024px) {
           .villa-detail .vd-related-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 640px) {
           .villa-detail { padding: 20px 5vw 56px; }
-          .villa-detail .vd-amenities { grid-template-columns: 1fr; }
           .villa-detail .vd-related-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-houserules-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-checkinout { font-size: 13px; }
@@ -253,55 +280,32 @@ export default function VillaDetail() {
 
       <Link to="/villas" className="vd-back">{t("villaDetail.back")}</Link>
 
-      <ListingGallery images={villa.images} tone={villa.tone} alt={villa.title[language] || villa.title.en} />
+      <div className="vd-header">
+        {(villa.host?.founder_host || villa.host?.agent_status === "approved") && (
+          <div className="vd-badges">
+            {villa.host?.founder_host && <span className="vd-badge vd-badge-founder">{t("villaDetail.founderBadge")}</span>}
+            {villa.host?.agent_status === "approved" && <span className="vd-badge vd-badge-agent">{t("villaDetail.agentBadge")}</span>}
+          </div>
+        )}
+        <h1 className="vd-title">{villa.title[language] || villa.title.en}</h1>
+        <button type="button" className="vd-city" onClick={() => setMapOpen(true)}>
+          <MapPin size={14} />{cityLabel(villa.city, language)}
+        </button>
+      </div>
 
       <div className="vd-layout">
+        <div className="vd-gallery-col">
+          <ListingGallery
+            images={villa.images} tone={villa.tone}
+            alt={villa.title[language] || villa.title.en}
+            priceLabel={`${formatPrice(longStayActive ? longStayPrice : (villa.discount ? Math.round(villa.price * (1 - villa.discount / 100)) : villa.price))} ${t("villaDetail.perNight")}`}
+            phone={villa.phone} listingId={villa.id}
+          />
+        </div>
+
         <div className="vd-main">
-          <div className="vd-city"><MapPin size={13} />{cityLabel(villa.city, language)}</div>
-          <h1 className="vd-title">{villa.title[language] || villa.title.en}</h1>
-          <div className="vd-listing-meta">
-            {villa.code} · {villa.postedAt}
-            {user?.id === row.host_id && <Link to={`/edit-listing/${villa.id}`} className="vd-edit-link"> · {t("myListingsPage.edit")}</Link>}
-          </div>
-          <div className="vd-meta">
-            <span><Users size={15} />{villa.guests} {t("villaDetail.guestsUnit")}</span>
-            <span><BedDouble size={15} />{villa.bedrooms} {t("villaDetail.bedroomsUnit")}</span>
-            {villa.bathrooms != null && <span><Bath size={15} />{villa.bathrooms} {t("villaDetail.bathroomsUnit")}</span>}
-            {villa.areaSqm != null && <span><Ruler size={15} />{villa.areaSqm} {t("villaDetail.areaUnit")}</span>}
-            {villa.floorCount != null && <span><Layers size={15} />{villa.floorCount} {t("villaDetail.floorsUnit")}</span>}
-          </div>
-
-          {villa.bedTypes?.length > 0 && (
-            <div className="vd-bedtypes">
-              <div className="vd-bedtypes-line">
-                🛏️ {villa.bedTypes.map((row) => `${row.count} ${t(`bedTypes.${row.type}`)}`).join(" · ")}
-              </div>
-              <div className="vd-bedcapacity-line">
-                {t("villaDetail.bedCapacityLabel").replace("{count}", villa.bedCapacity)}
-              </div>
-            </div>
-          )}
-
           <h2>{t("villaDetail.aboutHeading")}</h2>
           <p className="vd-desc">{villa.description[language] || villa.description.en}</p>
-          {villa.viewType?.length > 0 && (
-            <div className="vd-viewtype-chips">
-              {villa.viewType.map((key) => <span className="vd-viewtype-chip" key={key}>{t(`viewTypes.${key}`)}</span>)}
-            </div>
-          )}
-
-          <h2>{t("villaDetail.amenitiesHeading")}</h2>
-          <div className="vd-amenities">
-            {villa.amenities.map((key) => {
-              const Icon = AMENITY_ICONS[key] || Check;
-              return (
-                <div className="vd-amenity" key={key}>
-                  <Icon size={17} />{t(`amenities.${key}`)}
-                </div>
-              );
-            })}
-          </div>
-
 
           {(villa.checkInTime || villa.checkOutTime) && (
             <>
@@ -336,35 +340,37 @@ export default function VillaDetail() {
             </>
           )}
 
-          <h2>{t("villaDetail.locationHeading")}</h2>
-          <div className="vd-location">
-            <div className="vd-location-place"><MapPin size={17} />{cityLabel(villa.city, language)}, Azerbaijan</div>
-            <button type="button" className="vd-map-link" onClick={() => setMapOpen(true)}>
-              {t("villaDetail.viewOnMap")}
-            </button>
+          <div className="vd-footer-meta">
+            <span>{villa.code} · {villa.postedAt}</span>
+            {user?.id === row.host_id && (
+              <Link to={`/edit-listing/${villa.id}`} className="vd-edit-btn">{t("myListingsPage.edit")}</Link>
+            )}
           </div>
-
-          {mapOpen && (
-            <div className="vd-map-overlay" onClick={() => setMapOpen(false)}>
-              <div className="vd-map-modal" onClick={(e) => e.stopPropagation()}>
-                <button type="button" className="vd-map-close" onClick={() => setMapOpen(false)} aria-label="Close">
-                  <X size={18} />
-                </button>
-                <iframe
-                  title="map"
-                  className="vd-map-iframe"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(`${cityLabel(villa.city, language)}, Azerbaijan`)}&output=embed`}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            </div>
-          )}
 
           <ListingReviews listingId={villa.id} />
         </div>
 
         <aside className="vd-sidebar">
+          <div className="vd-facts">
+            <span><Users size={15} />{villa.guests} {t("villaDetail.guestsUnit")}</span>
+            <span><BedDouble size={15} />{villa.bedrooms} {t("villaDetail.bedroomsUnit")}</span>
+            {villa.bathrooms != null && <span><Bath size={15} />{villa.bathrooms} {t("villaDetail.bathroomsUnit")}</span>}
+            {villa.areaSqm != null && <span><Ruler size={15} />{villa.areaSqm} {t("villaDetail.areaUnit")}</span>}
+            {villa.floorCount != null && <span><Layers size={15} />{villa.floorCount} {t("villaDetail.floorsUnit")}</span>}
+          </div>
+          {villa.bedTypes?.length > 0 && (
+            <div className="vd-bedtypes">
+              <div className="vd-bedtypes-line">
+                🛏️ {villa.bedTypes.map((bt) => `${bt.count} ${t(`bedTypes.${bt.type}`)}`).join(" · ")}
+              </div>
+              <div className="vd-bedcapacity-line">
+                {t("villaDetail.bedCapacityLabel").replace("{count}", villa.bedCapacity)}
+              </div>
+            </div>
+          )}
+
+          <div className="vd-sb-divider" />
+
           <div className="vd-price-row">
             <div className="vd-price-block">
               {longStayActive ? (
@@ -388,12 +394,33 @@ export default function VillaDetail() {
             </div>
           )}
 
+          {(villa.amenities.length > 0 || villa.viewType?.some((k) => k !== "none")) && (
+            <>
+              <div className="vd-sb-divider" />
+              <div className="vd-sb-amenities-label">{t("villaDetail.amenitiesAndViewHeading")}</div>
+              <div className="vd-sb-amenities-grid">
+                {villa.amenities.map((key) => {
+                  const Icon = AMENITY_ICONS[key] || Check;
+                  return <div className="vd-sb-amenity" key={`a-${key}`}><Icon size={14} />{t(`amenities.${key}`)}</div>;
+                })}
+                {(villa.viewType || []).filter((key) => key !== "none").map((key) => {
+                  const Icon = VIEW_ICONS[key] || Eye;
+                  return <div className="vd-sb-amenity" key={`v-${key}`}><Icon size={14} />{stripEmoji(t(`viewTypes.${key}`))}</div>;
+                })}
+              </div>
+            </>
+          )}
+
+          <div className="vd-sb-divider" />
+
           <Link to={`/host/${villa.host?.id}`} className="vd-host">
             <div className="vd-host-avatar"><ShieldCheck size={20} /></div>
             <div>
               <div className="vd-host-name-row">
                 <span className="vd-host-name">{villa.host?.full_name || t("villaDetail.hostName")}</span>
-                {villa.host?.agent_status === "approved" && <span className="vd-agent-badge">{t("villaDetail.agentBadge")}</span>}
+                <span className="vd-host-type">
+                  {villa.host?.host_type === "agent" ? t("villaDetail.hostAgent") : t("villaDetail.hostOwner")}
+                </span>
               </div>
               {villa.host?.agent_status === "approved" && villa.host?.agency_name && (
                 <div className="vd-agency-name">{villa.host.agency_name}</div>
@@ -419,6 +446,23 @@ export default function VillaDetail() {
           <h2>{t("villaDetail.moreListingsHeading").replace("{city}", cityLocative(villa.city, language))}</h2>
           <div className="vd-related-grid">
             {moreInCity.map((v) => <VillaCard villa={v} key={v.id} />)}
+          </div>
+        </div>
+      )}
+
+      {mapOpen && (
+        <div className="vd-map-overlay" onClick={() => setMapOpen(false)}>
+          <div className="vd-map-modal" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="vd-map-close" onClick={() => setMapOpen(false)} aria-label="Close">
+              <X size={18} />
+            </button>
+            <iframe
+              title="map"
+              className="vd-map-iframe"
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(`${cityLabel(villa.city, language)}, Azerbaijan`)}&output=embed`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       )}

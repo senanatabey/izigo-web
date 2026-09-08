@@ -84,7 +84,7 @@ export async function fetchListingRatings(listingIds) {
 export async function fetchListingById(id) {
   const { data, error } = await supabase
     .from("listings")
-    .select("*, host:profiles(id, full_name, host_type, agency_name, agent_status)")
+    .select("*, host:profiles(id, full_name, host_type, agency_name, agent_status, founder_host)")
     .eq("id", id)
     .single();
   if (error) return null;
