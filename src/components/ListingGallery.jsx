@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
+import { useAuth } from "../App";
+import { recordListingContact } from "../lib/reviews";
+import { formatPhone } from "../lib/phone";
 
 /**
  * Shared photo gallery for the four listing detail pages (Villa / Car /
@@ -19,14 +22,20 @@ import { useLanguage } from "../i18n/LanguageContext";
  * thumbnail swaps the main image (tap.az style), click always works as a
  * fallback. Arrows (desktop, on hover) and swipe (touch) move between photos.
  * Clicking the main image opens a full-screen lightbox with the same photo
- * set. Purely presentational — no change to how photos are stored, optimized
- * or watermarked.
+ * set; the lightbox header carries the listing name + price and a compact
+ * reveal-phone / WhatsApp control so a viewer can make contact without
+ * leaving the photos. Purely presentational — no change to how photos are
+ * stored, optimized or watermarked.
  */
-export default function ListingGallery({ images = [], tone = "forest", alt = "" }) {
+export default function ListingGallery({
+  images = [], tone = "forest", alt = "", priceLabel = "", phone = "", listingId = "",
+}) {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const photos = images.filter(Boolean);
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [phoneShown, setPhoneShown] = useState(false);
   const thumbsRef = useRef(null);
   const lightboxThumbsRef = useRef(null);
   const touchStartX = useRef(null);
@@ -88,12 +97,21 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
     touchStartX.current = null;
   };
 
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false);
+    setPhoneShown(false); // collapse the revealed number for next time
+  }, []);
+
+  const onWhatsappClick = () => {
+    if (user?.id && listingId) recordListingContact(listingId, user.id);
+  };
+
   // Esc closes the lightbox; arrow keys page through it. Body scroll is
   // locked while it's open.
   useEffect(() => {
     if (!lightboxOpen) return undefined;
     const onKey = (e) => {
-      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "Escape") closeLightbox();
       else if (e.key === "ArrowLeft") go(-1);
       else if (e.key === "ArrowRight") go(1);
     };
@@ -104,7 +122,7 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [lightboxOpen, go]);
+  }, [lightboxOpen, go, closeLightbox]);
 
   const src = photos[idx];
 
@@ -186,14 +204,24 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
         /* ---- lightbox ---- */
         .listing-gallery .lg-lightbox {
           position: fixed; inset: 0; z-index: 4000;
-          background: #0a1c1b;
+          background: #000;
           display: flex; flex-direction: column;
         }
         .listing-gallery .lg-lb-head {
           display: flex; align-items: center; justify-content: space-between;
-          gap: 16px; padding: 16px 20px; color: #fff;
+          gap: 16px; padding: 14px 20px; color: #fff;
         }
+        .listing-gallery .lg-lb-meta { min-width: 0; }
         .listing-gallery .lg-lb-title { font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .listing-gallery .lg-lb-price { font-size: 13px; font-weight: 700; color: var(--izigo-orange); margin-top: 2px; }
+        .listing-gallery .lg-lb-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .listing-gallery .lg-lb-contact {
+          display: inline-flex; align-items: center; gap: 7px;
+          font-size: 13px; font-weight: 700; white-space: nowrap;
+          border: none; border-radius: 999px; padding: 9px 14px; cursor: pointer;
+          background: var(--izigo-green); color: #fff; text-decoration: none;
+        }
+        .listing-gallery .lg-lb-contact:hover { filter: brightness(0.95); }
         .listing-gallery .lg-lb-close {
           flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none;
           background: rgba(255, 255, 255, 0.14); color: #fff; cursor: pointer;
@@ -202,12 +230,26 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
         .listing-gallery .lg-lb-stage {
           position: relative; flex: 1; min-height: 0;
           display: flex; align-items: center; justify-content: center;
+          padding: 8px;
+        }
+        /* Same 4:3 frame as the in-page gallery, sized to the largest 4:3 box
+           that fits between the header and the thumbnail strip — so a photo
+           reads at a consistent proportion in both places (and the
+           server-side watermark, which is scaled to a 4:3 box, stays a
+           consistent size here too). width drives it, height follows from
+           aspect-ratio, so the ratio can't be broken by a max-height clamp.
+           ~168px is the header + thumbnail strip + padding reserve. */
+        .listing-gallery .lg-lb-frame {
+          position: relative;
+          width: min(92vw, calc((100dvh - 168px) * 4 / 3));
+          aspect-ratio: 4 / 3;
         }
         .listing-gallery .lg-lb-img {
-          max-width: 92vw; max-height: 100%; object-fit: contain;
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          object-fit: contain;
         }
         .listing-gallery .lg-lb-arrow {
-          position: absolute; top: 50%; transform: translateY(-50%);
+          position: absolute; top: 50%; transform: translateY(-50%); z-index: 1;
           width: 44px; height: 44px; border-radius: 50%; border: none;
           background: rgba(255, 255, 255, 0.16); color: #fff; cursor: pointer;
           display: flex; align-items: center; justify-content: center;
@@ -227,8 +269,10 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
           .listing-gallery .lg-bg { filter: blur(12px) brightness(0.7); }
           .listing-gallery .lg-arrow { display: none; }
           .listing-gallery .lg-thumb { width: 72px; height: 52px; }
+          .listing-gallery .lg-lb-head { padding: 12px 14px; gap: 10px; }
+          .listing-gallery .lg-lb-contact { padding: 8px 12px; }
           .listing-gallery .lg-lb-arrow { display: none; }
-          .listing-gallery .lg-lb-img { max-width: 100vw; }
+          .listing-gallery .lg-lb-frame { width: min(100vw, calc((100dvh - 150px) * 4 / 3)); }
           .listing-gallery .lg-lb-thumbs { padding: 10px 12px 14px; }
           .listing-gallery .lg-lb-thumbs .lg-thumb { width: 64px; height: 46px; }
         }
@@ -270,42 +314,66 @@ export default function ListingGallery({ images = [], tone = "forest", alt = "" 
           {lightboxOpen && (
             <div
               className="lg-lightbox"
-              onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}
+              onClick={(e) => { if (e.target === e.currentTarget) closeLightbox(); }}
             >
               <div className="lg-lb-head">
-                <span className="lg-lb-title">
-                  {alt}{photos.length > 1 ? ` · ${idx + 1} / ${photos.length}` : ""}
-                </span>
-                <button
-                  type="button" className="lg-lb-close"
-                  onClick={() => setLightboxOpen(false)} aria-label={t("listingGallery.close")}
-                >
-                  <X size={20} />
-                </button>
+                <div className="lg-lb-meta">
+                  <div className="lg-lb-title">
+                    {alt}{photos.length > 1 ? ` · ${idx + 1} / ${photos.length}` : ""}
+                  </div>
+                  {priceLabel && <div className="lg-lb-price">{priceLabel}</div>}
+                </div>
+                <div className="lg-lb-actions">
+                  {phone && (phoneShown ? (
+                    <a
+                      className="lg-lb-contact"
+                      href={`https://wa.me/${phone.replace(/\D/g, "")}`}
+                      target="_blank" rel="noopener noreferrer"
+                      onClick={onWhatsappClick}
+                    >
+                      <MessageCircle size={15} />{formatPhone(phone, false)}
+                    </a>
+                  ) : (
+                    <button type="button" className="lg-lb-contact" onClick={() => setPhoneShown(true)}>
+                      <Phone size={14} />{t("phoneReveal.show")}
+                    </button>
+                  ))}
+                  <button
+                    type="button" className="lg-lb-close"
+                    onClick={closeLightbox} aria-label={t("listingGallery.close")}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
               <div
                 className="lg-lb-stage"
-                onClick={(e) => { if (e.target === e.currentTarget) setLightboxOpen(false); }}
+                onClick={(e) => { if (e.target === e.currentTarget) closeLightbox(); }}
                 onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
               >
-                <img className="lg-lb-img" src={src} alt={alt} decoding="async" />
-                {photos.length > 1 && (
-                  <>
-                    <button
-                      type="button" className="lg-lb-arrow prev" onClick={() => go(-1)}
-                      disabled={idx === 0} aria-label={t("listingGallery.prevImage")}
-                    >
-                      <ChevronLeft size={22} />
-                    </button>
-                    <button
-                      type="button" className="lg-lb-arrow next" onClick={() => go(1)}
-                      disabled={idx === photos.length - 1} aria-label={t("listingGallery.nextImage")}
-                    >
-                      <ChevronRight size={22} />
-                    </button>
-                  </>
-                )}
+                <div
+                  className="lg-lb-frame"
+                  onClick={(e) => { if (e.target === e.currentTarget) closeLightbox(); }}
+                >
+                  <img className="lg-lb-img" src={src} alt={alt} decoding="async" />
+                  {photos.length > 1 && (
+                    <>
+                      <button
+                        type="button" className="lg-lb-arrow prev" onClick={() => go(-1)}
+                        disabled={idx === 0} aria-label={t("listingGallery.prevImage")}
+                      >
+                        <ChevronLeft size={22} />
+                      </button>
+                      <button
+                        type="button" className="lg-lb-arrow next" onClick={() => go(1)}
+                        disabled={idx === photos.length - 1} aria-label={t("listingGallery.nextImage")}
+                      >
+                        <ChevronRight size={22} />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               {photos.length > 1 && (
