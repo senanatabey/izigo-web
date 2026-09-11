@@ -77,6 +77,7 @@ export const translations = {
       founderBadge: "Founder",
       hostOwner: "Owner",
       hostAgent: "Agent",
+      viewAllListings: "View all listings",
       amenitiesAndViewHeading: "Facilities",
       contactWhatsapp: "Contact host on WhatsApp",
       contactNote: "Preview only — will connect to real hosts once IZIGO launches.",
@@ -87,8 +88,7 @@ export const translations = {
       moreListingsHeading: "More villas in {city}",
     },
     phoneReveal: {
-      show: "Show",
-    },
+      show: "Show",    },
     carsPage: {
       heading: "Cars for Rent",
       subtitle: "Rent a car directly from local owners — no agency markup.",
@@ -865,8 +865,9 @@ export const translations = {
       founderBadge: "Founder",
       hostOwner: "Mülkiyyətçi",
       hostAgent: "Vasitəçi",
+      viewAllListings: "Bütün elanlarına bax",
       amenitiesAndViewHeading: "Şərait",
-      contactWhatsapp: "Ev sahibi ilə WhatsApp-dan əlaqə",
+      contactWhatsapp: "WhatsApp-la əlaqə",
       contactNote: "Yalnız nümunə — IZIGO yayımlananda real ev sahibləri ilə əlaqələnəcək.",
       notFound: "Bu villa tapılmadı.",
       locationHeading: "Məkan",
@@ -875,8 +876,7 @@ export const translations = {
       moreListingsHeading: "{city} daha çox villalar",
     },
     phoneReveal: {
-      show: "Göstər",
-    },
+      show: "Göstər",    },
     carsPage: {
       heading: "Kirayə Avtomobillər",
       subtitle: "Avtomobili birbaşa yerli sahiblərindən kirələ — agentlik əlavəsi yoxdur.",
@@ -1653,6 +1653,7 @@ export const translations = {
       founderBadge: "Founder",
       hostOwner: "Владелец",
       hostAgent: "Агент",
+      viewAllListings: "Все объявления пользователя",
       amenitiesAndViewHeading: "Удобства",
       contactWhatsapp: "Связаться с хозяином в WhatsApp",
       contactNote: "Только предпросмотр — после запуска IZIGO появится связь с реальными хозяевами.",
@@ -1663,8 +1664,7 @@ export const translations = {
       moreListingsHeading: "Больше вилл в городе {city}",
     },
     phoneReveal: {
-      show: "Показать",
-    },
+      show: "Показать",    },
     carsPage: {
       heading: "Аренда автомобилей",
       subtitle: "Арендуйте автомобиль напрямую у местных владельцев — без наценки агентства.",
@@ -2414,6 +2414,7 @@ export const translations = {
       founderBadge: "Founder",
       hostOwner: "المالك",
       hostAgent: "وكيل",
+      viewAllListings: "عرض كل إعلانات المستخدم",
       amenitiesAndViewHeading: "المرافق",
       contactWhatsapp: "تواصل مع المضيف عبر واتساب",
       contactNote: "عرض توضيحي فقط — سيتم الربط بالمضيفين الفعليين عند إطلاق IZIGO.",
@@ -2424,8 +2425,7 @@ export const translations = {
       moreListingsHeading: "المزيد من الفلل في {city}",
     },
     phoneReveal: {
-      show: "إظهار",
-    },
+      show: "إظهار",    },
     carsPage: {
       heading: "سيارات للإيجار",
       subtitle: "استأجر سيارة مباشرة من مالكين محليين — بدون رسوم وكالة.",

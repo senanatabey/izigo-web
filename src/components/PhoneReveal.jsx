@@ -15,7 +15,7 @@ export default function PhoneReveal({ phone, listingId }) {
 
   // Invisible, background-only: no UI change, no login prompt for guests —
   // logged-out visitors just don't get a listing_contacts row.
-  const handleWhatsappClick = () => {
+  const recordContact = () => {
     if (user?.id && listingId) recordListingContact(listingId, user.id);
   };
 
@@ -38,6 +38,12 @@ export default function PhoneReveal({ phone, listingId }) {
           border: none; background: none; color: #fff; font-weight: 700; font-size: 13px; cursor: pointer;
           flex-shrink: 0;
         }
+        .phone-reveal .pr-number-revealed {
+          display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 800; color: var(--text);
+          text-decoration: none; margin-bottom: 12px; letter-spacing: 0.2px;
+        }
+        .phone-reveal .pr-number-revealed:hover { color: var(--izigo-green); }
+        .phone-reveal .pr-number-revealed svg { color: var(--izigo-green); flex-shrink: 0; }
         .phone-reveal .pr-whatsapp {
           display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
           background: var(--izigo-green); color: #fff; border: none; border-radius: 10px;
@@ -46,20 +52,20 @@ export default function PhoneReveal({ phone, listingId }) {
         .phone-reveal .pr-whatsapp:hover { filter: brightness(0.95); }
       `}</style>
 
-      <div
-        className={`pr-row${revealed ? "" : " is-hidden"}`}
-        onClick={revealed ? undefined : () => setRevealed(true)}
-      >
-        <span className="pr-number"><Phone size={15} />{formatPhone(phone, !revealed)}</span>
-        {!revealed && (
+      {!revealed ? (
+        <div className="pr-row is-hidden" onClick={() => setRevealed(true)}>
+          <span className="pr-number"><Phone size={15} />{formatPhone(phone, true)}</span>
           <button type="button" className="pr-show" onClick={() => setRevealed(true)}>{t("phoneReveal.show")}</button>
-        )}
-      </div>
-
-      {revealed && (
-        <a href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer" className="pr-whatsapp" onClick={handleWhatsappClick}>
-          <MessageCircle size={17} />{t("villaDetail.contactWhatsapp")}
-        </a>
+        </div>
+      ) : (
+        <>
+          <a href={`tel:+${digits}`} className="pr-number-revealed" onClick={recordContact}>
+            <Phone size={17} />{formatPhone(phone, false)}
+          </a>
+          <a href={`https://wa.me/${digits}`} target="_blank" rel="noopener noreferrer" className="pr-whatsapp" onClick={recordContact}>
+            <MessageCircle size={17} />{t("villaDetail.contactWhatsapp")}
+          </a>
+        </>
       )}
     </div>
   );

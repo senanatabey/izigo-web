@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Users, BedDouble, Bath, ShieldCheck, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Waves, Thermometer, Ruler, Layers, Clock, CheckCircle2, XCircle, X, Check, Mountain, Building2, Sprout, Eye } from "lucide-react";
+import { MapPin, Users, BedDouble, Bath, User, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, Waves, Thermometer, Ruler, Layers, Clock, CheckCircle2, XCircle, X, Check, Mountain, Building2, Sprout, Eye } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
@@ -169,8 +169,8 @@ export default function VillaDetail() {
 
         /* Compact amenities inside the sidebar: a borderless 2-column grid. */
         .villa-detail .vd-sb-amenities-label { font-size: 12px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
-        .villa-detail .vd-sb-amenities-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; row-gap: 9px; }
-        .villa-detail .vd-sb-amenity { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.35; color: var(--text); }
+        .villa-detail .vd-sb-amenities-grid { column-count: 2; column-gap: 12px; }
+        .villa-detail .vd-sb-amenity { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.35; color: var(--text); margin-bottom: 9px; break-inside: avoid; -webkit-column-break-inside: avoid; }
         .villa-detail .vd-sb-amenity svg { color: var(--izigo-green); flex-shrink: 0; margin-top: 1px; }
 
         .villa-detail .vd-bedtypes { margin-top: 10px; }
@@ -206,27 +206,25 @@ export default function VillaDetail() {
         .villa-detail .vd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
         .villa-detail .vd-facts svg { color: var(--izigo-green); flex-shrink: 0; }
         .villa-detail .vd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
-        .villa-detail .vd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+        .villa-detail .vd-price { font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: -0.3px; margin-bottom: 4px; }
         .villa-detail .vd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
         .villa-detail .vd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .villa-detail .vd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .villa-detail .vd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: rgba(0, 200, 151, 0.08); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
         .villa-detail .vd-price-block { flex: 1; min-width: 0; }
-        .villa-detail .vd-price-regular { font-size: 13px; font-weight: 500; color: var(--text-soft); text-decoration: line-through; margin-bottom: 2px; }
-        .villa-detail .vd-price-regular span { font-size: 12px; }
         .villa-detail .vd-longstay-note { font-size: 12px; font-weight: 600; color: var(--izigo-green); margin-top: 4px; }
         .villa-detail .vd-agent-price {
-          margin-top: 12px; padding: 8px 12px; border-radius: 10px;
+          margin-top: 12px; margin-bottom: 16px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;
           background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
         }
         .villa-detail .detail-save-btn { position: static; }
-        .villa-detail .vd-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .villa-detail .vd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
-        .villa-detail .vd-host-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; }
-        .villa-detail .vd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); }
-        .villa-detail .vd-agency-name { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+        .villa-detail .vd-host { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 0; }
+        .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
+        .villa-detail .vd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); line-height: 1.3; }
+        .villa-detail .vd-host-avatar { width: 38px; height: 38px; border-radius: 10px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--text-soft); flex-shrink: 0; }
         .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
+        .villa-detail .vd-host-all-listings { display: block; font-size: 12.5px; font-weight: 400; color: var(--izigo-green); margin: 0 0 16px; }
+        .villa-detail .vd-host-all-listings:hover { text-decoration: underline; }
 
         .villa-detail .vd-map-overlay {
           position: fixed; inset: 0; background: rgba(11, 61, 59, 0.55); z-index: 1000;
@@ -281,10 +279,13 @@ export default function VillaDetail() {
       <Link to="/villas" className="vd-back">{t("villaDetail.back")}</Link>
 
       <div className="vd-header">
-        {(villa.host?.founder_host || villa.host?.agent_status === "approved") && (
+        {/* Agent status already shows next to the host's name in the sidebar
+            (vd-host-type) — a second "Vasitəçi" pill up here was pure
+            duplication. The founder badge has no sidebar equivalent, so it
+            stays. */}
+        {villa.host?.founder_host && (
           <div className="vd-badges">
-            {villa.host?.founder_host && <span className="vd-badge vd-badge-founder">{t("villaDetail.founderBadge")}</span>}
-            {villa.host?.agent_status === "approved" && <span className="vd-badge vd-badge-agent">{t("villaDetail.agentBadge")}</span>}
+            <span className="vd-badge vd-badge-founder">{t("villaDetail.founderBadge")}</span>
           </div>
         )}
         <h1 className="vd-title">{villa.title[language] || villa.title.en}</h1>
@@ -298,7 +299,7 @@ export default function VillaDetail() {
           <ListingGallery
             images={villa.images} tone={villa.tone}
             alt={villa.title[language] || villa.title.en}
-            priceLabel={`${formatPrice(longStayActive ? longStayPrice : (villa.discount ? Math.round(villa.price * (1 - villa.discount / 100)) : villa.price))} ${t("villaDetail.perNight")}`}
+            priceLabel={`${formatPrice(villa.discount ? Math.round(villa.price * (1 - villa.discount / 100)) : villa.price)} ${t("villaDetail.perNight")}`}
             phone={villa.phone} listingId={villa.id}
           />
         </div>
@@ -369,31 +370,6 @@ export default function VillaDetail() {
             </div>
           )}
 
-          <div className="vd-sb-divider" />
-
-          <div className="vd-price-row">
-            <div className="vd-price-block">
-              {longStayActive ? (
-                <>
-                  <div className="vd-price-regular">{formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span></div>
-                  <div className="vd-price">{formatPrice(longStayPrice)} <span>{t("villaDetail.perNight")}</span></div>
-                  <div className="vd-longstay-note">{t("villaDetail.longStayNote").replace("{nights}", villa.longStayMinNights)}</div>
-                </>
-              ) : (
-                <div className="vd-price">
-                  {villa.discount ? (<><span className="vd-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))}</>) : formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span>
-                </div>
-              )}
-            </div>
-            <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
-          </div>
-
-          {agentPrice != null && (
-            <div className="vd-agent-price">
-              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
-            </div>
-          )}
-
           {(villa.amenities.length > 0 || villa.viewType?.some((k) => k !== "none")) && (
             <>
               <div className="vd-sb-divider" />
@@ -413,19 +389,43 @@ export default function VillaDetail() {
 
           <div className="vd-sb-divider" />
 
-          <Link to={`/host/${villa.host?.id}`} className="vd-host">
-            <div className="vd-host-avatar"><ShieldCheck size={20} /></div>
-            <div>
-              <div className="vd-host-name-row">
-                <span className="vd-host-name">{villa.host?.full_name || t("villaDetail.hostName")}</span>
-                <span className="vd-host-type">
-                  {villa.host?.host_type === "agent" ? t("villaDetail.hostAgent") : t("villaDetail.hostOwner")}
-                </span>
+          <div className="vd-price-row">
+            <div className="vd-price-block">
+              {/* Main price is always the 1-night rate — a long-stay discount
+                  is conditional on a minimum number of nights, so it must
+                  never be the number shown as "the price" by default. It
+                  gets its own smaller line underneath instead. */}
+              <div className="vd-price">
+                {villa.discount ? (<><span className="vd-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))}</>) : formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span>
               </div>
-              {villa.host?.agent_status === "approved" && villa.host?.agency_name && (
-                <div className="vd-agency-name">{villa.host.agency_name}</div>
+              {longStayActive && (
+                <div className="vd-longstay-note">
+                  {t("villaDetail.longStayNote").replace("{nights}", villa.longStayMinNights)}: {formatPrice(longStayPrice)} {t("villaDetail.perNight")}
+                </div>
               )}
             </div>
+            <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
+          </div>
+
+          {agentPrice != null && (
+            <div className="vd-agent-price">
+              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
+            </div>
+          )}
+
+          <div className="vd-sb-divider" />
+
+          <Link to={`/host/${villa.host?.id}`} className="vd-host">
+            <div>
+              <div className="vd-host-name">{villa.host?.full_name || t("villaDetail.hostName")}</div>
+              <div className="vd-host-type">
+                {villa.host?.host_type === "agent" ? t("villaDetail.hostAgent") : t("villaDetail.hostOwner")}
+              </div>
+            </div>
+            <div className="vd-host-avatar"><User size={18} /></div>
+          </Link>
+          <Link to={`/host/${villa.host?.id}`} className="vd-host-all-listings">
+            {t("villaDetail.viewAllListings")} →
           </Link>
 
           <PhoneReveal phone={villa.phone} listingId={villa.id} />

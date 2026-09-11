@@ -46,6 +46,15 @@ export async function isFounderCampaignJoinable() {
  * Grants founder status only when every condition is met, and auto-closes
  * the campaign the moment the cap is reached. Safe to call repeatedly —
  * it's a no-op once a host is already a founder.
+ *
+ * Returns `true` on a successful grant, or a reason string when it did
+ * nothing: "not_found", "already_founder", "not_verified",
+ * "no_approved_listing", "campaign_inactive", or "cap_reached". A host that
+ * met the criteria before this flow existed (e.g. a listing approved or a
+ * host verified directly in the database, bypassing the admin UI) never had
+ * this function run for them — the reason string is what lets an admin
+ * retroactively grant it and know why it doesn't fire, rather than the
+ * badge just silently never appearing.
  */
 export async function tryGrantFounderStatus(hostId) {
   const { data: profile, error: profileError } = await supabase
@@ -54,15 +63,17 @@ export async function tryGrantFounderStatus(hostId) {
     .eq("id", hostId)
     .single();
   if (profileError) throw profileError;
-  if (!profile || profile.founder_host || !profile.verified) return false;
+  if (!profile) return "not_found";
+  if (profile.founder_host) return "already_founder";
+  if (!profile.verified) return "not_verified";
 
   const campaign = await fetchFounderCampaign();
-  if (campaign.status !== "active") return false;
+  if (campaign.status !== "active") return "campaign_inactive";
 
   const count = await fetchFounderCount();
   if (count >= campaign.max_founder_hosts) {
-    if (campaign.status === "active") await updateFounderCampaign({ status: "inactive" });
-    return false;
+    await updateFounderCampaign({ status: "inactive" });
+    return "cap_reached";
   }
 
   const { data: approvedListing } = await supabase
@@ -72,7 +83,7 @@ export async function tryGrantFounderStatus(hostId) {
     .eq("status", "approved")
     .limit(1)
     .maybeSingle();
-  if (!approvedListing) return false;
+  if (!approvedListing) return "no_approved_listing";
 
   const vipExpiresAt = new Date();
   vipExpiresAt.setFullYear(vipExpiresAt.getFullYear() + 1);

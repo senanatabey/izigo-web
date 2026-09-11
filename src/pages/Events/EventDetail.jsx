@@ -127,10 +127,11 @@ export default function EventDetail() {
       <Link to="/events" className="ed-back">{t("eventDetail.back")}</Link>
 
       <div className="ed-header">
-        {(event.host?.founder_host || event.host?.agent_status === "approved") && (
+        {/* Agent status already shows next to the host's name lower down —
+            a second "Vasitəçi" pill up here was pure duplication. */}
+        {event.host?.founder_host && (
           <div className="ed-badges">
-            {event.host?.founder_host && <span className="ed-badge ed-badge-founder">{t("villaDetail.founderBadge")}</span>}
-            {event.host?.agent_status === "approved" && <span className="ed-badge ed-badge-agent">{t("villaDetail.agentBadge")}</span>}
+            <span className="ed-badge ed-badge-founder">{t("villaDetail.founderBadge")}</span>
           </div>
         )}
         <h1 className="ed-title">{event.title[language] || event.title.en}</h1>

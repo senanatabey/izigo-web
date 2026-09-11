@@ -13,6 +13,17 @@ export default function UsersPage() {
   const [actingAgentId, setActingAgentId] = useState(null);
   const [hostTypeFilter, setHostTypeFilter] = useState("all");
   const [agentStatusFilter, setAgentStatusFilter] = useState("all");
+  const [grantingFounderId, setGrantingFounderId] = useState(null);
+  // "E-poçtu təsdiqlə" confirms the login email in Supabase Auth
+  // (auth.users.email_confirmed_at) — a totally different flag from
+  // profiles.verified (the "Təsdiqlənib/Təsdiqlənməyib" host-trust column).
+  // The table has no column for the auth-side flag at all, so a successful
+  // call looked like it did nothing: the alert said "təsdiqləndi" but
+  // nothing on screen changed, and the near-identical Azerbaijani wording
+  // made it read as the same "təsdiqlənib" status. Tracking it here just
+  // for this page session gives the admin a persistent ✓ instead of only a
+  // one-off alert() they may have missed or half-read.
+  const [confirmedEmailIds, setConfirmedEmailIds] = useState(() => new Set());
 
   const load = () => {
     setLoading(true);
@@ -72,6 +83,41 @@ export default function UsersPage() {
     load();
   };
 
+  // Manual escape hatch for hosts who meet every founder condition (verified
+  // + an approved listing) but never got the badge, because the listing or
+  // the verification happened before this flow existed or went straight
+  // through the database instead of this admin UI — tryGrantFounderStatus
+  // only ever fires automatically from the two call sites above/in
+  // PendingApprovalsPage, so a host set up any other way is stuck without
+  // this button. Surfacing the reason string (rather than just refreshing
+  // silently) is what lets an admin tell "not eligible yet" apart from
+  // "eligible, but nothing ever triggered the grant".
+  const FOUNDER_FAIL_REASONS = {
+    not_found: "İstifadəçi tapılmadı.",
+    already_founder: "Bu host artıq Founder statusundadır.",
+    not_verified: "Host təsdiqlənməyib — əvvəlcə \"Təsdiqlənib\" statusuna keçirin.",
+    no_approved_listing: "Bu hostun təsdiqlənmiş elanı yoxdur.",
+    campaign_inactive: "Founder kampaniyası aktiv deyil (limit dolub və ya admin bağlayıb).",
+    cap_reached: "Founder limiti artıq dolub.",
+  };
+
+  const grantFounder = async (id) => {
+    setGrantingFounderId(id);
+    try {
+      const result = await tryGrantFounderStatus(id);
+      if (result === true) {
+        window.alert("Founder statusu verildi.");
+        load();
+      } else {
+        window.alert(FOUNDER_FAIL_REASONS[result] || "Founder statusu verilə bilmədi.");
+      }
+    } catch (err) {
+      window.alert(err.message || "Founder statusu verilə bilmədi.");
+    } finally {
+      setGrantingFounderId(null);
+    }
+  };
+
   // Requires the confirm-user-email edge function to be deployed (it needs
   // the service_role key, which never touches the browser — see
   // supabase/functions/confirm-user-email/index.ts for why this can't just
@@ -82,7 +128,8 @@ export default function UsersPage() {
     try {
       const { data, error } = await supabase.functions.invoke("confirm-user-email", { body: { user_id: id } });
       if (error || data?.error) throw new Error(data?.error || error.message);
-      window.alert("E-poçt təsdiqləndi.");
+      setConfirmedEmailIds((prev) => new Set(prev).add(id));
+      window.alert("E-poçt təsdiqləndi. (Qeyd: bu, aşağıdakı \"Host təsdiqi\" statusundan fərqlidir — yalnız login üçün email təsdiqidir.)");
     } catch (err) {
       window.alert(err.message || "E-poçt təsdiqlənmədi — yenidən cəhd edin.");
     } finally {
@@ -146,7 +193,7 @@ export default function UsersPage() {
       ) : (
         <table className="admin-users-table">
           <thead>
-            <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Host Tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Təsdiqlənib</th><th>Founder</th><th>Qoşulub</th><th></th><th></th></tr>
+            <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Host Tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Host təsdiqi</th><th>Founder</th><th>Qoşulub</th><th></th><th>E-poçt təsdiqi</th></tr>
           </thead>
           <tbody>
             {filteredUsers.map((u) => (
@@ -166,17 +213,33 @@ export default function UsersPage() {
                 </td>
                 <td>{u.listingCount}</td>
                 <td>
-                  <button className="toggle" onClick={() => toggleVerified(u.id, u.verified)}>
+                  <button
+                    className="toggle"
+                    title="Hostun etibar statusu — email təsdiqindən fərqlidir, sağdakı 'E-poçt təsdiqi' sütunu ilə qarışdırmayın."
+                    onClick={() => toggleVerified(u.id, u.verified)}
+                  >
                     <span className={`verified-pill ${u.verified ? "yes" : "no"}`}>{u.verified ? "Təsdiqlənib" : "Təsdiqlənməyib"}</span>
                   </button>
                 </td>
-                <td>{u.founder_host ? <span className="founder-pill">🏅 Founder</span> : "—"}</td>
+                <td>
+                  {u.founder_host ? (
+                    <span className="founder-pill">🏅 Founder</span>
+                  ) : (
+                    <button className="toggle" disabled={grantingFounderId === u.id} onClick={() => grantFounder(u.id)}>
+                      {grantingFounderId === u.id ? "..." : "Founder et"}
+                    </button>
+                  )}
+                </td>
                 <td>{new Date(u.created_at).toLocaleDateString()}</td>
                 <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Admin rolunu ləğv et" : "Admin et"}</button></td>
                 <td>
-                  <button className="toggle" disabled={confirmingId === u.id} onClick={() => confirmEmail(u.id)}>
-                    {confirmingId === u.id ? "..." : "E-poçtu təsdiqlə"}
-                  </button>
+                  {confirmedEmailIds.has(u.id) ? (
+                    <span className="verified-pill yes">✓ Təsdiqləndi</span>
+                  ) : (
+                    <button className="toggle" disabled={confirmingId === u.id} onClick={() => confirmEmail(u.id)}>
+                      {confirmingId === u.id ? "..." : "E-poçtu təsdiqlə"}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -132,10 +132,11 @@ export default function TransferDetail() {
       <Link to="/transfers" className="td-back">{t("transferDetail.back")}</Link>
 
       <div className="td-header">
-        {(item.host?.founder_host || item.host?.agent_status === "approved") && (
+        {/* Agent status already shows next to the host's name lower down —
+            a second "Vasitəçi" pill up here was pure duplication. */}
+        {item.host?.founder_host && (
           <div className="td-badges">
-            {item.host?.founder_host && <span className="td-badge td-badge-founder">{t("villaDetail.founderBadge")}</span>}
-            {item.host?.agent_status === "approved" && <span className="td-badge td-badge-agent">{t("villaDetail.agentBadge")}</span>}
+            <span className="td-badge td-badge-founder">{t("villaDetail.founderBadge")}</span>
           </div>
         )}
         <h1 className="td-title">{item.title[language] || item.title.en}</h1>

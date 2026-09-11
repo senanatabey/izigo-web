@@ -127,10 +127,11 @@ export default function CarDetail() {
       <Link to="/cars" className="cd-back">{t("carDetail.back")}</Link>
 
       <div className="cd-header">
-        {(car.host?.founder_host || car.host?.agent_status === "approved") && (
+        {/* Agent status already shows next to the host's name lower down —
+            a second "Vasitəçi" pill up here was pure duplication. */}
+        {car.host?.founder_host && (
           <div className="cd-badges">
-            {car.host?.founder_host && <span className="cd-badge cd-badge-founder">{t("villaDetail.founderBadge")}</span>}
-            {car.host?.agent_status === "approved" && <span className="cd-badge cd-badge-agent">{t("villaDetail.agentBadge")}</span>}
+            <span className="cd-badge cd-badge-founder">{t("villaDetail.founderBadge")}</span>
           </div>
         )}
         <h1 className="cd-title">{car.title[language] || car.title.en}</h1>
