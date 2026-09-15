@@ -113,9 +113,25 @@ export default function CarsPage() {
         @media (max-width: 1024px) { .cars-page .cp-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
           .cars-page { padding: 32px 5vw 56px; }
-          .cars-page .cp-grid { grid-template-columns: 1fr; }
-          .cars-page .cp-filters { flex-direction: column; align-items: stretch; }
+          .cars-page .cp-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .cars-page .cp-filters { flex-direction: column; align-items: stretch; position: relative; padding-top: 46px; }
+          .cars-page .cp-reset { position: absolute; top: 16px; right: 16px; padding: 0; font-size: 12.5px; }
           .cars-page .cp-field select { width: 100%; }
+          .cars-page .cp-body { padding: 10px; }
+          .cars-page .cp-title { font-size: 13.5px; margin-bottom: 4px; }
+          .cars-page .cp-city { font-size: 10.5px; margin-bottom: 3px; }
+          .cars-page .cp-meta { font-size: 10.5px; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+          .cars-page .cp-price { font-size: 14px; }
+          .cars-page .cp-link { display: none; }
+          .cars-page .cp-card .save-heart {
+            width: 30px; height: 30px; top: 6px; right: 6px;
+            background: none; box-shadow: none;
+          }
+          .cars-page .cp-card .save-heart svg {
+            width: 22px; height: 22px; color: #fff;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+          }
+          .cars-page .cp-card .save-heart.active svg { color: var(--izigo-orange); }
         }
       `}</style>
 

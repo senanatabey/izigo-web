@@ -4,6 +4,7 @@ import { MapPin, Users, Settings2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
+import { useSeo, schema } from "../../lib/seo";
 import { fetchListingById, toneForId, shortListingCode, relativeDate, fetchAgentPrice } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
@@ -49,6 +50,21 @@ export default function CarDetail() {
     postedAt: relativeDate(row.created_at, language),
     images: row.images || [],
   } : null;
+
+  useSeo({
+    title: car ? `${t("carDetail.seoTitle").replace("{city}", cityLabel(car.city, language))}: ${formatPrice(car.discount ? Math.round(car.price * (1 - car.discount / 100)) : car.price)} — ${car.title?.[language] || car.title.en}` : undefined,
+    description: car ? (car.description?.[language] || car.description?.en) : undefined,
+    path: `/cars/${id}`,
+    image: car?.images?.[0],
+    ogType: "product",
+    structuredData: car ? schema.product({
+      name: car.title?.[language] || car.title?.en,
+      description: car.description?.[language] || car.description?.en,
+      url: `https://izigo.az/cars/${id}`,
+      image: car.images?.[0],
+      price: car.discount ? Math.round(car.price * (1 - car.discount / 100)) : car.price,
+    }) : null,
+  });
 
   if (loading) return null;
 

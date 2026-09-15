@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useState, Suspense, lazy } from "react";
 import {
-  BrowserRouter, Routes, Route, Outlet, Navigate, Link, NavLink, useLocation, useParams,
+  BrowserRouter, Routes, Route, Outlet, Navigate, Link, NavLink, useLocation, useParams, useNavigate,
 } from "react-router-dom";
 import {
-  Home as HomeIcon, Heart, User, ListChecks,
+  Home as HomeIcon, Heart, User, ListChecks, Package,
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
   ShieldCheck, LogOut, X, Sparkles, Bell, Settings, ChevronDown, Globe, ArrowLeft,
   Map, MapPin, HelpCircle, FileText, Image as ImageIcon, Compass, Trophy,
-  Handshake, Megaphone, Wallet, DollarSign, Receipt, MessageSquareText,
+  Handshake, Megaphone, Wallet, DollarSign, Receipt, MessageSquareText, Share2,
 } from "lucide-react";
 import "./App.css";
 import "./rtl.css";
@@ -342,7 +342,7 @@ function ExperienceRedirect() {
   return <Navigate to={`/transfers/${id}`} replace />;
 }
 
-function LocaleSwitcher() {
+function LocaleSwitcher({ className = "" }) {
   const { language, setLanguage } = useLanguage();
   const { currency, setCurrency, setCurrencyForLanguage } = useCurrency();
   const [open, setOpen] = useState(false);
@@ -370,7 +370,7 @@ function LocaleSwitcher() {
   }, [open]);
 
   return (
-    <div className="locale-switcher" ref={rootRef}>
+    <div className={`locale-switcher ${className}`} ref={rootRef}>
       <button
         type="button"
         className="locale-switcher-trigger"
@@ -622,9 +622,37 @@ function MainLayout() {
   const { isAuthenticated } = useAuth();
   const { openLogin } = useAuthModal();
   const { t } = useLanguage();
-  const { saved } = useSaved();
+  const { saved, isSaved, toggleSaved } = useSaved();
   const location = useLocation();
+  const navigate = useNavigate();
   const favoritesCount = saved.length;
+  // Elan detalı səhifələrində (villa/maşın/transfer/tədbir) mobil header-i
+  // sıxlaşdırmaq üçün dil seçimi və "Yeni elan" düyməsini gizlədirik —
+  // masaüstündə heç nə dəyişmir, CSS-dəki media query həll edir.
+  const listingDetailMatch = location.pathname.match(/^\/(villas|cars|transfers|events)\/([^/]+)$/);
+  const isListingDetailPage = !!listingDetailMatch;
+  // Category LIST pages (/villas, /cars, /transfers, /events — no id) get the
+  // same back-arrow + centered-logo mobile header as detail pages, but keep
+  // the bottom tab bar (unlike single-listing detail pages).
+  const isCategoryListPage = /^\/(villas|cars|transfers|events)$/.test(location.pathname);
+  // URL seqmenti ("villas") ilə SaveHeart-in gözlədiyi tip adı ("villa")
+  // fərqlidir — mobil başlıqdakı ürək düyməsi düzgün elanı saxlamaq üçün
+  // uyğunlaşdırılır.
+  const listingDetailType = listingDetailMatch && ({
+    villas: "villa", cars: "car", transfers: "transfer", events: "event",
+  })[listingDetailMatch[1]];
+  const listingDetailId = listingDetailMatch?.[2];
+  const isListingSaved = listingDetailType && listingDetailId && isSaved(listingDetailType, listingDetailId);
+
+  // Native paylaşma dəstəyi olmayan brauzerlərdə linki panoya kopyalayırıq.
+  const handleShare = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: document.title, url: window.location.href }); } catch { /* ləğv edildi */ }
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
+      alert(t("listingGallery.linkCopied"));
+    }
+  };
 
   // Compact + shadow only kick in past this scroll threshold — the navbar
   // itself is already `position: sticky` in CSS, this just toggles a class.
@@ -636,10 +664,28 @@ function MainLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Alt navbardakı "+" düyməsi: 2 seçimli kiçik menyu açır (Yeni elan /
+  // Plan My Trip) — AccountMenu-dəki eyni "kənara klik/Escape ilə bağlanma" naxışı.
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const addMenuRef = React.useRef(null);
+  useEffect(() => {
+    if (!addMenuOpen) return undefined;
+    const onClickOutside = (e) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target)) setAddMenuOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setAddMenuOpen(false); };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [addMenuOpen]);
+
   return (
     <div>
       <header className={`app-navbar${scrolled ? " is-stuck" : ""}`}>
-        <div className="app-navbar-inner">
+        <div className={`app-navbar-inner${isListingDetailPage ? " is-listing-detail" : ""}`}>
           <div className="app-navbar-left">
             <Link to="/"><IzigoLogo /></Link>
             <nav className="app-nav-links">
@@ -655,7 +701,7 @@ function MainLayout() {
             </nav>
           </div>
           <div className="app-nav-right">
-            <LocaleSwitcher />
+            <LocaleSwitcher className={isListingDetailPage ? "is-hidden-on-detail-mobile" : ""} />
             <Link to="/saved" className="nav-icon-link nav-icon-link-favorites" aria-label={t("nav.saved")} data-tooltip={t("nav.saved")}>
               <Heart size={19} />
               {favoritesCount > 0 && <span className="nav-icon-badge">{favoritesCount > 99 ? "99+" : favoritesCount}</span>}
@@ -665,11 +711,99 @@ function MainLayout() {
             ) : (
               <button type="button" className="btn-outline" onClick={openLogin}>{t("nav.login")}</button>
             )}
-            <Link to="/add-listing" className="btn-primary"><PlusCircle size={16} /><span>{t("nav.publish")}</span></Link>
+            <Link
+              to="/add-listing"
+              className={`btn-primary${isListingDetailPage ? " is-hidden-on-detail-mobile" : ""}`}
+            ><PlusCircle size={16} /><span>{t("nav.publish")}</span></Link>
           </div>
+          {isListingDetailPage && (
+            <div className="app-navbar-detail-mobile">
+              <button type="button" className="app-navbar-detail-back" onClick={() => navigate(-1)} aria-label={t("listingGallery.back")}>
+                <ArrowLeft size={20} />
+              </button>
+              <Link to="/" className="app-navbar-detail-logo"><IzigoLogo /></Link>
+              <div className="app-navbar-detail-actions">
+                <button
+                  type="button"
+                  className={`app-navbar-detail-heart${isListingSaved ? " is-saved" : ""}`}
+                  aria-label={t("nav.saved")}
+                  onClick={() => listingDetailType && listingDetailId && toggleSaved(listingDetailType, listingDetailId)}
+                >
+                  <Heart size={19} fill={isListingSaved ? "currentColor" : "none"} />
+                </button>
+                <button type="button" className="app-navbar-detail-share" onClick={handleShare} aria-label={t("listingGallery.share")}>
+                  <Share2 size={19} />
+                </button>
+              </div>
+            </div>
+          )}
+          {isCategoryListPage && (
+            <div className="app-navbar-detail-mobile">
+              <button type="button" className="app-navbar-detail-back" onClick={() => navigate(-1)} aria-label={t("listingGallery.back")}>
+                <ArrowLeft size={20} />
+              </button>
+              <Link to="/" className="app-navbar-detail-logo"><IzigoLogo /></Link>
+              <div className="app-navbar-detail-actions" style={{ width: 36 }} />
+            </div>
+          )}
+          {!isListingDetailPage && !isCategoryListPage && (
+            <div className="app-navbar-plain-mobile">
+              <Link to="/" className="app-navbar-plain-mobile-logo"><IzigoLogo /></Link>
+            </div>
+          )}
         </div>
       </header>
-      <main><Outlet /></main>
+      {!isListingDetailPage && (
+        <nav className="app-bottom-nav">
+          <NavLink to="/" end className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+            <HomeIcon size={22} />
+            <span>{t("nav.home")}</span>
+          </NavLink>
+          <NavLink to="/saved" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+            <span className="abn-icon-wrap">
+              <Heart size={22} />
+              {favoritesCount > 0 && <span className="abn-badge">{favoritesCount > 99 ? "99+" : favoritesCount}</span>}
+            </span>
+            <span>{t("nav.saved")}</span>
+          </NavLink>
+          <div className="abn-cta-wrap" ref={addMenuRef}>
+            {addMenuOpen && (
+              <div className="abn-cta-menu">
+                <Link to="/add-listing" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
+                  <PlusCircle size={18} />{t("nav.publish")}
+                </Link>
+                <Link to="/plan-my-trip" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
+                  <Sparkles size={18} />{t("heroButtons.planMyTrip")}
+                </Link>
+              </div>
+            )}
+            <button
+              type="button"
+              className={`abn-item abn-item-cta${addMenuOpen ? " is-open" : ""}`}
+              aria-label={t("nav.publish")}
+              onClick={() => setAddMenuOpen((v) => !v)}
+            >
+              <PlusCircle size={30} />
+            </button>
+          </div>
+          <NavLink to="/concierge" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+            <Package size={22} />
+            <span>{t("nav.concierge")}</span>
+          </NavLink>
+          {isAuthenticated ? (
+            <NavLink to="/profile" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+              <User size={22} />
+              <span>{t("nav.accountTab")}</span>
+            </NavLink>
+          ) : (
+            <button type="button" className="abn-item" onClick={openLogin}>
+              <User size={22} />
+              <span>{t("nav.accountTab")}</span>
+            </button>
+          )}
+        </nav>
+      )}
+      <main className={!isListingDetailPage ? "has-bottom-nav" : ""}><Outlet /></main>
       <footer className="site-footer">
         <img src="/images/logos/logo-footer.png" alt="IZIGO" className="site-footer-logo" />
         <nav className="site-footer-explore">

@@ -4,6 +4,7 @@ import { MapPin, Users, Car, Footprints, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
+import { useSeo, schema } from "../../lib/seo";
 import { fetchListingById, toneForId, shortListingCode, relativeDate, fetchAgentPrice } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
@@ -50,6 +51,21 @@ export default function TransferDetail() {
     postedAt: relativeDate(row.created_at, language),
     images: row.images || [],
   } : null;
+
+  useSeo({
+    title: item ? `${t("transferDetail.seoTitle").replace("{city}", cityLabel(item.city, language))}: ${formatPrice(item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price)} — ${item.title?.[language] || item.title.en}` : undefined,
+    description: item ? (item.description?.[language] || item.description?.en) : undefined,
+    path: `/transfers/${id}`,
+    image: item?.images?.[0],
+    ogType: "product",
+    structuredData: item ? schema.product({
+      name: item.title?.[language] || item.title?.en,
+      description: item.description?.[language] || item.description?.en,
+      url: `https://izigo.az/transfers/${id}`,
+      image: item.images?.[0],
+      price: item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price,
+    }) : null,
+  });
 
   if (loading) return null;
 

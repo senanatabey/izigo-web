@@ -102,10 +102,27 @@ export default function VillasPage() {
         @media (max-width: 1024px) { .villas-page .vp-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
           .villas-page { padding: 32px 5vw 56px; }
-          .villas-page .vp-grid { grid-template-columns: 1fr; }
-          .villas-page .vp-filters { flex-direction: column; align-items: stretch; }
+          .villas-page .vp-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .villas-page .vp-filters { flex-direction: column; align-items: stretch; position: relative; padding-top: 46px; }
+          .villas-page .vp-reset { position: absolute; top: 16px; right: 16px; padding: 0; font-size: 12.5px; }
           .villas-page .vp-quick-chip { padding: 9px 14px; font-size: 13px; }
           .villas-page .vp-field select { width: 100%; }
+          .villas-page .vc-body { padding: 10px; }
+          .villas-page .vc-title { font-size: 13.5px; margin-bottom: 4px; min-height: 36px; }
+          .villas-page .vc-city { font-size: 10.5px; margin-bottom: 3px; }
+          .villas-page .vc-meta { font-size: 10.5px; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+          .villas-page .vc-price { font-size: 14px; }
+          .villas-page .vc-link { display: none; }
+          .villas-page .vc-amenity-overlay { font-size: 10px; padding: 3px 8px; }
+          .villas-page .villa-card .save-heart {
+            width: 30px; height: 30px; top: 6px; right: 6px;
+            background: none; box-shadow: none;
+          }
+          .villas-page .villa-card .save-heart svg {
+            width: 22px; height: 22px; color: #fff;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+          }
+          .villas-page .villa-card .save-heart.active svg { color: var(--izigo-orange); }
         }
       `}</style>
 

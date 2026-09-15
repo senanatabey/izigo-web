@@ -5,7 +5,7 @@ import {
   PartyPopper, Mail, Send,
   Star, ShoppingBasket, Users,
   Sparkles, ArrowRight, BedDouble,
-  UtensilsCrossed, Compass, Camera,
+  UtensilsCrossed, Compass, Camera, LayoutGrid,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
@@ -16,6 +16,7 @@ import { useSeo, schema } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings, getCachedActiveCampaign, getCachedSiteSettings } from "../../lib/heroCampaigns";
 import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
 import BecomeHostCta from "../../components/BecomeHostCta";
+import SaveHeart from "../../components/SaveHeart";
 
 // The 5 most requested services from the full Concierge list, shown as
 // photo cards on the homepage teaser — each maps to a real key in
@@ -94,7 +95,7 @@ export default function IzigoHomepage() {
   const [where, setWhere] = useState("");
   const [citySlug, setCitySlug] = useState(null);
   const [whereOpen, setWhereOpen] = useState(false);
-  const [listingsTab, setListingsTab] = useState("villas");
+  const [listingsTab, setListingsTab] = useState("all");
   const [listingsByCategory, setListingsByCategory] = useState({});
   // Seeded from the in-memory cache so navigating back to Home from another
   // page shows the right hero image immediately instead of flashing the
@@ -147,10 +148,38 @@ export default function IzigoHomepage() {
     });
   }, []);
 
+  // Every item carries its own category/detailTo/priceUnit so the "All"
+  // tab (which mixes categories together) and the per-category tabs can
+  // share the exact same render code below.
+  const cityFilter = (items) => (
+    citySlug ? items.filter((item) => item.city && item.city.toLowerCase() === citySlug) : items
+  );
+
   const LISTINGS_TABS = LISTINGS_TABS_META.map((tab) => ({
     ...tab,
-    items: listingsByCategory[tab.category] || [],
+    items: cityFilter((listingsByCategory[tab.category] || []).map((item) => ({
+      ...item,
+      category: tab.category,
+      detailTo: tab.detailTo,
+      priceUnit: tab.priceUnit,
+    }))),
   }));
+
+  // Round-robin interleave (not random) so "All" mixes categories without
+  // reshuffling on every re-render.
+  const interleaveByCategory = (lists) => {
+    const result = [];
+    const max = Math.max(0, ...lists.map((list) => list.length));
+    for (let i = 0; i < max; i++) {
+      lists.forEach((list) => { if (list[i]) result.push(list[i]); });
+    }
+    return result;
+  };
+
+  const TABS_WITH_ALL = [
+    { key: "all", icon: LayoutGrid, to: "/villas", items: interleaveByCategory(LISTINGS_TABS.map((tab) => tab.items)) },
+    ...LISTINGS_TABS,
+  ];
 
   const cityLabel = (slug) => cityLabelForCity(cityFromSlug(slug), language);
   const filteredCities = CITY_OPTIONS.filter((slug) =>
@@ -183,7 +212,7 @@ export default function IzigoHomepage() {
   const planMyTripText = t("heroButtons.planMyTrip");
   const planMyTripLink = "/plan-my-trip";
 
-  const activeListingsTab = LISTINGS_TABS.find((tab) => tab.key === listingsTab);
+  const activeListingsTab = TABS_WITH_ALL.find((tab) => tab.key === listingsTab);
   const priceLabel = (item, priceUnit) => {
     const finalPrice = item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price;
     const priceNode = item.discount ? (
@@ -363,8 +392,8 @@ export default function IzigoHomepage() {
         .izigo-home section { padding: 45px 6vw; }
 
         .izigo-home .section-head { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: baseline; justify-content: space-between; }
-        .izigo-home .section-head h2 { font-size: 26px; font-weight: 800; }
-        .izigo-home .section-head a { font-size: 14px; font-weight: 700; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; }
+        .izigo-home .section-head h2 { font-size: 26px; font-weight: 600; }
+        .izigo-home .section-head a { font-size: 14px; font-weight: 500; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; }
 
         .izigo-home .latest { background: var(--bg); }
         .izigo-home .latest-tabs { max-width: 1280px; margin: 0 auto 18px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -374,8 +403,12 @@ export default function IzigoHomepage() {
           cursor: pointer; transition: all 0.15s ease;
         }
         .izigo-home .latest-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+
+        /* tap.az-tərzi mobil axtarış+kateqoriyalar — yalnız ≤640px-də
+           görünür, desktopda "latest-tabs" öz yerində qalır. */
+        .izigo-home .mobile-quick-search { display: none; }
         .izigo-home .latest-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .izigo-home .latest-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .izigo-home .latest-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .izigo-home .latest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .izigo-home .latest-thumb { aspect-ratio: 4 / 3; background-size: cover; background-position: center; }
         .izigo-home .latest-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -568,16 +601,48 @@ export default function IzigoHomepage() {
           .izigo-home .hero h1 { font-size: 34px; }
         }
         @media (max-width: 640px) {
-          .izigo-home .hero { padding: 40px 0 24px; min-height: 705px; }
+          .izigo-home .hero { display: none; }
           .izigo-home .hero-inner { padding: 0 5vw; }
           .izigo-home .hero h1 { font-size: 23px; }
-          .izigo-home .hero-cta-row { flex-direction: column; align-items: stretch; }
-          .izigo-home .search-card { margin: 20px 0 0; padding: 12px; }
+          .izigo-home .hero-eyebrow { display: none; }
+          .izigo-home .hero h1 p + p { margin-top: 4px; }
+          .izigo-home .hero-cta-row { display: none; }
+          .izigo-home .hero-trust-row {
+            gap: 4px 10px;
+            margin-top: 8px;
+            font-size: 11px;
+          }
+          .izigo-home .hero-trust-row span {
+            background: rgba(255,255,255,0.14);
+            padding: 4px 9px;
+            border-radius: 999px;
+            gap: 4px;
+          }
+          .izigo-home .search-card { display: none; }
           .izigo-home .search-row { flex-direction: column; gap: 10px; }
           .izigo-home .search-field { padding: 2px; }
           .izigo-home .search-submit { width: 100%; height: 44px; padding: 0 12px; }
           .izigo-home section { padding: 36px 5vw; }
-          .izigo-home .latest-grid { grid-template-columns: 1fr; }
+          .izigo-home .latest { padding-top: 8px; }
+          .izigo-home .section-head { margin: 0 auto 14px; }
+          .izigo-home .section-head h2 { font-size: 19px; }
+          .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .izigo-home .latest-body { padding: 8px; }
+          .izigo-home .latest-title { font-size: 13px; min-height: 32px; }
+          .izigo-home .latest-title-row { margin-bottom: 3px; }
+          .izigo-home .latest-city { font-size: 10px; margin-bottom: 2px; }
+          .izigo-home .latest-meta { margin-bottom: 3px; min-height: 0; }
+          .izigo-home .latest-meta-item { font-size: 10px; }
+          .izigo-home .latest-price { font-size: 14px; }
+          .izigo-home .latest-card .save-heart {
+            width: 34px; height: 34px; top: 6px; right: 6px;
+            background: none; box-shadow: none;
+          }
+          .izigo-home .latest-card .save-heart svg {
+            width: 26px; height: 26px; color: #fff;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+          }
+          .izigo-home .latest-card .save-heart.active svg { color: var(--izigo-orange); }
           .izigo-home .destination-grid { grid-template-columns: 1fr; }
           .izigo-home .discover-az-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-card { padding: 20px 18px; }
@@ -587,6 +652,52 @@ export default function IzigoHomepage() {
           .izigo-home .newsletter-inner { flex-direction: column; align-items: stretch; text-align: center; }
           .izigo-home .newsletter-copy { flex-direction: column; text-align: center; }
           .izigo-home .newsletter-form { max-width: none; }
+
+          .izigo-home .latest-tabs { display: none; }
+          .izigo-home .mobile-quick-search {
+            display: block;
+            padding: 16px 5vw 4px;
+          }
+          .izigo-home .mqs-search {
+            position: relative;
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px;
+            padding: 12px 16px; margin-bottom: 14px;
+          }
+          .izigo-home .mqs-search svg { color: var(--text-soft); flex-shrink: 0; }
+          .izigo-home .mqs-search input {
+            flex: 1; min-width: 0; border: none; background: none; outline: none;
+            font-size: 14px; color: var(--text);
+          }
+          .izigo-home .mqs-dropdown {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.15); overflow: hidden;
+          }
+          .izigo-home .mqs-dropdown button {
+            display: flex; align-items: center; gap: 8px; width: 100%;
+            padding: 11px 14px; border: none; background: none; text-align: left;
+            font-size: 13.5px; color: var(--text); cursor: pointer;
+          }
+          .izigo-home .mqs-dropdown button:hover { background: var(--bg-soft); }
+          .izigo-home .mqs-categories {
+            display: flex; justify-content: center; gap: 18px; overflow-x: auto; padding: 2px 2px 6px;
+            scrollbar-width: none;
+          }
+          .izigo-home .mqs-categories::-webkit-scrollbar { display: none; }
+          .izigo-home .mqs-cat {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            flex-shrink: 0; border: none; background: none; cursor: pointer;
+            text-decoration: none; color: var(--text-soft); font-size: 11.5px; font-weight: 600;
+            text-align: center; padding: 0 0 6px; border-bottom: 2px solid transparent;
+          }
+          .izigo-home .mqs-cat.active { color: var(--text); border-bottom-color: var(--text); }
+          .izigo-home .mqs-cat-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 46px; height: 46px; border-radius: 14px;
+            background: var(--bg-soft); color: var(--izigo-green);
+          }
+          .izigo-home .mqs-cat.active .mqs-cat-icon { background: var(--izigo-green); color: #fff; }
         }
       `}</style>
 
@@ -620,30 +731,67 @@ export default function IzigoHomepage() {
         </div>
       </section>
 
+      <section className="mobile-quick-search">
+        <form className="mqs-search" onSubmit={handleSearch}>
+          <Search size={17} />
+          <input
+            type="text"
+            placeholder={t("search.wherePlaceholder")}
+            value={where}
+            onChange={handleWhereChange}
+            onFocus={() => setWhereOpen(true)}
+            onBlur={() => setTimeout(() => setWhereOpen(false), 150)}
+          />
+          {whereOpen && filteredCities.length > 0 && (
+            <div className="mqs-dropdown">
+              {filteredCities.map((slug) => (
+                <button key={slug} type="button" onMouseDown={() => pickCity(slug)}>
+                  <MapPin size={14} color="var(--text-soft)" />{cityLabel(slug)}
+                </button>
+              ))}
+            </div>
+          )}
+        </form>
+        <div className="mqs-categories">
+          {TABS_WITH_ALL.map(({ key, icon: Icon }) => (
+            <button
+              key={key}
+              type="button"
+              className={`mqs-cat${listingsTab === key ? " active" : ""}`}
+              onClick={() => setListingsTab(key)}
+            >
+              <span className="mqs-cat-icon"><Icon size={20} /></span>
+              <span>{key === "all" ? t("search.allCategory") : t(`nav.${key}`)}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className="latest" id="listings">
         <div className="section-head">
           <h2>{t("latestListings.heading")}</h2>
           <Link to={activeListingsTab.to}>{t("latestListings.viewAll")} →</Link>
         </div>
         <div className="latest-tabs">
-          {LISTINGS_TABS.map(({ key, icon: Icon }) => (
+          {TABS_WITH_ALL.map(({ key, icon: Icon }) => (
             <button
               key={key}
               type="button"
               className={`latest-tab${listingsTab === key ? " active" : ""}`}
               onClick={() => setListingsTab(key)}
             >
-              <Icon size={14} />{t(`nav.${key}`)}
+              <Icon size={14} />{key === "all" ? t("search.allCategory") : t(`nav.${key}`)}
             </button>
           ))}
         </div>
         <div className="latest-grid">
           {activeListingsTab.items.map((item) => (
             <Link
-              to={activeListingsTab.detailTo(item.id)}
+              to={item.detailTo(item.id)}
               className="latest-card"
-              key={item.id}
+              key={`${item.category}-${item.id}`}
             >
+              <SaveHeart type={item.category} id={item.id} />
               <div className={`latest-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
               <div className="latest-body">
                 <div className="latest-city"><MapPin size={11} />{item.location}</div>
@@ -663,7 +811,7 @@ export default function IzigoHomepage() {
                     <span className="latest-meta-item"><Users size={12} />{item.guestCount} {t("latestListings.guests")}</span>
                   ) : null}
                 </div>
-                <div className="latest-price">{priceLabel(item, activeListingsTab.priceUnit)}</div>
+                <div className="latest-price">{priceLabel(item, item.priceUnit)}</div>
               </div>
             </Link>
           ))}

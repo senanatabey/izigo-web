@@ -102,9 +102,25 @@ export default function EventsPage() {
         @media (max-width: 1024px) { .events-page .ep-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
           .events-page { padding: 32px 5vw 56px; }
-          .events-page .ep-grid { grid-template-columns: 1fr; }
-          .events-page .ep-filters { flex-direction: column; align-items: stretch; }
+          .events-page .ep-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .events-page .ep-filters { flex-direction: column; align-items: stretch; position: relative; padding-top: 46px; }
+          .events-page .ep-reset { position: absolute; top: 16px; right: 16px; padding: 0; font-size: 12.5px; }
           .events-page .ep-field select { width: 100%; }
+          .events-page .ep-body { padding: 10px; }
+          .events-page .ep-title { font-size: 13.5px; margin-bottom: 4px; }
+          .events-page .ep-city { font-size: 10.5px; margin-bottom: 3px; }
+          .events-page .ep-meta { font-size: 10.5px; margin-bottom: 6px; }
+          .events-page .ep-price { font-size: 14px; }
+          .events-page .ep-link { display: none; }
+          .events-page .ep-card .save-heart {
+            width: 30px; height: 30px; top: 6px; right: 6px;
+            background: none; box-shadow: none;
+          }
+          .events-page .ep-card .save-heart svg {
+            width: 22px; height: 22px; color: #fff;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+          }
+          .events-page .ep-card .save-heart.active svg { color: var(--izigo-orange); }
         }
       `}</style>
 

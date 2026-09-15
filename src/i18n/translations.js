@@ -11,6 +11,7 @@ export const translations = {
       saved: "Saved",
       login: "Log in",
       myAccount: "My account",
+      accountTab: "Account",
       becomeHost: "Become a Host",
       publish: "New listing",
     },
@@ -48,9 +49,13 @@ export const translations = {
       prevImage: "Previous photo",
       nextImage: "Next photo",
       close: "Close",
+      back: "Back",
+      share: "Share",
+      linkCopied: "Link copied",
     },
     villaDetail: {
       back: "← Back to villas",
+      seoTitle: "Villa for rent in {city}, Azerbaijan",
       perNight: "/ night",
       guestsUnit: "guests",
       bedroomsUnit: "bedrooms",
@@ -88,7 +93,10 @@ export const translations = {
       moreListingsHeading: "More villas in {city}",
     },
     phoneReveal: {
-      show: "Show",    },
+      show: "Show",
+      safetyWarning: "Caution: never send a deposit or payment before viewing the property in person.",
+      call: "Call",
+    },
     carsPage: {
       heading: "Cars for Rent",
       subtitle: "Rent a car directly from local owners — no agency markup.",
@@ -107,6 +115,7 @@ export const translations = {
     },
     carDetail: {
       back: "← Back to cars",
+      seoTitle: "Car for rent in {city}, Azerbaijan",
       aboutHeading: "About this car",
       notFound: "This car could not be found.",
     },
@@ -134,6 +143,7 @@ export const translations = {
     },
     transferDetail: {
       back: "← Back to transfers & tours",
+      seoTitle: "Transfer & tour in {city}, Azerbaijan",
       aboutHeading: "About this listing",
       withVehicleNote: "Vehicle and driver included in the price.",
       withoutVehicleNote: "Guide only — no vehicle provided, transport arranged separately.",
@@ -152,6 +162,7 @@ export const translations = {
     },
     eventDetail: {
       back: "← Back to events",
+      seoTitle: "Event in {city}, Azerbaijan",
       aboutHeading: "About this event",
       notFound: "This event could not be found.",
     },
@@ -560,6 +571,7 @@ export const translations = {
     search: {
       where: "Where",
       wherePlaceholder: "City, region or destination",
+      allCategory: "All",
       search: "Search",
     },
     trustBadges: {
@@ -799,6 +811,7 @@ export const translations = {
       saved: "Seçilmişlər",
       login: "Giriş",
       myAccount: "Hesabım",
+      accountTab: "Kabinet",
       becomeHost: "Ev Sahibi Ol",
       publish: "Yeni elan",
     },
@@ -836,9 +849,13 @@ export const translations = {
       prevImage: "Əvvəlki şəkil",
       nextImage: "Növbəti şəkil",
       close: "Bağla",
+      back: "Geri",
+      share: "Paylaş",
+      linkCopied: "Link kopyalandı",
     },
     villaDetail: {
       back: "← Villalara qayıt",
+      seoTitle: "Villa kirayəsi, {city}, Azərbaycan",
       perNight: "/ gecə",
       guestsUnit: "qonaq",
       bedroomsUnit: "yataq otağı",
@@ -867,7 +884,7 @@ export const translations = {
       hostAgent: "Vasitəçi",
       viewAllListings: "Bütün elanlarına bax",
       amenitiesAndViewHeading: "Şərait",
-      contactWhatsapp: "WhatsApp-la əlaqə",
+      contactWhatsapp: "WhatsApp",
       contactNote: "Yalnız nümunə — IZIGO yayımlananda real ev sahibləri ilə əlaqələnəcək.",
       notFound: "Bu villa tapılmadı.",
       locationHeading: "Məkan",
@@ -876,7 +893,10 @@ export const translations = {
       moreListingsHeading: "{city} daha çox villalar",
     },
     phoneReveal: {
-      show: "Göstər",    },
+      show: "Göstər",
+      safetyWarning: "Diqqət! Görüş keçirib evə baxmadan heç kimə beh və ya ödəniş etməyin.",
+      call: "Zəng et",
+    },
     carsPage: {
       heading: "Kirayə Avtomobillər",
       subtitle: "Avtomobili birbaşa yerli sahiblərindən kirələ — agentlik əlavəsi yoxdur.",
@@ -895,6 +915,7 @@ export const translations = {
     },
     carDetail: {
       back: "← Avtomobillərə qayıt",
+      seoTitle: "Avtomobil kirayəsi, {city}, Azərbaycan",
       aboutHeading: "Bu avtomobil haqqında",
       notFound: "Bu avtomobil tapılmadı.",
     },
@@ -922,6 +943,7 @@ export const translations = {
     },
     transferDetail: {
       back: "← Transfer və Turlara qayıt",
+      seoTitle: "Transfer və tur, {city}, Azərbaycan",
       aboutHeading: "Bu elan haqqında",
       withVehicleNote: "Qiymətə avtomobil və sürücü daxildir.",
       withoutVehicleNote: "Yalnız bələdçi — avtomobil təmin edilmir, nəqliyyat ayrıca təşkil olunur.",
@@ -940,6 +962,7 @@ export const translations = {
     },
     eventDetail: {
       back: "← Tədbirlərə qayıt",
+      seoTitle: "Tədbir, {city}, Azərbaycan",
       aboutHeading: "Bu tədbir haqqında",
       notFound: "Bu tədbir tapılmadı.",
     },
@@ -1348,6 +1371,7 @@ export const translations = {
     search: {
       where: "Haradan",
       wherePlaceholder: "Şəhər, region və ya məkan",
+      allCategory: "Hamısı",
       search: "Axtar",
     },
     trustBadges: {
@@ -1587,6 +1611,7 @@ export const translations = {
       saved: "Избранное",
       login: "Войти",
       myAccount: "Мой аккаунт",
+      accountTab: "Кабинет",
       becomeHost: "Стать хозяином",
       publish: "Новое объявление",
     },
@@ -1624,9 +1649,13 @@ export const translations = {
       prevImage: "Предыдущее фото",
       nextImage: "Следующее фото",
       close: "Закрыть",
+      back: "Назад",
+      share: "Поделиться",
+      linkCopied: "Ссылка скопирована",
     },
     villaDetail: {
       back: "← Назад к виллам",
+      seoTitle: "Аренда виллы в {city}, Азербайджан",
       perNight: "/ ночь",
       guestsUnit: "гостей",
       bedroomsUnit: "спален",
@@ -1664,7 +1693,10 @@ export const translations = {
       moreListingsHeading: "Больше вилл в городе {city}",
     },
     phoneReveal: {
-      show: "Показать",    },
+      show: "Показать",
+      safetyWarning: "Внимание: никогда не переводите предоплату или деньги, не осмотрев объект лично.",
+      call: "Позвонить",
+    },
     carsPage: {
       heading: "Аренда автомобилей",
       subtitle: "Арендуйте автомобиль напрямую у местных владельцев — без наценки агентства.",
@@ -1683,6 +1715,7 @@ export const translations = {
     },
     carDetail: {
       back: "← Назад к автомобилям",
+      seoTitle: "Аренда автомобиля в {city}, Азербайджан",
       aboutHeading: "Об автомобиле",
       notFound: "Этот автомобиль не найден.",
     },
@@ -1710,6 +1743,7 @@ export const translations = {
     },
     transferDetail: {
       back: "← Назад к трансферам и турам",
+      seoTitle: "Трансфер и тур в {city}, Азербайджан",
       aboutHeading: "Об этом объявлении",
       withVehicleNote: "Транспорт и водитель включены в стоимость.",
       withoutVehicleNote: "Только гид — транспорт не предоставляется, организуется отдельно.",
@@ -1728,6 +1762,7 @@ export const translations = {
     },
     eventDetail: {
       back: "← Назад к событиям",
+      seoTitle: "Событие в {city}, Азербайджан",
       aboutHeading: "О событии",
       notFound: "Это событие не найдено.",
     },
@@ -2105,6 +2140,7 @@ export const translations = {
     search: {
       where: "Куда",
       wherePlaceholder: "Город, регион или направление",
+      allCategory: "Все",
       search: "Поиск",
     },
     trustBadges: {
@@ -2348,6 +2384,7 @@ export const translations = {
       saved: "المحفوظات",
       login: "تسجيل الدخول",
       myAccount: "حسابي",
+      accountTab: "الحساب",
       becomeHost: "كن مضيفًا",
       publish: "إعلان جديد",
     },
@@ -2385,9 +2422,13 @@ export const translations = {
       prevImage: "الصورة السابقة",
       nextImage: "الصورة التالية",
       close: "إغلاق",
+      back: "رجوع",
+      share: "مشاركة",
+      linkCopied: "تم نسخ الرابط",
     },
     villaDetail: {
       back: "← العودة إلى الفيلات",
+      seoTitle: "فيلا للإيجار في {city}، أذربيجان",
       perNight: "/ الليلة",
       guestsUnit: "ضيوف",
       bedroomsUnit: "غرف نوم",
@@ -2425,7 +2466,10 @@ export const translations = {
       moreListingsHeading: "المزيد من الفلل في {city}",
     },
     phoneReveal: {
-      show: "إظهار",    },
+      show: "إظهار",
+      safetyWarning: "تنبيه: لا ترسل عربونًا أو أي دفعة أبدًا قبل معاينة العقار شخصيًا.",
+      call: "اتصال",
+    },
     carsPage: {
       heading: "سيارات للإيجار",
       subtitle: "استأجر سيارة مباشرة من مالكين محليين — بدون رسوم وكالة.",
@@ -2444,6 +2488,7 @@ export const translations = {
     },
     carDetail: {
       back: "← العودة إلى السيارات",
+      seoTitle: "سيارة للإيجار في {city}، أذربيجان",
       aboutHeading: "عن هذه السيارة",
       notFound: "تعذر العثور على هذه السيارة.",
     },
@@ -2471,6 +2516,7 @@ export const translations = {
     },
     transferDetail: {
       back: "← العودة إلى النقل والجولات",
+      seoTitle: "نقل وجولة في {city}، أذربيجان",
       aboutHeading: "عن هذا الإعلان",
       withVehicleNote: "المركبة والسائق مشمولان في السعر.",
       withoutVehicleNote: "مرشد فقط — لا تتوفر مركبة، يتم ترتيب النقل بشكل منفصل.",
@@ -2489,6 +2535,7 @@ export const translations = {
     },
     eventDetail: {
       back: "← العودة إلى الفعاليات",
+      seoTitle: "فعالية في {city}، أذربيجان",
       aboutHeading: "عن هذه الفعالية",
       notFound: "تعذر العثور على هذه الفعالية.",
     },
@@ -2897,6 +2944,7 @@ export const translations = {
     search: {
       where: "أين",
       wherePlaceholder: "المدينة أو المنطقة أو الوجهة",
+      allCategory: "الكل",
       search: "بحث",
     },
     trustBadges: {

@@ -4,6 +4,7 @@ import { MapPin, Calendar, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
+import { useSeo, schema } from "../../lib/seo";
 import { fetchListingById, toneForId, shortListingCode, relativeDate, fetchAgentPrice } from "../../lib/listings";
 import { cityLabel } from "../../data/azerbaijanDestinations";
 import PhoneReveal from "../../components/PhoneReveal";
@@ -48,6 +49,21 @@ export default function EventDetail() {
     postedAt: relativeDate(row.created_at, language),
     images: row.images || [],
   } : null;
+
+  useSeo({
+    title: event ? `${t("eventDetail.seoTitle").replace("{city}", cityLabel(event.city, language))}: ${event.price === 0 ? t("eventsPage.free") : formatPrice(event.discount ? Math.round(event.price * (1 - event.discount / 100)) : event.price)} — ${event.title?.[language] || event.title.en}` : undefined,
+    description: event ? (event.description?.[language] || event.description?.en) : undefined,
+    path: `/events/${id}`,
+    image: event?.images?.[0],
+    ogType: "product",
+    structuredData: event ? schema.product({
+      name: event.title?.[language] || event.title?.en,
+      description: event.description?.[language] || event.description?.en,
+      url: `https://izigo.az/events/${id}`,
+      image: event.images?.[0],
+      price: event.discount ? Math.round(event.price * (1 - event.discount / 100)) : event.price,
+    }) : null,
+  });
 
   if (loading) return null;
 

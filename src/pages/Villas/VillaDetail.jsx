@@ -114,7 +114,7 @@ export default function VillaDetail() {
   const longStayPrice = longStayActive ? longStayDiscountedPrice(villa) : null;
 
   useSeo({
-    title: villa ? `${villa.title?.[language] || villa.title?.en} — ${villa.city}` : undefined,
+    title: villa ? `${t("villaDetail.seoTitle").replace("{city}", cityLabel(villa.city, language))}: ${formatPrice(villa.discount ? Math.round(villa.price * (1 - villa.discount / 100)) : villa.price)} — ${villa.title?.[language] || villa.title?.en}` : undefined,
     description: villa ? (villa.description?.[language] || villa.description?.en) : undefined,
     path: `/villas/${id}`,
     image: villa?.images?.[0],
@@ -218,13 +218,27 @@ export default function VillaDetail() {
           background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
         }
         .villa-detail .detail-save-btn { position: static; }
-        .villa-detail .vd-host { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 0; }
+        .villa-detail .vd-host { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+        .villa-detail .vd-host-text { display: flex; flex-direction: column; gap: 2px; }
         .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
         .villa-detail .vd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); line-height: 1.3; }
-        .villa-detail .vd-host-avatar { width: 38px; height: 38px; border-radius: 10px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--text-soft); flex-shrink: 0; }
+        .villa-detail .vd-host-avatar { width: 54px; height: 54px; border-radius: 12px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--text-soft); flex-shrink: 0; }
         .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
-        .villa-detail .vd-host-all-listings { display: block; font-size: 12.5px; font-weight: 400; color: var(--izigo-green); margin: 0 0 16px; }
+        .villa-detail .vd-host-all-listings { display: block; font-size: 12.5px; font-weight: 400; color: var(--izigo-green); white-space: nowrap; margin-top: 3px; }
         .villa-detail .vd-host-all-listings:hover { text-decoration: underline; }
+
+        .villa-detail .vd-sidebar-map-preview {
+          display: flex; align-items: center; justify-content: center;
+          width: 100%; height: 100px; border-radius: 12px; cursor: pointer;
+          background: var(--bg-soft); border: 1px solid var(--border); padding: 0;
+        }
+        .villa-detail .vd-sidebar-map-btn {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: #fff; border: 1px solid var(--border); border-radius: 999px;
+          padding: 8px 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
+          box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
+        }
+        .villa-detail .vd-sidebar-map-btn svg { color: var(--izigo-green); }
 
         .villa-detail .vd-map-overlay {
           position: fixed; inset: 0; background: rgba(11, 61, 59, 0.55); z-index: 1000;
@@ -241,8 +255,16 @@ export default function VillaDetail() {
         }
         .villa-detail .vd-map-iframe { width: 100%; height: 100%; border: none; display: block; }
         @media (max-width: 640px) {
-          .villa-detail .vd-map-overlay { padding: 0; }
-          .villa-detail .vd-map-modal { max-width: 100%; height: 100%; border-radius: 0; }
+          .villa-detail .vd-map-overlay { padding: 0; align-items: flex-end; }
+          .villa-detail .vd-map-modal {
+            max-width: 100%; height: 92%; border-radius: 16px 16px 0 0;
+            animation: vd-map-slide-up 0.28s ease-out;
+          }
+          .villa-detail .vd-map-close { top: 16px; left: 16px; right: auto; }
+          @keyframes vd-map-slide-up {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+          }
         }
 
         .villa-detail .vd-related { max-width: 1280px; margin: 48px auto 0; padding-top: 32px; border-top: 1px solid var(--border); }
@@ -261,18 +283,98 @@ export default function VillaDetail() {
           /* Single column, no sticky: gallery, then the sidebar card
              (facts / price / amenities / contact), then the description. */
           .villa-detail .vd-gallery-col { grid-column: 1; grid-row: 1; }
-          .villa-detail .vd-sidebar { grid-column: 1; grid-row: 2; position: static; }
+          .villa-detail .vd-sidebar { grid-column: 1; grid-row: 2; position: static; display: flex; flex-direction: column; }
           .villa-detail .vd-main { grid-column: 1; grid-row: 3; }
+          /* Mobilde qiymət ən yuxarıda görünsün deyə DOM sırasını
+             dəyişmədən, yalnız vizual sıranı flex order ilə dəyişirik. */
+          .villa-detail .vd-sb-divider:has(+ .vd-price-row) { order: -2; }
+          .villa-detail .vd-price-row { order: -2; }
+          .villa-detail .vd-agent-price { order: -1; }
         }
         @media (max-width: 1024px) {
           .villa-detail .vd-related-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 640px) {
-          .villa-detail { padding: 20px 5vw 56px; }
-          .villa-detail .vd-related-grid { grid-template-columns: 1fr; }
+          .villa-detail { padding: 14px 5vw 100px; }
           .villa-detail .vd-houserules-grid { grid-template-columns: 1fr; }
           .villa-detail .vd-checkinout { font-size: 13px; }
           .villa-detail .vd-checkinout div { font-size: 13px; }
+
+          /* Geri oxu indi şəklin üstündəki üzən ikonla göstərilir. */
+          .villa-detail .vd-back { display: none; }
+
+          /* Ad və ünvan tək sətirdə, ünvan qabaqda. */
+          .villa-detail .vd-header {
+            display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 12px;
+          }
+          .villa-detail .vd-title { font-size: 21px; margin: 0; }
+          .villa-detail .vd-city { order: -1; font-size: 12.5px; }
+
+          /* Ümumi sıxlaşdırma. */
+          .villa-detail .vd-sidebar { padding: 16px; }
+          .villa-detail .vd-sb-divider { margin: 12px 0; }
+
+          /* Qiymət qutusundakı ürək işarəsi silinir — bu funksiya artıq
+             yuxarı navbardadır (app-navbar-detail-heart). */
+          .villa-detail .vd-price-row .detail-save-btn { display: none; }
+
+          /* Bənzər elanlar tap.az kimi 2 sütunda, daha yığcam kartlarla. */
+          .villa-detail .vd-related-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .villa-detail .vd-related-grid .villa-card .vc-body { padding: 10px; }
+          .villa-detail .vd-related-grid .villa-card .vc-title { font-size: 13px; margin-bottom: 6px; }
+          .villa-detail .vd-related-grid .villa-card .vc-meta { gap: 7px; font-size: 10.5px; margin-bottom: 8px; }
+          .villa-detail .vd-related-grid .villa-card .vc-price { font-size: 13px; }
+          .villa-detail .vd-related-grid .villa-card .vc-link { display: none; }
+
+          /* ---- Mobil məzmun sırası (tap.az axını) ----
+             .vd-sidebar və .vd-main "display:contents" olur ki, bütün
+             uşaqları birbaşa .vd-layout grid-inin üzvü olsun və "order"
+             ilə istənilən sıraya düzülsün. JSX-də HEÇ NƏ daşınmır —
+             yalnız vizual sıra dəyişir. */
+          .villa-detail .vd-sidebar,
+          .villa-detail .vd-main { display: contents; }
+
+          .villa-detail .vd-gallery-col { order: -100; }
+
+          /* Qiymətdən əvvəlki köhnə ayırıcı xətt artıq lazım deyil. */
+          .villa-detail .vd-sb-divider:has(+ .vd-price-row) { display: none; }
+
+          .villa-detail .vd-price-row { order: -90; }
+          .villa-detail .vd-agent-price { order: -89; }
+          .villa-detail .vd-facts { order: -80; }
+          .villa-detail .vd-bedtypes { order: -79; }
+          .villa-detail .vd-sb-divider:has(+ .vd-sb-amenities-label) { order: -78; }
+          .villa-detail .vd-sb-amenities-label { order: -78; }
+          .villa-detail .vd-sb-amenities-grid { order: -78; }
+
+          /* Villa haqqında + check-in/check-out + qaydalar — xəritədən əvvəl. */
+          .villa-detail .vd-main h2:has(+ .vd-desc) { order: -10; margin-top: 22px; }
+          .villa-detail .vd-desc { order: -10; margin-bottom: 20px; }
+          .villa-detail h2.vd-subheading:has(+ .vd-checkinout) { order: -9; }
+          .villa-detail .vd-checkinout { order: -9; margin-bottom: 20px; }
+          .villa-detail h2.vd-subheading:has(+ .vd-houserules-grid) { order: -8; }
+          .villa-detail .vd-houserules-grid { order: -8; margin-bottom: 20px; }
+          .villa-detail .vd-houserules-notes { order: -8; margin-bottom: 20px; }
+
+          /* Xəritə önizləməsi: xəritə-şəkilli fon, daralmış eni. */
+          .villa-detail .vd-sb-divider:has(+ .vd-sidebar-map-preview) { order: 0; }
+          .villa-detail .vd-sidebar-map-preview {
+            order: 1; width: 100%; height: 78px; padding: 0 22px;
+            background-color: #EDF0F2;
+            background-image:
+              linear-gradient(115deg, transparent 44%, rgba(150, 162, 174, 0.4) 44%, rgba(150, 162, 174, 0.4) 46%, transparent 46%),
+              linear-gradient(25deg, transparent 58%, rgba(0, 200, 151, 0.32) 58%, rgba(0, 200, 151, 0.32) 60%, transparent 60%),
+              linear-gradient(155deg, transparent 22%, rgba(150, 162, 174, 0.35) 22%, rgba(150, 162, 174, 0.35) 24%, transparent 24%);
+          }
+
+          /* Profil, nömrə və elan qeydləri — ən aşağıda (tap.az kimi). */
+          .villa-detail .vd-sb-divider:has(+ .vd-host) { order: 2; }
+          .villa-detail .vd-host { order: 10; }
+          .villa-detail .phone-reveal { order: 11; }
+          .villa-detail .pr-warning { order: 11; margin-bottom: 16px; }
+          .villa-detail .vd-footer-meta { order: 19; }
+          .villa-detail .listing-reviews { order: 20; }
         }
       `}</style>
 
@@ -415,18 +517,28 @@ export default function VillaDetail() {
 
           <div className="vd-sb-divider" />
 
-          <Link to={`/host/${villa.host?.id}`} className="vd-host">
-            <div>
-              <div className="vd-host-name">{villa.host?.full_name || t("villaDetail.hostName")}</div>
+          <button type="button" className="vd-sidebar-map-preview" onClick={() => setMapOpen(true)}>
+            <span className="vd-sidebar-map-btn">
+              <MapPin size={14} />{t("villaDetail.viewOnMap")}
+            </span>
+          </button>
+
+          <div className="vd-sb-divider" />
+
+          <div className="vd-host">
+            <div className="vd-host-text">
+              <Link to={`/host/${villa.host?.id}`} className="vd-host-name">
+                {villa.host?.full_name || t("villaDetail.hostName")}
+              </Link>
               <div className="vd-host-type">
                 {villa.host?.host_type === "agent" ? t("villaDetail.hostAgent") : t("villaDetail.hostOwner")}
               </div>
+              <Link to={`/host/${villa.host?.id}`} className="vd-host-all-listings">
+                {t("villaDetail.viewAllListings")} →
+              </Link>
             </div>
-            <div className="vd-host-avatar"><User size={18} /></div>
-          </Link>
-          <Link to={`/host/${villa.host?.id}`} className="vd-host-all-listings">
-            {t("villaDetail.viewAllListings")} →
-          </Link>
+            <div className="vd-host-avatar"><User size={28} /></div>
+          </div>
 
           <PhoneReveal phone={villa.phone} listingId={villa.id} />
         </aside>
