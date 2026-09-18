@@ -753,16 +753,23 @@ export default function IzigoHomepage() {
           )}
         </form>
         <div className="mqs-categories">
-          {TABS_WITH_ALL.map(({ key, icon: Icon }) => (
-            <button
-              key={key}
-              type="button"
-              className={`mqs-cat${listingsTab === key ? " active" : ""}`}
-              onClick={() => setListingsTab(key)}
-            >
-              <span className="mqs-cat-icon"><Icon size={20} /></span>
-              <span>{key === "all" ? t("search.allCategory") : t(`nav.${key}`)}</span>
-            </button>
+          {TABS_WITH_ALL.map(({ key, icon: Icon, to }) => (
+            key === "all" ? (
+              <button
+                key={key}
+                type="button"
+                className={`mqs-cat${listingsTab === key ? " active" : ""}`}
+                onClick={() => setListingsTab(key)}
+              >
+                <span className="mqs-cat-icon"><Icon size={20} /></span>
+                <span>{t("search.allCategory")}</span>
+              </button>
+            ) : (
+              <Link key={key} to={to} className="mqs-cat">
+                <span className="mqs-cat-icon"><Icon size={20} /></span>
+                <span>{t(`nav.${key}`)}</span>
+              </Link>
+            )
           ))}
         </div>
       </section>

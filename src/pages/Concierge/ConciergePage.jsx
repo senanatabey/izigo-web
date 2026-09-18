@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Snowflake, Flame, Trees, Wind, ShoppingBasket, Droplet, UtensilsCrossed,
   Camera, Drone, Compass, Pill, Stethoscope, WashingMachine, Baby, Tent,
@@ -10,7 +10,6 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 import { fetchApprovedListings } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
-import PhoneReveal from "../../components/PhoneReveal";
 
 const CITIES = ALL_DESTINATIONS;
 
@@ -129,6 +128,8 @@ export default function ConciergePage() {
         .concierge-page .cg-item-body { padding: 16px; }
         .concierge-page .cg-item-service { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
         .concierge-page .cg-item-title { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+        .concierge-page .cg-item { display: block; color: inherit; text-decoration: none; }
+        .concierge-page .cg-item-link { font-size: 13px; font-weight: 700; color: var(--izigo-green); }
 
         .concierge-page .cg-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; margin-bottom: 40px; }
 
@@ -155,9 +156,14 @@ export default function ConciergePage() {
         @media (max-width: 1024px) { .concierge-page .cg-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
           .concierge-page { padding: 32px 5vw 56px; }
-          .concierge-page .cg-grid { grid-template-columns: 1fr; }
+          .concierge-page .cg-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
           .concierge-page .cg-filters { flex-direction: column; align-items: stretch; }
           .concierge-page .cg-field select { width: 100%; }
+          .concierge-page .cg-item-thumb { aspect-ratio: 4 / 2.8; }
+          .concierge-page .cg-item-body { padding: 10px; }
+          .concierge-page .cg-item-service { font-size: 10.5px; margin-bottom: 3px; }
+          .concierge-page .cg-item-title { font-size: 13px; margin-bottom: 0; }
+          .concierge-page .cg-item-link { display: none; }
         }
       `}</style>
 
@@ -192,7 +198,7 @@ export default function ConciergePage() {
       ) : (
         <div className="cg-grid">
           {filtered.map((item) => (
-            <div className="cg-item" key={item.id}>
+            <Link to={`/concierge/${item.id}`} className="cg-item" key={item.id}>
               {item.images?.[0] && (
                 <div className="cg-item-thumb" style={{ backgroundImage: `url("${item.images[0]}")` }} />
               )}
@@ -202,9 +208,9 @@ export default function ConciergePage() {
                   {item.details?.serviceType ? ` · ${t(`conciergePage.services.${item.details.serviceType}`)}` : ""}
                 </div>
                 <div className="cg-item-title">{item.title?.[language] || item.title?.en}</div>
-                <PhoneReveal phone={item.whatsapp_phone} listingId={item.id} />
+                <span className="cg-item-link">{t("conciergePage.viewDetails")} →</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

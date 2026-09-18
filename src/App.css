@@ -806,10 +806,10 @@
 
 @media (max-width: 560px) {
   .app-navbar-inner {
-    height: 52px;
+    height: 60px;
     gap: 8px;
     min-width: 0;
-    padding: 10px 3vw;
+    padding: 10px 4vw;
     justify-content: space-between;
   }
 
@@ -855,13 +855,48 @@
   .app-navbar-plain-mobile {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
   }
 
   .app-navbar-plain-mobile-logo .app-logo-img {
-    height: 34px;
+    height: 40px;
     margin-left: 0;
+  }
+
+  .app-navbar-plain-mobile-locale .locale-switcher-trigger {
+    padding: 8px 12px;
+    border-radius: 999px;
+    gap: 5px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+  }
+
+  .app-navbar-plain-mobile-locale .locale-switcher-trigger:hover {
+    background: #fff;
+    border-color: var(--izigo-green);
+  }
+
+  .app-navbar-plain-mobile-locale .locale-switcher-globe {
+    display: none;
+  }
+
+  .app-navbar-plain-mobile-locale .account-menu-chevron {
+    width: 12px;
+    height: 12px;
+    color: var(--text-soft);
+  }
+
+  .app-navbar-plain-mobile-locale .locale-switcher-dropdown {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
+  }
+
+  .app-navbar-plain-mobile-locale .locale-switcher-trigger span {
+    display: inline;
+    font-size: 12px;
+    font-weight: 700;
   }
 
   .app-navbar-detail-actions {
@@ -920,6 +955,10 @@
     border-top: 1px solid var(--border);
     padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
     box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.08);
+    transition: transform 0.25s ease;
+  }
+  .app-bottom-nav.is-hidden {
+    transform: translateY(calc(100% + 40px));
   }
   .app-bottom-nav .abn-item {
     display: flex; flex-direction: column; align-items: center; gap: 2px;

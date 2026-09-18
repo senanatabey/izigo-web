@@ -4,6 +4,7 @@ import {
   MapPin, Wallet, MessageCircle, Users, BedDouble, Bath, Car, Calendar, Percent, Moon,
   CheckCircle2, Image as ImageIcon, Wifi, UtensilsCrossed, Snowflake, ParkingCircle, Flame, Trees, X,
   Waves, Thermometer, User, Mail, Lock, Ruler, Layers, Clock, Eye, Check, ChevronLeft,
+  Wind, Gamepad2, CloudFog, Droplets, TreePine, Building2,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useAuth } from "../../App";
@@ -13,10 +14,14 @@ import { compressImage, makePreviewDataUrl } from "../../lib/imageOptimize";
 import { isFounderCampaignJoinable } from "../../lib/founder";
 
 const CITIES = ALL_DESTINATIONS;
-const AMENITY_KEYS = ["wifi", "kitchen", "ac", "parking", "fireplace", "garden", "pool", "heated_pool"];
+const AMENITY_KEYS = [
+  "wifi", "kitchen", "ac", "parking", "fireplace", "garden", "pool", "heated_pool",
+  "swing", "kids_attraction", "steam_room", "jacuzzi", "riverside", "in_mountains", "downtown",
+];
 const AMENITY_ICONS = {
   wifi: Wifi, kitchen: UtensilsCrossed, ac: Snowflake, parking: ParkingCircle, fireplace: Flame, garden: Trees,
-  pool: Waves, heated_pool: Thermometer,
+  pool: Waves, heated_pool: Thermometer, swing: Wind, kids_attraction: Gamepad2, steam_room: CloudFog,
+  jacuzzi: Droplets, riverside: Waves, in_mountains: TreePine, downtown: Building2,
 };
 const SERVICE_KEYS = ["ice", "bbq", "hookah", "flowers", "photographer", "breakfast", "market", "guide", "laundry", "babysitter"];
 const HOUSE_RULE_KEYS = ["smoking", "pets", "parties"];

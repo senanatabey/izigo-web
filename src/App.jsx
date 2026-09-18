@@ -45,6 +45,7 @@ const TransferDetailPage = lazy(() => import("./pages/Transfers/TransferDetail")
 const EventsPage = lazy(() => import("./pages/Events/EventsPage"));
 const EventDetailPage = lazy(() => import("./pages/Events/EventDetail"));
 const ConciergePage = lazy(() => import("./pages/Concierge/ConciergePage"));
+const ServiceDetailPage = lazy(() => import("./pages/Concierge/ServiceDetail"));
 const PlanMyTripPage = lazy(() => import("./pages/PlanMyTrip/PlanMyTripPage"));
 const LoginPage = lazy(() => import("./pages/Auth/LoginPage"));
 const AddListingPage = lazy(() => import("./pages/AddListing/AddListingPage"));
@@ -378,7 +379,7 @@ function LocaleSwitcher({ className = "" }) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <Globe size={15} />
+        <Globe size={15} className="locale-switcher-globe" />
         <span>{activeLanguage.label} / {currency}</span>
         <ChevronDown size={13} className={`account-menu-chevron ${open ? "is-open" : ""}`} />
       </button>
@@ -618,6 +619,84 @@ function AccountMenu() {
 /* =========================================================================
    LAYOUTS
    ========================================================================= */
+/* Shared bottom tab bar (Home / Saved / + / Concierge / Account) — used by
+   MainLayout (public pages, where it can hide on scroll-down) and AppLayout
+   (account pages like Profile, where it must stay permanently visible). */
+function BottomNav({ hidden = false }) {
+  const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
+  const { openLogin } = useAuthModal();
+  const { saved } = useSaved();
+  const favoritesCount = saved.length;
+
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const addMenuRef = React.useRef(null);
+  useEffect(() => {
+    if (!addMenuOpen) return undefined;
+    const onClickOutside = (e) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target)) setAddMenuOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setAddMenuOpen(false); };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [addMenuOpen]);
+
+  return (
+    <nav className={`app-bottom-nav${hidden ? " is-hidden" : ""}`}>
+      <NavLink to="/" end className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+        <HomeIcon size={22} />
+        <span>{t("nav.home")}</span>
+      </NavLink>
+      <NavLink to="/saved" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+        <span className="abn-icon-wrap">
+          <Heart size={22} />
+          {favoritesCount > 0 && <span className="abn-badge">{favoritesCount > 99 ? "99+" : favoritesCount}</span>}
+        </span>
+        <span>{t("nav.saved")}</span>
+      </NavLink>
+      <div className="abn-cta-wrap" ref={addMenuRef}>
+        {addMenuOpen && (
+          <div className="abn-cta-menu">
+            <Link to="/add-listing" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
+              <PlusCircle size={18} />{t("nav.publish")}
+            </Link>
+            <Link to="/plan-my-trip" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
+              <Sparkles size={18} />{t("heroButtons.planMyTrip")}
+            </Link>
+          </div>
+        )}
+        <button
+          type="button"
+          className={`abn-item abn-item-cta${addMenuOpen ? " is-open" : ""}`}
+          aria-label={t("nav.publish")}
+          onClick={() => setAddMenuOpen((v) => !v)}
+        >
+          <PlusCircle size={30} />
+        </button>
+      </div>
+      <NavLink to="/concierge" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+        <Package size={22} />
+        <span>{t("nav.concierge")}</span>
+      </NavLink>
+      {isAuthenticated ? (
+        <NavLink to="/profile" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
+          <User size={22} />
+          <span>{t("nav.accountTab")}</span>
+        </NavLink>
+      ) : (
+        <button type="button" className="abn-item" onClick={openLogin}>
+          <User size={22} />
+          <span>{t("nav.accountTab")}</span>
+        </button>
+      )}
+    </nav>
+  );
+}
+
 function MainLayout() {
   const { isAuthenticated } = useAuth();
   const { openLogin } = useAuthModal();
@@ -629,7 +708,7 @@ function MainLayout() {
   // Elan detalı səhifələrində (villa/maşın/transfer/tədbir) mobil header-i
   // sıxlaşdırmaq üçün dil seçimi və "Yeni elan" düyməsini gizlədirik —
   // masaüstündə heç nə dəyişmir, CSS-dəki media query həll edir.
-  const listingDetailMatch = location.pathname.match(/^\/(villas|cars|transfers|events)\/([^/]+)$/);
+  const listingDetailMatch = location.pathname.match(/^\/(villas|cars|transfers|events|concierge)\/([^/]+)$/);
   const isListingDetailPage = !!listingDetailMatch;
   // Category LIST pages (/villas, /cars, /transfers, /events — no id) get the
   // same back-arrow + centered-logo mobile header as detail pages, but keep
@@ -639,7 +718,7 @@ function MainLayout() {
   // fərqlidir — mobil başlıqdakı ürək düyməsi düzgün elanı saxlamaq üçün
   // uyğunlaşdırılır.
   const listingDetailType = listingDetailMatch && ({
-    villas: "villa", cars: "car", transfers: "transfer", events: "event",
+    villas: "villa", cars: "car", transfers: "transfer", events: "event", concierge: "service",
   })[listingDetailMatch[1]];
   const listingDetailId = listingDetailMatch?.[2];
   const isListingSaved = listingDetailType && listingDetailId && isSaved(listingDetailType, listingDetailId);
@@ -664,23 +743,22 @@ function MainLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Alt navbardakı "+" düyməsi: 2 seçimli kiçik menyu açır (Yeni elan /
-  // Plan My Trip) — AccountMenu-dəki eyni "kənara klik/Escape ilə bağlanma" naxışı.
-  const [addMenuOpen, setAddMenuOpen] = useState(false);
-  const addMenuRef = React.useRef(null);
+  // Aşağı naviqasiya aşağı sürüşdürəndə gizlənir, yuxarı sürüşdürəndə geri gəlir
+  // (tap.az-dakı kimi) — ekranın çox yuxarısında (y <= 80) həmişə görünür.
+  const [bottomNavHidden, setBottomNavHidden] = useState(false);
+  const lastScrollYRef = React.useRef(0);
   useEffect(() => {
-    if (!addMenuOpen) return undefined;
-    const onClickOutside = (e) => {
-      if (addMenuRef.current && !addMenuRef.current.contains(e.target)) setAddMenuOpen(false);
+    const onBottomNavScroll = () => {
+      const y = window.scrollY;
+      const last = lastScrollYRef.current;
+      if (y <= 80) setBottomNavHidden(false);
+      else if (y > last + 4) setBottomNavHidden(true);
+      else if (y < last - 4) setBottomNavHidden(false);
+      lastScrollYRef.current = y;
     };
-    const onKey = (e) => { if (e.key === "Escape") setAddMenuOpen(false); };
-    document.addEventListener("mousedown", onClickOutside);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onClickOutside);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [addMenuOpen]);
+    window.addEventListener("scroll", onBottomNavScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onBottomNavScroll);
+  }, []);
 
   return (
     <div>
@@ -749,60 +827,12 @@ function MainLayout() {
           {!isListingDetailPage && !isCategoryListPage && (
             <div className="app-navbar-plain-mobile">
               <Link to="/" className="app-navbar-plain-mobile-logo"><IzigoLogo /></Link>
+              <LocaleSwitcher className="app-navbar-plain-mobile-locale" />
             </div>
           )}
         </div>
       </header>
-      {!isListingDetailPage && (
-        <nav className="app-bottom-nav">
-          <NavLink to="/" end className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
-            <HomeIcon size={22} />
-            <span>{t("nav.home")}</span>
-          </NavLink>
-          <NavLink to="/saved" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
-            <span className="abn-icon-wrap">
-              <Heart size={22} />
-              {favoritesCount > 0 && <span className="abn-badge">{favoritesCount > 99 ? "99+" : favoritesCount}</span>}
-            </span>
-            <span>{t("nav.saved")}</span>
-          </NavLink>
-          <div className="abn-cta-wrap" ref={addMenuRef}>
-            {addMenuOpen && (
-              <div className="abn-cta-menu">
-                <Link to="/add-listing" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
-                  <PlusCircle size={18} />{t("nav.publish")}
-                </Link>
-                <Link to="/plan-my-trip" className="abn-cta-menu-item" onClick={() => setAddMenuOpen(false)}>
-                  <Sparkles size={18} />{t("heroButtons.planMyTrip")}
-                </Link>
-              </div>
-            )}
-            <button
-              type="button"
-              className={`abn-item abn-item-cta${addMenuOpen ? " is-open" : ""}`}
-              aria-label={t("nav.publish")}
-              onClick={() => setAddMenuOpen((v) => !v)}
-            >
-              <PlusCircle size={30} />
-            </button>
-          </div>
-          <NavLink to="/concierge" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
-            <Package size={22} />
-            <span>{t("nav.concierge")}</span>
-          </NavLink>
-          {isAuthenticated ? (
-            <NavLink to="/profile" className={({ isActive }) => `abn-item${isActive ? " is-active" : ""}`}>
-              <User size={22} />
-              <span>{t("nav.accountTab")}</span>
-            </NavLink>
-          ) : (
-            <button type="button" className="abn-item" onClick={openLogin}>
-              <User size={22} />
-              <span>{t("nav.accountTab")}</span>
-            </button>
-          )}
-        </nav>
-      )}
+      {!isListingDetailPage && <BottomNav hidden={bottomNavHidden} />}
       <main className={!isListingDetailPage ? "has-bottom-nav" : ""}><Outlet /></main>
       <footer className="site-footer">
         <img src="/images/logos/logo-footer.png" alt="IZIGO" className="site-footer-logo" />
@@ -894,12 +924,13 @@ function AppLayout() {
         <LocaleSwitcher />
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
       </aside>
-      <main className="app-main">
+      <main className="app-main has-bottom-nav">
         <p style={{ fontSize: 13, color: "var(--text-soft)", marginBottom: 18 }}>
           Signed in as <strong>{user?.name}</strong> ({user?.role})
         </p>
         <Outlet />
       </main>
+      <BottomNav />
     </div>
   );
 }
@@ -1154,6 +1185,7 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="concierge" element={<ConciergePage />} />
+            <Route path="concierge/:id" element={<ServiceDetailPage />} />
             <Route path="plan-my-trip" element={<PlanMyTripPage />} />
             <Route path="villas" element={<VillasPage />} />
             <Route path="villas/:id" element={<VillaDetailPage />} />

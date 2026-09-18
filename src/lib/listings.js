@@ -125,6 +125,7 @@ export function mapVillaListing(row) {
     guests: row.details?.guests || 0,
     bedrooms: row.details?.bedrooms || 0,
     amenities: row.details?.amenities || [],
+    viewTypes: row.view_type || [],
     image: row.images?.[0],
     createdAt: row.created_at,
     longStayEnabled: row.long_stay_discount_enabled || false,

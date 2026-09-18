@@ -24,6 +24,7 @@ export default function EventsPage() {
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     fetchApprovedListings("event")
@@ -46,7 +47,10 @@ export default function EventsPage() {
     setSearchParams(next);
   };
 
-  const resetFilters = () => setSearchParams({});
+  const resetFilters = () => {
+    setSortBy("newest");
+    setSearchParams({});
+  };
 
   const filtered = useMemo(() => {
     return events.filter((e) => {
@@ -54,6 +58,13 @@ export default function EventsPage() {
       return true;
     });
   }, [events, cityParam]);
+
+  const sorted = useMemo(() => {
+    const list = [...filtered];
+    if (sortBy === "priceAsc") list.sort((a, b) => a.price - b.price);
+    else if (sortBy === "priceDesc") list.sort((a, b) => b.price - a.price);
+    return list;
+  }, [filtered, sortBy]);
 
   const formatDate = (iso) => new Date(iso).toLocaleDateString(language === "az" ? "az-AZ" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -79,7 +90,13 @@ export default function EventsPage() {
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
-        .events-page .ep-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
+        .events-page .ep-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+        .events-page .ep-count { font-size: 14px; color: var(--text-soft); margin-bottom: 0; }
+        .events-page .ep-meta-actions { display: flex; align-items: center; gap: 14px; }
+        .events-page .ep-sort {
+          border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
+          font-size: 13px; color: var(--text); background: #fff; font-family: var(--sans);
+        }
 
         .events-page .ep-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .events-page .ep-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
@@ -103,14 +120,23 @@ export default function EventsPage() {
         @media (max-width: 640px) {
           .events-page { padding: 32px 5vw 56px; }
           .events-page .ep-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-          .events-page .ep-filters { flex-direction: column; align-items: stretch; position: relative; padding-top: 46px; }
-          .events-page .ep-reset { position: absolute; top: 16px; right: 16px; padding: 0; font-size: 12.5px; }
-          .events-page .ep-field select { width: 100%; }
-          .events-page .ep-body { padding: 10px; }
-          .events-page .ep-title { font-size: 13.5px; margin-bottom: 4px; }
-          .events-page .ep-city { font-size: 10.5px; margin-bottom: 3px; }
-          .events-page .ep-meta { font-size: 10.5px; margin-bottom: 6px; }
+          .events-page .ep-filters {
+            flex-direction: row; flex-wrap: wrap; align-items: center; border: none; padding: 2px 0 4px; margin-bottom: 14px; gap: 8px;
+          }
+          .events-page .ep-field { flex: 0 0 auto; flex-direction: row; gap: 0; }
+          .events-page .ep-field label { display: none; }
+          .events-page .ep-field select { width: auto; min-width: 0; white-space: nowrap; padding: 7px 20px 7px 10px; font-size: 11.5px; border-radius: 999px; }
+          .events-page .ep-meta-row { margin-bottom: 14px; }
+          .events-page .ep-count { font-size: 12.5px; }
+          .events-page .ep-meta-actions { gap: 10px; }
+          .events-page .ep-sort { padding: 6px 22px 6px 10px; font-size: 11.5px; border-radius: 999px; }
+          .events-page .ep-reset { padding: 0; font-size: 11.5px; }
+          .events-page .ep-body { padding: 8px; }
+          .events-page .ep-title { font-size: 13px; margin-bottom: 3px; line-height: 1.3; }
+          .events-page .ep-city { font-size: 10px; margin-bottom: 2px; }
+          .events-page .ep-meta { font-size: 10px; margin-bottom: 3px; gap: 6px; }
           .events-page .ep-price { font-size: 14px; }
+          .events-page .ep-footer { margin-top: 4px; }
           .events-page .ep-link { display: none; }
           .events-page .ep-card .save-heart {
             width: 30px; height: 30px; top: 6px; right: 6px;
@@ -137,16 +163,25 @@ export default function EventsPage() {
             {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
-        <button type="button" className="ep-reset" onClick={resetFilters}>{t("eventsPage.resetFilters")}</button>
       </div>
 
-      <p className="ep-count">{t("eventsPage.resultsCount").replace("{count}", filtered.length)}</p>
+      <div className="ep-meta-row">
+        <p className="ep-count">{t("eventsPage.resultsCount").replace("{count}", sorted.length)}</p>
+        <div className="ep-meta-actions">
+          <select className="ep-sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="newest">{t("sort.label")}</option>
+            <option value="priceAsc">{t("sort.priceAsc")}</option>
+            <option value="priceDesc">{t("sort.priceDesc")}</option>
+          </select>
+          <button type="button" className="ep-reset" onClick={resetFilters}>{t("eventsPage.resetFilters")}</button>
+        </div>
+      </div>
 
-      {loading ? null : filtered.length === 0 ? (
+      {loading ? null : sorted.length === 0 ? (
         <div className="ep-empty">{t("eventsPage.noResults")}</div>
       ) : (
         <div className="ep-grid">
-          {filtered.map((e) => (
+          {sorted.map((e) => (
             <Link to={`/events/${e.id}`} className="ep-card" key={e.id}>
               <SaveHeart type="event" id={e.id} />
               <div className={`ep-thumb ${e.image ? "" : e.tone}`} style={e.image ? { backgroundImage: `url("${e.image}")` } : undefined} />

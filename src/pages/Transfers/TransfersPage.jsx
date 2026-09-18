@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MapPin, Users, Car, Footprints } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -9,7 +9,6 @@ import SaveHeart from "../../components/SaveHeart";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 const CITIES = ALL_DESTINATIONS;
-const PRICE_OPTIONS = [30, 50, 75, 100];
 
 export default function TransfersPage() {
   const { t, language } = useLanguage();
@@ -25,9 +24,13 @@ export default function TransfersPage() {
 
   const [type, setType] = useState(() => searchParams.get("type") || "");
   const [vehicle, setVehicle] = useState("");
+  const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [priceOpen, setPriceOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("newest");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const priceRef = useRef(null);
 
   useEffect(() => {
     fetchApprovedListings("transfer")
@@ -46,6 +49,18 @@ export default function TransfersPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (!priceOpen) return;
+    const onClick = (e) => { if (priceRef.current && !priceRef.current.contains(e.target)) setPriceOpen(false); };
+    const onKey = (e) => { if (e.key === "Escape") setPriceOpen(false); };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [priceOpen]);
+
   const setCity = (value) => {
     const next = new URLSearchParams(searchParams);
     if (value) next.set("city", value); else next.delete("city");
@@ -55,7 +70,9 @@ export default function TransfersPage() {
   const resetFilters = () => {
     setType("");
     setVehicle("");
+    setMinPrice("");
     setMaxPrice("");
+    setSortBy("newest");
     setSearchParams({});
   };
 
@@ -65,10 +82,18 @@ export default function TransfersPage() {
       if (type && item.type !== type) return false;
       if (vehicle === "with" && !item.hasVehicle) return false;
       if (vehicle === "without" && item.hasVehicle) return false;
+      if (minPrice && item.price < Number(minPrice)) return false;
       if (maxPrice && item.price > Number(maxPrice)) return false;
       return true;
     });
-  }, [items, cityParam, type, vehicle, maxPrice]);
+  }, [items, cityParam, type, vehicle, minPrice, maxPrice]);
+
+  const sorted = useMemo(() => {
+    const list = [...filtered];
+    if (sortBy === "priceAsc") list.sort((a, b) => a.price - b.price);
+    else if (sortBy === "priceDesc") list.sort((a, b) => b.price - a.price);
+    return list;
+  }, [filtered, sortBy]);
 
   return (
     <div className="transfers-page">
@@ -87,12 +112,41 @@ export default function TransfersPage() {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
           font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
         }
+        .transfers-page .tp-field-price { position: relative; }
+        .transfers-page .tp-price-trigger {
+          border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          text-align: left; cursor: pointer;
+        }
+        .transfers-page .tp-price-trigger.active { border-color: var(--izigo-orange); color: var(--izigo-orange); font-weight: 700; }
+        .transfers-page .tp-price-backdrop { display: none; }
+        .transfers-page .tp-price-popover {
+          position: absolute; top: calc(100% + 8px); left: 0; z-index: 20;
+          background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+          box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 10px; min-width: 220px;
+        }
+        .transfers-page .tp-price-inputs { display: flex; align-items: center; gap: 8px; }
+        .transfers-page .tp-price-inputs input {
+          width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px;
+          font-size: 13.5px; font-family: var(--sans); color: var(--text);
+        }
+        .transfers-page .tp-price-sep { color: var(--text-soft); font-weight: 700; }
+        .transfers-page .tp-price-apply {
+          border: none; border-radius: 10px; background: var(--izigo-orange); color: #fff;
+          font-weight: 700; font-size: 13.5px; padding: 10px; cursor: pointer;
+        }
         .transfers-page .tp-reset {
           border: none; background: none; color: var(--izigo-orange); font-weight: 700;
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
-        .transfers-page .tp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
+        .transfers-page .tp-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+        .transfers-page .tp-count { font-size: 14px; color: var(--text-soft); margin-bottom: 0; }
+        .transfers-page .tp-meta-actions { display: flex; align-items: center; gap: 14px; }
+        .transfers-page .tp-sort {
+          border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
+          font-size: 13px; color: var(--text); background: #fff; font-family: var(--sans);
+        }
 
         .transfers-page .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .transfers-page .tp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
@@ -123,15 +177,29 @@ export default function TransfersPage() {
         @media (max-width: 640px) {
           .transfers-page { padding: 32px 5vw 56px; }
           .transfers-page .tp-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-          .transfers-page .tp-filters { flex-direction: column; align-items: stretch; position: relative; padding-top: 46px; }
-          .transfers-page .tp-reset { position: absolute; top: 16px; right: 16px; padding: 0; font-size: 12.5px; }
-          .transfers-page .tp-field select { width: 100%; }
+          .transfers-page .tp-filters {
+            flex-direction: row; flex-wrap: wrap; align-items: center; border: none; padding: 2px 0 4px; margin-bottom: 14px; gap: 8px;
+          }
+          .transfers-page .tp-field { flex: 0 0 auto; flex-direction: row; gap: 0; }
+          .transfers-page .tp-field label { display: none; }
+          .transfers-page .tp-field select { width: auto; min-width: 0; white-space: nowrap; padding: 7px 20px 7px 10px; font-size: 11.5px; border-radius: 999px; }
+          .transfers-page .tp-price-trigger { width: auto; min-width: 0; white-space: nowrap; padding: 7px 10px; font-size: 11.5px; border-radius: 999px; }
+          .transfers-page .tp-price-backdrop { display: block; position: fixed; inset: 0; background: rgba(15,23,20,0.35); z-index: 30; }
+          .transfers-page .tp-price-popover { position: fixed; top: 50%; left: 16px; right: 16px; transform: translateY(-50%); z-index: 31; width: auto; min-width: 0; }
+          .transfers-page .tp-meta-row { margin-bottom: 14px; }
+          .transfers-page .tp-count { font-size: 12.5px; }
+          .transfers-page .tp-meta-actions { gap: 10px; }
+          .transfers-page .tp-sort { padding: 6px 22px 6px 10px; font-size: 11.5px; border-radius: 999px; }
+          .transfers-page .tp-reset { padding: 0; font-size: 11.5px; }
           .transfers-page .tp-badge { font-size: 10px; padding: 4px 8px; }
-          .transfers-page .tp-body { padding: 10px; }
-          .transfers-page .tp-title { font-size: 13.5px; margin-bottom: 4px; }
-          .transfers-page .tp-city { font-size: 10.5px; margin-bottom: 3px; }
-          .transfers-page .tp-meta { font-size: 10.5px; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+          .transfers-page .tp-body { padding: 8px; }
+          .transfers-page .tp-title { font-size: 13px; margin-bottom: 3px; line-height: 1.3; }
+          .transfers-page .tp-city { font-size: 10px; margin-bottom: 2px; }
+          .transfers-page .tp-meta { font-size: 10px; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+          .transfers-page .tp-meta span { gap: 3px; }
+          .transfers-page .tp-meta svg { width: 11px; height: 11px; }
           .transfers-page .tp-price { font-size: 14px; }
+          .transfers-page .tp-footer { margin-top: 4px; }
           .transfers-page .tp-link { display: none; }
           .transfers-page .tp-card .save-heart {
             width: 30px; height: 30px; top: 6px; right: 6px;
@@ -174,23 +242,64 @@ export default function TransfersPage() {
             <option value="without">{t("transfersPage.withoutVehicle")}</option>
           </select>
         </div>
-        <div className="tp-field">
+        <div className="tp-field tp-field-price" ref={priceRef}>
           <label>{t("transfersPage.filterPrice")}</label>
-          <select value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}>
-            <option value="">{t("transfersPage.anyPrice")}</option>
-            {PRICE_OPTIONS.map((p) => <option key={p} value={p}>≤ {p} AZN</option>)}
-          </select>
+          <button
+            type="button"
+            className={`tp-price-trigger${minPrice || maxPrice ? " active" : ""}`}
+            onClick={() => setPriceOpen((o) => !o)}
+          >
+            {minPrice || maxPrice ? `${minPrice || "0"}–${maxPrice || "∞"} AZN` : t("transfersPage.priceLabel")}
+          </button>
+          {priceOpen && (
+            <>
+              <div className="tp-price-backdrop" onClick={() => setPriceOpen(false)} />
+              <div className="tp-price-popover">
+                <div className="tp-price-inputs">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min="0"
+                    placeholder={t("transfersPage.priceMin")}
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                  />
+                  <span className="tp-price-sep">–</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min="0"
+                    placeholder={t("transfersPage.priceMax")}
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                </div>
+                <button type="button" className="tp-price-apply" onClick={() => setPriceOpen(false)}>
+                  {t("transfersPage.applyPrice")}
+                </button>
+              </div>
+            </>
+          )}
         </div>
-        <button type="button" className="tp-reset" onClick={resetFilters}>{t("transfersPage.resetFilters")}</button>
       </div>
 
-      <p className="tp-count">{t("transfersPage.resultsCount").replace("{count}", filtered.length)}</p>
+      <div className="tp-meta-row">
+        <p className="tp-count">{t("transfersPage.resultsCount").replace("{count}", sorted.length)}</p>
+        <div className="tp-meta-actions">
+          <select className="tp-sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="newest">{t("sort.label")}</option>
+            <option value="priceAsc">{t("sort.priceAsc")}</option>
+            <option value="priceDesc">{t("sort.priceDesc")}</option>
+          </select>
+          <button type="button" className="tp-reset" onClick={resetFilters}>{t("transfersPage.resetFilters")}</button>
+        </div>
+      </div>
 
-      {loading ? null : filtered.length === 0 ? (
+      {loading ? null : sorted.length === 0 ? (
         <div className="tp-empty">{t("transfersPage.noResults")}</div>
       ) : (
         <div className="tp-grid">
-          {filtered.map((item) => (
+          {sorted.map((item) => (
             <Link to={`/transfers/${item.id}`} className="tp-card" key={item.id}>
               <SaveHeart type="transfer" id={item.id} />
               <div className={`tp-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined}>
