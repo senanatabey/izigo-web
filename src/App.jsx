@@ -15,6 +15,8 @@ import LoginForm from "./pages/Auth/LoginForm";
 import RegisterForm from "./pages/Auth/RegisterForm";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { CurrencyProvider, useCurrency, CURRENCIES } from "./i18n/CurrencyContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import ThemeToggle from "./components/ThemeToggle";
 import { LANGUAGES } from "./i18n/translations";
 import { supabase } from "./lib/supabaseClient";
 import { fetchMyPartnerProfile, fetchAgentRequests } from "./lib/regionalPartner";
@@ -312,7 +314,9 @@ function RequireRegionalPartner({ children }) {
    LOGO — shared between navbar, auth card and sidebars
    ========================================================================= */
 function IzigoLogo() {
-  return <img src="/images/logos/logo-navbar.png" alt="IZIGO" className="app-logo-img" />;
+  const { theme } = useTheme();
+  const src = theme === "dark" ? "/images/logos/logo-dark.png" : "/images/logos/logo-navbar.png";
+  return <img src={src} alt="IZIGO" className="app-logo-img" />;
 }
 
 function IzigoLogoDark() {
@@ -780,6 +784,7 @@ function MainLayout() {
           </div>
           <div className="app-nav-right">
             <LocaleSwitcher className={isListingDetailPage ? "is-hidden-on-detail-mobile" : ""} />
+            <ThemeToggle className={isListingDetailPage ? "is-hidden-on-detail-mobile" : ""} />
             <Link to="/saved" className="nav-icon-link nav-icon-link-favorites" aria-label={t("nav.saved")} data-tooltip={t("nav.saved")}>
               <Heart size={19} />
               {favoritesCount > 0 && <span className="nav-icon-badge">{favoritesCount > 99 ? "99+" : favoritesCount}</span>}
@@ -827,7 +832,10 @@ function MainLayout() {
           {!isListingDetailPage && !isCategoryListPage && (
             <div className="app-navbar-plain-mobile">
               <Link to="/" className="app-navbar-plain-mobile-logo"><IzigoLogo /></Link>
-              <LocaleSwitcher className="app-navbar-plain-mobile-locale" />
+              <div className="app-navbar-plain-mobile-controls">
+                <ThemeToggle />
+                <LocaleSwitcher className="app-navbar-plain-mobile-locale" />
+              </div>
             </div>
           )}
         </div>
@@ -922,6 +930,7 @@ function AppLayout() {
 
         <NotificationBell userId={user?.id} />
         <LocaleSwitcher />
+        <ThemeToggle className="theme-toggle-sidebar" />
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
       </aside>
       <main className="app-main has-bottom-nav">
@@ -1148,6 +1157,7 @@ function AdminLayout() {
           </NavLink>
         ))}
 
+        <ThemeToggle className="theme-toggle-sidebar" />
         <button className="sidebar-link logout" onClick={() => { closeDrawer(); logout(); }}><LogOut size={17} />Çıxış</button>
       </aside>
       {drawerOpen && <div className="admin-drawer-backdrop" onClick={closeDrawer} />}
@@ -1210,6 +1220,7 @@ export default function App() {
     <LanguageProvider>
     <CurrencyProvider>
     <AuthProvider>
+    <ThemeProvider>
     <AuthModalProvider>
     <SavedProvider>
       <BrowserRouter>
@@ -1311,6 +1322,7 @@ export default function App() {
       </BrowserRouter>
     </SavedProvider>
     </AuthModalProvider>
+    </ThemeProvider>
     </AuthProvider>
     </CurrencyProvider>
     </LanguageProvider>
