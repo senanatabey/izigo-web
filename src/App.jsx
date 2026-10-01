@@ -717,7 +717,8 @@ function MainLayout() {
   // Category LIST pages (/villas, /cars, /transfers, /events — no id) get the
   // same back-arrow + centered-logo mobile header as detail pages, but keep
   // the bottom tab bar (unlike single-listing detail pages).
-  const isCategoryListPage = /^\/(villas|cars|transfers|events)$/.test(location.pathname);
+  const isCategoryListPage = /^\/(villas|cars|transfers|events|concierge|plan-my-trip|deals|saved|destinations|places|become-a-host|add-listing)$/.test(location.pathname)
+    || /^\/(destinations|places|host|add-listing)\/[^/]+$/.test(location.pathname);
   // URL seqmenti ("villas") ilə SaveHeart-in gözlədiyi tip adı ("villa")
   // fərqlidir — mobil başlıqdakı ürək düyməsi düzgün elanı saxlamaq üçün
   // uyğunlaşdırılır.
@@ -856,10 +857,34 @@ function MainLayout() {
   );
 }
 
+/* Parent route for the "back" arrow on pages inside the signed-in (AppLayout)
+   shell. On phones the sidebar is hidden, so without this a page like
+   /partner/agent-requests has no way back besides the browser button. */
+const APP_PARENT_ROUTES = [
+  [/^\/partner\/.+/, "/partner"],
+  [/^\/partner$/, "/profile"],
+  [/^\/my-listings$/, "/profile"],
+  [/^\/notifications$/, "/profile"],
+  [/^\/edit-listing\/.+/, "/my-listings"],
+  [/^\/add-listing\/.+/, "/add-listing"],
+  [/^\/add-listing$/, "/profile"],
+];
+
+function PageBackLink({ to }) {
+  const { t } = useLanguage();
+  if (!to) return null;
+  return (
+    <Link to={to} className="page-back-link">
+      <ArrowLeft size={18} />{t("listingGallery.back")}
+    </Link>
+  );
+}
+
 function AuthLayout() {
   return (
     <div className="auth-shell">
       <div className="auth-card">
+        <PageBackLink to="/" />
         <Link to="/"><IzigoLogo /></Link>
         <Outlet />
       </div>
@@ -876,6 +901,7 @@ const APP_NAV_ITEMS = [
 function AppLayout() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const location = useLocation();
   const isRegionalPartner = user?.role === "regional_partner";
   const [pendingAgentRequestsCount, setPendingAgentRequestsCount] = useState(0);
 
@@ -934,6 +960,7 @@ function AppLayout() {
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
       </aside>
       <main className="app-main has-bottom-nav">
+        <PageBackLink to={APP_PARENT_ROUTES.find(([re]) => re.test(location.pathname))?.[1]} />
         <p style={{ fontSize: 13, color: "var(--text-soft)", marginBottom: 18 }}>
           Signed in as <strong>{user?.name}</strong> ({user?.role})
         </p>
@@ -1064,6 +1091,10 @@ function AdminLayout() {
   const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const adminLocation = useLocation();
+  const adminParent = /^\/admin\/trip-requests\/.+/.test(adminLocation.pathname)
+    ? "/admin/trip-requests"
+    : adminLocation.pathname !== "/admin" ? "/admin" : null;
   const closeDrawer = () => setDrawerOpen(false);
 
   useEffect(() => {
@@ -1164,6 +1195,9 @@ function AdminLayout() {
       <main className="app-main">
         <div className="admin-mobile-bar">
           <div className="admin-mobile-bar-left">
+            {adminParent && (
+              <Link to={adminParent} className="admin-mobile-menu-btn" aria-label="Geri"><ArrowLeft size={18} /></Link>
+            )}
             <button type="button" className="admin-mobile-menu-btn" onClick={() => setDrawerOpen(true)} aria-label="Menu">
               <Menu size={18} />
             </button>
