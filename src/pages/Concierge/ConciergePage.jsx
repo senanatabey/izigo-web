@@ -113,7 +113,7 @@ export default function ConciergePage() {
         .concierge-page .cg-field label { font-size: 12.5px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
         .concierge-page .cg-field select {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 200px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 200px; font-family: var(--sans);
         }
         .concierge-page .cg-reset {
           border: none; background: none; color: var(--izigo-green); font-weight: 700;

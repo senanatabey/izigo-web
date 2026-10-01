@@ -106,19 +106,19 @@ export default function CarsPage() {
         .cars-page .cp-field label { font-size: 12.5px; font-weight: 700; color: var(--text); }
         .cars-page .cp-field select {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
         }
         .cars-page .cp-field-price { position: relative; }
         .cars-page .cp-price-trigger {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
           text-align: left; cursor: pointer;
         }
         .cars-page .cp-price-trigger.active { border-color: var(--izigo-orange); color: var(--izigo-orange); font-weight: 700; }
         .cars-page .cp-price-backdrop { display: none; }
         .cars-page .cp-price-popover {
           position: absolute; top: calc(100% + 8px); left: 0; z-index: 20;
-          background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+          background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px;
           box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 10px; min-width: 220px;
         }
         .cars-page .cp-price-inputs { display: flex; align-items: center; gap: 8px; }
@@ -141,7 +141,7 @@ export default function CarsPage() {
         .cars-page .cp-meta-actions { display: flex; align-items: center; gap: 14px; }
         .cars-page .cp-sort {
           border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
-          font-size: 13px; color: var(--text); background: #fff; font-family: var(--sans);
+          font-size: 13px; color: var(--text); background: var(--surface); font-family: var(--sans);
         }
 
         .cars-page .cp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }

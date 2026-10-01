@@ -33,7 +33,7 @@ export default function ListingsPage() {
       <style>{`
         .admin-listings-filters { display: flex; gap: 8px; margin-bottom: 20px; }
         .admin-listings-filters button {
-          border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 7px 16px;
+          border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
         .admin-listings-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }

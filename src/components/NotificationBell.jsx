@@ -71,7 +71,7 @@ export default function NotificationBell({ userId }) {
         }
         .notification-bell .nb-dropdown {
           position: absolute; left: 0; top: calc(100% + 6px); width: 300px; max-height: 360px; overflow-y: auto;
-          background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px;
+          background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px;
           box-shadow: var(--shadow-md); z-index: 50; padding: 8px;
         }
         .notification-bell .nb-item { display: block; padding: 10px 10px; border-radius: 8px; font-size: 13px; line-height: 1.5; }

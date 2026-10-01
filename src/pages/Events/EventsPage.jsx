@@ -83,7 +83,7 @@ export default function EventsPage() {
         .events-page .ep-field label { font-size: 12.5px; font-weight: 700; color: var(--text); }
         .events-page .ep-field select {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
         }
         .events-page .ep-reset {
           border: none; background: none; color: var(--izigo-orange); font-weight: 700;
@@ -95,7 +95,7 @@ export default function EventsPage() {
         .events-page .ep-meta-actions { display: flex; align-items: center; gap: 14px; }
         .events-page .ep-sort {
           border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
-          font-size: 13px; color: var(--text); background: #fff; font-family: var(--sans);
+          font-size: 13px; color: var(--text); background: var(--surface); font-family: var(--sans);
         }
 
         .events-page .ep-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }

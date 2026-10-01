@@ -33,7 +33,7 @@ export const CONTENT_ADMIN_STYLES = `
   .ca-empty p { font-size: 13.5px; color: var(--text-soft); max-width: 420px; margin: 0 auto 20px; line-height: 1.6; }
 
   .ca-modal-overlay { position: fixed; inset: 0; background: rgba(5,22,20,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
-  .ca-modal { background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; position: relative; }
+  .ca-modal { background: var(--surface); border-radius: 16px; padding: 28px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; position: relative; }
   .ca-modal-close { position: absolute; top: 16px; right: 16px; border: none; background: var(--bg-soft); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .ca-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .ca-field label { font-size: 12.5px; font-weight: 700; }
@@ -69,7 +69,7 @@ export const CONTENT_ADMIN_STYLES = `
   .ai-field-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .ai-field-head span { font-size: 12.5px; font-weight: 700; color: var(--text); }
   .ai-generate-btn {
-    display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--izigo-green); background: #fff;
+    display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--izigo-green); background: var(--surface);
     color: var(--izigo-green); border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer;
   }
   .ai-generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -79,7 +79,7 @@ export const CONTENT_ADMIN_STYLES = `
   .ai-field-preview { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
   .ai-field-preview textarea {
     border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; font-family: var(--sans);
-    min-height: 70px; resize: vertical; background: #fff;
+    min-height: 70px; resize: vertical; background: var(--surface);
   }
   .ai-insert-btn {
     align-self: flex-start; border: none; background: var(--izigo-green); color: #fff; border-radius: 8px;

@@ -481,7 +481,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-field select,
         .add-listing-form-page .alf-field textarea {
           border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px;
-          font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); font-family: var(--sans);
         }
         .add-listing-form-page .alf-field textarea { resize: vertical; min-height: 90px; }
         .add-listing-form-page .alf-field input.error { border-color: #E0553F; }
@@ -519,7 +519,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
         .add-listing-form-page .alf-chip {
           display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px;
-          padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
+          padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--surface); cursor: pointer;
         }
         .add-listing-form-page .alf-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
 
@@ -604,7 +604,7 @@ export default function AddListingFormPage() {
 
 
         .add-listing-form-page .alf-bedtype-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .add-listing-form-page .alf-bedtype-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fff; font-family: var(--sans); }
+        .add-listing-form-page .alf-bedtype-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: var(--surface); font-family: var(--sans); }
         .add-listing-form-page .alf-bedtype-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; width: 100%; }
         .add-listing-form-page .alf-bedtype-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .add-listing-form-page .alf-bedtype-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }

@@ -12,7 +12,7 @@ export default function FaqAccordion({ items }) {
     <div className="faq-accordion">
       <style>{`
         .faq-accordion { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
-        .faq-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; }
+        .faq-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
         .faq-question {
           width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
           padding: 16px 18px; background: none; border: none; cursor: pointer; text-align: left;

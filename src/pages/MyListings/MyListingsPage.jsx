@@ -110,7 +110,7 @@ export default function MyListingsPage() {
         .my-listings-page .mlp-head p { font-size: 13.5px; color: var(--text-soft); margin: 0; }
         .my-listings-page .mlp-search {
           display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px;
-          padding: 10px 14px; margin-bottom: 18px; background: #fff; position: sticky; top: 8px; z-index: 1;
+          padding: 10px 14px; margin-bottom: 18px; background: var(--surface); position: sticky; top: 8px; z-index: 1;
         }
         .my-listings-page .mlp-search svg { color: var(--text-soft); flex-shrink: 0; }
         .my-listings-page .mlp-search input {
@@ -128,7 +128,7 @@ export default function MyListingsPage() {
         }
         .my-listings-page .mlp-reviews-toggle svg.is-open { transform: rotate(180deg); }
         .my-listings-page .mlp-reviews-panel { border-top: 1px solid var(--border); background: var(--bg-soft); padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-        .my-listings-page .mlp-review-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+        .my-listings-page .mlp-review-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
         .my-listings-page .mlp-review-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .my-listings-page .mlp-review-stars { color: #FFB800; font-size: 13px; }
         .my-listings-page .mlp-review-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--bg-soft); color: var(--text-soft); }

@@ -66,7 +66,7 @@ export default function AgentRequestsPage() {
           border-radius: 8px; padding: 8px 14px; font-weight: 700; font-size: 12.5px; cursor: pointer; border: none;
         }
         .btn-approve { background: var(--izigo-green); color: #fff; }
-        .btn-reject { background: #F1F1F1; color: #333; }
+        .btn-reject { background: var(--bg-soft); color: var(--text); }
         .agent-requests-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .agent-requests-cards { display: none; flex-direction: column; gap: 14px; }

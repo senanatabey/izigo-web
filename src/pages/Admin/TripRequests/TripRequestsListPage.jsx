@@ -71,12 +71,12 @@ export default function TripRequestsListPage() {
         }
         .trip-requests-search input { border: none; outline: none; font-size: 13.5px; width: 100%; }
         .trip-requests-sort {
-          display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: #fff;
+          display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--surface);
           border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
         }
         .trip-requests-filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
         .trip-requests-filters button {
-          border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 7px 16px;
+          border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
         .trip-requests-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
@@ -93,7 +93,7 @@ export default function TripRequestsListPage() {
         .trip-status-pill.completed { background: rgba(0,0,0,0.08); color: var(--text-soft); }
         .trip-status-pill.cancelled { background: rgba(224,85,63,0.14); color: #E0553F; }
         .trip-view-btn {
-          display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--border); background: #fff;
+          display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--border); background: var(--surface);
           border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; color: var(--text); text-decoration: none;
         }
         .trip-view-btn:hover { background: var(--bg-soft); }

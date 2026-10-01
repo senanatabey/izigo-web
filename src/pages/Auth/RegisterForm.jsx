@@ -75,7 +75,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         .auth-form .ap-social { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .auth-form .ap-social-btn {
           display: flex; align-items: center; justify-content: center; gap: 10px;
-          width: 100%; border: 1.5px solid var(--border); background: #fff; color: var(--text);
+          width: 100%; border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
           border-radius: 10px; padding: 11px; font-weight: 700; font-size: 14px; cursor: pointer;
           transition: border-color 0.15s ease, background 0.15s ease;
         }

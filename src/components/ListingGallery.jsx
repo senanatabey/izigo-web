@@ -169,7 +169,7 @@ export default function ListingGallery({
         .listing-gallery .lg-arrow {
           position: absolute; top: 50%; transform: translateY(-50%);
           z-index: 2; width: 40px; height: 40px; border-radius: 50%;
-          border: none; background: rgba(255, 255, 255, 0.9); color: var(--text);
+          border: none; background: var(--glass); color: var(--text);
           display: flex; align-items: center; justify-content: center; cursor: pointer;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
           opacity: 0; pointer-events: none; transition: opacity 0.18s ease;

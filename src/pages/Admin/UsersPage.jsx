@@ -164,7 +164,7 @@ export default function UsersPage() {
         .agent-action-btns { display: flex; gap: 6px; }
         .agent-action-btns button { border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
         .agent-action-btns .approve { background: var(--izigo-green); color: #fff; }
-        .agent-action-btns .reject { background: #F1F1F1; color: #333; }
+        .agent-action-btns .reject { background: var(--bg-soft); color: var(--text); }
         .agent-action-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>İstifadəçilər</h1>

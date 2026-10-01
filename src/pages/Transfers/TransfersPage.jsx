@@ -110,19 +110,19 @@ export default function TransfersPage() {
         .transfers-page .tp-field label { font-size: 12.5px; font-weight: 700; color: var(--text); }
         .transfers-page .tp-field select {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
         }
         .transfers-page .tp-field-price { position: relative; }
         .transfers-page .tp-price-trigger {
           border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-          font-size: 14px; color: var(--text); background: #fff; min-width: 160px; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
           text-align: left; cursor: pointer;
         }
         .transfers-page .tp-price-trigger.active { border-color: var(--izigo-orange); color: var(--izigo-orange); font-weight: 700; }
         .transfers-page .tp-price-backdrop { display: none; }
         .transfers-page .tp-price-popover {
           position: absolute; top: calc(100% + 8px); left: 0; z-index: 20;
-          background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+          background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px;
           box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: 10px; min-width: 220px;
         }
         .transfers-page .tp-price-inputs { display: flex; align-items: center; gap: 8px; }
@@ -145,7 +145,7 @@ export default function TransfersPage() {
         .transfers-page .tp-meta-actions { display: flex; align-items: center; gap: 14px; }
         .transfers-page .tp-sort {
           border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
-          font-size: 13px; color: var(--text); background: #fff; font-family: var(--sans);
+          font-size: 13px; color: var(--text); background: var(--surface); font-family: var(--sans);
         }
 
         .transfers-page .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -157,7 +157,7 @@ export default function TransfersPage() {
         .transfers-page .tp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .transfers-page .tp-badge {
           position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 5px;
-          background: rgba(255,255,255,0.92); color: var(--text); font-size: 11.5px; font-weight: 700;
+          background: var(--glass); color: var(--text); font-size: 11.5px; font-weight: 700;
           padding: 5px 10px; border-radius: 999px;
         }
         .transfers-page .tp-body { padding: 18px; }

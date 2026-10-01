@@ -73,7 +73,7 @@ export default function SavedPage() {
         .saved-page .sp-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .saved-page .sp-tab {
           display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px;
-          border: 1.5px solid var(--izigo-green); background: #fff; color: var(--izigo-green); font-size: 13.5px; font-weight: 700;
+          border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green); font-size: 13.5px; font-weight: 700;
           cursor: pointer; transition: all 0.15s ease;
         }
         .saved-page .sp-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }

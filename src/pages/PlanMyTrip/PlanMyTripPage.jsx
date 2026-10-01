@@ -39,11 +39,11 @@ export default function PlanMyTripPage() {
         .plan-trip-page .pt-field select,
         .plan-trip-page .pt-field textarea {
           border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px;
-          font-size: 14px; color: var(--text); background: #fff; font-family: var(--sans);
+          font-size: 14px; color: var(--text); background: var(--surface); font-family: var(--sans);
         }
         .plan-trip-page .pt-field textarea { resize: vertical; min-height: 170px; }
         .plan-trip-page .pt-phone-input {
-          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: #fff;
+          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface);
         }
         .plan-trip-page .pt-phone-input select {
           border: none; outline: none; border-right: 1px solid var(--border); background: none;
@@ -60,7 +60,7 @@ export default function PlanMyTripPage() {
         .plan-trip-page .pt-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
         .plan-trip-page .pt-chip {
           display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px;
-          padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: #fff; cursor: pointer;
+          padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--surface); cursor: pointer;
           transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
         }
         .plan-trip-page .pt-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }

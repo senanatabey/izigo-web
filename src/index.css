@@ -12,6 +12,8 @@ html {
   --bg: #FFFFFF;
   --bg-soft: #F9FAFB;
   --surface: #FFFFFF;
+  --on-brand: #1F2937;
+  --glass: rgba(255, 255, 255, 0.92);
   --sidebar-bg: #1F2937;
   --text: #1F2937;
   --text-soft: #6B7280;
@@ -34,13 +36,10 @@ html {
 /* Dark theme — set via <html data-theme="dark"> by ThemeProvider. Only colors
    change; brand greens/orange stay close to light values for recognisability. */
 :root[data-theme="dark"] {
-  --izigo-green: #1ED9A9;
-  --izigo-green-dark: #00C897;
-  --izigo-orange: #FF8F2B;
-  --izigo-navy: #E8DFCB;
   --bg: #0A1816;
   --bg-soft: #112420;
   --surface: #0E1F1C;
+  --glass: rgba(10, 24, 22, 0.88);
   --sidebar-bg: #06110F;
   --text: #EFE8D8;
   --text-soft: #9DB0A9;

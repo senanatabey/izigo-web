@@ -26,7 +26,7 @@ export default function AddListingPage() {
         .add-listing-page .alp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
         .add-listing-page .alp-card {
           display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); border-radius: 16px;
-          padding: 20px; background: #fff; transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+          padding: 20px; background: var(--surface); transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
         .add-listing-page .alp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--izigo-green); }
         .add-listing-page .alp-icon {

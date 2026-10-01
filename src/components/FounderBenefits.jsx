@@ -34,7 +34,7 @@ export default function FounderBenefits({ counterText }) {
         .founder-benefits-block .fb-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         .founder-benefits-block .fb-card > p { font-size: 14.5px; color: var(--text-soft); line-height: 1.55; margin: 0 auto; max-width: 600px; }
         .founder-benefits-block .fb-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
-        .founder-benefits-block .fb-perk { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; }
+        .founder-benefits-block .fb-perk { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; }
         .founder-benefits-block .fb-perk svg { color: var(--izigo-green); margin-bottom: 10px; }
         .founder-benefits-block .fb-perk h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
         .founder-benefits-block .fb-perk p { font-size: 12.5px; color: var(--text-soft); }

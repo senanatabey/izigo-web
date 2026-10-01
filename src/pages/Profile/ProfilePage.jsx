@@ -246,7 +246,7 @@ export default function ProfilePage() {
         }
         .pp-mf-filters::-webkit-scrollbar { display: none; }
         .pp-mf-chip {
-          flex-shrink: 0; border: 1.5px solid var(--izigo-green); background: #fff; color: var(--izigo-green);
+          flex-shrink: 0; border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green);
           border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer;
           white-space: nowrap; transition: background 0.15s ease, color 0.15s ease;
         }
@@ -267,7 +267,7 @@ export default function ProfilePage() {
         .pp-mli-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .pp-mli-status-dot {
           position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; border-radius: 50%;
-          border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+          border: 2px solid var(--surface); box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
         }
         .pp-mli-status-dot.approved { background: var(--izigo-green); }
         .pp-mli-status-dot.pending { background: #FFB800; }

@@ -234,7 +234,7 @@ export default function VillaDetail() {
         }
         .villa-detail .vd-sidebar-map-btn {
           display: inline-flex; align-items: center; gap: 6px;
-          background: #fff; border: 1px solid var(--border); border-radius: 999px;
+          background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
           padding: 8px 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
           box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
         }
@@ -246,11 +246,11 @@ export default function VillaDetail() {
         }
         .villa-detail .vd-map-modal {
           position: relative; width: 100%; max-width: 720px; height: min(520px, 80vh);
-          background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         .villa-detail .vd-map-close {
           position: absolute; top: 12px; right: 12px; z-index: 1; width: 32px; height: 32px; border-radius: 50%;
-          border: none; background: #fff; color: var(--text); display: flex; align-items: center; justify-content: center;
+          border: none; background: var(--surface); color: var(--text); display: flex; align-items: center; justify-content: center;
           cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .villa-detail .vd-map-iframe { width: 100%; height: 100%; border: none; display: block; }

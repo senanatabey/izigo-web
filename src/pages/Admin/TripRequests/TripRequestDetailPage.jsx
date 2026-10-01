@@ -208,10 +208,10 @@ export default function TripRequestDetailPage() {
         .trip-timeline-step:last-child { flex: 0; }
         .trip-timeline-dot {
           width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-          font-size: 11px; font-weight: 800; border: 2px solid var(--border); background: #fff; color: var(--text-soft); flex-shrink: 0;
+          font-size: 11px; font-weight: 800; border: 2px solid var(--border); background: var(--surface); color: var(--text-soft); flex-shrink: 0;
         }
         .trip-timeline-dot.done { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
-        .trip-timeline-dot.current { background: #fff; border-color: var(--izigo-green); color: var(--izigo-green); }
+        .trip-timeline-dot.current { background: var(--surface); border-color: var(--izigo-green); color: var(--izigo-green); }
         .trip-timeline-line { flex: 1; height: 2px; background: var(--border); margin: 0 6px; }
         .trip-timeline-line.done { background: var(--izigo-green); }
         .trip-timeline-label { font-size: 11px; font-weight: 700; color: var(--text-soft); text-align: center; margin-top: 6px; white-space: nowrap; }
@@ -220,7 +220,7 @@ export default function TripRequestDetailPage() {
         .trip-timeline-labels > div { flex: 1; }
         .trip-timeline-labels > div:last-child { flex: 0 0 26px; }
         .trip-cancelled-note { color: #E0553F; font-weight: 700; font-size: 13px; margin-top: 8px; }
-        .trip-section { border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; background: #fff; }
+        .trip-section { border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; background: var(--surface); }
         .trip-section h2 { font-size: 15px; font-weight: 800; margin: 0 0 14px; }
         .trip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
         .trip-field { display: flex; flex-direction: column; gap: 5px; }
@@ -254,7 +254,7 @@ export default function TripRequestDetailPage() {
           border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 13.5px; font-family: inherit;
         }
         .new-service-add {
-          align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; background: var(--text);
+          align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; background: var(--sidebar-bg);
           color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer;
         }
 
@@ -269,7 +269,7 @@ export default function TripRequestDetailPage() {
           display: inline-flex; align-items: center; gap: 6px; border-radius: 10px; padding: 9px 16px;
           font-weight: 700; font-size: 13px; cursor: pointer; border: none; text-decoration: none;
         }
-        .wa-copy-btn { background: #F1F1F1; color: #333; }
+        .wa-copy-btn { background: var(--bg-soft); color: var(--text); }
         .wa-send-btn { background: var(--izigo-green); color: #fff; }
 
         @media (max-width: 860px) {

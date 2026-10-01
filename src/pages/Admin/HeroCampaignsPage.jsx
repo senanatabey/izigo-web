@@ -214,7 +214,7 @@ export default function HeroCampaignsPage() {
         .hc-default-box p { font-size: 12.5px; color: var(--text-soft); margin: 0 0 14px; line-height: 1.5; }
         .hc-default-row { display: flex; gap: 16px; align-items: flex-start; }
         .hc-default-thumb {
-          width: 110px; height: 74px; border-radius: 10px; background: #fff; background-size: cover; background-position: center;
+          width: 110px; height: 74px; border-radius: 10px; background: var(--surface); background-size: cover; background-position: center;
           border: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-soft);
         }
         .hc-default-uploads { flex: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -242,7 +242,7 @@ export default function HeroCampaignsPage() {
         .hc-empty p { font-size: 13.5px; color: var(--text-soft); max-width: 420px; margin: 0 auto 20px; line-height: 1.6; }
 
         .hc-modal-overlay { position: fixed; inset: 0; background: rgba(5,22,20,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
-        .hc-modal { background: #fff; border-radius: 16px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .hc-modal { background: var(--surface); border-radius: 16px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; }
         .hc-modal-close { position: absolute; top: 16px; right: 16px; border: none; background: var(--bg-soft); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .hc-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .hc-field label { font-size: 12.5px; font-weight: 700; }

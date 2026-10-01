@@ -29,7 +29,7 @@ export default function VillaCard({ villa }) {
         /* Amenity badge overlaid on the photo (top-left), mirroring SaveHeart's
            pill on the top-right — keeps the meta row a single line so cards in
            the same grid row stay the same height. */
-        .villa-card .vc-amenity-overlay { position: absolute; top: 10px; left: 10px; z-index: 2; display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.92); border-radius: 999px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; color: var(--izigo-green); }
+        .villa-card .vc-amenity-overlay { position: absolute; top: 10px; left: 10px; z-index: 2; display: flex; align-items: center; gap: 5px; background: var(--glass); border-radius: 999px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; color: var(--izigo-green); }
         .villa-card .vc-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
         .villa-card .vc-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
         .villa-card .vc-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }

@@ -54,7 +54,7 @@ export default function BecomeAHostPage() {
           max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
         }
         .become-a-host-page .why-card {
-          display: flex; flex-direction: column; gap: 12px; background: #fff; border: 1px solid var(--border);
+          display: flex; flex-direction: column; gap: 12px; background: var(--surface); border: 1px solid var(--border);
           border-radius: 16px; padding: 22px 20px;
         }
         .become-a-host-page .why-icon {

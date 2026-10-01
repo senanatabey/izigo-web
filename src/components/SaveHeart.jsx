@@ -20,7 +20,7 @@ export default function SaveHeart({ type, id, className = "" }) {
         .save-heart {
           position: absolute; top: 10px; right: 10px; z-index: 2;
           width: 32px; height: 32px; border-radius: 50%; border: none;
-          background: rgba(255,255,255,0.92); color: var(--text);
+          background: var(--glass); color: var(--text);
           display: flex; align-items: center; justify-content: center; cursor: pointer;
           transition: transform 0.15s ease;
         }

@@ -40,14 +40,14 @@ export default function FounderCampaignPage() {
     <div className="founder-campaign-page">
       <style>{`
         .founder-campaign-page { max-width: 640px; }
-        .fc-card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; background: #fff; }
+        .fc-card { border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; background: var(--surface); }
         .fc-card h2 { font-size: 15px; font-weight: 800; margin: 0 0 16px; }
         .fc-status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .fc-status-pill { font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 999px; text-transform: uppercase; }
         .fc-status-pill.active { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
         .fc-status-pill.inactive { background: rgba(0,0,0,0.08); color: var(--text-soft); }
         .fc-toggle-btn {
-          border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 8px 16px;
+          border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 8px 16px;
           font-weight: 700; font-size: 13px; cursor: pointer;
         }
         .fc-progress-label { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
