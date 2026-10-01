@@ -4,6 +4,7 @@ import {
   User, Mail, Phone, MessageCircle, Send, Globe, Check, Circle,
   Star, PlusCircle, ListChecks, Bell, Heart, Coins, LayoutDashboard,
   Award, Crown, Calendar, ChevronRight, Home, Settings, LogOut, ArrowLeft,
+  Users, DollarSign, Receipt,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
@@ -17,6 +18,18 @@ const QUICK_ACTIONS = [
   { key: "quickReviews", to: "/my-listings", icon: Star },
   { key: "quickNotifications", to: "/notifications", icon: Bell },
   { key: "quickSaved", to: "/saved", icon: Heart },
+];
+
+// Regional partner-only shortcuts — on desktop these also live in the
+// AppLayout sidebar, but that sidebar is hidden on mobile (BottomNav takes
+// over), so without this a partner would have no way to reach their
+// dashboard/revenue/payments pages from a phone.
+const PARTNER_QUICK_ACTIONS = [
+  { key: "navDashboard", to: "/partner", icon: LayoutDashboard },
+  { key: "navListings", to: "/partner/listings", icon: Home },
+  { key: "navAgentRequests", to: "/partner/agent-requests", icon: Users },
+  { key: "navRevenue", to: "/partner/revenue", icon: DollarSign },
+  { key: "navPayments", to: "/partner/payments", icon: Receipt },
 ];
 
 const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events", service: "concierge" };
@@ -670,6 +683,20 @@ export default function ProfilePage() {
                 ))}
               </div>
             </div>
+
+            {user?.role === "regional_partner" && (
+              <div className="pp-card">
+                <h2>{t("regionalPartner.navSectionLabel")}</h2>
+                <div className="pp-quick-list">
+                  {PARTNER_QUICK_ACTIONS.map(({ key, to, icon: Icon }) => (
+                    <Link key={key} to={to} className="pp-quick-link">
+                      <Icon size={16} />{t(`regionalPartner.${key}`)}
+                      <ChevronRight size={15} className="pp-quick-chevron" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

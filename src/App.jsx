@@ -7,7 +7,7 @@ import {
   PlusCircle, Star, LayoutDashboard, Users, ClipboardList, BarChart3,
   ShieldCheck, LogOut, X, Sparkles, Bell, Settings, ChevronDown, Globe, ArrowLeft,
   Map, MapPin, HelpCircle, FileText, Image as ImageIcon, Compass, Trophy,
-  Handshake, Megaphone, Wallet, DollarSign, Receipt, MessageSquareText, Share2,
+  Handshake, Megaphone, Wallet, DollarSign, Receipt, MessageSquareText, Share2, Menu,
 } from "lucide-react";
 import "./App.css";
 import "./rtl.css";
@@ -1050,10 +1050,12 @@ function AdminTopBar() {
 }
 
 function AdminLayout() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [pendingCount, setPendingCount] = useState(0);
   const [newTripRequestsCount, setNewTripRequestsCount] = useState(0);
   const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const closeDrawer = () => setDrawerOpen(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -1079,17 +1081,35 @@ function AdminLayout() {
     return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
+  useEffect(() => {
+    if (!drawerOpen) return undefined;
+    const onKey = (e) => { if (e.key === "Escape") setDrawerOpen(false); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen]);
+
   return (
     <div className="app-shell">
-      <aside className="app-sidebar admin-sidebar">
+      <aside className={`app-sidebar admin-sidebar${drawerOpen ? " is-open" : ""}`}>
+        <button type="button" className="admin-drawer-close" onClick={closeDrawer} aria-label="Bağla">
+          <X size={18} />
+        </button>
         <SidebarHeader />
         <AdminProfileMenu />
+        <Link to="/profile" className="sidebar-link admin-back-to-profile" onClick={closeDrawer}>
+          <User size={17} />Profilə qayıt
+        </Link>
         {ADMIN_NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
           <NavLink
             key={to}
             to={to}
             end={end}
             className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
+            onClick={closeDrawer}
           >
             <Icon size={17} />{label}
             {to === "/admin/listings/pending" && pendingCount > 0 && (
@@ -1110,6 +1130,7 @@ function AdminLayout() {
             key={to}
             to={to}
             className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
+            onClick={closeDrawer}
           >
             <Icon size={17} />{label}
           </NavLink>
@@ -1121,14 +1142,28 @@ function AdminLayout() {
             key={to}
             to={to}
             className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}
+            onClick={closeDrawer}
           >
             <Icon size={17} />{label}
           </NavLink>
         ))}
 
-        <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />Çıxış</button>
+        <button className="sidebar-link logout" onClick={() => { closeDrawer(); logout(); }}><LogOut size={17} />Çıxış</button>
       </aside>
+      {drawerOpen && <div className="admin-drawer-backdrop" onClick={closeDrawer} />}
       <main className="app-main">
+        <div className="admin-mobile-bar">
+          <div className="admin-mobile-bar-left">
+            <button type="button" className="admin-mobile-menu-btn" onClick={() => setDrawerOpen(true)} aria-label="Menu">
+              <Menu size={18} />
+            </button>
+            <span className="admin-mobile-bar-title">İdarə paneli</span>
+          </div>
+          <div className="admin-mobile-bar-right">
+            <NotificationBell userId={user?.id} />
+            <span className="admin-mobile-avatar">{(user?.name || "A").trim().slice(0, 1).toUpperCase()}</span>
+          </div>
+        </div>
         <AdminTopBar />
         <Outlet />
       </main>
