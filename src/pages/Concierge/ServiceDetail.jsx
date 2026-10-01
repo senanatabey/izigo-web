@@ -94,7 +94,7 @@ export default function ServiceDetail() {
         }
         .service-detail .sd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
-        .service-detail .sd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--bg); }
+        .service-detail .sd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .service-detail .sd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .service-detail .sd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .service-detail .sd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }

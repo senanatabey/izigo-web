@@ -201,7 +201,7 @@ export default function VillaDetail() {
         .villa-detail .vd-rule-no { color: #E0553F; flex-shrink: 0; }
         .villa-detail .vd-houserules-notes { font-size: 13px; color: var(--text-soft); margin: -20px 0 32px; line-height: 1.6; }
 
-        .villa-detail .vd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--bg); }
+        .villa-detail .vd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .villa-detail .vd-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .villa-detail .vd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
         .villa-detail .vd-facts svg { color: var(--izigo-green); flex-shrink: 0; }

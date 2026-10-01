@@ -107,7 +107,7 @@ export default function CarDetail() {
         }
         .car-detail .cd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
-        .car-detail .cd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--bg); }
+        .car-detail .cd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .car-detail .cd-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .car-detail .cd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
         .car-detail .cd-facts svg { color: var(--izigo-green); flex-shrink: 0; }

@@ -181,7 +181,7 @@ export default function ProfilePage() {
 
         /* Hero card */
         .pp-hero {
-          border: 1px solid var(--border); border-radius: 16px; padding: 28px; background: var(--bg);
+          border: 1px solid var(--border); border-radius: 16px; padding: 28px; background: var(--surface);
           box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px;
           position: relative;
         }
@@ -209,7 +209,7 @@ export default function ProfilePage() {
         /* Role row + My listings */
         .pp-role-row {
           display: flex; align-items: center; justify-content: space-between; gap: 12px;
-          border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin-top: 16px; background: var(--bg);
+          border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin-top: 16px; background: var(--surface);
         }
         .pp-role-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--text); }
         .pp-role-chip svg { color: var(--izigo-green); flex-shrink: 0; }
@@ -284,7 +284,7 @@ export default function ProfilePage() {
         .pp-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; margin-top: 24px; align-items: start; }
 
         .pp-card {
-          border: 1px solid var(--border); border-radius: 14px; padding: 24px; background: var(--bg);
+          border: 1px solid var(--border); border-radius: 14px; padding: 24px; background: var(--surface);
           transition: box-shadow 0.15s ease;
         }
         .pp-card h2 { font-size: 16px; font-weight: 800; margin: 0 0 4px; }
@@ -341,7 +341,7 @@ export default function ProfilePage() {
         /* Sticky save bar */
         .pp-save-bar {
           position: sticky; bottom: 0; margin-top: 24px; display: flex; align-items: center; justify-content: space-between;
-          gap: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 20px;
+          gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 20px;
           box-shadow: 0 -4px 16px rgba(20, 30, 28, 0.06);
         }
         .pp-save-status { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--text-soft); }

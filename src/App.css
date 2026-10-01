@@ -9,12 +9,12 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--header-bg);
   transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .app-navbar.is-stuck {
-  background: var(--surface);
+  background: var(--header-bg);
   border-bottom-color: transparent;
   box-shadow: 0 2px 10px rgba(20, 30, 28, 0.08);
 }
@@ -57,7 +57,7 @@
 }
 
 .app-navbar .app-logo-img {
-  height: 44px;
+  height: 52px;
   margin-left: 14px;
 }
 
@@ -156,7 +156,7 @@
   top: calc(100% + 10px);
   left: 0;
   width: 220px;
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(20, 30, 28, 0.14), 0 2px 8px rgba(20, 30, 28, 0.08);
@@ -370,7 +370,7 @@
   top: calc(100% + 10px);
   right: 0;
   width: 270px;
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(20, 30, 28, 0.14), 0 2px 8px rgba(20, 30, 28, 0.08);
@@ -485,7 +485,7 @@
 }
 
 .auth-card {
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 40px;
@@ -518,7 +518,7 @@
 
 .auth-modal-card {
   position: relative;
-  background: var(--bg);
+  background: var(--surface);
   border-radius: 18px;
   padding: 36px;
   width: 100%;
@@ -715,7 +715,7 @@
 
 .admin-profile-dropdown {
   position: absolute; top: calc(100% + 8px); left: 0; width: 100%; min-width: 220px;
-  background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 8px;
   box-shadow: 0 12px 32px rgba(20, 30, 28, 0.18);
   opacity: 0; transform: translateY(-6px) scale(0.98); pointer-events: none; z-index: 60;
   transition: opacity 0.18s ease, transform 0.18s ease;
@@ -737,7 +737,7 @@
   text-align: center;
   font-size: 13px;
   color: var(--text-soft);
-  background: var(--bg);
+  background: var(--header-bg);
 }
 
 .site-footer-logo {
@@ -894,7 +894,7 @@
   }
 
   .app-navbar .app-logo-img {
-    height: 30px;
+    height: 36px;
     margin-left: 0;
   }
 
@@ -1026,7 +1026,7 @@
     position: fixed;
     left: 0; right: 0; bottom: 0;
     z-index: 200;
-    background: var(--bg);
+    background: var(--header-bg);
     border-top: 1px solid var(--border);
     padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
     box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.08);

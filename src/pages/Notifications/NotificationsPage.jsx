@@ -35,7 +35,7 @@ export default function NotificationsPage() {
           padding: 14px 16px;
           border: 1px solid var(--border);
           border-radius: 12px;
-          background: var(--bg);
+          background: var(--surface);
         }
         .notifications-page-item.unread { background: var(--bg-soft); }
         .notifications-page-empty { color: var(--text-soft); font-size: 14px; }

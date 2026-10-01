@@ -92,7 +92,7 @@ export default function MediaLibraryPage() {
       <style>{CONTENT_ADMIN_STYLES}</style>
       <style>{`
         .ml-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-        .ml-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--bg); }
+        .ml-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--surface); }
         .ml-item:hover { border-color: var(--izigo-green); }
         .ml-item-thumb { aspect-ratio: 1; background: var(--bg-soft); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: var(--text-soft); }
         .ml-item-info { padding: 8px 10px; }

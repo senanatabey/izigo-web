@@ -20,8 +20,8 @@ export default function VillaCard({ villa }) {
   return (
     <Link to={`/villas/${villa.id}`} className="villa-card">
       <style>{`
-        .villa-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; background: var(--bg); }
-        .villa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .villa-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; background: var(--surface); }
+        .villa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); background: var(--surface-hover); }
         .villa-card .vc-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .villa-card .vc-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .villa-card .vc-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }

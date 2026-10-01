@@ -452,7 +452,7 @@ export default function IzigoHomepage() {
 
         .izigo-home .discover-az { background: var(--bg-soft); }
         .izigo-home .discover-az-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
-        .izigo-home .discover-az-card { display: block; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--bg); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .izigo-home .discover-az-card { display: block; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--surface); transition: transform 0.15s ease, box-shadow 0.15s ease; }
         .izigo-home .discover-az-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
         .izigo-home .discover-az-thumb { aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--bg-soft); }
         .izigo-home .discover-az-body { padding: 10px 12px; }
@@ -671,7 +671,7 @@ export default function IzigoHomepage() {
           }
           .izigo-home .mqs-dropdown {
             position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
-            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
             box-shadow: 0 8px 24px rgba(16, 24, 40, 0.15); overflow: hidden;
           }
           .izigo-home .mqs-dropdown button {

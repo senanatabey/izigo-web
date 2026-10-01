@@ -112,7 +112,7 @@ export default function TransferDetail() {
         }
         .transfer-detail .td-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
-        .transfer-detail .td-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--bg); }
+        .transfer-detail .td-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .transfer-detail .td-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .transfer-detail .td-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
         .transfer-detail .td-facts svg { color: var(--izigo-green); flex-shrink: 0; }

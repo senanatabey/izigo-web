@@ -78,7 +78,7 @@ export default function DashboardPage() {
         .admin-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .admin-kpi-card {
           border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px;
-          background: var(--bg); cursor: pointer; position: relative;
+          background: var(--surface); cursor: pointer; position: relative;
           transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
         .admin-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -97,7 +97,7 @@ export default function DashboardPage() {
         .admin-quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .admin-quick-action {
           display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 12px;
-          padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--bg);
+          padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--surface);
           transition: border-color 0.15s ease, background 0.15s ease;
         }
         .admin-quick-action:hover { border-color: var(--izigo-green); background: rgba(0, 200, 151, 0.06); }

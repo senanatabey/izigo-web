@@ -58,7 +58,7 @@ export default function PartnerDashboardPage() {
         .partner-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .partner-kpi-card {
           border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px;
-          background: var(--bg); position: relative; text-decoration: none; color: inherit;
+          background: var(--surface); position: relative; text-decoration: none; color: inherit;
           transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
         .partner-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -73,7 +73,7 @@ export default function PartnerDashboardPage() {
         .partner-quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .partner-quick-action {
           display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 12px;
-          padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--bg); text-decoration: none;
+          padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--surface); text-decoration: none;
           transition: border-color 0.15s ease, background 0.15s ease;
         }
         .partner-quick-action:hover { border-color: var(--izigo-green); background: rgba(0, 200, 151, 0.06); }
