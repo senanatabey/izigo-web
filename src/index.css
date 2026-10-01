@@ -95,6 +95,13 @@ input, select, textarea {
   color: var(--text);
 }
 
+/* Native dropdown lists keep a browser-drawn background; without this the
+   options inherit the select's light text and become invisible in dark mode. */
+option, optgroup {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
 input::placeholder, textarea::placeholder {
   color: var(--text-soft);
   opacity: 0.8;
