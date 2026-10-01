@@ -13,6 +13,7 @@ html {
   --bg-soft: #F9FAFB;
   --surface: #FFFFFF;
   --on-brand: #1F2937;
+  --info-text: #0A6FBD;
   --glass: rgba(255, 255, 255, 0.92);
   --sidebar-bg: #1F2937;
   --text: #1F2937;
@@ -40,6 +41,7 @@ html {
   --bg-soft: #112420;
   --surface: #0E1F1C;
   --glass: rgba(10, 24, 22, 0.88);
+  --info-text: #5CB8FF;
   --sidebar-bg: #06110F;
   --text: #EFE8D8;
   --text-soft: #9DB0A9;
@@ -80,4 +82,16 @@ a {
 
 button {
   font-family: var(--sans);
+}
+
+/* Unstyled form controls otherwise fall back to the browser's own dark-mode
+   defaults; class-based rules in components still win over these. */
+input, select, textarea {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-soft);
+  opacity: 0.8;
 }

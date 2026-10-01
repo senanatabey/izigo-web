@@ -86,7 +86,7 @@ export default function TripRequestsListPage() {
         .trip-requests-table tbody tr:hover { background: var(--bg-soft); }
         .trip-request-id { font-family: monospace; font-size: 12px; color: var(--text-soft); }
         .trip-status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
-        .trip-status-pill.new { background: rgba(0,150,255,0.14); color: #0A6FBD; }
+        .trip-status-pill.new { background: rgba(0,150,255,0.14); color: var(--info-text); }
         .trip-status-pill.in_progress { background: rgba(255,180,0,0.16); color: #B87700; }
         .trip-status-pill.offer_sent { background: rgba(148,86,222,0.14); color: #7B3FE0; }
         .trip-status-pill.confirmed { background: rgba(0,200,151,0.14); color: var(--izigo-green); }

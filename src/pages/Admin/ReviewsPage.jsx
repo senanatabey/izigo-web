@@ -61,7 +61,7 @@ export default function ReviewsPage() {
         .status-pill.flagged { background: rgba(255,180,0,0.16); color: #B87700; }
         .status-pill.hidden { background: rgba(224,85,63,0.14); color: #E0553F; }
         .status-pill.pending_moderation { background: rgba(255,180,0,0.16); color: #B87700; }
-        .status-pill.queued { background: rgba(0,150,255,0.14); color: #0A6EBD; }
+        .status-pill.queued { background: rgba(0,150,255,0.14); color: var(--info-text); }
         .status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
         .btn-flag { background: rgba(255,180,0,0.16); color: #B87700; }
         .btn-hide { background: rgba(224,85,63,0.14); color: #E0553F; }
