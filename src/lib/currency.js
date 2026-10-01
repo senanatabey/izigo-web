@@ -87,10 +87,10 @@ function roundNaturally(amount, currency) {
   if (currency === "AZN") {
     return Math.round(amount * 100) / 100;
   }
-  // USD/EUR/RUB/SAR — whole numbers, or a .99 psychological price once
-  // the amount is large enough for that to read as intentional.
-  if (amount >= 10) return Math.floor(amount) - 0.01 >= 0 ? Math.floor(amount) + 0.99 : Math.round(amount);
-  return Math.round(amount);
+  // USD/EUR/RUB/SAR — always a whole number, rounded UP (59.9 -> 60,
+  // 55.4 -> 56). The tiny epsilon stops float noise like 60.0000000001
+  // from jumping to 61.
+  return Math.ceil(amount - 1e-9);
 }
 
 /**
