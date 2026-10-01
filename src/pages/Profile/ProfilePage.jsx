@@ -233,6 +233,8 @@ export default function ProfilePage() {
         .pp-logout-btn:hover { background: rgba(224, 85, 63, 0.08); }
 
         .pp-my-listings { margin-top: 16px; }
+        .pp-partner-main { display: none; margin-top: 16px; }
+        @media (max-width: 860px) { .pp-partner-main { display: block; } }
         .pp-my-listings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .pp-my-listings-head h2 { margin: 0; }
         .pp-my-listings-viewall { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); white-space: nowrap; }
@@ -488,6 +490,20 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {user?.role === "regional_partner" && (
+        <div className="pp-card pp-partner-main">
+          <h2>{t("regionalPartner.navSectionLabel")}</h2>
+          <div className="pp-quick-list">
+            {PARTNER_QUICK_ACTIONS.map(({ key, to, icon: Icon }) => (
+              <Link key={key} to={to} className="pp-quick-link">
+                <Icon size={16} />{t(`regionalPartner.${key}`)}
+                <ChevronRight size={15} className="pp-quick-chevron" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="pp-card pp-my-listings">
         <div className="pp-my-listings-head">
           <h2>{t("profilePage.myListingsTitle")}</h2>
@@ -684,19 +700,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {user?.role === "regional_partner" && (
-              <div className="pp-card">
-                <h2>{t("regionalPartner.navSectionLabel")}</h2>
-                <div className="pp-quick-list">
-                  {PARTNER_QUICK_ACTIONS.map(({ key, to, icon: Icon }) => (
-                    <Link key={key} to={to} className="pp-quick-link">
-                      <Icon size={16} />{t(`regionalPartner.${key}`)}
-                      <ChevronRight size={15} className="pp-quick-chevron" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
