@@ -884,7 +884,9 @@
   .sidebar-link { padding: 13px 12px; font-size: 15px; }
 }
 
-@media (max-width: 560px) {
+/* Mobile header scheme — same breakpoint as the bottom nav and the hidden
+   desktop nav links (860px), so there is no tablet "dead zone". */
+@media (max-width: 860px) {
   .app-navbar-inner {
     height: 60px;
     gap: 8px;
@@ -1000,6 +1002,10 @@
     height: 32px; margin-left: 0;
   }
 
+}
+
+/* Compact controls on phones only (these classes are used all over the app). */
+@media (max-width: 560px) {
   .locale-switcher-trigger {
     padding: 7px 8px;
     font-size: 11.5px;
@@ -1021,9 +1027,30 @@
   }
 }
 
+/* Between the mobile switch (860px) and ~1100px the desktop header is too
+   wide for a signed-in user; shrink spacing, then (<=1040px) collapse labels,
+   but keep every control (incl. the "new listing" CTA) reachable. */
+@media (min-width: 861px) and (max-width: 1100px) {
+  .app-navbar-inner { gap: 16px; padding: 0 3vw; }
+  .app-navbar-left { gap: 16px; min-width: 0; }
+  .app-navbar .app-logo-img { height: 44px; margin-left: 0; }
+  .app-nav-links { gap: 14px; font-size: 14px; }
+  .app-nav-right { gap: 8px; flex-shrink: 0; }
+}
+
+/* Labels collapse only where the full header genuinely does not fit. */
+@media (min-width: 861px) and (max-width: 1040px) {
+  .app-nav-right .locale-switcher-trigger { padding: 8px; }
+  .app-nav-right .locale-switcher-trigger > span,
+  .app-nav-right .locale-switcher-trigger .account-menu-chevron { display: none; }
+  .app-nav-right .account-menu-trigger { padding: 8px 10px; gap: 4px; }
+  .app-nav-right .account-menu-trigger > span:not(.account-menu-trigger-dot) { display: none; }
+  .app-nav-right .btn-primary { padding: 10px 14px; }
+}
+
 .app-bottom-nav { display: none; }
 
-@media (max-width: 640px) {
+@media (max-width: 860px) {
   .app-bottom-nav {
     display: flex;
     align-items: center;
