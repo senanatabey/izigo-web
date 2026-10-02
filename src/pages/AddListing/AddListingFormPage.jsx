@@ -472,8 +472,8 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-section-title { font-size: 14px; font-weight: 800; margin: 24px 0 14px; color: var(--text); }
         .add-listing-form-page .alf-section-title:first-child { margin-top: 0; }
         .add-listing-form-page .alf-account-note { font-size: 12.5px; color: var(--text-soft); line-height: 1.5; margin: -6px 0 16px; }
-        .add-listing-form-page .alf-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .add-listing-form-page .alf-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .add-listing-form-page .alf-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .add-listing-form-page .alf-row-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
         .add-listing-form-page .alf-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
         .add-listing-form-page .alf-field.full { grid-column: 1 / -1; }
         .add-listing-form-page .alf-field label { font-size: 12.5px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
@@ -609,7 +609,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-bedtype-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .add-listing-form-page .alf-bedtype-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }
 
-        .add-listing-form-page .alf-houserules-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
+        .add-listing-form-page .alf-houserules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
         .add-listing-form-page .alf-houserule-item { display: flex; flex-direction: column; gap: 8px; }
         .add-listing-form-page .alf-houserule-item span { font-size: 13.5px; font-weight: 600; color: var(--text); }
         .add-listing-form-page .alf-houserule-toggles { display: flex; gap: 8px; }
