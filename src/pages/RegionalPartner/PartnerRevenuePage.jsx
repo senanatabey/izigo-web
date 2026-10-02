@@ -3,6 +3,7 @@ import { Info } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchMyPartnerProfile, fetchMyRevenueSummary, fetchRegionAdCampaigns } from "../../lib/regionalPartner";
+import ResponsiveTable from "../../components/ResponsiveTable";
 
 const STATUS_KEY = { active: "statusActive", completed: "statusCompleted", cancelled: "statusCancelled" };
 
@@ -101,7 +102,7 @@ export default function PartnerRevenuePage() {
       {campaigns.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noCampaigns")}</p>
       ) : (
-        <table className="partner-breakdown-table">
+        <ResponsiveTable className="partner-breakdown-table">
           <thead>
             <tr>
               <th>{t("regionalPartner.breakdownCampaign")}</th>
@@ -120,7 +121,7 @@ export default function PartnerRevenuePage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

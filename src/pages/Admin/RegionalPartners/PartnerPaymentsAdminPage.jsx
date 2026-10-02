@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAllPartners, fetchAllPartnerPayments, createPartnerPayment, updatePartnerPaymentStatus } from "../../../lib/regionalPartner";
+import ResponsiveTable from "../../../components/ResponsiveTable";
 
 // The only place regional_partner_payments rows get written or their status
 // changed — RLS backs this up (only is_admin() may insert/update that
@@ -118,7 +119,7 @@ export default function PartnerPaymentsAdminPage() {
       {loading ? <p>Yüklənir...</p> : payments.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>Hələ ödəniş qeydə alınmayıb.</p>
       ) : (
-        <table className="pp-table">
+        <ResponsiveTable className="pp-table">
           <thead>
             <tr><th>Partnyor</th><th>Region</th><th>Dövr</th><th>Məbləğ</th><th>Status</th><th>Nömrə</th><th></th></tr>
           </thead>
@@ -141,7 +142,7 @@ export default function PartnerPaymentsAdminPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

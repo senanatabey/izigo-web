@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchMyPartnerProfile, fetchMyPayments } from "../../lib/regionalPartner";
+import ResponsiveTable from "../../components/ResponsiveTable";
 
 export default function PartnerPaymentsPage() {
   const { t, language } = useLanguage();
@@ -42,7 +43,7 @@ export default function PartnerPaymentsPage() {
       ) : payments.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noPayments")}</p>
       ) : (
-        <table className="partner-payments-table">
+        <ResponsiveTable className="partner-payments-table">
           <thead>
             <tr>
               <th>{t("regionalPartner.paymentDate")}</th>
@@ -63,7 +64,7 @@ export default function PartnerPaymentsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

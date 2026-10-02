@@ -3,6 +3,7 @@ import { Home as HomeIcon } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import AdminEmptyState from "../../components/AdminEmptyState";
+import ResponsiveTable from "../../components/ResponsiveTable";
 
 const STATUSES = ["all", "pending", "approved", "rejected"];
 const STATUS_LABELS = { all: "hamısı", pending: "gözləmədə", approved: "təsdiqlənib", rejected: "rədd edilib" };
@@ -31,7 +32,7 @@ export default function ListingsPage() {
   return (
     <div>
       <style>{`
-        .admin-listings-filters { display: flex; gap: 8px; margin-bottom: 20px; }
+        .admin-listings-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .admin-listings-filters button {
           border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
@@ -55,7 +56,7 @@ export default function ListingsPage() {
       {loading ? <p>Yüklənir...</p> : listings.length === 0 ? (
         <AdminEmptyState icon={HomeIcon} message="Hələ heç bir elan yoxdur." actionLabel="Elan əlavə et" actionTo="/add-listing" />
       ) : (
-        <table className="admin-listings-table">
+        <ResponsiveTable className="admin-listings-table">
           <thead>
             <tr><th>Başlıq</th><th>Kateqoriya</th><th>Şəhər</th><th>Qiymət</th><th>Status</th><th></th></tr>
           </thead>
@@ -71,7 +72,7 @@ export default function ListingsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

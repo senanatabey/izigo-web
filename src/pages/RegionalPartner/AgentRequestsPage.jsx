@@ -77,7 +77,7 @@ export default function AgentRequestsPage() {
         .agent-request-card .agent-requests-actions { margin-top: 12px; }
         .agent-request-card .agent-requests-actions button { flex: 1; min-height: 44px; }
 
-        @media (max-width: 720px) {
+        @media (max-width: 860px) {
           .agent-requests-table { display: none; }
           .agent-requests-cards { display: flex; }
         }

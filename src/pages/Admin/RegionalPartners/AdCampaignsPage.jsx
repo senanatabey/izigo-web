@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ALL_DESTINATIONS } from "../../../data/azerbaijanDestinations";
 import { fetchAllAdCampaigns, createAdCampaign, updateAdCampaign, deleteAdCampaign } from "../../../lib/regionalPartner";
+import ResponsiveTable from "../../../components/ResponsiveTable";
 
 const STATUSES = ["active", "completed", "cancelled"];
 const STATUS_LABELS = { active: "Aktiv", completed: "Tamamlanıb", cancelled: "Ləğv edilib" };
@@ -127,7 +128,7 @@ export default function AdCampaignsPage() {
       {loading ? <p>Yüklənir...</p> : campaigns.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>Hələ reklam kampaniyası yoxdur.</p>
       ) : (
-        <table className="ac-table">
+        <ResponsiveTable className="ac-table">
           <thead>
             <tr><th>Başlıq</th><th>Region</th><th>Dövr</th><th>Ümumi Gəlir</th><th>Status</th><th></th></tr>
           </thead>
@@ -147,7 +148,7 @@ export default function AdCampaignsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

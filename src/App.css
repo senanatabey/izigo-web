@@ -685,6 +685,7 @@
 
 .app-main {
   flex: 1;
+  min-width: 0; /* flex child: without this a wide table stretches the whole page */
   max-width: 1280px;
   margin: 0 auto;
   padding: 40px 5vw;
@@ -794,6 +795,10 @@
   .app-nav-links {
     display: none;
   }
+
+  /* Column shell + margin:0 auto would shrink-wrap .app-main to its content's
+     min-width; pin it to the shell width instead. */
+  .app-main { width: 100%; }
 
   .app-shell {
     flex-direction: column;
@@ -1112,3 +1117,70 @@ html, body {
 }
 .page-back-link:hover { border-color: var(--izigo-green); color: var(--izigo-green); }
 .auth-card .page-back-link { display: flex; width: fit-content; margin: 0 auto 8px 0; }
+
+/* ==========================================================================
+   ResponsiveTable (src/components/ResponsiveTable.jsx)
+   >860px : normal table inside a scroll wrapper, never wider than its column
+   <=860px: every row becomes a card; each cell shows its column label
+   ========================================================================== */
+.rt-wrap {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 860px) {
+  .rt-wrap { overflow-x: visible; }
+  .rt-wrap table.rt,
+  .rt-wrap table.rt tbody { display: block; width: 100%; }
+  .rt-wrap table.rt thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .rt-wrap table.rt tr {
+    display: block;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .rt-wrap table.rt tbody tr:hover { background: var(--surface); }
+  .rt-wrap table.rt td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 7px 0 !important;
+    border-bottom: 1px solid var(--border);
+    text-align: right !important;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+  .rt-wrap table.rt td:last-child { border-bottom: none; }
+  .rt-wrap table.rt td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    max-width: 45%;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+  /* First cell = card title; unlabeled cells (e.g. actions) and empty-state rows span the card */
+  .rt-wrap table.rt td:first-child {
+    display: block;
+    padding: 0 0 8px !important;
+    text-align: left !important;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .rt-wrap table.rt td:first-child::before,
+  .rt-wrap table.rt td[data-label=""]::before { display: none; }
+  .rt-wrap table.rt td[data-label=""] { justify-content: flex-start; flex-wrap: wrap; text-align: left !important; }
+  .rt-wrap table.rt td[colspan] { display: block; text-align: center !important; }
+  .rt-wrap table.rt td button,
+  .rt-wrap table.rt td select { min-height: 36px; }
+}

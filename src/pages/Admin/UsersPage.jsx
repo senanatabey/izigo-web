@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { tryGrantFounderStatus } from "../../lib/founder";
 import { approveAgentRequest, rejectAgentRequest } from "../../lib/regionalPartner";
+import ResponsiveTable from "../../components/ResponsiveTable";
 
 const ROLE_LABELS = { admin: "Admin", host: "Host", regional_partner: "Regional Partnyor" };
 const AGENT_STATUS_LABELS = { none: "—", pending: "Gözləyir", approved: "Təsdiqlənib", rejected: "Rədd edilib" };
@@ -159,7 +160,7 @@ export default function UsersPage() {
         .agent-status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
         .agent-status-pill.approved { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
         .agent-status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
-        .admin-users-filter { margin-bottom: 16px; font-size: 13px; display: flex; gap: 20px; }
+        .admin-users-filter { margin-bottom: 16px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 12px 20px; }
         .admin-users-filter select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
         .agent-action-btns { display: flex; gap: 6px; }
         .agent-action-btns button { border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
@@ -191,7 +192,7 @@ export default function UsersPage() {
       {loading ? <p>Yüklənir...</p> : filteredUsers.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>İstifadəçi yoxdur.</p>
       ) : (
-        <table className="admin-users-table">
+        <ResponsiveTable className="admin-users-table">
           <thead>
             <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Host Tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Host təsdiqi</th><th>Founder</th><th>Qoşulub</th><th></th><th>E-poçt təsdiqi</th></tr>
           </thead>
@@ -244,7 +245,7 @@ export default function UsersPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

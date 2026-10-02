@@ -4,6 +4,7 @@ import { Compass, Search, ArrowUpDown, Eye } from "lucide-react";
 import { fetchTripRequests, TRIP_STATUSES } from "../../../lib/tripRequests";
 import { useCurrency } from "../../../i18n/CurrencyContext";
 import AdminEmptyState from "../../../components/AdminEmptyState";
+import ResponsiveTable from "../../../components/ResponsiveTable";
 
 const FILTERS = ["all", ...TRIP_STATUSES];
 
@@ -131,7 +132,7 @@ export default function TripRequestsListPage() {
       ) : visible.length === 0 ? (
         <AdminEmptyState icon={Compass} message="Uyğun səyahət sorğusu tapılmadı." />
       ) : (
-        <table className="trip-requests-table">
+        <ResponsiveTable className="trip-requests-table">
           <thead>
             <tr>
               <th>Sorğu №</th>
@@ -166,7 +167,7 @@ export default function TripRequestsListPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );

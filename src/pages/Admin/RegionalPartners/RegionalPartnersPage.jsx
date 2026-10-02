@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabaseClient";
 import { ALL_DESTINATIONS } from "../../../data/azerbaijanDestinations";
 import { fetchAllPartners, assignRegionalPartner, updatePartner } from "../../../lib/regionalPartner";
+import ResponsiveTable from "../../../components/ResponsiveTable";
 
 // Assigning a Regional Partner touches two things together: the
 // regional_partners row (region + revenue share) and profiles.role — both
@@ -108,7 +109,7 @@ export default function RegionalPartnersPage() {
       {loading ? <p>Yüklənir...</p> : partners.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>Hələ regional partnyor yoxdur.</p>
       ) : (
-        <table className="rp-table">
+        <ResponsiveTable className="rp-table">
           <thead>
             <tr><th>İstifadəçi</th><th>Region</th><th>Gəlir Payı</th><th>Status</th><th>Təyin edilib</th><th></th></tr>
           </thead>
@@ -124,7 +125,7 @@ export default function RegionalPartnersPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </ResponsiveTable>
       )}
     </div>
   );
