@@ -28,7 +28,7 @@ const SOURCE_LABEL = {
 };
 
 function tripDates(r) {
-  if (r.check_in && r.check_out) return `${r.check_in} → ${r.check_out}`;
+  if (r.check_in && r.check_out) return `${formatDateAz(r.check_in)} → ${formatDateAz(r.check_out)}`;
   if (r.trip_length_days) return `${r.trip_length_days} gün (tarixlər dəqiqləşdirilməyib)`;
   return "—";
 }
@@ -100,7 +100,7 @@ export default function TripRequestsListPage() {
         }
         .trip-view-btn:hover { background: var(--bg-soft); }
       `}</style>
-      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Travel Concierge — Səyahət Sorğuları</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Səyahət Konsyerji — Səyahət Sorğuları</h1>
 
       <div className="trip-requests-toolbar">
         <div className="trip-requests-search">

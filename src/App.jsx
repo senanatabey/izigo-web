@@ -910,7 +910,7 @@ function AppLayout() {
   );
 }
 
-const PARTNER_AREA_ROLE_LABEL = { regional_partner: "Regional partnyor", admin: "Admin", host: "Host" };
+const PARTNER_AREA_ROLE_LABEL = { regional_partner: "Regional partnyor", admin: "Admin", host: "Ev sahibi" };
 
 function AppShell() {
   const { user, logout } = useAuth();

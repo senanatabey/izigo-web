@@ -2,6 +2,8 @@
  *  (2026-09-09) in current browsers, so the admin/partner screens, which are
  *  Azerbaijani-only, format dates explicitly instead of via the locale. */
 export function formatDateAz(value) {
+  const dateOnly = typeof value === "string" && value.match(/^(d{4})-(d{2})-(d{2})$/);
+  if (dateOnly) return `${dateOnly[3]}.${dateOnly[2]}.${dateOnly[1]}`;
   const d = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(d.getTime())) return "";
   const dd = String(d.getDate()).padStart(2, "0");

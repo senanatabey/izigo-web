@@ -5,7 +5,7 @@ import { approveAgentRequest, rejectAgentRequest } from "../../lib/regionalPartn
 import ResponsiveTable from "../../components/ResponsiveTable";
 import { formatDateAz } from "../../lib/formatDate";
 
-const ROLE_LABELS = { admin: "Admin", host: "Host", regional_partner: "Regional Partnyor" };
+const ROLE_LABELS = { admin: "Admin", host: "Ev sahibi", regional_partner: "Regional Partnyor" };
 const AGENT_STATUS_LABELS = { none: "—", pending: "Gözləyir", approved: "Təsdiqlənib", rejected: "Rədd edilib" };
 
 export default function UsersPage() {
@@ -97,7 +97,7 @@ export default function UsersPage() {
   const FOUNDER_FAIL_REASONS = {
     not_found: "İstifadəçi tapılmadı.",
     already_founder: "Bu host artıq Founder statusundadır.",
-    not_verified: "Host təsdiqlənməyib — əvvəlcə \"Təsdiqlənib\" statusuna keçirin.",
+    not_verified: "Ev sahibi təsdiqlənməyib — əvvəlcə \"Təsdiqlənib\" statusuna keçirin.",
     no_approved_listing: "Bu hostun təsdiqlənmiş elanı yoxdur.",
     campaign_inactive: "Founder kampaniyası aktiv deyil (limit dolub və ya admin bağlayıb).",
     cap_reached: "Founder limiti artıq dolub.",
@@ -131,7 +131,7 @@ export default function UsersPage() {
       const { data, error } = await supabase.functions.invoke("confirm-user-email", { body: { user_id: id } });
       if (error || data?.error) throw new Error(data?.error || error.message);
       setConfirmedEmailIds((prev) => new Set(prev).add(id));
-      window.alert("E-poçt təsdiqləndi. (Qeyd: bu, aşağıdakı \"Host təsdiqi\" statusundan fərqlidir — yalnız login üçün email təsdiqidir.)");
+      window.alert("E-poçt təsdiqləndi. (Qeyd: bu, aşağıdakı \"Ev sahibi təsdiqi\" statusundan fərqlidir — yalnız login üçün email təsdiqidir.)");
     } catch (err) {
       window.alert(err.message || "E-poçt təsdiqlənmədi — yenidən cəhd edin.");
     } finally {
@@ -172,11 +172,11 @@ export default function UsersPage() {
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>İstifadəçilər</h1>
       <div className="admin-users-filter">
         <div>
-          <label>Host tipi: </label>
+          <label>Sahib tipi: </label>
           <select value={hostTypeFilter} onChange={(e) => setHostTypeFilter(e.target.value)}>
             <option value="all">Hamısı</option>
             <option value="owner">Sahib</option>
-            <option value="agent">Agent</option>
+            <option value="agent">Vasitəçi</option>
           </select>
         </div>
         <div>
@@ -195,7 +195,7 @@ export default function UsersPage() {
       ) : (
         <ResponsiveTable className="admin-users-table">
           <thead>
-            <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Host Tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Host təsdiqi</th><th>Founder</th><th>Qoşulub</th><th></th><th>E-poçt təsdiqi</th></tr>
+            <tr><th>Ad</th><th>Telefon</th><th>Rol</th><th>Sahib tipi</th><th>Vasitəçi statusu</th><th>Elanlar</th><th>Ev sahibi təsdiqi</th><th>Founder</th><th>Qoşulub</th><th></th><th>E-poçt təsdiqi</th></tr>
           </thead>
           <tbody>
             {filteredUsers.map((u) => (
@@ -203,7 +203,7 @@ export default function UsersPage() {
                 <td>{u.full_name || "—"}</td>
                 <td>{u.phone || "—"}</td>
                 <td><span className={`role-pill ${u.role}`}>{ROLE_LABELS[u.role] || u.role}</span></td>
-                <td><span className={`host-type-pill ${u.host_type || "owner"}`}>{u.host_type === "agent" ? "Agent" : "Sahib"}</span></td>
+                <td><span className={`host-type-pill ${u.host_type || "owner"}`}>{u.host_type === "agent" ? "Vasitəçi" : "Sahib"}</span></td>
                 <td>
                   <span className={`agent-status-pill ${u.agent_status || "none"}`}>{AGENT_STATUS_LABELS[u.agent_status || "none"]}</span>
                   {u.agent_status === "pending" && (
@@ -217,7 +217,7 @@ export default function UsersPage() {
                 <td>
                   <button
                     className="toggle"
-                    title="Hostun etibar statusu — email təsdiqindən fərqlidir, sağdakı 'E-poçt təsdiqi' sütunu ilə qarışdırmayın."
+                    title="Ev sahibinin etibar statusu — email təsdiqindən fərqlidir, sağdakı 'E-poçt təsdiqi' sütunu ilə qarışdırmayın."
                     onClick={() => toggleVerified(u.id, u.verified)}
                   >
                     <span className={`verified-pill ${u.verified ? "yes" : "no"}`}>{u.verified ? "Təsdiqlənib" : "Təsdiqlənməyib"}</span>
