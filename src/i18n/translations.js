@@ -187,7 +187,7 @@ export const translations = {
     },
     conciergePage: {
       heading: "Local Services",
-      subtitle: "Anything you need, delivered or arranged by a local — something Airbnb and Booking simply don't offer.",
+      subtitle: "Anything you need, delivered or arranged by a local.",
       exclusiveNote: "Only on IZIGO",
       services: {
         ice: "Ice",
@@ -584,7 +584,7 @@ export const translations = {
         },
         concierge: {
           title: "Whatever you need, brought to you.",
-          subtitle: "Ice, firewood, a pharmacy run, a babysitter, a local guide — pick your city and a local IZIGO helper will bring it or arrange it. Something Airbnb and Booking.com simply don't offer.",
+          subtitle: "Ice, firewood, a pharmacy run, a babysitter, a local guide — pick your city and a local IZIGO helper will bring it or arrange it.",
         },
       },
       fixed: {
@@ -1027,7 +1027,7 @@ export const translations = {
     },
     conciergePage: {
       heading: "Yerli Xidmətlər",
-      subtitle: "İstədiyin hər şey — yerli sakin tərəfindən gətirilir və ya təşkil edilir. Airbnb və Booking-də bu xidmət yoxdur.",
+      subtitle: "İstədiyin hər şey — yerli sakin tərəfindən gətirilir və ya təşkil edilir.",
       exclusiveNote: "Yalnız IZIGO-da",
       services: {
         ice: "Buz",
@@ -1424,7 +1424,7 @@ export const translations = {
         },
         concierge: {
           title: "İstədiyin hər şey sənə gətirilir.",
-          subtitle: "Buz, odun, aptek sifarişi, uşaq baxıcısı, yerli bələdçi — şəhərini seç, yerli IZIGO köməkçisi onu gətirsin və ya təşkil etsin. Airbnb və Booking.com-da bu xidmət yoxdur.",
+          subtitle: "Buz, odun, aptek sifarişi, uşaq baxıcısı, yerli bələdçi — şəhərini seç, yerli IZIGO köməkçisi onu gətirsin və ya təşkil etsin.",
         },
       },
       fixed: {
@@ -1867,7 +1867,7 @@ export const translations = {
     },
     conciergePage: {
       heading: "Локальные услуги",
-      subtitle: "Всё, что вам нужно, доставлено или организовано местным жителем — то, чего Airbnb и Booking просто не предлагают.",
+      subtitle: "Всё, что вам нужно, доставлено или организовано местным жителем.",
       exclusiveNote: "Только на IZIGO",
       services: {
         ice: "Лёд",
@@ -2233,7 +2233,7 @@ export const translations = {
         },
         concierge: {
           title: "Всё, что вам нужно, — прямо к вам.",
-          subtitle: "Лёд, дрова, поход в аптеку, няня, местный гид — выберите свой город, и местный помощник IZIGO принесёт это или организует. То, чего Airbnb и Booking.com просто не предлагают.",
+          subtitle: "Лёд, дрова, поход в аптеку, няня, местный гид — выберите свой город, и местный помощник IZIGO принесёт это или организует.",
         },
       },
       fixed: {
@@ -2680,7 +2680,7 @@ export const translations = {
     },
     conciergePage: {
       heading: "الخدمات المحلية",
-      subtitle: "كل ما تحتاجه، يوصله أو يرتبه شخص محلي — شيء لا تقدمه Airbnb و Booking.",
+      subtitle: "كل ما تحتاجه، يوصله أو يرتبه شخص محلي.",
       exclusiveNote: "حصريًا على IZIGO",
       services: {
         ice: "ثلج",
@@ -3077,7 +3077,7 @@ export const translations = {
         },
         concierge: {
           title: "كل ما تحتاجه، يصل إليك.",
-          subtitle: "ثلج، حطب، طلبية من الصيدلية، جليسة أطفال، مرشد محلي — اختر مدينتك وسيقوم مساعد IZIGO المحلي بإحضاره أو ترتيبه. شيء لا تقدمه Airbnb وBooking.com.",
+          subtitle: "ثلج، حطب، طلبية من الصيدلية، جليسة أطفال، مرشد محلي — اختر مدينتك وسيقوم مساعد IZIGO المحلي بإحضاره أو ترتيبه.",
         },
       },
       fixed: {
