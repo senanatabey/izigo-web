@@ -188,7 +188,6 @@ export const translations = {
     conciergePage: {
       heading: "Local Services",
       subtitle: "Anything you need, delivered or arranged by a local.",
-      exclusiveNote: "Only on IZIGO",
       services: {
         ice: "Ice",
         coal: "Coal",
@@ -1028,7 +1027,6 @@ export const translations = {
     conciergePage: {
       heading: "Yerli Xidmətlər",
       subtitle: "İstədiyin hər şey — yerli sakin tərəfindən gətirilir və ya təşkil edilir.",
-      exclusiveNote: "Yalnız IZIGO-da",
       services: {
         ice: "Buz",
         coal: "Kömür",
@@ -1868,7 +1866,6 @@ export const translations = {
     conciergePage: {
       heading: "Локальные услуги",
       subtitle: "Всё, что вам нужно, доставлено или организовано местным жителем.",
-      exclusiveNote: "Только на IZIGO",
       services: {
         ice: "Лёд",
         coal: "Уголь",
@@ -2681,7 +2678,6 @@ export const translations = {
     conciergePage: {
       heading: "الخدمات المحلية",
       subtitle: "كل ما تحتاجه، يوصله أو يرتبه شخص محلي.",
-      exclusiveNote: "حصريًا على IZIGO",
       services: {
         ice: "ثلج",
         coal: "فحم",

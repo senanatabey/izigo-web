@@ -99,11 +99,7 @@ export default function ConciergePage() {
       <style>{`
         .concierge-page { max-width: 1280px; margin: 0 auto; padding: 48px 6vw 80px; }
         .concierge-page .cg-head h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px; }
-        .concierge-page .cg-head p { font-size: 15px; color: var(--text-soft); margin: 0 0 8px; max-width: 640px; line-height: 1.6; }
-        .concierge-page .cg-note {
-          display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange);
-          background: var(--bg-soft); padding: 6px 14px; border-radius: 999px; margin-bottom: 28px;
-        }
+        .concierge-page .cg-head p { font-size: 15px; color: var(--text-soft); margin: 0 0 28px; max-width: 640px; line-height: 1.6; }
 
         .concierge-page .cg-filters {
           display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;
@@ -158,10 +154,9 @@ export default function ConciergePage() {
           .concierge-page { padding: 24px 5vw 56px; }
           .concierge-page .cg-head h1 { font-size: 26px; margin-bottom: 6px; }
           .concierge-page .cg-head p {
-            font-size: 14px; line-height: 1.5; margin-bottom: 10px;
+            font-size: 14px; line-height: 1.5; margin-bottom: 14px;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
           }
-          .concierge-page .cg-note { margin-bottom: 14px; padding: 5px 12px; font-size: 12px; }
           .concierge-page .cg-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
           /* Two selects side by side, no panel chrome. The visible labels are
              redundant with the first option ("All cities" / "All services")
@@ -202,7 +197,6 @@ export default function ConciergePage() {
       <div className="cg-head">
         <h1>{t("conciergePage.heading")}</h1>
         <p>{t("conciergePage.subtitle")}</p>
-        <div className="cg-note">{t("conciergePage.exclusiveNote")}</div>
       </div>
 
       <div className="cg-filters">
