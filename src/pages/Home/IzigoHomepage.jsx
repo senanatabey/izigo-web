@@ -579,7 +579,7 @@ export default function IzigoHomepage() {
         .izigo-home .newsletter-copy p { font-size: 14px; color: rgba(255,255,255,0.85); }
         .izigo-home .newsletter-form { display: flex; gap: 10px; flex: 1; max-width: 440px; min-width: 260px; }
         .izigo-home .newsletter-form input {
-          flex: 1; border: none; border-radius: 10px; padding: 13px 16px; font-size: 15px; outline: none;
+          flex: 1; width: 0; border: none; border-radius: 10px; padding: 13px 16px; font-size: 15px; outline: none;
         }
         .izigo-home .newsletter-form button {
           background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
