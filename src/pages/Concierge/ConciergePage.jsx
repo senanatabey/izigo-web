@@ -170,15 +170,25 @@ export default function ConciergePage() {
             display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px;
             border: none; border-radius: 0; padding: 0; margin-bottom: 8px; align-items: stretch;
           }
-          /* Side by side only when each select is wide enough for "All services" at 16px */
-          @media (min-width: 400px) {
-            .concierge-page .cg-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-          }
           .concierge-page .cg-field { min-width: 0; }
           .concierge-page .cg-field label {
             position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
           }
-          .concierge-page .cg-field select { width: 100%; min-width: 0; min-height: 44px; font-size: 16px; }
+          .concierge-page .cg-field select {
+            width: 100%; min-width: 0; min-height: 44px; font-size: 16px; text-overflow: ellipsis;
+            -webkit-appearance: none; appearance: none; padding: 10px 26px 10px 12px;
+            background: var(--surface) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='%239CA3AF' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 9px center / 11px;
+          }
+          /* Side by side from 340px: the slim chevron leaves room for "All services".
+             16px from 375px up (iOS never starts below that, so no focus-zoom);
+             14px only on the 340-374px Android range. Narrower phones stack. */
+          @media (min-width: 340px) {
+            .concierge-page .cg-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .concierge-page .cg-field select { font-size: 14px; }
+          }
+          @media (min-width: 375px) {
+            .concierge-page .cg-field select { font-size: 16px; }
+          }
           .concierge-page .cg-reset { grid-column: 1 / -1; justify-self: end; padding: 2px 0; font-size: 12.5px; }
           .concierge-page .cg-count { font-size: 13px; margin-bottom: 12px; }
           .concierge-page .cg-item-thumb { aspect-ratio: 4 / 2.8; }
@@ -210,7 +220,9 @@ export default function ConciergePage() {
             {SERVICES.map(({ key }) => <option key={key} value={key}>{t(`conciergePage.services.${key}`)}</option>)}
           </select>
         </div>
-        <button type="button" className="cg-reset" onClick={resetFilters}>{t("conciergePage.resetFilters")}</button>
+        {(cityParam || serviceFilter) && (
+          <button type="button" className="cg-reset" onClick={resetFilters}>{t("conciergePage.resetFilters")}</button>
+        )}
       </div>
 
       <p className="cg-count">{t("conciergePage.resultsCount").replace("{count}", filtered.length)}</p>
