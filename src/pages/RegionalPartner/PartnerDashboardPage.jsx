@@ -4,15 +4,22 @@ import { ClipboardList, DollarSign, Home as HomeIcon, Receipt } from "lucide-rea
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchMyPartnerProfile, fetchRegionListings, fetchMyRevenueSummary } from "../../lib/regionalPartner";
+import { formatDateAz } from "../../lib/formatDate";
+
+const LISTING_STATUS_KEY = {
+  pending: "regionalPartner.statusPending",
+  approved: "regionalPartner.statusApproved",
+  rejected: "regionalPartner.statusRejected",
+};
 
 const QUICK_ACTIONS = [
-  { label: "Listings", to: "/partner/listings", icon: HomeIcon },
-  { label: "Revenue", to: "/partner/revenue", icon: DollarSign },
-  { label: "Payments", to: "/partner/payments", icon: Receipt },
+  { labelKey: "regionalPartner.navListings", to: "/partner/listings", icon: HomeIcon },
+  { labelKey: "regionalPartner.navRevenue", to: "/partner/revenue", icon: DollarSign },
+  { labelKey: "regionalPartner.navPayments", to: "/partner/payments", icon: Receipt },
 ];
 
 export default function PartnerDashboardPage() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { formatPrice } = useCurrency();
   const [partner, setPartner] = useState(null);
   const [listings, setListings] = useState([]);
@@ -40,7 +47,7 @@ export default function PartnerDashboardPage() {
 
   const cards = [
     { label: t("regionalPartner.pendingHeading"), value: pendingCount, icon: ClipboardList, to: "/partner/listings", priority: pendingCount > 0 },
-    { label: "Total Listings", value: listings.length, icon: HomeIcon, to: "/partner/listings" },
+    { label: t("regionalPartner.totalListings"), value: listings.length, icon: HomeIcon, to: "/partner/listings" },
     { label: t("regionalPartner.earningsLabel"), value: formatPrice(r.partner_earnings), icon: DollarSign, to: "/partner/revenue" },
     { label: t("regionalPartner.paidLabel"), value: formatPrice(r.paid_amount), icon: Receipt, to: "/partner/payments" },
   ];
@@ -98,9 +105,9 @@ export default function PartnerDashboardPage() {
       </div>
 
       {loading ? (
-        <p style={{ color: "var(--text-soft)" }}>Loading...</p>
+        <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.loading")}</p>
       ) : !partner ? (
-        <p style={{ color: "var(--text-soft)" }}>No active regional partner assignment found for this account.</p>
+        <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noAssignment")}</p>
       ) : (
         <>
           <div className="partner-kpi-grid">
@@ -113,11 +120,11 @@ export default function PartnerDashboardPage() {
             ))}
           </div>
 
-          <h2 className="partner-section-title">Quick actions</h2>
+          <h2 className="partner-section-title">{t("regionalPartner.quickActionsHeading")}</h2>
           <div className="partner-quick-actions">
-            {QUICK_ACTIONS.map(({ label, to, icon: Icon }) => (
-              <Link key={label} to={to} className="partner-quick-action">
-                <Icon size={17} />{label}
+            {QUICK_ACTIONS.map(({ labelKey, to, icon: Icon }) => (
+              <Link key={labelKey} to={to} className="partner-quick-action">
+                <Icon size={17} />{t(labelKey)}
               </Link>
             ))}
           </div>
@@ -129,9 +136,9 @@ export default function PartnerDashboardPage() {
             ) : (
               listings.slice(0, 6).map((l) => (
                 <div className="partner-activity-row" key={l.id}>
-                  <span className={`status-pill ${l.status}`}>{l.status}</span>
-                  <span className="partner-activity-title">{l.title?.en || l.title?.az}</span>
-                  <span className="partner-activity-time">{new Date(l.created_at).toLocaleDateString(language)}</span>
+                  <span className={`status-pill ${l.status}`}>{t(LISTING_STATUS_KEY[l.status] || "regionalPartner.statusPending")}</span>
+                  <span className="partner-activity-title">{l.title?.az || l.title?.en}</span>
+                  <span className="partner-activity-time">{formatDateAz(l.created_at)}</span>
                 </div>
               ))
             )}

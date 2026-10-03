@@ -3,6 +3,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { ALL_DESTINATIONS } from "../../../data/azerbaijanDestinations";
 import { fetchAllPartners, assignRegionalPartner, updatePartner } from "../../../lib/regionalPartner";
 import ResponsiveTable from "../../../components/ResponsiveTable";
+import { formatDateAz } from "../../../lib/formatDate";
 
 // Assigning a Regional Partner touches two things together: the
 // regional_partners row (region + revenue share) and profiles.role — both
@@ -120,7 +121,7 @@ export default function RegionalPartnersPage() {
                 <td>{p.region}</td>
                 <td>{p.revenue_share_percent}%</td>
                 <td><span className={`status-pill ${p.status}`}>{PARTNER_STATUS_LABELS[p.status] || p.status}</span></td>
-                <td>{new Date(p.created_at).toLocaleDateString()}</td>
+                <td>{formatDateAz(p.created_at)}</td>
                 <td><button className="toggle" onClick={() => toggleStatus(p)}>{p.status === "active" ? "Deaktiv et" : "Aktiv et"}</button></td>
               </tr>
             ))}

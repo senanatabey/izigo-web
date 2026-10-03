@@ -35,7 +35,7 @@ export default function PartnerRevenuePage() {
     return () => { cancelled = true; };
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>{t("regionalPartner.loading")}</p>;
 
   const r = revenue || { gross_revenue: 0, revenue_share_percent: 0, partner_earnings: 0, paid_amount: 0, pending_amount: 0 };
 

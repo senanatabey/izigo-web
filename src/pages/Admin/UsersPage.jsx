@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { tryGrantFounderStatus } from "../../lib/founder";
 import { approveAgentRequest, rejectAgentRequest } from "../../lib/regionalPartner";
 import ResponsiveTable from "../../components/ResponsiveTable";
+import { formatDateAz } from "../../lib/formatDate";
 
 const ROLE_LABELS = { admin: "Admin", host: "Host", regional_partner: "Regional Partnyor" };
 const AGENT_STATUS_LABELS = { none: "—", pending: "Gözləyir", approved: "Təsdiqlənib", rejected: "Rədd edilib" };
@@ -231,7 +232,7 @@ export default function UsersPage() {
                     </button>
                   )}
                 </td>
-                <td>{new Date(u.created_at).toLocaleDateString()}</td>
+                <td>{formatDateAz(u.created_at)}</td>
                 <td><button className="toggle" onClick={() => toggleRole(u.id, u.role)}>{u.role === "admin" ? "Admin rolunu ləğv et" : "Admin et"}</button></td>
                 <td>
                   {confirmedEmailIds.has(u.id) ? (

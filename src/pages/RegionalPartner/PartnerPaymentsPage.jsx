@@ -3,9 +3,10 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchMyPartnerProfile, fetchMyPayments } from "../../lib/regionalPartner";
 import ResponsiveTable from "../../components/ResponsiveTable";
+import { formatDateAz } from "../../lib/formatDate";
 
 export default function PartnerPaymentsPage() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { formatPrice } = useCurrency();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ export default function PartnerPaymentsPage() {
 
   const periodText = (p) => {
     if (!p.period_start || !p.period_end) return "—";
-    return `${new Date(p.period_start).toLocaleDateString(language)} – ${new Date(p.period_end).toLocaleDateString(language)}`;
+    return `${formatDateAz(p.period_start)} – ${formatDateAz(p.period_end)}`;
   };
 
   return (
@@ -39,7 +40,7 @@ export default function PartnerPaymentsPage() {
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>{t("regionalPartner.paymentsHeading")}</h1>
       {loading ? (
-        <p>Loading...</p>
+        <p>{t("regionalPartner.loading")}</p>
       ) : payments.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noPayments")}</p>
       ) : (
@@ -56,7 +57,7 @@ export default function PartnerPaymentsPage() {
           <tbody>
             {payments.map((p) => (
               <tr key={p.id}>
-                <td>{new Date(p.created_at).toLocaleDateString(language)}</td>
+                <td>{formatDateAz(p.created_at)}</td>
                 <td>{formatPrice(p.amount)}</td>
                 <td>{periodText(p)}</td>
                 <td><span className={`status-pill ${p.status}`}>{t(`regionalPartner.status${p.status === "paid" ? "Paid" : "Pending"}`)}</span></td>

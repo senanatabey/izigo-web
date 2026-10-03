@@ -4,6 +4,7 @@ import {
   fetchMyPartnerProfile, fetchAgentRequests, fetchListingCountsByHost,
   approveAgentRequest, rejectAgentRequest,
 } from "../../lib/regionalPartner";
+import { formatDateAz } from "../../lib/formatDate";
 
 export default function AgentRequestsPage() {
   const { t } = useLanguage();
@@ -87,7 +88,7 @@ export default function AgentRequestsPage() {
       {region && <p style={{ fontSize: 13.5, color: "var(--text-soft)", marginBottom: 20 }}>{t("regionalPartner.regionLabel")}: {region}</p>}
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t("regionalPartner.loading")}</p>
       ) : requests.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noAgentRequests")}</p>
       ) : (
@@ -107,7 +108,7 @@ export default function AgentRequestsPage() {
               {requests.map((row) => (
                 <tr key={row.id}>
                   <td>{row.full_name || "—"}</td>
-                  <td>{new Date(row.created_at).toLocaleDateString()}</td>
+                  <td>{formatDateAz(row.created_at)}</td>
                   <td>{row.agency_name || "—"}</td>
                   <td>{row.managed_properties_count ?? "—"}</td>
                   <td>{listingCounts[row.id] || 0}</td>
@@ -126,7 +127,7 @@ export default function AgentRequestsPage() {
             {requests.map((row) => (
               <div className="agent-request-card" key={row.id}>
                 <div className="arc-name">{row.full_name || "—"}</div>
-                <div className="arc-row"><span>{t("regionalPartner.agentRequestJoined")}</span><span>{new Date(row.created_at).toLocaleDateString()}</span></div>
+                <div className="arc-row"><span>{t("regionalPartner.agentRequestJoined")}</span><span>{formatDateAz(row.created_at)}</span></div>
                 <div className="arc-row"><span>{t("regionalPartner.agentRequestAgency")}</span><span>{row.agency_name || "—"}</span></div>
                 <div className="arc-row"><span>{t("regionalPartner.agentRequestClaimedCount")}</span><span>{row.managed_properties_count ?? "—"}</span></div>
                 <div className="arc-row"><span>{t("regionalPartner.agentRequestRealCount")}</span><span>{listingCounts[row.id] || 0}</span></div>

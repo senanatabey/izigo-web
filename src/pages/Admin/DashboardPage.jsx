@@ -5,6 +5,7 @@ import {
   FileClock, UserPlus, Star, CheckCircle,
 } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
+import { formatDateAz } from "../../lib/formatDate";
 
 const QUICK_ACTIONS = [
   { label: "Elanları təsdiqlə", to: "/admin/listings/pending", icon: ClipboardList },
@@ -153,7 +154,7 @@ export default function DashboardPage() {
               <div className="admin-activity-row" key={a.id}>
                 <span className="admin-activity-icon"><Icon size={15} /></span>
                 <span className="admin-activity-text">{ACTIVITY_LABELS[a.type](a)}</span>
-                <span className="admin-activity-time">{new Date(a.at).toLocaleDateString()}</span>
+                <span className="admin-activity-time">{formatDateAz(a.at)}</span>
               </div>
             );
           })

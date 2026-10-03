@@ -5,6 +5,7 @@ import { fetchTripRequests, TRIP_STATUSES } from "../../../lib/tripRequests";
 import { useCurrency } from "../../../i18n/CurrencyContext";
 import AdminEmptyState from "../../../components/AdminEmptyState";
 import ResponsiveTable from "../../../components/ResponsiveTable";
+import { formatDateAz } from "../../../lib/formatDate";
 
 const FILTERS = ["all", ...TRIP_STATUSES];
 
@@ -151,7 +152,7 @@ export default function TripRequestsListPage() {
             {visible.map((r) => (
               <tr key={r.id}>
                 <td className="trip-request-id">{r.request_number || "—"}</td>
-                <td>{new Date(r.created_at).toLocaleDateString()}</td>
+                <td>{formatDateAz(r.created_at)}</td>
                 <td>{r.guest_name || "—"}</td>
                 <td>{SOURCE_LABEL[r.source] || r.source || "—"}</td>
                 <td>{r.country || "—"}</td>

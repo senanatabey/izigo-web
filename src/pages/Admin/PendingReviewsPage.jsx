@@ -3,6 +3,7 @@ import { Star, MessageSquareText } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import AdminEmptyState from "../../components/AdminEmptyState";
 import { fetchPendingModerationReviews, moderateReview } from "../../lib/reviews";
+import { formatDateAz } from "../../lib/formatDate";
 
 export default function PendingReviewsPage() {
   const { t, language } = useLanguage();
@@ -62,7 +63,7 @@ export default function PendingReviewsPage() {
                     {t("adminPendingReviews.listingLabel")}: {r.listingTitle?.[language] || r.listingTitle?.en || "—"}
                   </div>
                   <div className="pending-review-meta">
-                    {t("adminPendingReviews.reviewerLabel")}: {r.reviewerName || "—"} · {new Date(r.created_at).toLocaleDateString()}
+                    {t("adminPendingReviews.reviewerLabel")}: {r.reviewerName || "—"} · {formatDateAz(r.created_at)}
                   </div>
                 </div>
               </div>

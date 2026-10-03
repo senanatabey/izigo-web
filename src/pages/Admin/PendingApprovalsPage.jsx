@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import AdminEmptyState from "../../components/AdminEmptyState";
 import { tryGrantFounderStatus } from "../../lib/founder";
+import { formatDateAz } from "../../lib/formatDate";
 
 // Public detail route per category, so an admin can open the exact page a
 // visitor would see (RLS already lets admins view pending listings there
@@ -154,7 +155,7 @@ export default function PendingApprovalsPage() {
                 <div className="pending-head">
                   <div>
                     <h3>{l.title?.en || l.title?.az} — {l.category}</h3>
-                    <p>{l.city} · {formatPrice(l.price)}{l.discount ? ` (-${l.discount}%)` : ""} · göndərilib {new Date(l.created_at).toLocaleDateString()}</p>
+                    <p>{l.city} · {formatPrice(l.price)}{l.discount ? ` (-${l.discount}%)` : ""} · göndərilib {formatDateAz(l.created_at)}</p>
                   </div>
                   {detailPath && (
                     <a className="pending-preview-link" href={`${detailPath}/${l.id}`} target="_blank" rel="noopener noreferrer">

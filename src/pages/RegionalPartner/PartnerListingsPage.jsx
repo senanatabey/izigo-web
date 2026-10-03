@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchMyPartnerProfile, fetchRegionListings, approveRegionalListing, rejectRegionalListing } from "../../lib/regionalPartner";
+import { formatDateAz } from "../../lib/formatDate";
+
+const LISTING_STATUS_KEY = {
+  pending: "regionalPartner.statusPending",
+  approved: "regionalPartner.statusApproved",
+  rejected: "regionalPartner.statusRejected",
+};
 
 export default function PartnerListingsPage() {
   const { t } = useLanguage();
@@ -67,7 +74,7 @@ export default function PartnerListingsPage() {
       {region && <p style={{ fontSize: 13.5, color: "var(--text-soft)", marginBottom: 20 }}>{t("regionalPartner.regionLabel")}: {region}</p>}
 
       {loading ? (
-        <p>Loading...</p>
+        <p>{t("regionalPartner.loading")}</p>
       ) : listings.length === 0 ? (
         <p style={{ color: "var(--text-soft)" }}>{t("regionalPartner.noListings")}</p>
       ) : (
@@ -75,10 +82,10 @@ export default function PartnerListingsPage() {
           {listings.map((l) => (
             <div className="partner-listing-card" key={l.id}>
               <h3>
-                {l.title?.en || l.title?.az} — {l.category}
-                <span className={`status-pill ${l.status}`}>{l.status}</span>
+                {l.title?.az || l.title?.en} — {l.category}
+                <span className={`status-pill ${l.status}`}>{t(LISTING_STATUS_KEY[l.status] || "regionalPartner.statusPending")}</span>
               </h3>
-              <p>{l.city} · {formatPrice(l.price)} · submitted {new Date(l.created_at).toLocaleDateString()}</p>
+              <p>{l.city} · {formatPrice(l.price)} · {t("regionalPartner.submittedLabel")} {formatDateAz(l.created_at)}</p>
               {l.status === "pending" && (
                 <div className="partner-listing-actions">
                   <button className="btn-approve" onClick={() => approve(l)}>{t("regionalPartner.approve")}</button>
