@@ -13,7 +13,7 @@ import "./App.css";
 import "./rtl.css";
 import LoginForm from "./pages/Auth/LoginForm";
 import RegisterForm from "./pages/Auth/RegisterForm";
-import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import { LanguageProvider, useLanguage, AzOnly } from "./i18n/LanguageContext";
 import { CurrencyProvider, useCurrency, CURRENCIES } from "./i18n/CurrencyContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
@@ -898,10 +898,23 @@ const APP_NAV_ITEMS = [
   { to: "/add-listing", key: "addListing", icon: PlusCircle },
 ];
 
+/* Regional-partner screens are Azerbaijani-only: on /partner/* the whole shell
+   (sidebar, bottom nav, notifications) renders through AzOnly. Everywhere else
+   in this layout (profile, add-listing...) the visitor's language applies. */
 function AppLayout() {
+  const { pathname } = useLocation();
+  return (
+    <AzOnly active={pathname.startsWith("/partner")}>
+      <AppShell />
+    </AzOnly>
+  );
+}
+
+function AppShell() {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
+  const inPartnerArea = location.pathname.startsWith("/partner");
   const isRegionalPartner = user?.role === "regional_partner";
   const [pendingAgentRequestsCount, setPendingAgentRequestsCount] = useState(0);
 
@@ -955,7 +968,7 @@ function AppLayout() {
         )}
 
         <NotificationBell userId={user?.id} />
-        <LocaleSwitcher />
+        {!inPartnerArea && <LocaleSwitcher />}
         <ThemeToggle className="theme-toggle-sidebar" />
         <button className="sidebar-link logout" onClick={logout}><LogOut size={17} />{t("sidebar.logout")}</button>
       </aside>
@@ -1325,7 +1338,7 @@ export default function App() {
           </Route>
 
           {/* Admin pages */}
-          <Route element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
+          <Route element={<RequireAdmin><AzOnly><AdminLayout /></AzOnly></RequireAdmin>}>
             <Route path="admin" element={<AdminDashboardPage />} />
             <Route path="admin/users" element={<AdminUsersPage />} />
             <Route path="admin/listings" element={<AdminListingsPage />} />

@@ -58,3 +58,35 @@ export function useLanguage() {
   if (!ctx) throw new Error("useLanguage must be used within LanguageProvider");
   return ctx;
 }
+
+/**
+ * Forces Azerbaijani for the subtree (admin / regional-partner screens are
+ * Azerbaijani-only by design) without touching the visitor's saved language:
+ * the stored choice and the provider's state are left alone, so the public
+ * site keeps following it. The page direction is reset to LTR while active
+ * (an Arabic visitor would otherwise get Azerbaijani text in a mirrored
+ * layout) and restored on the way out. When inactive it is a pass-through
+ * that keeps the same tree shape, so toggling it never remounts children.
+ */
+export function AzOnly({ active = true, children }) {
+  const parent = useLanguage();
+  const { language, isRtl } = parent;
+
+  useEffect(() => {
+    if (!active) return undefined;
+    const root = document.documentElement;
+    root.dir = "ltr";
+    root.lang = "az";
+    root.classList.remove("rtl");
+    return () => {
+      root.dir = isRtl ? "rtl" : "ltr";
+      root.lang = language;
+      root.classList.toggle("rtl", isRtl);
+    };
+  }, [active, language, isRtl]);
+
+  const value = active
+    ? { ...parent, language: "az", isRtl: false, t: (key) => resolve(translations.az, key) ?? key }
+    : parent;
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+}
