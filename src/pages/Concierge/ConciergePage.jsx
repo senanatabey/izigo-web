@@ -155,10 +155,32 @@ export default function ConciergePage() {
 
         @media (max-width: 1024px) { .concierge-page .cg-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {
-          .concierge-page { padding: 32px 5vw 56px; }
+          .concierge-page { padding: 24px 5vw 56px; }
+          .concierge-page .cg-head h1 { font-size: 26px; margin-bottom: 6px; }
+          .concierge-page .cg-head p {
+            font-size: 14px; line-height: 1.5; margin-bottom: 10px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+          }
+          .concierge-page .cg-note { margin-bottom: 14px; padding: 5px 12px; font-size: 12px; }
           .concierge-page .cg-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-          .concierge-page .cg-filters { flex-direction: column; align-items: stretch; }
-          .concierge-page .cg-field select { width: 100%; }
+          /* Two selects side by side, no panel chrome. The visible labels are
+             redundant with the first option ("All cities" / "All services")
+             and stay available to screen readers via aria-label. */
+          .concierge-page .cg-filters {
+            display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px;
+            border: none; border-radius: 0; padding: 0; margin-bottom: 8px; align-items: stretch;
+          }
+          /* Side by side only when each select is wide enough for "All services" at 16px */
+          @media (min-width: 400px) {
+            .concierge-page .cg-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          }
+          .concierge-page .cg-field { min-width: 0; }
+          .concierge-page .cg-field label {
+            position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+          }
+          .concierge-page .cg-field select { width: 100%; min-width: 0; min-height: 44px; font-size: 16px; }
+          .concierge-page .cg-reset { grid-column: 1 / -1; justify-self: end; padding: 2px 0; font-size: 12.5px; }
+          .concierge-page .cg-count { font-size: 13px; margin-bottom: 12px; }
           .concierge-page .cg-item-thumb { aspect-ratio: 4 / 2.8; }
           .concierge-page .cg-item-body { padding: 10px; }
           .concierge-page .cg-item-service { font-size: 10.5px; margin-bottom: 3px; }
@@ -176,14 +198,14 @@ export default function ConciergePage() {
       <div className="cg-filters">
         <div className="cg-field">
           <label><MapPin size={13} />{t("conciergePage.filterCity")}</label>
-          <select value={cityParam} onChange={(e) => setCity(e.target.value)}>
+          <select aria-label={t("conciergePage.filterCity")} value={cityParam} onChange={(e) => setCity(e.target.value)}>
             <option value="">{t("conciergePage.allCities")}</option>
             {CITIES.map((c) => <option key={c} value={c}>{cityLabel(c, language)}</option>)}
           </select>
         </div>
         <div className="cg-field">
           <label>{t("conciergePage.filterService")}</label>
-          <select value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)}>
+          <select aria-label={t("conciergePage.filterService")} value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)}>
             <option value="">{t("conciergePage.allServices")}</option>
             {SERVICES.map(({ key }) => <option key={key} value={key}>{t(`conciergePage.services.${key}`)}</option>)}
           </select>
