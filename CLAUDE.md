@@ -6,7 +6,8 @@ Burada yazılanlar avtomatik nəzərə alınır — hər dəfə təkrar izah etm
 ## Layihə haqqında
 
 IZIGO — Azərbaycan üçün turizm marketplace-i (Tap.az + Airbnb + Tripadvisor modeli).
-Kateqoriyalar: Villas, Cars, Experiences, Events. Şəhərlər: Baku, Gabala, Guba, Sheki.
+Kateqoriyalar: Villas, Cars, Transfers (turlar da bura daxildir), Events + "Gətir"/Bring (yerli xidmətlər, `/concierge`).
+`/experiences` ayrıca kateqoriya deyil — `/transfers`-ə yönləndirilir. Şəhərlər: Baku, Gabala, Guba, Sheki.
 Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzərindən əlaqə saxlayır.
 
 ## Texnoloji stack (MVP — sadə saxla, overengineer etmə)
@@ -14,7 +15,9 @@ Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzər
 - **Frontend:** React (Vite), React Router v6, lucide-react ikonlar
 - **Backend/DB:** Supabase (Postgres + Auth + Storage) — ayrıca custom backend YOXDUR
 - **Deploy:** Vercel
-- **Stil:** CSS-in-file (`<style>` tag-lar komponent daxilində), CSS dəyişənləri (`--teal-900`, `--copper-600` və s.) — Tailwind istifadə OLUNMUR
+- **Stil:** CSS-in-file (`<style>` tag-lar komponent daxilində), CSS dəyişənləri `src/index.css`-də
+  (`--izigo-green`, `--izigo-orange`, `--on-brand`, `--text`, `--text-soft`, `--border`, `--bg`, `--surface` və s.;
+  dark tema `<html data-theme="dark">` ilə) — Tailwind istifadə OLUNMUR
 
 ## Hazırkı fayl strukturu
 
@@ -26,21 +29,25 @@ src/
 ├── App.jsx                      ← router, layout-lar, auth guard-lar, real Supabase auth
 ├── lib/                         ← supabaseClient, listings.js, heroCampaigns.js və s. (data qatı)
 ├── pages/
-│   ├── Home/                    ← IzigoHomepage.jsx (Hero, Search, Cities, Listings, Reviews)
-│   ├── Villas/, Cars/, Transfers/, Experiences/, Events/, Deals/  ← siyahı + detal səhifələri
-│   ├── Destinations/            ← şəhər bələdçiləri (CityGuide) + bütün şəhərlər siyahısı
-│   ├── Host/                    ← host profili səhifəsi
+│   ├── Home/                    ← IzigoHomepage.jsx: Hero (+axtarış) → Populyar Məkanlar → Elanlar →
+│   │                               Plan My Trip (3 sahəli kart) → Yerli Xidmətlər → Host CTA → Kəşf CTA
+│   ├── Villas/, Cars/, Transfers/, Events/, Deals/  ← siyahı + detal səhifələri
+│   ├── Destinations/, Places/   ← şəhər bələdçiləri (CityGuide), bütün şəhərlər, CMS məkanları
+│   ├── Host/, BecomeAHost/      ← host profili, "Niyə IZIGO-da elan" səhifəsi
 │   ├── Auth/                    ← Login, Register (real Supabase auth)
-│   ├── Profile/, MyListings/, AddListing/, Reviews/, Saved/       ← giriş tələb edən səhifələr
-│   ├── PlanMyTrip/, Concierge/  ← "Plan My Trip" forması, local services (Bring)
+│   ├── Profile/, MyListings/, Saved/, Notifications/, Welcome/  ← giriş tələb edən səhifələr
+│   ├── AddListing/              ← elan yerləşdirmə (girişsiz də açıqdır, hesab formanın sonunda yaranır)
+│   ├── PlanMyTrip/, Concierge/  ← tam "Plan My Trip" forması, yerli xidmətlər (Gətir/Bring)
+│   ├── RegionalPartner/         ← regional partnyor paneli (yalnız Azərbaycan dilində)
 │   └── Admin/                   ← Dashboard, Users, Listings, Pending approvals, Reviews,
 │                                    Statistics, Hero campaigns (bax aşağıda)
 ```
 
 ## App.jsx haqqında bilməli olduqların
 
-- Router 4 layout istifadə edir: `MainLayout` (public səhifələr), `AuthLayout` (login/register),
-  `AppLayout` (profil, elan əlavə etmə və s. — giriş tələb edir), `AdminLayout` (admin panel).
+- Router 5 layout istifadə edir: `MainLayout` (public səhifələr), `AuthLayout` (login/register),
+  `AppLayout` (profil və s. — giriş tələb edir), `AddListingLayout` (elan yerləşdirmə — girişli və
+  girişsiz istifadəçi üçün), `AdminLayout` (admin panel).
 - Route guard-lar: `RequireAuth`, `RequireGuest`, `RequireAdmin` — **real Supabase auth** istifadə edir
   (`supabase.auth.getSession()` / `onAuthStateChange`), mock user yoxdur.
 - Admin rolu `profiles` cədvəlindəki `role = 'admin'` sahəsi ilə müəyyən olunur.
@@ -50,8 +57,12 @@ src/
 ## Hero campaigns (homepage-in yuxarı hissəsi)
 
 - Homepage hero-nun **layout-u həmişə eynidir**: fon şəkli + başlıq + subtitle + "Plan My Trip"
-  düyməsi (əsas CTA, HEÇ vaxt kampaniya ilə əvəz olunmur) + search paneli (Villas/Cars/Transfers/Tours
-  tab-ları ilə). Bunu mürəkkəbləşdirmə — admin yalnız şəkil və mətn dəyişə bilər, düymə/layout seçimi yoxdur.
+  düyməsi (əsas CTA, HEÇ vaxt kampaniya ilə əvəz olunmur) + search paneli (Villalar / Maşınlar /
+  Transfer / Gətir tab-ları ilə). Bunu mürəkkəbləşdirmə — admin yalnız şəkil və mətn dəyişə bilər,
+  düymə/layout seçimi yoxdur.
+- Mobildə (≤640px) desktop hero gizlənir; yerinə ayrıca yığcam blok göstərilir: başlıq
+  ("Səyahətinizi büdcənizə IZIGO ilə uyğunlaşdırın") + tam enli "Səyahətimi Planla" + qısa etibar sətri +
+  axtarış + kateqoriya ikonları. Kampaniyalar bu mobil bloka təsir etmir.
 - `src/lib/heroCampaigns.js`: `fetchActiveCampaign()` (ən son publish olunmuş aktiv kampaniya),
   `fetchSiteSettings()` / `updateDefaultHeroImages()` (kampaniya olmayanda göstərilən default şəkil).
 - Admin idarəetməsi: `src/pages/Admin/HeroCampaignsPage.jsx` (`/admin/hero`) — kampaniya siyahısı
@@ -63,10 +74,17 @@ src/
 
 ## Dizayn dili (yeni səhifə/komponent tikəndə buna sadiq qal)
 
-- Rənglər: dərin teal (`#0B3D3B`), mis/"od" rəngi (`#BA5B2E`), qum fonu (`#F6F3EC`)
-- Fontlar: başlıqlar üçün 'Fraunces' (serif), mətn üçün 'Inter'
+- Rənglər (brend qərarı — dəyişmə): yaşıl `#00C897` (`--izigo-green`, əsas brend rəngi) və
+  narıncı `#FF7A00` (`--izigo-orange`, əsas CTA — "Səyahətimi Planla"). Fon: `--bg` / `--bg-soft`.
+- Yaşıl və ya narıncı **doldurulmuş** fonda mətn həmişə `var(--on-brand)` (`#1F2937`) olmalıdır —
+  ağ mətn WCAG AA-dan keçmir (2.16:1 / 2.61:1), `--on-brand` keçir (6.79:1 / 5.62:1).
+- Font: yalnız 'Inter' (`var(--sans)`), başlıqlar da daxil. Yüklənən çəkilər 400/500/600;
+  `font-synthesis: none` olduğu üçün 700/800 yazma — onsuz da 600 kimi görünür.
+  ('Fraunces' `index.html`-də yüklənir, amma yalnız NotificationsPage istifadə edir — yeni yerdə işlətmə.)
 - Kartlar: `border-radius: 12-18px`, incə `border: 1px solid var(--border)`
-- Bütün yeni komponentlər responsive olmalıdır (mobil-first, `@media (max-width: 860px)`)
+- Responsive (mobil-first): əsas breakpoint-lər `@media (max-width: 640px)` (telefon) və
+  `@media (max-width: 1024px)` (planşet); landşaft telefon üçün `(min-width: 641px) and (max-height: 500px)`.
+  Bəzi köhnə səhifələrdə 860/900px qalıb — yeni komponentlərdə 640/1024 işlət.
 
 ## İş qaydaları (vacib)
 
