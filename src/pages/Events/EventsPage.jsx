@@ -18,7 +18,7 @@ export default function EventsPage() {
 
   useSeo({
     title: "Events in Azerbaijan — Concerts & Festivals",
-    description: "Concerts, festivals and local happenings across Azerbaijan — find what's on in Baku, Gabala and Guba.",
+    description: "Concerts, festivals and local happenings across Azerbaijan — find what's on in Baku, Gabala, Guba and Sheki.",
     path: "/events",
   });
 

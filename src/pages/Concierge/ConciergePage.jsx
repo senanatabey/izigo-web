@@ -45,7 +45,7 @@ export default function ConciergePage() {
 
   useSeo({
     title: "Local Services in Azerbaijan — Bring",
-    description: "Private chefs, photographers, guides, grocery delivery and more, arranged by locals in Baku, Gabala and Guba. Add them to any stay, wherever you booked it.",
+    description: "Private chefs, photographers, guides, grocery delivery and more, arranged by locals in Baku, Gabala, Guba and Sheki. Add them to any stay, wherever you booked it.",
     path: "/concierge",
   });
 

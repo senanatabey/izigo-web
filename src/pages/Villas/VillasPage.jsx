@@ -32,7 +32,7 @@ export default function VillasPage() {
 
   useSeo({
     title: "Villas & Homes in Azerbaijan",
-    description: "Villas and homes in Baku, Gabala and Guba — with or without a pool — contact the host directly on WhatsApp, no commission.",
+    description: "Villas and homes in Baku, Gabala, Guba and Sheki — with or without a pool — contact the host directly on WhatsApp, no commission.",
     path: "/villas",
   });
 

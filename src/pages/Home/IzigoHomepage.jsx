@@ -86,7 +86,7 @@ export default function IzigoHomepage() {
 
   useSeo({
     titleOverride: "IZIGO – Azerbaijan Villas, Cars & Transfers",
-    description: "Book villas, cars and transfers directly with local hosts in Baku, Gabala and Guba — no commission, no middleman, contact on WhatsApp.",
+    description: "Book villas, cars and transfers directly with local hosts in Baku, Gabala, Guba and Sheki — no commission, no middleman, contact on WhatsApp.",
     path: "/",
     structuredData: schema.organization(),
   });
