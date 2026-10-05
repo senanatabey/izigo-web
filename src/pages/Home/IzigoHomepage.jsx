@@ -10,7 +10,7 @@ import {
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, fetchListingRatings, toneForId } from "../../lib/listings";
-import { cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
+import { cityFromLabel, cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
 import { fetchFeaturedPlaces } from "../../lib/cms";
 import { useSeo, schema } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings, getCachedActiveCampaign, getCachedSiteSettings } from "../../lib/heroCampaigns";
@@ -201,7 +201,10 @@ export default function IzigoHomepage() {
   const handleSearch = (e) => {
     e.preventDefault();
     const cat = CATEGORIES.find((c) => c.key === service);
-    const params = where.trim() ? `?city=${encodeURIComponent(where.trim())}` : "";
+    // The input shows the translated label ("Qəbələ"), but listing pages
+    // filter by the canonical city ("Gabala") — always send the canonical one.
+    const city = (citySlug && cityFromSlug(citySlug)) || cityFromLabel(where) || where.trim();
+    const params = city ? `?city=${encodeURIComponent(city)}` : "";
     navigate(`${cat ? cat.to : "/villas"}${params}`);
   };
 

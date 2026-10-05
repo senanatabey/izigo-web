@@ -72,3 +72,17 @@ export function citySlug(city) {
 export function cityFromSlug(slug) {
   return ALL_DESTINATIONS.find((city) => citySlug(city) === slug) || null;
 }
+
+/* Maps what a user typed or picked ("Qəbələ", "qəbələ", "Gabala") back to
+   the canonical `city` value listings are stored and filtered by. Returns
+   null when the text isn't a known destination. */
+export function cityFromLabel(text) {
+  const needle = (text || "").trim();
+  if (!needle) return null;
+  const en = needle.toLowerCase();
+  const az = needle.toLocaleLowerCase("az");
+  return ALL_DESTINATIONS.find((city) => (
+    city.toLowerCase() === en
+    || (AZ_NAMES[city] && AZ_NAMES[city].toLocaleLowerCase("az") === az)
+  )) || null;
+}
