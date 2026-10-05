@@ -573,6 +573,19 @@ export default function IzigoHomepage() {
           .izigo-home .plan-trip-layout { grid-template-columns: 1fr; gap: 32px; }
           .izigo-home .hero h1 { font-size: 34px; }
         }
+        /* Phones in landscape get the desktop hero (wider than 640px) but
+           only ~300px of usable height — tighten it so Plan My Trip stays
+           on the first screen. */
+        @media (min-width: 641px) and (max-height: 500px) {
+          .izigo-home .hero { min-height: 0; padding: 18px 0 20px; }
+          .izigo-home .hero-content { transform: none; }
+          .izigo-home .hero-eyebrow { display: none; }
+          .izigo-home .hero h1 { font-size: 24px; }
+          .izigo-home .hero h1 p + p { margin-top: 4px; }
+          .izigo-home .hero-cta-row { margin-top: 14px; }
+          .izigo-home .hero-btn { height: 48px; min-width: 0; padding: 0 22px; font-size: 16px; }
+          .izigo-home .search-card { margin-top: 16px; }
+        }
         @media (max-width: 640px) {
           .izigo-home .hero { display: none; }
           .izigo-home .hero-inner { padding: 0 5vw; }
