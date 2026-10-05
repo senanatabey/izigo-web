@@ -11,7 +11,7 @@ import {
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, fetchListingRatings, toneForId } from "../../lib/listings";
-import { FEATURED_DESTINATIONS, cityFromLabel, cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
+import { FEATURED_DESTINATIONS, cityFromLabel, cityFromSlug, cityLabel as cityLabelForCity, cityLocative } from "../../data/azerbaijanDestinations";
 import { fetchFeaturedPlaces } from "../../lib/cms";
 import { useSeo, schema } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings, getCachedActiveCampaign, getCachedSiteSettings } from "../../lib/heroCampaigns";
@@ -205,6 +205,12 @@ export default function IzigoHomepage() {
   const planMyTripLink = "/plan-my-trip";
 
   const activeListingsTab = TABS_WITH_ALL.find((tab) => tab.key === listingsTab);
+  // Picking a city in the search also filters the listings below, so the
+  // heading names it ("Qəbələdə yeni elanlar"); otherwise the generic one.
+  const pickedCity = citySlug ? cityFromSlug(citySlug) : null;
+  const listingsHeading = pickedCity
+    ? t("latestListings.cityHeading").replace("{city}", cityLocative(pickedCity, language))
+    : t("latestListings.heading");
   const priceLabel = (item, priceUnit) => {
     const finalPrice = item.discount ? Math.round(item.price * (1 - item.discount / 100)) : item.price;
     const priceNode = item.discount ? (
@@ -383,9 +389,9 @@ export default function IzigoHomepage() {
 
         .izigo-home section { padding: 45px 6vw; }
 
-        .izigo-home .section-head { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: baseline; justify-content: space-between; }
+        .izigo-home .section-head { max-width: 1280px; margin: 0 auto 24px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
         .izigo-home .section-head h2 { font-size: 26px; font-weight: 600; }
-        .izigo-home .section-head a { font-size: 14px; font-weight: 500; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; }
+        .izigo-home .section-head a { font-size: 14px; font-weight: 500; color: var(--izigo-green); display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; }
 
         .izigo-home .latest { background: var(--bg); }
         .izigo-home .latest-tabs { max-width: 1280px; margin: 0 auto 18px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -591,7 +597,7 @@ export default function IzigoHomepage() {
           .izigo-home .search-submit { width: 100%; height: 44px; padding: 0 12px; }
           .izigo-home section { padding: 36px 5vw; }
           .izigo-home .destinations { padding-top: 8px; }
-          .izigo-home .section-head { margin: 0 auto 14px; }
+          .izigo-home .section-head { margin: 0 auto 14px; flex-wrap: wrap; row-gap: 4px; }
           .izigo-home .section-head h2 { font-size: 19px; }
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
           .izigo-home .latest-body { padding: 8px; }
@@ -791,7 +797,7 @@ export default function IzigoHomepage() {
 
       <section className="latest" id="listings">
         <div className="section-head">
-          <h2>{t("latestListings.heading")}</h2>
+          <h2>{listingsHeading}</h2>
           <Link to={activeListingsTab.to}>{t("latestListings.viewAll")} →</Link>
         </div>
         <div className="latest-tabs">

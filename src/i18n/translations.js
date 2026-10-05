@@ -315,7 +315,8 @@ export const translations = {
       backHome: "Back to home",
     },
     latestListings: {
-      heading: "Latest Listings",
+      heading: "New listings from local hosts",
+      cityHeading: "New listings in {city}",
       subtitle: "A preview of what hosts will publish on IZIGO",
       viewAll: "View all",
       rooms: "rooms",
@@ -1171,7 +1172,8 @@ export const translations = {
       backHome: "Ana səhifəyə qayıt",
     },
     latestListings: {
-      heading: "Son Elanlar",
+      heading: "Yerli ev sahiblərindən yeni elanlar",
+      cityHeading: "{city} yeni elanlar",
       subtitle: "Ev sahiblərinin IZIGO-da yayımlayacağı elanların nümunəsi",
       viewAll: "Hamısına bax",
       rooms: "otaq",
@@ -2034,7 +2036,8 @@ export const translations = {
       backHome: "На главную",
     },
     latestListings: {
-      heading: "Последние объявления",
+      heading: "Новые объявления от местных хозяев",
+      cityHeading: "Новые объявления в городе {city}",
       subtitle: "Предпросмотр того, что хозяева будут публиковать на IZIGO",
       viewAll: "Смотреть все",
       rooms: "комнат",
@@ -2863,7 +2866,8 @@ export const translations = {
       backHome: "العودة إلى الرئيسية",
     },
     latestListings: {
-      heading: "أحدث الإعلانات",
+      heading: "إعلانات جديدة من مضيفين محليين",
+      cityHeading: "إعلانات جديدة في {city}",
       subtitle: "لمحة عما سينشره المضيفون على IZIGO",
       viewAll: "عرض الكل",
       rooms: "غرف",
