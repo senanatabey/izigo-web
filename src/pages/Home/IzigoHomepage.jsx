@@ -63,9 +63,9 @@ const CATEGORIES = [
 ];
 
 const DESTINATIONS = [
-  { city: "Baku", file: "baku.webp", to: "/villas?city=Baku" },
-  { city: "Gabala", file: "gabala.webp", to: "/villas?city=Gabala" },
-  { city: "Guba", file: "guba.webp", to: "/villas?city=Guba" },
+  { city: "Baku", file: "destinations/baku.webp", to: "/villas?city=Baku" },
+  { city: "Gabala", file: "destinations/gabala.webp", to: "/villas?city=Gabala" },
+  { city: "Guba", file: "destinations/guba.webp", to: "/villas?city=Guba" },
 ];
 
 const CITY_OPTIONS = ["baku", "gabala", "guba", "sheki"];
@@ -463,10 +463,19 @@ export default function IzigoHomepage() {
           font-size: 16px; font-weight: 600; color: var(--izigo-green);
         }
         .izigo-home .destination-card {
-          display: block; border-radius: 16px; overflow: hidden; transition: transform 0.15s ease;
+          position: relative; display: block; aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden;
+          background: var(--bg-soft); transition: transform 0.15s ease;
         }
         .izigo-home .destination-card:hover { transform: translateY(-2px); }
-        .izigo-home .destination-card img { width: 100%; height: auto; display: block; }
+        .izigo-home .destination-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .izigo-home .destination-card::after {
+          content: ""; position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.18) 38%, rgba(0,0,0,0) 60%);
+        }
+        .izigo-home .destination-name {
+          position: absolute; left: 20px; bottom: 18px; z-index: 1;
+          font-size: 26px; font-weight: 600; line-height: 1.15; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.35);
+        }
 
         .izigo-home .discover-az { background: var(--bg-soft); }
         .izigo-home .discover-az-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
@@ -635,7 +644,9 @@ export default function IzigoHomepage() {
             filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
           }
           .izigo-home .latest-card .save-heart.active svg { color: var(--izigo-orange); }
-          .izigo-home .destination-grid { grid-template-columns: 1fr; }
+          .izigo-home .destination-grid { grid-template-columns: 1fr; gap: 12px; }
+          .izigo-home .destination-card { aspect-ratio: 16 / 10; }
+          .izigo-home .destination-name { font-size: 22px; left: 16px; bottom: 14px; }
           .izigo-home .discover-az-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-card { padding: 20px 18px; }
           .izigo-home .ls-card { flex: 0 0 160px; height: 220px; }
@@ -847,7 +858,8 @@ export default function IzigoHomepage() {
         <div className="destination-grid">
           {DESTINATIONS.map(({ city, file, to }) => (
             <Link to={to} className="destination-card" key={city}>
-              <img src={`/images/${file}`} alt={city} loading="lazy" decoding="async" />
+              <img src={`/images/${file}`} alt="" loading="lazy" decoding="async" />
+              <span className="destination-name">{cityLabelForCity(city, language)}</span>
             </Link>
           ))}
         </div>
