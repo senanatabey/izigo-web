@@ -606,7 +606,7 @@ export default function IzigoHomepage() {
           .izigo-home .latest-city { font-size: 10px; margin-bottom: 2px; }
           .izigo-home .latest-meta { margin-bottom: 3px; min-height: 0; }
           .izigo-home .latest-meta-item { font-size: 10px; }
-          .izigo-home .latest-price { font-size: 14px; }
+          .izigo-home .latest-price { font-size: 16px; }
           .izigo-home .latest-card .save-heart {
             width: 34px; height: 34px; top: 6px; right: 6px;
             background: none; box-shadow: none;
