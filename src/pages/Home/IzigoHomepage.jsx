@@ -590,7 +590,7 @@ export default function IzigoHomepage() {
           .izigo-home .search-field { padding: 2px; }
           .izigo-home .search-submit { width: 100%; height: 44px; padding: 0 12px; }
           .izigo-home section { padding: 36px 5vw; }
-          .izigo-home .latest { padding-top: 8px; }
+          .izigo-home .destinations { padding-top: 8px; }
           .izigo-home .section-head { margin: 0 auto 14px; }
           .izigo-home .section-head h2 { font-size: 19px; }
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -610,8 +610,15 @@ export default function IzigoHomepage() {
             filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
           }
           .izigo-home .latest-card .save-heart.active svg { color: var(--izigo-orange); }
-          .izigo-home .destination-grid { grid-template-columns: 1fr; gap: 12px; }
-          .izigo-home .destination-card { aspect-ratio: 16 / 10; }
+          /* Swipeable row instead of three stacked cards, so the listings
+             right below stay within reach. */
+          .izigo-home .destination-grid {
+            display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+            margin: 0 -5vw; padding: 0 5vw 4px; scroll-padding-left: 5vw; scrollbar-width: none;
+          }
+          .izigo-home .destination-grid::-webkit-scrollbar { display: none; }
+          .izigo-home .destination-card { flex: 0 0 72%; aspect-ratio: 4 / 3; scroll-snap-align: start; }
+          .izigo-home .explore-all-link { margin-top: 14px; font-size: 14px; }
           .izigo-home .destination-name { font-size: 22px; left: 16px; bottom: 14px; }
           .izigo-home .discover-az-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-card { padding: 20px 18px; }
@@ -765,6 +772,23 @@ export default function IzigoHomepage() {
         </div>
       </section>
 
+      {/* "Where am I going?" comes before "what can I find" — destinations
+          lead into the listings below. */}
+      <section className="destinations">
+        <div className="section-head">
+          <h2>{t("destinations.heading")}</h2>
+        </div>
+        <div className="destination-grid">
+          {DESTINATIONS.map(({ city, file, to }) => (
+            <Link to={to} className="destination-card" key={city}>
+              <img src={`/images/${file}`} alt="" loading="lazy" decoding="async" />
+              <span className="destination-name">{cityLabelForCity(city, language)}</span>
+            </Link>
+          ))}
+        </div>
+        <Link to="/destinations" className="explore-all-link">{t("destinations.exploreAll")}</Link>
+      </section>
+
       <section className="latest" id="listings">
         <div className="section-head">
           <h2>{t("latestListings.heading")}</h2>
@@ -814,21 +838,6 @@ export default function IzigoHomepage() {
             </Link>
           ))}
         </div>
-      </section>
-
-      <section className="destinations">
-        <div className="section-head">
-          <h2>{t("destinations.heading")}</h2>
-        </div>
-        <div className="destination-grid">
-          {DESTINATIONS.map(({ city, file, to }) => (
-            <Link to={to} className="destination-card" key={city}>
-              <img src={`/images/${file}`} alt="" loading="lazy" decoding="async" />
-              <span className="destination-name">{cityLabelForCity(city, language)}</span>
-            </Link>
-          ))}
-        </div>
-        <Link to="/destinations" className="explore-all-link">{t("destinations.exploreAll")}</Link>
       </section>
 
       {featuredPlaces.length > 0 && (
