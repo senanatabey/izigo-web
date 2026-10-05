@@ -1,8 +1,8 @@
-/* Featured destinations stay fixed on the homepage — do not expand this list there.
+/* Featured destinations = IZIGO's core cities (quick-pick chips on /destinations).
    ALL_DESTINATIONS backs filters, search and Add Listing forms across the site.
    Values stay in English (they're stored as-is in listings.city and used in URL params);
    cityLabel() maps to the Azerbaijani name for display when the UI language is "az". */
-export const FEATURED_DESTINATIONS = ["Baku", "Gabala", "Guba"];
+export const FEATURED_DESTINATIONS = ["Baku", "Gabala", "Guba", "Sheki"];
 
 const AZ_NAMES = {
   Absheron: "Abşeron", Agdam: "Ağdam", Agdash: "Ağdaş", Agjabadi: "Ağcabədi",
@@ -24,7 +24,7 @@ const AZ_NAMES = {
   Qakh: "Qax", Qazakh: "Qazax", Qobustan: "Qobustan",
   Saatly: "Saatlı", Sabirabad: "Sabirabad", Salyan: "Salyan", Samukh: "Samux",
   Shabran: "Şabran", Shamakhi: "Şamaxı", Shamkir: "Şəmkir",
-  Sharur: "Şərur", Shirvan: "Şirvan", Shusha: "Şuşa", Siyazan: "Siyəzən", Sumgayit: "Sumqayıt",
+  Sharur: "Şərur", Sheki: "Şəki", Shirvan: "Şirvan", Shusha: "Şuşa", Siyazan: "Siyəzən", Sumgayit: "Sumqayıt",
   Tartar: "Tərtər", Tovuz: "Tovuz",
   Ujar: "Ucar",
   Yardimli: "Yardımlı", Yevlakh: "Yevlax",
@@ -32,7 +32,7 @@ const AZ_NAMES = {
 };
 
 // Priority cities always lead the list (in this order); everything else follows alphabetically.
-const PRIORITY_DESTINATIONS = ["Baku", "Gabala", "Guba", "Gusar"];
+const PRIORITY_DESTINATIONS = ["Baku", "Gabala", "Guba", "Sheki", "Gusar"];
 
 export const ALL_DESTINATIONS = [
   ...PRIORITY_DESTINATIONS,
@@ -73,6 +73,9 @@ export function cityFromSlug(slug) {
   return ALL_DESTINATIONS.find((city) => citySlug(city) === slug) || null;
 }
 
+// Other common Latin spellings people type, lowercased → canonical city.
+const CITY_ALIASES = { shaki: "Sheki" };
+
 /* Maps what a user typed or picked ("Qəbələ", "qəbələ", "Gabala") back to
    the canonical `city` value listings are stored and filtered by. Returns
    null when the text isn't a known destination. */
@@ -81,6 +84,7 @@ export function cityFromLabel(text) {
   if (!needle) return null;
   const en = needle.toLowerCase();
   const az = needle.toLocaleLowerCase("az");
+  if (CITY_ALIASES[en]) return CITY_ALIASES[en];
   return ALL_DESTINATIONS.find((city) => (
     city.toLowerCase() === en
     || (AZ_NAMES[city] && AZ_NAMES[city].toLocaleLowerCase("az") === az)

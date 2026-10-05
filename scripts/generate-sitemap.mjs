@@ -38,9 +38,9 @@ const STATIC_URLS = [
   { loc: "/places", changefreq: "weekly", priority: "0.7" },
 ];
 
-// The three destinations that always have a guide, even before any CMS
+// The destinations that always have a guide, even before any CMS
 // content exists (see src/data/destinations/*.js — Stage 1's static fallback).
-const FALLBACK_GUIDE_SLUGS = ["baku", "gabala", "guba"];
+const FALLBACK_GUIDE_SLUGS = ["baku", "gabala", "guba", "sheki"];
 
 function buildXml(urls) {
   const body = urls.map(({ loc, changefreq, priority }) => `  <url>

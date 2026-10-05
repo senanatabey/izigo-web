@@ -8,7 +8,7 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { submitTripRequest } from "../../lib/tripRequests";
 import { COUNTRY_CODES } from "../../lib/countryCodes";
 
-const CITIES = ["Baku", "Gabala", "Guba"];
+const CITIES = ["Baku", "Gabala", "Guba", "Sheki"];
 
 const TRAVELER_TYPES = [
   { key: "family", icon: HomeIcon },

@@ -68,7 +68,7 @@ const DESTINATIONS = [
   { city: "Guba", file: "guba.webp", to: "/villas?city=Guba" },
 ];
 
-const CITY_OPTIONS = ["baku", "gabala", "guba"];
+const CITY_OPTIONS = ["baku", "gabala", "guba", "sheki"];
 
 const LISTINGS_TABS_META = [
   { key: "villas", icon: HomeIcon, to: "/villas", category: "villa", detailTo: (id) => `/villas/${id}`, priceUnit: "villasPage.perNight" },

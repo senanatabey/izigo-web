@@ -6,7 +6,7 @@ Burada yazılanlar avtomatik nəzərə alınır — hər dəfə təkrar izah etm
 ## Layihə haqqında
 
 IZIGO — Azərbaycan üçün turizm marketplace-i (Tap.az + Airbnb + Tripadvisor modeli).
-Kateqoriyalar: Villas, Cars, Experiences, Events. Şəhərlər: Baku, Gabala, Guba.
+Kateqoriyalar: Villas, Cars, Experiences, Events. Şəhərlər: Baku, Gabala, Guba, Sheki.
 Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzərindən əlaqə saxlayır.
 
 ## Texnoloji stack (MVP — sadə saxla, overengineer etmə)
