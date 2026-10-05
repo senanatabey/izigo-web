@@ -596,7 +596,7 @@ export const translations = {
         },
       },
       fixed: {
-        eyebrow: "🇦🇿 Azerbaijan's Local Travel Marketplace",
+        eyebrow: "Azerbaijan's Local Travel Marketplace",
         title: "Discover Azerbaijan.\n\nEverything for Your Trip.\nOne Marketplace.",
         subtitle: "Book directly with local hosts.\nNo booking fees.\nBetter local prices.",
         trust: {
@@ -1453,7 +1453,7 @@ export const translations = {
         },
       },
       fixed: {
-        eyebrow: "🇦🇿 Azərbaycanın Yerli Səyahət Platforması",
+        eyebrow: "Azərbaycanın Yerli Səyahət Platforması",
         title: "Azərbaycanı Kəşf Et.\n\nSəyahətin Üçün Hər Şey.\nBir Platformada.",
         subtitle: "Yerli ev sahibləri ilə birbaşa əlaqə qur.\nRezervasiya haqqı yoxdur.\nYerli qiymətlərlə daha sərfəli.",
         trust: {
@@ -1472,7 +1472,7 @@ export const translations = {
       planMyTrip: "Səyahətimi Planla",
     },
     search: {
-      where: "Haradan",
+      where: "Hara",
       wherePlaceholder: "Şəhər, region və ya məkan",
       allCategory: "Hamısı",
       search: "Axtar",
@@ -2286,7 +2286,7 @@ export const translations = {
         },
       },
       fixed: {
-        eyebrow: "🇦🇿 Местный туристический маркетплейс Азербайджана",
+        eyebrow: "Местный туристический маркетплейс Азербайджана",
         title: "Откройте Азербайджан.\n\nВсё для вашей поездки.\nОдин маркетплейс.",
         subtitle: "Бронируйте напрямую у местных хозяев.\nБез комиссии за бронирование.\nЛучшие местные цены.",
         trust: {
@@ -3147,7 +3147,7 @@ export const translations = {
         },
       },
       fixed: {
-        eyebrow: "🇦🇿 اكتشف أذربيجان كأهل البلد",
+        eyebrow: "اكتشف أذربيجان كأهل البلد",
         title: "اكتشف أذربيجان كأهل البلد.\nابحث عن الفلل والسيارات والنقل\nمباشرة من مضيفين محليين.",
         subtitle: "احجز مباشرة مع مضيفين محليين.\nبدون رسوم حجز.\nأسعار محلية أفضل.",
         trust: {
