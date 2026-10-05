@@ -604,6 +604,10 @@ export const translations = {
           directWhatsapp: "Direct WhatsApp Contact",
         },
       },
+      mobile: {
+        title: "Match your trip to your budget with IZIGO",
+        trust: "0% commission • Local hosts • Direct contact",
+      },
     },
     heroButtons: {
       searchListings: "Search Listings",
@@ -1451,6 +1455,10 @@ export const translations = {
           directWhatsapp: "Birbaşa WhatsApp Əlaqəsi",
         },
       },
+      mobile: {
+        title: "Səyahətinizi büdcənizə IZIGO ilə uyğunlaşdırın",
+        trust: "0% komissiya • Yerli ev sahibləri • Birbaşa əlaqə",
+      },
     },
     heroButtons: {
       searchListings: "Elanları Axtar",
@@ -2273,6 +2281,10 @@ export const translations = {
           betterPrices: "Лучшие местные цены",
           directWhatsapp: "Прямой контакт в WhatsApp",
         },
+      },
+      mobile: {
+        title: "Подберите поездку под свой бюджет с IZIGO",
+        trust: "0% комиссии • Местные хозяева • Прямой контакт",
       },
     },
     heroButtons: {
@@ -3124,6 +3136,10 @@ export const translations = {
           betterPrices: "أسعار محلية أفضل",
           directWhatsapp: "تواصل مباشر عبر واتساب",
         },
+      },
+      mobile: {
+        title: "خطط رحلتك حسب ميزانيتك مع IZIGO",
+        trust: "عمولة 0% • مضيفون محليون • تواصل مباشر",
       },
     },
     heroButtons: {

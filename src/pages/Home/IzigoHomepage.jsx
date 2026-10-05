@@ -337,11 +337,11 @@ export default function IzigoHomepage() {
           min-width: 230px; height: 62px; padding: 0 30px; font-weight: 700; font-size: 18px; white-space: nowrap;
           transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
-        .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: #fff; box-shadow: 0 10px 24px rgba(186, 91, 46, 0.32); }
+        .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: var(--on-brand); box-shadow: 0 10px 24px rgba(186, 91, 46, 0.32); }
         .izigo-home .hero-btn.secondary { background: var(--surface); color: var(--izigo-green); }
         .izigo-home .hero-btn.secondary:hover { filter: brightness(0.95); }
         .izigo-home .hero-btn.primary:hover {
-          background: #A34D26; transform: translateY(-2px); box-shadow: 0 14px 28px rgba(186, 91, 46, 0.4);
+          filter: brightness(0.95); transform: translateY(-2px); box-shadow: 0 14px 28px rgba(186, 91, 46, 0.4);
         }
         .izigo-home .search-card {
           margin: 24px auto 0;
@@ -365,7 +365,7 @@ export default function IzigoHomepage() {
           background: var(--surface); color: var(--text-soft); font-size: 13.5px; font-weight: 600;
           cursor: pointer; white-space: nowrap; transition: all 0.15s ease;
         }
-        .izigo-home .search-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .izigo-home .search-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
         .izigo-home .search-row { display: flex; align-items: stretch; gap: 0; }
         .izigo-home .search-field-wrap { flex: 1; position: relative; }
         .izigo-home .search-field {
@@ -401,7 +401,7 @@ export default function IzigoHomepage() {
         .izigo-home .search-submit {
           display: flex; align-items: center; justify-content: center; gap: 8px;
           min-width: 150px; height: 56px; align-self: center;
-          background: var(--izigo-green); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 0 28px; font-weight: 800; font-size: 16px; cursor: pointer;
           white-space: nowrap; transition: filter 0.15s ease;
         }
@@ -420,7 +420,7 @@ export default function IzigoHomepage() {
           border: 1px solid var(--border); background: var(--surface); color: var(--text-soft); font-size: 13px; font-weight: 600;
           cursor: pointer; transition: all 0.15s ease;
         }
-        .izigo-home .latest-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .izigo-home .latest-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
 
         /* tap.az-tərzi mobil axtarış+kateqoriyalar — yalnız ≤640px-də
            görünür, desktopda "latest-tabs" öz yerində qalır. */
@@ -477,17 +477,17 @@ export default function IzigoHomepage() {
         .izigo-home .discover-az-city { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--izigo-orange); margin-bottom: 3px; }
         .izigo-home .discover-az-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
 
-        .izigo-home .plan-trip-section { background: var(--izigo-green); color: #fff; }
+        .izigo-home .plan-trip-section { background: var(--izigo-green); color: var(--on-brand); }
         .izigo-home .plan-trip-layout { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
         .izigo-home .plan-trip-copy .premium-badge.dark {
           display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
-          background: rgba(255,255,255,0.15); color: #FFD447; padding: 6px 14px; border-radius: 999px; margin-bottom: 14px;
+          background: rgba(255,255,255,0.15); color: var(--on-brand); padding: 6px 14px; border-radius: 999px; margin-bottom: 14px;
         }
         .izigo-home .plan-trip-copy h2 { font-size: 25px; font-weight: 800; margin: 0 0 10px; line-height: 1.28; color: var(--on-brand); }
-        .izigo-home .plan-trip-copy p { font-size: 14.5px; line-height: 1.55; color: rgba(255,255,255,0.88); margin: 0 0 14px; max-width: 440px; }
+        .izigo-home .plan-trip-copy p { font-size: 14.5px; line-height: 1.55; color: var(--on-brand); margin: 0 0 14px; max-width: 440px; }
         .izigo-home .plan-trip-example {
-          font-style: italic; font-size: 13.5px; color: rgba(255,255,255,0.75);
-          border-left: 3px solid rgba(255,255,255,0.35); padding-left: 12px; max-width: 420px;
+          font-style: italic; font-size: 13.5px; color: var(--on-brand); opacity: 0.85;
+          border-left: 3px solid rgba(31,41,55,0.35); padding-left: 12px; max-width: 420px;
         }
         .izigo-home .quick-trip { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow-md); padding: 24px; }
         .izigo-home .quick-trip-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
@@ -506,7 +506,7 @@ export default function IzigoHomepage() {
         }
         .izigo-home .quick-trip-submit {
           width: 100%; height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           font-weight: 700; font-size: 16px; cursor: pointer; transition: filter 0.15s ease;
         }
         .izigo-home .quick-trip-submit:hover { filter: brightness(0.94); }
@@ -530,7 +530,7 @@ export default function IzigoHomepage() {
           display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 22px;
           font-size: 14px; font-weight: 700; margin-top: auto;
         }
-        .izigo-home .premium-btn.dark { background: var(--izigo-green); color: #fff; }
+        .izigo-home .premium-btn.dark { background: var(--izigo-green); color: var(--on-brand); }
 
         .izigo-home .ls-cards-row {
           display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; margin: 4px 0 20px; width: 100%; min-width: 0;
@@ -559,7 +559,7 @@ export default function IzigoHomepage() {
 
 
         .izigo-home .newsletter {
-          background: var(--izigo-green); color: #fff;
+          background: var(--izigo-green); color: var(--on-brand);
           padding: 40px 6vw;
         }
         .izigo-home .newsletter-inner {
@@ -568,17 +568,17 @@ export default function IzigoHomepage() {
         }
         .izigo-home .newsletter-copy { display: flex; align-items: center; gap: 16px; }
         .izigo-home .newsletter-copy h4 { font-size: 17px; font-weight: 800; color: var(--on-brand); }
-        .izigo-home .newsletter-copy p { font-size: 14px; color: rgba(255,255,255,0.85); }
+        .izigo-home .newsletter-copy p { font-size: 14px; color: var(--on-brand); }
         .izigo-home .newsletter-form { display: flex; gap: 10px; flex: 1; max-width: 440px; min-width: 260px; }
         .izigo-home .newsletter-form input {
           flex: 1; width: 0; border: none; border-radius: 10px; padding: 13px 16px; font-size: 15px; outline: none;
         }
         .izigo-home .newsletter-form button {
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 0 20px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap;
         }
         .izigo-home .newsletter-social { display: flex; align-items: center; gap: 16px; }
-        .izigo-home .newsletter-social span { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
+        .izigo-home .newsletter-social span { font-size: 14px; font-weight: 600; color: var(--on-brand); }
         .izigo-home .newsletter-social a {
           width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.16);
           display: flex; align-items: center; justify-content: center;
@@ -652,6 +652,20 @@ export default function IzigoHomepage() {
             display: block;
             padding: 16px 5vw 4px;
           }
+          .izigo-home .mqs-hero { margin-bottom: 16px; }
+          .izigo-home .mqs-hero-title {
+            font-size: 21px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+            color: var(--text); margin: 0 0 12px;
+          }
+          .izigo-home .mqs-hero-cta {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; height: 50px; border-radius: 12px;
+            background: var(--izigo-orange); color: var(--on-brand);
+            font-size: 16px; font-weight: 600;
+          }
+          .izigo-home .mqs-hero-trust {
+            margin-top: 8px; text-align: center; font-size: 12.5px; font-weight: 500; color: var(--text-soft);
+          }
           .izigo-home .mqs-search {
             position: relative;
             display: flex; align-items: center; gap: 10px;
@@ -691,7 +705,7 @@ export default function IzigoHomepage() {
             width: 46px; height: 46px; border-radius: 14px;
             background: var(--bg-soft); color: var(--izigo-green);
           }
-          .izigo-home .mqs-cat.active .mqs-cat-icon { background: var(--izigo-green); color: #fff; }
+          .izigo-home .mqs-cat.active .mqs-cat-icon { background: var(--izigo-green); color: var(--on-brand); }
         }
       `}</style>
 
@@ -726,6 +740,13 @@ export default function IzigoHomepage() {
       </section>
 
       <section className="mobile-quick-search">
+        {/* Compact mobile hero — the desktop hero is hidden ≤640px, so this
+            carries the value proposition and the Plan My Trip CTA there. */}
+        <div className="mqs-hero">
+          <h2 className="mqs-hero-title">{t("hero.mobile.title")}</h2>
+          <Link to={planMyTripLink} className="mqs-hero-cta"><Sparkles size={16} />{planMyTripText}</Link>
+          <p className="mqs-hero-trust">{t("hero.mobile.trust")}</p>
+        </div>
         <form className="mqs-search" onSubmit={handleSearch}>
           <Search size={17} />
           <input
