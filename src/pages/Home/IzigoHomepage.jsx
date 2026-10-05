@@ -315,12 +315,12 @@ export default function IzigoHomepage() {
         .izigo-home .hero-inner { max-width: 1280px; width: 100%; margin: 0 auto; padding: 0 6vw; display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; }
         .izigo-home .hero-content { max-width: 800px; width: 100%; min-width: 0; margin: 0 auto; transform: translateY(-20px); }
         .izigo-home .hero-eyebrow {
-          display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 800; letter-spacing: 0.6px;
+          display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 600; letter-spacing: 0.6px;
           text-transform: uppercase; color: #FFD447; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
           border-radius: 999px; padding: 7px 16px; margin-bottom: 14px;
         }
         .izigo-home .hero h1 {
-          font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; margin: 0; color: #fff; max-width: 620px;
+          font-size: 36px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; margin: 0; color: #fff; max-width: 620px;
         }
         .izigo-home .hero h1 span { display: block; }
         .izigo-home .hero h1 p { margin: 0; }
@@ -328,13 +328,13 @@ export default function IzigoHomepage() {
         .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 22px; }
         .izigo-home .hero-trust-row {
           display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
-          margin-top: 10px; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.88);
+          margin-top: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88);
           text-shadow: 0 1px 3px rgba(0,0,0,0.35);
         }
         .izigo-home .hero-trust-row span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
         .izigo-home .hero-btn {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 10px;
-          min-width: 230px; height: 62px; padding: 0 30px; font-weight: 700; font-size: 18px; white-space: nowrap;
+          min-width: 230px; height: 62px; padding: 0 30px; font-weight: 600; font-size: 18px; white-space: nowrap;
           transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         }
         .izigo-home .hero-btn.primary { background: var(--izigo-orange); color: var(--on-brand); box-shadow: 0 10px 24px rgba(186, 91, 46, 0.32); }
@@ -374,7 +374,7 @@ export default function IzigoHomepage() {
           gap: 12px;
           padding: 2px 16px 2px 2px;
         }
-        .izigo-home .search-field label { display: block; font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        .izigo-home .search-field label { display: block; font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
         .izigo-home .search-field input {
           border: none; outline: none; font-size: 15.5px; color: var(--text-soft);
           width: 100%; font-family: var(--sans); background: transparent;
@@ -394,7 +394,7 @@ export default function IzigoHomepage() {
           margin-top: 6px; height: 16px; line-height: 16px;
         }
         .izigo-home .search-guide-link {
-          display: inline-block; font-size: 13px; font-weight: 700; color: var(--izigo-green);
+          display: inline-block; font-size: 13px; font-weight: 600; color: var(--izigo-green);
           opacity: 0; visibility: hidden; transition: opacity 0.15s ease;
         }
         .izigo-home .search-guide-link.visible { opacity: 1; visibility: visible; }
@@ -402,7 +402,7 @@ export default function IzigoHomepage() {
           display: flex; align-items: center; justify-content: center; gap: 8px;
           min-width: 150px; height: 56px; align-self: center;
           background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px;
-          padding: 0 28px; font-weight: 800; font-size: 16px; cursor: pointer;
+          padding: 0 28px; font-weight: 600; font-size: 16px; cursor: pointer;
           white-space: nowrap; transition: filter 0.15s ease;
         }
         .izigo-home .search-submit:hover { filter: brightness(0.94); }
@@ -433,9 +433,9 @@ export default function IzigoHomepage() {
         .izigo-home .latest-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .izigo-home .latest-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .izigo-home .latest-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
-        .izigo-home .latest-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--izigo-orange); }
+        .izigo-home .latest-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; margin-bottom: 5px; color: var(--izigo-orange); }
         .izigo-home .latest-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-        .izigo-home .latest-title { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.3; min-height: 42px; flex: 1; }
+        .izigo-home .latest-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; min-height: 42px; flex: 1; }
         .izigo-home .latest-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; min-height: 18px; }
         .izigo-home .latest-meta-item {
           display: inline-flex; align-items: center; gap: 4px; font-size: clamp(11px, 2.6vw, 12px);
@@ -443,16 +443,16 @@ export default function IzigoHomepage() {
         }
         .izigo-home .latest-rating {
           display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; margin-top: 2px;
-          font-size: 12px; font-weight: 700; color: #B8860B;
+          font-size: 12px; font-weight: 600; color: #B8860B;
         }
         .izigo-home .latest-rating svg { fill: #FFB800; stroke: #FFB800; }
         .izigo-home .latest-review-count { font-weight: 500; color: var(--text-soft); }
         .izigo-home .latest-badge-new {
-          display: inline-flex; align-items: center; flex-shrink: 0; margin-top: 2px; font-size: clamp(10px, 2.4vw, 11px); font-weight: 800;
+          display: inline-flex; align-items: center; flex-shrink: 0; margin-top: 2px; font-size: clamp(10px, 2.4vw, 11px); font-weight: 600;
           letter-spacing: 0.3px; text-transform: uppercase; color: var(--izigo-green);
           background: rgba(0, 200, 151, 0.12); border-radius: 999px; padding: 3px 9px;
         }
-        .izigo-home .latest-price { font-size: clamp(18px, 3.9vw, 20px); font-weight: 800; color: var(--text); margin-top: auto; }
+        .izigo-home .latest-price { font-size: clamp(18px, 3.9vw, 20px); font-weight: 600; color: var(--text); margin-top: auto; }
         .izigo-home .latest-price span { font-size: 12px; font-weight: 500; color: var(--text-soft); }
         .izigo-home .latest-price-old { font-size: 12px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
 
@@ -460,7 +460,7 @@ export default function IzigoHomepage() {
         .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
         .izigo-home .explore-all-link {
           display: block; max-width: 1280px; margin: 22px auto 0; text-align: center;
-          font-size: 16px; font-weight: 700; color: var(--izigo-green);
+          font-size: 16px; font-weight: 600; color: var(--izigo-green);
         }
         .izigo-home .destination-card {
           display: block; border-radius: 16px; overflow: hidden; transition: transform 0.15s ease;
@@ -474,16 +474,16 @@ export default function IzigoHomepage() {
         .izigo-home .discover-az-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
         .izigo-home .discover-az-thumb { aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--bg-soft); }
         .izigo-home .discover-az-body { padding: 10px 12px; }
-        .izigo-home .discover-az-city { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--izigo-orange); margin-bottom: 3px; }
-        .izigo-home .discover-az-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+        .izigo-home .discover-az-city { display: flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 600; color: var(--izigo-orange); margin-bottom: 3px; }
+        .izigo-home .discover-az-name { font-size: 12.5px; font-weight: 600; color: var(--text); }
 
         .izigo-home .plan-trip-section { background: var(--izigo-green); color: var(--on-brand); }
         .izigo-home .plan-trip-layout { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
         .izigo-home .plan-trip-copy .premium-badge.dark {
-          display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+          display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
           background: rgba(255,255,255,0.15); color: var(--on-brand); padding: 6px 14px; border-radius: 999px; margin-bottom: 14px;
         }
-        .izigo-home .plan-trip-copy h2 { font-size: 25px; font-weight: 800; margin: 0 0 10px; line-height: 1.28; color: var(--on-brand); }
+        .izigo-home .plan-trip-copy h2 { font-size: 25px; font-weight: 600; margin: 0 0 10px; line-height: 1.28; color: var(--on-brand); }
         .izigo-home .plan-trip-copy p { font-size: 14.5px; line-height: 1.55; color: var(--on-brand); margin: 0 0 14px; max-width: 440px; }
         .izigo-home .plan-trip-example {
           font-style: italic; font-size: 13.5px; color: var(--on-brand); opacity: 0.85;
@@ -492,7 +492,7 @@ export default function IzigoHomepage() {
         .izigo-home .quick-trip { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow-md); padding: 24px; }
         .izigo-home .quick-trip-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
         .izigo-home .quick-trip-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-        .izigo-home .quick-trip-field > span { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--text); }
+        .izigo-home .quick-trip-field > span { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--text); }
         .izigo-home .quick-trip-field select,
         .izigo-home .quick-trip-field input {
           width: 100%; min-width: 0; height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px;
@@ -502,12 +502,12 @@ export default function IzigoHomepage() {
         .izigo-home .quick-trip-budget input { padding-right: 48px; }
         .izigo-home .quick-trip-budget em {
           position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-          font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--text-soft); pointer-events: none;
+          font-style: normal; font-size: 12.5px; font-weight: 600; color: var(--text-soft); pointer-events: none;
         }
         .izigo-home .quick-trip-submit {
           width: 100%; height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px;
           background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
-          font-weight: 700; font-size: 16px; cursor: pointer; transition: filter 0.15s ease;
+          font-weight: 600; font-size: 16px; cursor: pointer; transition: filter 0.15s ease;
         }
         .izigo-home .quick-trip-submit:hover { filter: brightness(0.94); }
         .izigo-home .quick-trip-note { margin-top: 10px; text-align: center; font-size: 12.5px; color: var(--text-soft); }
@@ -519,7 +519,7 @@ export default function IzigoHomepage() {
           border-radius: 18px; padding: 24px; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;
         }
         .izigo-home .premium-card.local-services { background: var(--bg-soft); border: 1px solid var(--border); width: 100%; }
-        .izigo-home .premium-card h3 { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
+        .izigo-home .premium-card h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px; color: var(--text); }
         .izigo-home .premium-card p { font-size: 14px; line-height: 1.55; margin: 0 0 16px; max-width: 380px; color: var(--text-soft); }
         .izigo-home .premium-icons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
         .izigo-home .premium-icon {
@@ -528,7 +528,7 @@ export default function IzigoHomepage() {
         }
         .izigo-home .premium-btn {
           display: inline-flex; align-items: center; gap: 8px; border-radius: 10px; padding: 12px 22px;
-          font-size: 14px; font-weight: 700; margin-top: auto;
+          font-size: 14px; font-weight: 600; margin-top: auto;
         }
         .izigo-home .premium-btn.dark { background: var(--izigo-green); color: var(--on-brand); }
 
@@ -554,7 +554,7 @@ export default function IzigoHomepage() {
           background: var(--glass); color: var(--izigo-orange); display: flex; align-items: center; justify-content: center;
         }
         .izigo-home .ls-card-text { position: absolute; bottom: 16px; left: 16px; right: 16px; color: #fff; }
-        .izigo-home .ls-card-title { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+        .izigo-home .ls-card-title { font-size: 17px; font-weight: 600; margin-bottom: 3px; }
         .izigo-home .ls-card-subtitle { font-size: 12.5px; opacity: 0.85; line-height: 1.35; }
 
 
@@ -567,7 +567,7 @@ export default function IzigoHomepage() {
           display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
         }
         .izigo-home .newsletter-copy { display: flex; align-items: center; gap: 16px; }
-        .izigo-home .newsletter-copy h4 { font-size: 17px; font-weight: 800; color: var(--on-brand); }
+        .izigo-home .newsletter-copy h4 { font-size: 17px; font-weight: 600; color: var(--on-brand); }
         .izigo-home .newsletter-copy p { font-size: 14px; color: var(--on-brand); }
         .izigo-home .newsletter-form { display: flex; gap: 10px; flex: 1; max-width: 440px; min-width: 260px; }
         .izigo-home .newsletter-form input {
@@ -575,7 +575,7 @@ export default function IzigoHomepage() {
         }
         .izigo-home .newsletter-form button {
           background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
-          padding: 0 20px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap;
+          padding: 0 20px; font-weight: 600; font-size: 15px; cursor: pointer; white-space: nowrap;
         }
         .izigo-home .newsletter-social { display: flex; align-items: center; gap: 16px; }
         .izigo-home .newsletter-social span { font-size: 14px; font-weight: 600; color: var(--on-brand); }
