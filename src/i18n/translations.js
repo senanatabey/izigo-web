@@ -735,6 +735,11 @@ export const translations = {
         restaurants: "Restaurants",
       },
     },
+    discoverCta: {
+      title: "Discover new places on IZIGO",
+      text: "Keep up with new listings in Gabala, Baku and other regions of Azerbaijan.",
+      button: "Explore destinations",
+    },
     newsletter: {
       title: "Get the best deals and travel inspiration",
       subtitle: "Subscribe to our newsletter",
@@ -1586,6 +1591,11 @@ export const translations = {
         restaurants: "Restoranlar",
       },
     },
+    discoverCta: {
+      title: "IZIGO-da yeni yerləri kəşf edin",
+      text: "Qəbələ, Bakı və Azərbaycanın digər bölgələrində yeni elanlardan xəbərdar olun.",
+      button: "Məkanları kəşf et",
+    },
     newsletter: {
       title: "Ən yaxşı təklifləri və səyahət ilhamını əldə et",
       subtitle: "Bültenimizə abunə ol",
@@ -2412,6 +2422,11 @@ export const translations = {
         events: "События",
         restaurants: "Рестораны",
       },
+    },
+    discoverCta: {
+      title: "Откройте новые места на IZIGO",
+      text: "Следите за новыми объявлениями в Габале, Баку и других регионах Азербайджана.",
+      button: "Смотреть направления",
     },
     newsletter: {
       title: "Получайте лучшие предложения и вдохновение для путешествий",
@@ -3267,6 +3282,11 @@ export const translations = {
         events: "فعاليات",
         restaurants: "مطاعم",
       },
+    },
+    discoverCta: {
+      title: "اكتشف أماكن جديدة على IZIGO",
+      text: "تابع الإعلانات الجديدة في غابالا وباكو ومناطق أذربيجان الأخرى.",
+      button: "استكشف الوجهات",
     },
     newsletter: {
       title: "احصل على أفضل العروض وإلهام السفر",

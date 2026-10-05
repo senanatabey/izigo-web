@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   MapPin, Search, Home as HomeIcon, Car, ArrowLeftRight,
-  PartyPopper, Mail, Send,
+  PartyPopper,
   Star, ShoppingBasket, Users,
   Sparkles, ArrowRight, BedDouble,
   UtensilsCrossed, Compass, Camera, LayoutGrid,
@@ -28,32 +28,6 @@ const LOCAL_SERVICES_CARDS = [
   { key: "guide", icon: Compass, tone: "teal" },
   { key: "photographer", icon: Camera, tone: "meadow" },
 ];
-
-/* lucide-react no longer ships brand/logo glyphs — small inline outlines instead */
-function InstagramGlyph(props) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-function FacebookGlyph(props) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M15 3h-2a5 5 0 0 0-5 5v3H6v4h2v6h4v-6h3l1-4h-4V8a1 1 0 0 1 1-1h3z" />
-    </svg>
-  );
-}
-function YoutubeGlyph(props) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <rect x="2" y="6" width="20" height="12" rx="4" />
-      <path d="m10 9 5 3-5 3z" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
 
 const CATEGORIES = [
   { icon: HomeIcon, tone: "green", key: "villas", to: "/villas" },
@@ -567,31 +541,23 @@ export default function IzigoHomepage() {
         .izigo-home .ls-card-subtitle { font-size: 12.5px; opacity: 0.85; line-height: 1.35; }
 
 
-        .izigo-home .newsletter {
+        .izigo-home .discover-cta {
           background: var(--izigo-green); color: var(--on-brand);
           padding: 40px 6vw;
         }
-        .izigo-home .newsletter-inner {
+        .izigo-home .discover-cta-inner {
           max-width: 1280px; margin: 0 auto;
           display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
         }
-        .izigo-home .newsletter-copy { display: flex; align-items: center; gap: 16px; }
-        .izigo-home .newsletter-copy h4 { font-size: 17px; font-weight: 600; color: var(--on-brand); }
-        .izigo-home .newsletter-copy p { font-size: 14px; color: var(--on-brand); }
-        .izigo-home .newsletter-form { display: flex; gap: 10px; flex: 1; max-width: 440px; min-width: 260px; }
-        .izigo-home .newsletter-form input {
-          flex: 1; width: 0; border: none; border-radius: 10px; padding: 13px 16px; font-size: 15px; outline: none;
+        .izigo-home .discover-cta-copy { display: flex; align-items: center; gap: 16px; }
+        .izigo-home .discover-cta-copy h4 { font-size: 17px; font-weight: 600; color: var(--on-brand); }
+        .izigo-home .discover-cta-copy p { font-size: 14px; color: var(--on-brand); }
+        .izigo-home .discover-cta-btn {
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px;
+          background: var(--izigo-orange); color: var(--on-brand); border-radius: 10px;
+          padding: 0 22px; font-weight: 600; font-size: 15px; white-space: nowrap;
         }
-        .izigo-home .newsletter-form button {
-          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
-          padding: 0 20px; font-weight: 600; font-size: 15px; cursor: pointer; white-space: nowrap;
-        }
-        .izigo-home .newsletter-social { display: flex; align-items: center; gap: 16px; }
-        .izigo-home .newsletter-social span { font-size: 14px; font-weight: 600; color: var(--on-brand); }
-        .izigo-home .newsletter-social a {
-          width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.16);
-          display: flex; align-items: center; justify-content: center;
-        }
+        .izigo-home .discover-cta-btn:hover { filter: brightness(0.95); }
 
         @media (max-width: 1024px) {
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); }
@@ -654,9 +620,8 @@ export default function IzigoHomepage() {
           .izigo-home .quick-trip-fields { grid-template-columns: 1fr; gap: 12px; }
           .izigo-home .quick-trip-field select,
           .izigo-home .quick-trip-field input { font-size: 16px; }
-          .izigo-home .newsletter-inner { flex-direction: column; align-items: stretch; text-align: center; }
-          .izigo-home .newsletter-copy { flex-direction: column; text-align: center; }
-          .izigo-home .newsletter-form { max-width: none; }
+          .izigo-home .discover-cta-inner { flex-direction: column; align-items: stretch; text-align: center; }
+          .izigo-home .discover-cta-copy { flex-direction: column; text-align: center; }
 
           .izigo-home .latest-tabs { display: none; }
           .izigo-home .mobile-quick-search {
@@ -966,26 +931,18 @@ export default function IzigoHomepage() {
 
       <BecomeHostCta />
 
-      <section className="newsletter">
-        <div className="newsletter-inner">
-          <div className="newsletter-copy">
-            <Mail size={22} />
+      {/* Launch version: no newsletter backend and no social accounts yet,
+          so this points to real content instead of a form that does nothing. */}
+      <section className="discover-cta">
+        <div className="discover-cta-inner">
+          <div className="discover-cta-copy">
+            <Compass size={22} />
             <div>
-              <h4>{t("newsletter.title")}</h4>
-              <p>{t("newsletter.subtitle")}</p>
+              <h4>{t("discoverCta.title")}</h4>
+              <p>{t("discoverCta.text")}</p>
             </div>
           </div>
-          <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder={t("newsletter.placeholder")} />
-            <button type="submit">{t("newsletter.subscribe")}</button>
-          </form>
-          <div className="newsletter-social">
-            <span>{t("newsletter.followUs")}</span>
-            <a href="#" aria-label="Instagram"><InstagramGlyph /></a>
-            <a href="#" aria-label="Facebook"><FacebookGlyph /></a>
-            <a href="#" aria-label="YouTube"><YoutubeGlyph /></a>
-            <a href="#" aria-label="Telegram"><Send size={16} /></a>
-          </div>
+          <Link to="/destinations" className="discover-cta-btn">{t("discoverCta.button")}<ArrowRight size={16} /></Link>
         </div>
       </section>
     </div>
