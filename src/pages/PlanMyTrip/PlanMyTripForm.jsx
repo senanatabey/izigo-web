@@ -37,11 +37,13 @@ const SERVICE_NEEDS = [
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
-const dayAfter = (isoDate) => {
+const addDays = (isoDate, days) => {
   const d = new Date(isoDate);
-  d.setDate(d.getDate() + 1);
+  d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
 };
+
+const dayAfter = (isoDate) => addDays(isoDate, 1);
 
 const nightsBetween = (checkIn, checkOut) => {
   if (!checkIn || !checkOut) return 0;
@@ -49,11 +51,15 @@ const nightsBetween = (checkIn, checkOut) => {
   return diff > 0 ? diff : 0;
 };
 
-export default function PlanMyTripForm() {
+// `initialValues` comes from the homepage's quick Plan My Trip card
+// (city / days / budget in the URL). `days` has no field of its own here —
+// it pre-fills check-out once the guest picks a check-in date.
+export default function PlanMyTripForm({ initialValues = {} }) {
   const { t } = useLanguage();
   const [name, setName] = useState("");
-  const [destination, setDestination] = useState("");
-  const [budget, setBudget] = useState("");
+  const [destination, setDestination] = useState(CITIES.includes(initialValues.city) ? initialValues.city : "");
+  const [budget, setBudget] = useState(initialValues.budget || "");
+  const tripDays = Number(initialValues.days) > 0 ? Number(initialValues.days) : 0;
   const [guests, setGuests] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -156,7 +162,8 @@ export default function PlanMyTripForm() {
             onChange={(e) => {
               const value = e.target.value;
               setCheckIn(value);
-              if (checkOut && value && checkOut <= value) setCheckOut("");
+              if (value && tripDays && (!checkOut || checkOut <= value)) setCheckOut(addDays(value, tripDays));
+              else if (checkOut && value && checkOut <= value) setCheckOut("");
             }}
           />
         </div>

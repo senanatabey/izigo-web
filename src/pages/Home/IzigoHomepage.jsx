@@ -6,15 +6,15 @@ import {
   Star, ShoppingBasket, Users,
   Sparkles, ArrowRight, BedDouble,
   UtensilsCrossed, Compass, Camera, LayoutGrid,
+  CalendarDays, Wallet,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, fetchListingRatings, toneForId } from "../../lib/listings";
-import { cityFromLabel, cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
+import { FEATURED_DESTINATIONS, cityFromLabel, cityFromSlug, cityLabel as cityLabelForCity } from "../../data/azerbaijanDestinations";
 import { fetchFeaturedPlaces } from "../../lib/cms";
 import { useSeo, schema } from "../../lib/seo";
 import { fetchActiveCampaign, fetchSiteSettings, getCachedActiveCampaign, getCachedSiteSettings } from "../../lib/heroCampaigns";
-import PlanMyTripForm from "../PlanMyTrip/PlanMyTripForm";
 import BecomeHostCta from "../../components/BecomeHostCta";
 import SaveHeart from "../../components/SaveHeart";
 
@@ -103,6 +103,9 @@ export default function IzigoHomepage() {
   const [campaign, setCampaign] = useState(getCachedActiveCampaign);
   const [siteSettings, setSiteSettings] = useState(getCachedSiteSettings);
   const [featuredPlaces, setFeaturedPlaces] = useState([]);
+  const [tripCity, setTripCity] = useState("");
+  const [tripDays, setTripDays] = useState("");
+  const [tripBudget, setTripBudget] = useState("");
 
   useEffect(() => {
     fetchActiveCampaign().then(setCampaign);
@@ -206,6 +209,18 @@ export default function IzigoHomepage() {
     const city = (citySlug && cityFromSlug(citySlug)) || cityFromLabel(where) || where.trim();
     const params = city ? `?city=${encodeURIComponent(city)}` : "";
     navigate(`${cat ? cat.to : "/villas"}${params}`);
+  };
+
+  // Quick Plan My Trip card: every field is optional — whatever the guest
+  // filled in is carried to /plan-my-trip, where the full form takes over.
+  const handleQuickTrip = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (tripCity) params.set("city", tripCity);
+    if (Number(tripDays) > 0) params.set("days", String(Number(tripDays)));
+    if (Number(tripBudget) > 0) params.set("budget", String(Number(tripBudget)));
+    const query = params.toString();
+    navigate(`${planMyTripLink}${query ? `?${query}` : ""}`);
   };
 
   // The hero layout never changes — a campaign only ever swaps the
@@ -474,9 +489,28 @@ export default function IzigoHomepage() {
           font-style: italic; font-size: 13.5px; color: rgba(255,255,255,0.75);
           border-left: 3px solid rgba(255,255,255,0.35); padding-left: 12px; max-width: 420px;
         }
-        .izigo-home .plan-trip-form-wrap { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow-md); }
-        .izigo-home .plan-trip-form-wrap .pt-form { border: none; padding: 24px; }
-        .izigo-home .plan-trip-form-wrap .pt-success { border: none; padding: 32px 20px; }
+        .izigo-home .quick-trip { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow-md); padding: 24px; }
+        .izigo-home .quick-trip-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+        .izigo-home .quick-trip-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .izigo-home .quick-trip-field > span { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--text); }
+        .izigo-home .quick-trip-field select,
+        .izigo-home .quick-trip-field input {
+          width: 100%; min-width: 0; height: 48px; border: 1px solid var(--border); border-radius: 10px; padding: 0 12px;
+          font-size: 15px; color: var(--text); background: var(--surface); font-family: var(--sans);
+        }
+        .izigo-home .quick-trip-budget { position: relative; }
+        .izigo-home .quick-trip-budget input { padding-right: 48px; }
+        .izigo-home .quick-trip-budget em {
+          position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+          font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--text-soft); pointer-events: none;
+        }
+        .izigo-home .quick-trip-submit {
+          width: 100%; height: 54px; display: flex; align-items: center; justify-content: center; gap: 8px;
+          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          font-weight: 700; font-size: 16px; cursor: pointer; transition: filter 0.15s ease;
+        }
+        .izigo-home .quick-trip-submit:hover { filter: brightness(0.94); }
+        .izigo-home .quick-trip-note { margin-top: 10px; text-align: center; font-size: 12.5px; color: var(--text-soft); }
 
         .izigo-home .premium-teasers { background: var(--bg); }
         .izigo-home .premium-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -523,51 +557,6 @@ export default function IzigoHomepage() {
         .izigo-home .ls-card-title { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
         .izigo-home .ls-card-subtitle { font-size: 12.5px; opacity: 0.85; line-height: 1.35; }
 
-        .izigo-home .pt-section-title { font-size: 14px; font-weight: 800; margin: 0 0 10px; color: var(--text); }
-        .izigo-home .pt-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 16px; }
-        .izigo-home .pt-field { display: flex; flex-direction: column; gap: 6px; }
-        .izigo-home .pt-field.full { grid-column: 1 / -1; }
-        .izigo-home .pt-field label { font-size: 12px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
-        .izigo-home .pt-field input,
-        .izigo-home .pt-field select,
-        .izigo-home .pt-field textarea {
-          border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px;
-          font-size: 13.5px; color: var(--text); background: var(--surface); font-family: var(--sans);
-        }
-        .izigo-home .pt-field textarea { resize: vertical; min-height: 150px; }
-        .izigo-home .pt-phone-input {
-          display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--surface);
-        }
-        .izigo-home .pt-phone-input select {
-          border: none; outline: none; border-right: 1px solid var(--border); background: none;
-          font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--sans);
-          padding: 10px 8px 10px 13px; flex-shrink: 0; max-width: 130px;
-        }
-        .izigo-home .pt-phone-input input {
-          border: none; outline: none; padding: 10px 13px; font-size: 13.5px; color: var(--text); width: 100%; font-family: var(--sans);
-        }
-        .izigo-home .pt-phone-input.error { border-color: #E0553F; }
-        .izigo-home .pt-field-error { margin: 4px 0 0; font-size: 11.5px; color: #E0553F; }
-        .izigo-home .pt-notes-hint { margin: 6px 0 0; font-size: 11.5px; color: var(--text-soft); }
-        .izigo-home .pt-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-        .izigo-home .pt-chip {
-          display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px;
-          padding: 8px 14px; font-size: 12.5px; font-weight: 600; color: var(--text); background: var(--surface); cursor: pointer;
-          transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
-        }
-        .izigo-home .pt-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
-        .izigo-home .pt-submit {
-          width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
-          padding: 13px; font-weight: 700; font-size: 14px; cursor: pointer;
-        }
-        .izigo-home .pt-submit:disabled { opacity: 0.45; cursor: not-allowed; }
-        .izigo-home .pt-submit-note { text-align: center; font-size: 11.5px; color: var(--text-soft); margin-top: 10px; }
-        .izigo-home .pt-submit-error { text-align: center; font-size: 12.5px; font-weight: 600; color: #E0553F; margin: 0 0 10px; }
-        .izigo-home .pt-success { text-align: center; padding: 12px 0; }
-        .izigo-home .pt-success-icon { color: var(--izigo-green); margin-bottom: 12px; }
-        .izigo-home .pt-success h3 { font-size: 19px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
-        .izigo-home .pt-success p { font-size: 13.5px; color: var(--text-soft); line-height: 1.6; }
 
         .izigo-home .newsletter {
           background: var(--izigo-green); color: #fff;
@@ -650,8 +639,10 @@ export default function IzigoHomepage() {
           .izigo-home .discover-az-grid { grid-template-columns: repeat(2, 1fr); }
           .izigo-home .premium-card { padding: 20px 18px; }
           .izigo-home .ls-card { flex: 0 0 160px; height: 220px; }
-          .izigo-home .plan-trip-form-wrap .pt-form { padding: 18px 16px; }
-          .izigo-home .pt-row { grid-template-columns: 1fr; gap: 12px; }
+          .izigo-home .quick-trip { padding: 18px 16px; }
+          .izigo-home .quick-trip-fields { grid-template-columns: 1fr; gap: 12px; }
+          .izigo-home .quick-trip-field select,
+          .izigo-home .quick-trip-field input { font-size: 16px; }
           .izigo-home .newsletter-inner { flex-direction: column; align-items: stretch; text-align: center; }
           .izigo-home .newsletter-copy { flex-direction: column; text-align: center; }
           .izigo-home .newsletter-form { max-width: none; }
@@ -870,9 +861,42 @@ export default function IzigoHomepage() {
             <p>{t("planTripTeaser.text")}</p>
             <p className="plan-trip-example">{t("planTripTeaser.example")}</p>
           </div>
-          <div className="plan-trip-form-wrap">
-            <PlanMyTripForm />
-          </div>
+          <form className="quick-trip" onSubmit={handleQuickTrip}>
+            <div className="quick-trip-fields">
+              <label className="quick-trip-field">
+                <span><MapPin size={13} />{t("planTripTeaser.quickDestination")}</span>
+                <select value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
+                  <option value="">{t("planTripTeaser.quickChooseCity")}</option>
+                  {FEATURED_DESTINATIONS.map((city) => (
+                    <option key={city} value={city}>{cityLabelForCity(city, language)}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="quick-trip-field">
+                <span><CalendarDays size={13} />{t("planTripTeaser.quickDays")}</span>
+                <input
+                  type="number" inputMode="numeric" min="1" max="60"
+                  placeholder={t("planTripTeaser.quickDaysPlaceholder")}
+                  value={tripDays} onChange={(e) => setTripDays(e.target.value)}
+                />
+              </label>
+              <label className="quick-trip-field">
+                <span><Wallet size={13} />{t("planTripTeaser.quickBudget")}</span>
+                <div className="quick-trip-budget">
+                  <input
+                    type="number" inputMode="numeric" min="0"
+                    placeholder={t("planTripTeaser.quickBudgetPlaceholder")}
+                    value={tripBudget} onChange={(e) => setTripBudget(e.target.value)}
+                  />
+                  <em>AZN</em>
+                </div>
+              </label>
+            </div>
+            <button type="submit" className="quick-trip-submit">
+              <Sparkles size={16} />{t("planTripTeaser.quickCta")}<ArrowRight size={16} />
+            </button>
+            <p className="quick-trip-note">{t("planTripTeaser.quickNote")}</p>
+          </form>
         </div>
       </section>
 

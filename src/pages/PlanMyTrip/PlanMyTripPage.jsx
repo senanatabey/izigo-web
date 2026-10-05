@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Check } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import PlanMyTripForm from "./PlanMyTripForm";
@@ -11,6 +12,12 @@ const TRUST_ITEMS = [
 
 export default function PlanMyTripPage() {
   const { t } = useLanguage();
+  const [searchParams] = useSearchParams();
+  const initialValues = {
+    city: searchParams.get("city") || "",
+    days: searchParams.get("days") || "",
+    budget: searchParams.get("budget") || "",
+  };
 
   return (
     <div className="plan-trip-page">
@@ -97,7 +104,7 @@ export default function PlanMyTripPage() {
         </div>
       </div>
 
-      <PlanMyTripForm />
+      <PlanMyTripForm initialValues={initialValues} />
     </div>
   );
 }
