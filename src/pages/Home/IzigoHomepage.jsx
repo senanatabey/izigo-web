@@ -572,6 +572,9 @@ export default function IzigoHomepage() {
           .izigo-home .premium-grid { grid-template-columns: 1fr; }
           .izigo-home .plan-trip-layout { grid-template-columns: 1fr; gap: 32px; }
           .izigo-home .hero h1 { font-size: 34px; }
+          /* Tablets (~641–740px): four 142px tabs didn't fit and the hero
+             showed a scrollbar. Keep 142px where it fits, shrink otherwise. */
+          .izigo-home .search-tab { flex: 0 1 142px; min-width: 0; padding: 7px 10px; }
         }
         /* Phones in landscape get the desktop hero (wider than 640px) but
            only ~300px of usable height — tighten it so Plan My Trip stays
