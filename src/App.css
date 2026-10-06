@@ -1027,10 +1027,11 @@
   }
 }
 
-/* Between the mobile switch (860px) and ~1100px the desktop header is too
-   wide for a signed-in user; shrink spacing, then (<=1040px) collapse labels,
-   but keep every control (incl. the "new listing" CTA) reachable. */
-@media (min-width: 861px) and (max-width: 1100px) {
+/* Between the mobile switch (860px) and ~1200px the full desktop header
+   (~1036px of content) does not fit; shrink spacing, then (<=1040px)
+   collapse labels, but keep every control (incl. the "new listing" CTA)
+   reachable. */
+@media (min-width: 861px) and (max-width: 1200px) {
   .app-navbar-inner { gap: 16px; padding: 0 3vw; }
   .app-navbar-left { gap: 16px; min-width: 0; }
   .app-navbar .app-logo-img { height: 44px; margin-left: 0; }
