@@ -73,8 +73,9 @@ export function cityFromSlug(slug) {
   return ALL_DESTINATIONS.find((city) => citySlug(city) === slug) || null;
 }
 
-// Other common Latin spellings people type, lowercased → canonical city.
-const CITY_ALIASES = { shaki: "Sheki" };
+// Other spellings people type, lowercased → canonical city. Shahdag is the
+// ski resort in Gusar district — better known to tourists than the town.
+const CITY_ALIASES = { shaki: "Sheki", shahdag: "Gusar", "şahdağ": "Gusar" };
 
 /* Maps what a user typed or picked ("Qəbələ", "qəbələ", "Gabala") back to
    the canonical `city` value listings are stored and filtered by. Returns

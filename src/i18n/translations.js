@@ -640,6 +640,7 @@ export const translations = {
     },
     destinations: {
       heading: "Popular Destinations",
+      shahdagName: "Shahdag",
       viewAll: "View all",
       exploreAll: "Explore all destinations in Azerbaijan →",
       exploreAllSubtitle: "IZIGO is expanding across every region of Azerbaijan — search by city or district.",
@@ -1497,6 +1498,7 @@ export const translations = {
     },
     destinations: {
       heading: "Populyar Məkanlar",
+      shahdagName: "Şahdağ",
       viewAll: "Hamısına bax",
       exploreAll: "Azərbaycanın bütün rayonlarına bax →",
       exploreAllSubtitle: "IZIGO Azərbaycanın hər bölgəsinə genişlənir — şəhər və ya rayona görə axtar.",
@@ -2330,6 +2332,7 @@ export const translations = {
     },
     destinations: {
       heading: "Популярные направления",
+      shahdagName: "Shahdag",
       viewAll: "Смотреть все",
       exploreAll: "Изучить все направления в Азербайджане →",
       exploreAllSubtitle: "IZIGO расширяется по всем регионам Азербайджана — ищите по городу или району.",
@@ -3191,6 +3194,7 @@ export const translations = {
     },
     destinations: {
       heading: "الوجهات الشائعة",
+      shahdagName: "Shahdag",
       viewAll: "عرض الكل",
       exploreAll: "استكشف جميع وجهات أذربيجان ←",
       exploreAllSubtitle: "تتوسع IZIGO في كل منطقة من أذربيجان — ابحث حسب المدينة أو المنطقة.",

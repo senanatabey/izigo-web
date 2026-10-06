@@ -40,6 +40,12 @@ const DESTINATIONS = [
   { city: "Baku", file: "destinations/baku.webp", to: "/villas?city=Baku" },
   { city: "Gabala", file: "destinations/gabala.webp", to: "/villas?city=Gabala" },
   { city: "Guba", file: "destinations/guba.webp", to: "/villas?city=Guba" },
+  // No listings here yet, so these open the City Guide instead of an empty
+  // "0 elan" page — switch to /villas?city=… once listings exist. file: null
+  // shows a gradient placeholder until a real photo is added.
+  { city: "Sheki", file: null, tone: "dusk", to: "/destinations/sheki" },
+  // Card says "Şahdağ" (the resort tourists know); the city behind it is Gusar.
+  { city: "Gusar", nameKey: "destinations.shahdagName", file: null, tone: "forest", to: "/destinations/gusar" },
 ];
 
 const CITY_OPTIONS = ["baku", "gabala", "guba", "sheki"];
@@ -437,7 +443,7 @@ export default function IzigoHomepage() {
         .izigo-home .latest-price-old { font-size: 12px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
 
         .izigo-home .destinations { background: var(--bg); }
-        .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .izigo-home .destination-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
         .izigo-home .explore-all-link {
           display: block; max-width: 1280px; margin: 22px auto 0; text-align: center;
           font-size: 16px; font-weight: 600; color: var(--izigo-green);
@@ -448,6 +454,8 @@ export default function IzigoHomepage() {
         }
         .izigo-home .destination-card:hover { transform: translateY(-2px); }
         .izigo-home .destination-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .izigo-home .destination-card.placeholder.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
+        .izigo-home .destination-card.placeholder.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .izigo-home .destination-card::after {
           content: ""; position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.18) 38%, rgba(0,0,0,0) 60%);
@@ -567,7 +575,7 @@ export default function IzigoHomepage() {
 
         @media (max-width: 1024px) {
           .izigo-home .latest-grid { grid-template-columns: repeat(2, 1fr); }
-          .izigo-home .destination-grid { grid-template-columns: repeat(2, 1fr); }
+          .izigo-home .destination-grid { grid-template-columns: repeat(3, 1fr); }
           .izigo-home .discover-az-grid { grid-template-columns: repeat(3, 1fr); }
           .izigo-home .premium-grid { grid-template-columns: 1fr; }
           .izigo-home .plan-trip-layout { grid-template-columns: 1fr; gap: 32px; }
@@ -801,10 +809,10 @@ export default function IzigoHomepage() {
           <h2>{t("destinations.heading")}</h2>
         </div>
         <div className="destination-grid">
-          {DESTINATIONS.map(({ city, file, to }) => (
-            <Link to={to} className="destination-card" key={city}>
-              <img src={`/images/${file}`} alt="" loading="lazy" decoding="async" />
-              <span className="destination-name">{cityLabelForCity(city, language)}</span>
+          {DESTINATIONS.map(({ city, nameKey, file, tone, to }) => (
+            <Link to={to} className={`destination-card${file ? "" : ` placeholder ${tone}`}`} key={city}>
+              {file && <img src={`/images/${file}`} alt="" loading="lazy" decoding="async" />}
+              <span className="destination-name">{nameKey ? t(nameKey) : cityLabelForCity(city, language)}</span>
             </Link>
           ))}
         </div>
