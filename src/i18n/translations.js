@@ -597,7 +597,7 @@ export const translations = {
       },
       fixed: {
         eyebrow: "Azerbaijan's Local Travel Marketplace",
-        title: "Discover Azerbaijan.\n\nEverything for Your Trip.\nOne Marketplace.",
+        title: "Discover Azerbaijan.\n\nMatch your trip to your budget\nwith IZIGO.",
         subtitle: "Book directly with local hosts.\nNo booking fees.\nBetter local prices.",
         trust: {
           noFees: "No Booking Fees",
@@ -1454,7 +1454,7 @@ export const translations = {
       },
       fixed: {
         eyebrow: "Azərbaycanın Yerli Səyahət Platforması",
-        title: "Azərbaycanı Kəşf Et.\n\nSəyahətin Üçün Hər Şey.\nBir Platformada.",
+        title: "Azərbaycanı kəşf edin.\n\nSəyahətinizi büdcənizə\nIZIGO ilə uyğunlaşdırın.",
         subtitle: "Yerli ev sahibləri ilə birbaşa əlaqə qur.\nRezervasiya haqqı yoxdur.\nYerli qiymətlərlə daha sərfəli.",
         trust: {
           noFees: "Rezervasiya Haqqı Yoxdur",
@@ -2287,7 +2287,7 @@ export const translations = {
       },
       fixed: {
         eyebrow: "Местный туристический маркетплейс Азербайджана",
-        title: "Откройте Азербайджан.\n\nВсё для вашей поездки.\nОдин маркетплейс.",
+        title: "Откройте Азербайджан.\n\nПодберите поездку\nпод свой бюджет с IZIGO.",
         subtitle: "Бронируйте напрямую у местных хозяев.\nБез комиссии за бронирование.\nЛучшие местные цены.",
         trust: {
           noFees: "Без комиссии за бронирование",
@@ -3148,7 +3148,7 @@ export const translations = {
       },
       fixed: {
         eyebrow: "اكتشف أذربيجان كأهل البلد",
-        title: "اكتشف أذربيجان كأهل البلد.\nابحث عن الفلل والسيارات والنقل\nمباشرة من مضيفين محليين.",
+        title: "اكتشف أذربيجان.\n\nخطط رحلتك حسب ميزانيتك\nمع IZIGO.",
         subtitle: "احجز مباشرة مع مضيفين محليين.\nبدون رسوم حجز.\nأسعار محلية أفضل.",
         trust: {
           noFees: "بدون رسوم حجز",
