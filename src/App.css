@@ -97,6 +97,7 @@
   flex-wrap: nowrap;
   flex-shrink: 0;
   gap: 18px;
+  margin-left: auto;
 }
 
 .app-nav-right .btn-primary {
