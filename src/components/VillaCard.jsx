@@ -20,7 +20,7 @@ export default function VillaCard({ villa }) {
   return (
     <Link to={`/villas/${villa.id}`} className="villa-card">
       <style>{`
-        .villa-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; background: var(--surface); }
+        .villa-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; background: var(--surface); container: villa-card / inline-size; }
         .villa-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); background: var(--surface-hover); }
         .villa-card .vc-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .villa-card .vc-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -31,18 +31,29 @@ export default function VillaCard({ villa }) {
            the same grid row stay the same height. */
         .villa-card .vc-amenity-overlay { position: absolute; top: 10px; left: 10px; z-index: 2; display: flex; align-items: center; gap: 5px; background: var(--glass); border-radius: 999px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; color: var(--izigo-green); }
         .villa-card .vc-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
-        .villa-card .vc-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
-        .villa-card .vc-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+        .villa-card .vc-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--text-soft); margin-bottom: 6px; }
+        .villa-card .vc-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
         .villa-card .vc-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; flex-wrap: wrap; }
         .villa-card .vc-meta span { display: flex; align-items: center; gap: 5px; }
         /* Footer pinned to the bottom so price + "view details" line up across
-           cards regardless of how many lines the title/meta take. */
-        .villa-card .vc-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-        .villa-card .vc-price { font-size: 16px; font-weight: 800; color: var(--text); }
+           cards regardless of how many lines the title/meta take; items sit on
+           its bottom edge so the link stays put even if a long price wraps. */
+        .villa-card .vc-footer { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+        .villa-card .vc-price { font-size: 20px; font-weight: 800; color: var(--text); }
         .villa-card .vc-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
         .villa-card .vc-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .villa-card .vc-longstay-tag { font-size: 11px; font-weight: 700; color: var(--izigo-green); margin-top: 2px; }
-        .villa-card .vc-link { font-size: 13px; font-weight: 700; color: var(--izigo-green); }
+        .villa-card .vc-price .vc-longstay-tag { white-space: nowrap; }
+        /* The inline tag only fits when the card itself is wide enough — that
+           depends on grid columns, not the viewport (narrow cards show up on
+           phones, 641–740px tablets and 1025–1150px laptops alike). Below the
+           threshold it would push the price onto a second line, so hide it
+           (350px fits the longest case measured: RU + RUB, 5-digit prices);
+           the struck-through price still signals the offer and the detail page
+           spells out the minimum stay. */
+        @container villa-card (max-width: 349px) {
+          .vc-price .vc-longstay-tag { display: none; }
+        }
+        .villa-card .vc-link { font-size: 13px; font-weight: 700; color: var(--text); }
       `}</style>
       <SaveHeart type="villa" id={villa.id} />
       {(hasHeatedPool || hasPool) && (
@@ -67,7 +78,7 @@ export default function VillaCard({ villa }) {
             {longStayActive ? (
               <>
                 <span className="vc-price-old">{formatPrice(villa.price)}</span> {formatPrice(longStayPrice)} <span>{t("villasPage.perNight")}</span>
-                <div className="vc-longstay-tag">{t("villasPage.longStayTag").replace("{nights}", villa.longStayMinNights)}</div>
+                <span className="vc-longstay-tag"> · {t("villasPage.longStayTag").replace("{nights}", villa.longStayMinNights)}</span>
               </>
             ) : villa.discount ? (
               <><span className="vc-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))} <span>{t("villasPage.perNight")}</span></>
