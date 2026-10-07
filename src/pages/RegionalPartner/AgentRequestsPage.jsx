@@ -78,7 +78,9 @@ export default function AgentRequestsPage() {
         .agent-request-card .agent-requests-actions { margin-top: 12px; }
         .agent-request-card .agent-requests-actions button { flex: 1; min-height: 44px; }
 
-        @media (max-width: 860px) {
+        /* Up to ~932px (sidebar + 6 columns + action buttons) the table
+           overflows; cards fit at any width, so use them through tablet. */
+        @media (max-width: 1024px) {
           .agent-requests-table { display: none; }
           .agent-requests-cards { display: flex; }
         }
