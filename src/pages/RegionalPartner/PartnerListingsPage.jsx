@@ -63,7 +63,7 @@ export default function PartnerListingsPage() {
         .partner-listing-actions button {
           border-radius: 8px; padding: 8px 16px; font-weight: 700; font-size: 13px; cursor: pointer; border: none;
         }
-        .btn-approve { background: var(--izigo-green); color: #fff; }
+        .btn-approve { background: var(--izigo-green); color: var(--on-brand); }
         .btn-reject { background: var(--bg-soft); color: var(--text); }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
         .status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
