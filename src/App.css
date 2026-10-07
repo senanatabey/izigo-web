@@ -1238,3 +1238,13 @@ html, body {
   background: var(--rebrand-listing-cta-hover);
   filter: none;
 }
+
+/* Rebrand pilot — shared-shell active states use the brand blue (light only). */
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item.is-active {
+  color: var(--rebrand-primary); /* 4.60:1 on white */
+}
+/* The active language sits on --bg-soft (#F9FAFB), where #0071EB is 4.41:1 —
+   use the darker brand blue for the text instead of changing the shared tint. */
+:root:not([data-theme="dark"]) .locale-switcher-item.is-active {
+  color: var(--rebrand-primary-hover);
+}
