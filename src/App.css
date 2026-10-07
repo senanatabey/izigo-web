@@ -102,6 +102,7 @@
 .app-nav-right .btn-primary {
   padding: 10px 20px;
   box-shadow: 0 4px 12px rgba(0, 200, 151, 0.28);
+  color: var(--on-brand); /* white on #00C897 is 2.16:1 — dark text passes AA */
 }
 
 .locale-switcher {
