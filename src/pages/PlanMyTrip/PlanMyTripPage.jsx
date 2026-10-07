@@ -90,6 +90,12 @@ export default function PlanMyTripPage() {
           .plan-trip-page { padding: 32px 5vw 56px; }
           .plan-trip-page .pt-form { padding: 22px 18px; }
           .plan-trip-page .pt-row { grid-template-columns: 1fr; }
+          /* iOS Safari zooms into any field under 16px on focus. */
+          .plan-trip-page .pt-field input,
+          .plan-trip-page .pt-field select,
+          .plan-trip-page .pt-field textarea,
+          .plan-trip-page .pt-phone-input select,
+          .plan-trip-page .pt-phone-input input { font-size: 16px; }
         }
       `}</style>
 

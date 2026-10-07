@@ -620,6 +620,13 @@ export default function AddListingFormPage() {
           .add-listing-form-page .alf-row-3 { grid-template-columns: 1fr; }
           .add-listing-form-page .alf-houserules-grid { grid-template-columns: 1fr; }
           .add-listing-form-page form { padding: 20px; }
+          /* iOS Safari zooms into any field under 16px on focus. */
+          .add-listing-form-page .alf-field input,
+          .add-listing-form-page .alf-field select,
+          .add-listing-form-page .alf-field textarea,
+          .add-listing-form-page .alf-phone-input input,
+          .add-listing-form-page .alf-bedtype-row select,
+          .add-listing-form-page .alf-bedtype-row input { font-size: 16px; }
         }
       `}</style>
 
