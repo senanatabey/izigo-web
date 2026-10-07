@@ -44,7 +44,7 @@ export default function PendingReviewsPage() {
         .pending-review-actions button {
           border-radius: 8px; padding: 8px 16px; font-weight: 700; font-size: 13px; cursor: pointer; border: none;
         }
-        .btn-approve { background: var(--izigo-green); color: #fff; }
+        .btn-approve { background: var(--izigo-green); color: var(--on-brand); }
         .btn-reject { background: var(--bg-soft); color: var(--text); }
         .pending-review-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>
