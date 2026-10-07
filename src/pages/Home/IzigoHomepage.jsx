@@ -415,6 +415,7 @@ export default function IzigoHomepage() {
         .izigo-home .latest-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .izigo-home .latest-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .izigo-home .latest-thumb { aspect-ratio: 4 / 3; background-size: cover; background-position: center; }
+        .izigo-home .latest-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
         .izigo-home .latest-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .izigo-home .latest-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .izigo-home .latest-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
@@ -846,7 +847,17 @@ export default function IzigoHomepage() {
               key={`${item.category}-${item.id}`}
             >
               <SaveHeart type={item.category} id={item.id} />
-              <div className={`latest-thumb ${item.image ? "" : item.tone}`} style={item.image ? { backgroundImage: `url("${item.image}")` } : undefined} />
+              <div className={`latest-thumb ${item.image ? "" : item.tone}`}>
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                )}
+              </div>
               <div className="latest-body">
                 <div className="latest-city"><MapPin size={11} />{item.location}</div>
                 <div className="latest-title-row">
