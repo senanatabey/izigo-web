@@ -284,6 +284,73 @@ export default function IzigoHomepage() {
   return (
     <div className="izigo-home">
       <style>{`
+        /* Rebrand pilot — brand blue (homepage only, light theme). Points the
+           shared colour variables at the --rebrand-* tokens inside .izigo-home;
+           global --izigo-* values are untouched, so the navbar, footer, bottom
+           nav and every other page keep the current palette. Remove this block
+           (and the two [rebrand pilot] rules further down) to roll it back. */
+        :root:not([data-theme="dark"]) .izigo-home {
+          --izigo-green: var(--rebrand-primary);
+          --izigo-green-dark: var(--rebrand-primary-hover);
+          --izigo-orange: var(--rebrand-cta);
+          --on-brand: #FFFFFF; /* text on brand-blue fills (4.60:1) */
+          --bg: var(--rebrand-bg);
+          --bg-soft: var(--rebrand-bg);
+          --surface: var(--rebrand-surface);
+          --text: var(--rebrand-text);
+          --text-soft: var(--rebrand-text-sec);
+          --border: var(--rebrand-border);
+          background: var(--rebrand-bg);
+          color: var(--rebrand-text);
+        }
+        /* Primary actions: white on brand blue (4.60:1); hover darkens to
+           #004A99 (8.61:1). */
+        :root:not([data-theme="dark"]) .izigo-home .hero-btn.primary,
+        :root:not([data-theme="dark"]) .izigo-home .search-submit,
+        :root:not([data-theme="dark"]) .izigo-home .quick-trip-submit,
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn,
+        :root:not([data-theme="dark"]) .izigo-home .mqs-hero-cta {
+          background: var(--rebrand-cta); color: var(--rebrand-on-cta);
+          box-shadow: 0 8px 20px rgba(0, 113, 235, 0.28);
+        }
+        :root:not([data-theme="dark"]) .izigo-home .hero-btn.primary:hover,
+        :root:not([data-theme="dark"]) .izigo-home .search-submit:hover,
+        :root:not([data-theme="dark"]) .izigo-home .quick-trip-submit:hover,
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn:hover,
+        :root:not([data-theme="dark"]) .izigo-home .mqs-hero-cta:hover {
+          background: var(--rebrand-cta-hover); filter: none;
+        }
+        :root:not([data-theme="dark"]) .izigo-home .hero-btn.primary:active,
+        :root:not([data-theme="dark"]) .izigo-home .search-submit:active,
+        :root:not([data-theme="dark"]) .izigo-home .quick-trip-submit:active,
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn:active,
+        :root:not([data-theme="dark"]) .izigo-home .mqs-hero-cta:active {
+          background: var(--rebrand-cta); transform: translateY(1px); box-shadow: none;
+        }
+        :root:not([data-theme="dark"]) .izigo-home .hero-btn.primary:focus-visible,
+        :root:not([data-theme="dark"]) .izigo-home .search-submit:focus-visible,
+        :root:not([data-theme="dark"]) .izigo-home .quick-trip-submit:focus-visible,
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn:focus-visible,
+        :root:not([data-theme="dark"]) .izigo-home .mqs-hero-cta:focus-visible {
+          outline: 3px solid var(--rebrand-accent); outline-offset: 3px;
+        }
+        /* The discover band is itself brand blue, so its button is inverted —
+           a blue button on a blue band would disappear. #0071EB on white 4.60:1. */
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn {
+          background: #FFFFFF; color: var(--rebrand-primary); box-shadow: 0 6px 16px rgba(5, 32, 61, 0.18);
+        }
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn:hover {
+          background: var(--rebrand-bg-tint); color: var(--rebrand-primary-hover);
+        }
+        :root:not([data-theme="dark"]) .izigo-home .discover-cta-btn:focus-visible { outline-color: #FFFFFF; }
+        /* Active search tab is a selection, not an action: light tint so it
+           doesn't compete with the solid-blue CTA and "Axtar" button. */
+        :root:not([data-theme="dark"]) .izigo-home .search-tab.active {
+          background: var(--rebrand-bg-tint); color: var(--rebrand-primary-hover); border-color: var(--rebrand-primary-hover);
+        }
+        /* Cards stay neutral so photos and price lead. */
+        :root:not([data-theme="dark"]) .izigo-home .latest-card { background: var(--rebrand-surface); }
+        :root:not([data-theme="dark"]) .izigo-home .latest-city svg { color: var(--rebrand-accent); }
         .izigo-home .hero {
           position: relative;
           padding: 36px 0 28px;
@@ -424,8 +491,8 @@ export default function IzigoHomepage() {
         /* Small labels set their own line-height — otherwise they inherit the
            body's 23.2px and sit in a box twice their font size. */
         .izigo-home .latest-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; line-height: 15px; font-weight: 600; margin-bottom: 5px; color: var(--izigo-orange); }
-        /* Light theme only: #FF7A00 on white is 2.61:1; the same hue darkened (×0.7) is 4.98:1. */
-        :root:not([data-theme="dark"]) .izigo-home .latest-city { color: #B35500; }
+        /* Light theme: neutral city label (was #B35500). [rebrand pilot] */
+        :root:not([data-theme="dark"]) .izigo-home .latest-city { color: var(--rebrand-text-sec); }
         .izigo-home .latest-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
         /* One line, ellipsised: every card in a row keeps the same height without
            reserving an empty second line (full name is on the detail page). */
@@ -446,6 +513,8 @@ export default function IzigoHomepage() {
           letter-spacing: 0.3px; text-transform: uppercase; color: var(--izigo-green);
           background: rgba(0, 200, 151, 0.12); border-radius: 999px; padding: 3px 9px;
         }
+        /* "New" badge on the blue tint: #0071EB text would be 4.19:1 at 11px, so the darker blue (≈8:1). [rebrand pilot] */
+        :root:not([data-theme="dark"]) .izigo-home .latest-badge-new { color: var(--rebrand-primary-hover); background: var(--rebrand-bg-tint); }
         .izigo-home .latest-price { font-size: clamp(18px, 3.9vw, 20px); font-weight: 600; color: var(--text); margin-top: auto; }
         .izigo-home .latest-price span { font-size: 12px; font-weight: 500; color: var(--text-soft); }
         .izigo-home .latest-price-old { font-size: 12px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }

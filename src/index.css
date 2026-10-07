@@ -24,6 +24,23 @@ html {
   --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
   --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
 
+  /* Rebrand palette — single brand blue (pilot: homepage only, light theme).
+     Kept separate from --izigo-* so nothing outside the pilot changes.
+     White on #0071EB is 4.60:1 (AA, thin margin); hover #004A99 is 8.61:1. */
+  --rebrand-primary: #0071EB;
+  --rebrand-primary-hover: #004A99;
+  --rebrand-accent: #0071EB; /* focus ring, small icons */
+  --rebrand-cta: #0071EB;
+  --rebrand-cta-hover: #004A99;
+  --rebrand-on-cta: #FFFFFF;
+  --rebrand-bg: #FFFDF8;
+  --rebrand-bg-tint: #EFF5FB;
+  --rebrand-surface: #FFFFFF;
+  --rebrand-text: #05203D;
+  --rebrand-text-sec: #5B6B7A;
+  --rebrand-border: #AFD0F4;
+  --rebrand-gold: #D98A2B;
+
   --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 
   font: 16px/145% var(--sans);
