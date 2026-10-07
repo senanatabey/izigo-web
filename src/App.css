@@ -1080,6 +1080,11 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     text-transform: uppercase; letter-spacing: 0.3px;
   }
+  /* 320px phones: each item is ~63px and "SEÇİLMİŞLƏR" needs 66px. Both
+     tweaks together leave ~3px of slack; either alone leaves none. */
+  @media (max-width: 340px) {
+    .app-bottom-nav .abn-item > span:last-child { letter-spacing: 0; font-size: 9px; }
+  }
   .app-bottom-nav .abn-item svg { flex-shrink: 0; }
   .app-bottom-nav .abn-item.is-active { color: var(--izigo-green); }
   .app-bottom-nav .abn-icon-wrap { position: relative; display: flex; }
