@@ -18,7 +18,7 @@ export const CURRENCIES = [
  *  applied when the user hasn't manually picked a currency yet — see
  *  CurrencyContext.setCurrencyForLanguage). Language and currency stay
  *  fully independent after that. */
-export const DEFAULT_CURRENCY_BY_LANGUAGE = { ar: "SAR", ru: "RUB" };
+export const DEFAULT_CURRENCY_BY_LANGUAGE = { az: "AZN", ar: "SAR", ru: "RUB" };
 
 export const DEFAULT_CURRENCY = "AZN";
 
