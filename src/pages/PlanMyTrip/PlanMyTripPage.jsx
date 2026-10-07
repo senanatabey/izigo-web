@@ -70,11 +70,11 @@ export default function PlanMyTripPage() {
           padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--surface); cursor: pointer;
           transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
         }
-        .plan-trip-page .pt-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .plan-trip-page .pt-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
 
         .plan-trip-page .pt-submit {
           width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 15px; font-weight: 700; font-size: 15px; cursor: pointer;
         }
         .plan-trip-page .pt-submit:disabled { opacity: 0.45; cursor: not-allowed; }

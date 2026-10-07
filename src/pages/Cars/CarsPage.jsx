@@ -128,7 +128,7 @@ export default function CarsPage() {
         }
         .cars-page .cp-price-sep { color: var(--text-soft); font-weight: 700; }
         .cars-page .cp-price-apply {
-          border: none; border-radius: 10px; background: var(--izigo-orange); color: #fff;
+          border: none; border-radius: 10px; background: var(--izigo-orange); color: var(--on-brand);
           font-weight: 700; font-size: 13.5px; padding: 10px; cursor: pointer;
         }
         .cars-page .cp-reset {

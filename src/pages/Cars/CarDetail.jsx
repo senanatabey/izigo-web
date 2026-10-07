@@ -87,7 +87,7 @@ export default function CarDetail() {
         .car-detail .cd-header { margin-bottom: 20px; }
         .car-detail .cd-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .car-detail .cd-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .car-detail .cd-badge-founder { background: var(--izigo-green); color: #fff; }
+        .car-detail .cd-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
         .car-detail .cd-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
         .car-detail .cd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .car-detail .cd-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }

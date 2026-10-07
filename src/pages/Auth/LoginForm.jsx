@@ -100,13 +100,13 @@ export default function LoginForm({ onSuccess, footerSwitch }) {
         }
         .auth-form .ap-reregister-note p { font-size: 13px; color: var(--text); margin: 0 0 10px; line-height: 1.5; }
         .auth-form .ap-reregister-btn {
-          border: none; background: var(--izigo-green); color: #fff; border-radius: 8px;
+          border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px;
           padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer;
         }
         .auth-form .ap-reregister-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .auth-form .ap-submit {
-          width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px;
         }
         .auth-form .ap-submit:disabled { opacity: 0.5; cursor: not-allowed; }

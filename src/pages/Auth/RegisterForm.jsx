@@ -109,7 +109,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
 
         .auth-form .ap-submit {
-          width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px;
         }
         .auth-form .ap-submit:disabled { opacity: 0.5; cursor: not-allowed; }

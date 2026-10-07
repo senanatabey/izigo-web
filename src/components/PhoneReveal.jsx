@@ -51,7 +51,7 @@ export default function PhoneReveal({ phone, listingId }) {
           .phone-reveal .pr-number-revealed svg { color: var(--izigo-green); flex-shrink: 0; }
           .phone-reveal .pr-whatsapp {
             display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-            background: var(--izigo-green); color: #fff; border: none; border-radius: 10px;
+            background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px;
             padding: 13px; font-weight: 700; font-size: 14.5px; text-decoration: none;
           }
           .phone-reveal .pr-whatsapp:hover { filter: brightness(0.95); }

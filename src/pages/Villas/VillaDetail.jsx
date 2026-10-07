@@ -149,7 +149,7 @@ export default function VillaDetail() {
         .villa-detail .vd-header { margin-bottom: 20px; }
         .villa-detail .vd-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .villa-detail .vd-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .villa-detail .vd-badge-founder { background: var(--izigo-green); color: #fff; }
+        .villa-detail .vd-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
         .villa-detail .vd-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
         .villa-detail .vd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .villa-detail .vd-city {

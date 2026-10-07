@@ -88,7 +88,7 @@ export default function TransferDetail() {
         .transfer-detail .td-header { margin-bottom: 20px; }
         .transfer-detail .td-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .transfer-detail .td-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .transfer-detail .td-badge-founder { background: var(--izigo-green); color: #fff; }
+        .transfer-detail .td-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
         .transfer-detail .td-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
         .transfer-detail .td-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .transfer-detail .td-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }

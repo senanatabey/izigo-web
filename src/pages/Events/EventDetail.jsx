@@ -88,7 +88,7 @@ export default function EventDetail() {
         .event-detail .ed-header { margin-bottom: 20px; }
         .event-detail .ed-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .event-detail .ed-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .event-detail .ed-badge-founder { background: var(--izigo-green); color: #fff; }
+        .event-detail .ed-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
         .event-detail .ed-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
         .event-detail .ed-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .event-detail .ed-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }
