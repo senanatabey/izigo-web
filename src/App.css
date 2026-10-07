@@ -1218,3 +1218,23 @@ html, body {
   .rt-wrap table.rt td button,
   .rt-wrap table.rt td select { min-height: 36px; }
 }
+
+/* Rebrand pilot — "post a listing" buttons (light theme only). The listing
+   green is used on these buttons and nowhere else. Remove this block to roll
+   back. */
+:root:not([data-theme="dark"]) .app-nav-right .btn-primary,
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta,
+:root:not([data-theme="dark"]) .become-a-host-page .final-cta-btn,
+:root:not([data-theme="dark"]) .welcome-page .wp-cta a {
+  background: var(--rebrand-listing-cta);
+  color: #FFFFFF;
+}
+:root:not([data-theme="dark"]) .app-nav-right .btn-primary { box-shadow: 0 4px 12px rgba(61, 180, 96, 0.28); }
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta { box-shadow: 0 6px 16px rgba(61, 180, 96, 0.4); }
+:root:not([data-theme="dark"]) .app-nav-right .btn-primary:hover,
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta:hover,
+:root:not([data-theme="dark"]) .become-a-host-page .final-cta-btn:hover,
+:root:not([data-theme="dark"]) .welcome-page .wp-cta a:hover {
+  background: var(--rebrand-listing-cta-hover);
+  filter: none;
+}

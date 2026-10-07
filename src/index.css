@@ -40,6 +40,9 @@ html {
   --rebrand-text-sec: #5B6B7A;
   --rebrand-border: #AFD0F4;
   --rebrand-gold: #D98A2B;
+  /* "Post a listing" actions only (navbar Yeni elan, bottom-nav +, host CTAs). */
+  --rebrand-listing-cta: #3DB460;
+  --rebrand-listing-cta-hover: #349851;
 
   --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 
