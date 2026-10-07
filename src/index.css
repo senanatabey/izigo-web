@@ -56,25 +56,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark theme — set via <html data-theme="dark"> by ThemeProvider. Only colors
-   change; brand greens/orange stay close to light values for recognisability. */
-:root[data-theme="dark"] {
-  --bg: #071A16;
-  --bg-soft: #0B211C;
-  --surface: #0B211C;
-  --surface-hover: #102A24;
-  --header-bg: #061410;
-  --glass: rgba(6, 20, 16, 0.88);
-  --info-text: #5CB8FF;
-  --sidebar-bg: #040D0B;
-  --text: #F3F7F5;
-  --text-soft: #9BAFA9;
-  --border: #1F4A3E;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  color-scheme: dark;
-}
-
 * {
   box-sizing: border-box;
 }

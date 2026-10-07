@@ -109,29 +109,6 @@
   position: relative;
 }
 
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-.theme-toggle:hover { border-color: var(--izigo-green); color: var(--izigo-green); }
-.theme-toggle-sidebar {
-  align-self: center;
-  margin: 6px 0;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: #fff;
-}
 .app-navbar-plain-mobile-controls { display: flex; align-items: center; gap: 8px; }
 .locale-switcher-trigger {
   display: inline-flex;
