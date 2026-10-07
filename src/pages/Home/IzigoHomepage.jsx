@@ -420,6 +420,8 @@ export default function IzigoHomepage() {
         .izigo-home .latest-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .izigo-home .latest-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
         .izigo-home .latest-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; margin-bottom: 5px; color: var(--izigo-orange); }
+        /* Light theme only: #FF7A00 on white is 2.61:1; the same hue darkened (×0.7) is 4.98:1. */
+        :root:not([data-theme="dark"]) .izigo-home .latest-city { color: #B35500; }
         .izigo-home .latest-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
         .izigo-home .latest-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; min-height: 42px; flex: 1; }
         .izigo-home .latest-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; min-height: 18px; }
