@@ -149,7 +149,7 @@ export default function TransfersPage() {
         }
 
         .transfers-page .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .transfers-page .tp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .transfers-page .tp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .transfers-page .tp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .transfers-page .tp-thumb { aspect-ratio: 4 / 2.8; position: relative; background-size: cover; background-position: center; }
         .transfers-page .tp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
@@ -160,16 +160,18 @@ export default function TransfersPage() {
           background: var(--glass); color: var(--text); font-size: 11.5px; font-weight: 700;
           padding: 5px 10px; border-radius: 999px;
         }
-        .transfers-page .tp-body { padding: 18px; }
-        .transfers-page .tp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange); margin-bottom: 6px; }
-        .transfers-page .tp-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+        .transfers-page .tp-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+        .transfers-page .tp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--text-soft); margin-bottom: 6px; }
+        .transfers-page .tp-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
         .transfers-page .tp-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; }
         .transfers-page .tp-meta span { display: flex; align-items: center; gap: 5px; }
-        .transfers-page .tp-footer { display: flex; align-items: center; justify-content: space-between; }
-        .transfers-page .tp-price { font-size: 16px; font-weight: 800; color: var(--text); }
+        /* Pinned to the card bottom, items aligned to its bottom edge, so the link
+           lines up across a grid row even when a long price wraps to 2 lines. */
+        .transfers-page .tp-footer { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+        .transfers-page .tp-price { font-size: 20px; font-weight: 800; color: var(--text); }
         .transfers-page .tp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
         .transfers-page .tp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .transfers-page .tp-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
+        .transfers-page .tp-link { font-size: 13px; font-weight: 700; color: var(--text); }
 
         .transfers-page .tp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
 
