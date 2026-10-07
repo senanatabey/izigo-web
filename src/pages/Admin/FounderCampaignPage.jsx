@@ -59,7 +59,7 @@ export default function FounderCampaignPage() {
           border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13.5px; width: 100px;
         }
         .fc-max-row button {
-          background: var(--izigo-green); color: #fff; border: none; border-radius: 8px; padding: 8px 16px;
+          background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 8px; padding: 8px 16px;
           font-weight: 700; font-size: 13px; cursor: pointer;
         }
         .fc-note { font-size: 12px; color: var(--text-soft); margin-top: 14px; line-height: 1.5; }

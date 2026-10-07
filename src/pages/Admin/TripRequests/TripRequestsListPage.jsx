@@ -81,7 +81,7 @@ export default function TripRequestsListPage() {
           border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
-        .trip-requests-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .trip-requests-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
         .trip-requests-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .trip-requests-table th, .trip-requests-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
         .trip-requests-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }

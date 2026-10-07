@@ -74,13 +74,13 @@ export default function PartnerPaymentsAdminPage() {
         .status-pill.paid { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
         .status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
         .pp-table button.toggle { border: none; background: none; color: var(--izigo-green); font-weight: 700; cursor: pointer; font-size: 12.5px; }
-        .pp-new-btn { border: none; background: var(--izigo-green); color: #fff; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; margin-bottom: 20px; }
+        .pp-new-btn { border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; margin-bottom: 20px; }
         .pp-form { border: 1px solid var(--border); border-radius: 14px; padding: 20px; max-width: 420px; margin-bottom: 24px; }
         .pp-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .pp-field label { font-size: 12.5px; font-weight: 700; color: var(--text); }
         .pp-field input, .pp-field select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: var(--sans); }
         .pp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .pp-save-btn { border: none; background: var(--izigo-orange); color: #fff; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+        .pp-save-btn { border: none; background: var(--izigo-orange); color: var(--on-brand); border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Partnyor Ödənişləri</h1>
 

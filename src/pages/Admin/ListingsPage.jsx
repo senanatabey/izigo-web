@@ -37,7 +37,7 @@ export default function ListingsPage() {
           border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
-        .admin-listings-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .admin-listings-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
         .admin-listings-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .admin-listings-table th, .admin-listings-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .admin-listings-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }

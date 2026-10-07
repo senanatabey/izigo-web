@@ -210,7 +210,7 @@ export default function TripRequestDetailPage() {
           width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
           font-size: 11px; font-weight: 800; border: 2px solid var(--border); background: var(--surface); color: var(--text-soft); flex-shrink: 0;
         }
-        .trip-timeline-dot.done { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .trip-timeline-dot.done { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
         .trip-timeline-dot.current { background: var(--surface); border-color: var(--izigo-green); color: var(--izigo-green); }
         .trip-timeline-line { flex: 1; height: 2px; background: var(--border); margin: 0 6px; }
         .trip-timeline-line.done { background: var(--izigo-green); }
@@ -231,7 +231,7 @@ export default function TripRequestDetailPage() {
         .trip-field textarea { resize: vertical; min-height: 70px; }
         .trip-readonly { font-size: 13.5px; color: var(--text); white-space: pre-wrap; }
         .trip-save-btn {
-          background: var(--izigo-green); color: #fff; border: none; border-radius: 10px; padding: 10px 20px;
+          background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px; padding: 10px 20px;
           font-weight: 700; font-size: 13.5px; cursor: pointer; margin-top: 4px;
         }
         .trip-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -270,7 +270,7 @@ export default function TripRequestDetailPage() {
           font-weight: 700; font-size: 13px; cursor: pointer; border: none; text-decoration: none;
         }
         .wa-copy-btn { background: var(--bg-soft); color: var(--text); }
-        .wa-send-btn { background: var(--izigo-green); color: #fff; }
+        .wa-send-btn { background: var(--izigo-green); color: var(--on-brand); }
 
         @media (max-width: 860px) {
           .trip-grid, .new-service-row { grid-template-columns: 1fr 1fr; }

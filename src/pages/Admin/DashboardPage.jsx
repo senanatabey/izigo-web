@@ -89,7 +89,7 @@ export default function DashboardPage() {
         .admin-kpi-card.priority { border-color: var(--izigo-orange); background: rgba(255, 122, 0, 0.05); }
         .admin-kpi-card.priority svg { color: var(--izigo-orange); }
         .admin-kpi-badge {
-          position: absolute; top: 14px; right: 14px; background: var(--izigo-orange); color: #fff;
+          position: absolute; top: 14px; right: 14px; background: var(--izigo-orange); color: var(--on-brand);
           font-size: 11px; font-weight: 800; border-radius: 999px; padding: 2px 8px;
         }
         @media (max-width: 900px) { .admin-kpi-grid { grid-template-columns: repeat(2, 1fr); } }

@@ -4,7 +4,7 @@
 export const CONTENT_ADMIN_STYLES = `
   .ca-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .ca-subtitle { font-size: 13.5px; color: var(--text-soft); margin: 0 0 24px; }
-  .ca-new-btn { border: none; background: var(--izigo-green); color: #fff; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+  .ca-new-btn { border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
   .ca-new-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .ca-toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
@@ -23,7 +23,7 @@ export const CONTENT_ADMIN_STYLES = `
   .ca-pill.published { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
   .ca-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
   .ca-actions button { border: none; border-radius: 8px; padding: 7px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; }
-  .ca-btn-publish { background: var(--izigo-green); color: #fff; }
+  .ca-btn-publish { background: var(--izigo-green); color: var(--on-brand); }
   .ca-btn-edit { background: var(--bg-soft); color: var(--text); }
   .ca-btn-remove { background: none; color: #E0553F; }
 
@@ -43,7 +43,7 @@ export const CONTENT_ADMIN_STYLES = `
   .ca-field textarea { resize: vertical; min-height: 70px; }
   .ca-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .ca-upload { display: flex; align-items: center; gap: 10px; border: 1px dashed var(--border); border-radius: 10px; padding: 12px; cursor: pointer; background: var(--bg-soft); font-size: 12.5px; color: var(--text-soft); }
-  .ca-save-btn { width: 100%; background: var(--izigo-orange); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .ca-save-btn { width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
 
   .ca-lang-tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
   .ca-lang-tab {
@@ -82,7 +82,7 @@ export const CONTENT_ADMIN_STYLES = `
     min-height: 70px; resize: vertical; background: var(--surface);
   }
   .ai-insert-btn {
-    align-self: flex-start; border: none; background: var(--izigo-green); color: #fff; border-radius: 8px;
+    align-self: flex-start; border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px;
     padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
   }
 `;

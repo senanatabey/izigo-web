@@ -165,7 +165,7 @@ export default function UsersPage() {
         .admin-users-filter select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
         .agent-action-btns { display: flex; gap: 6px; }
         .agent-action-btns button { border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .agent-action-btns .approve { background: var(--izigo-green); color: #fff; }
+        .agent-action-btns .approve { background: var(--izigo-green); color: var(--on-brand); }
         .agent-action-btns .reject { background: var(--bg-soft); color: var(--text); }
         .agent-action-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>
