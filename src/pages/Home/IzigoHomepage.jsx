@@ -49,6 +49,7 @@ const DESTINATIONS = [
 ];
 
 const CITY_OPTIONS = ["baku", "gabala", "guba", "sheki"];
+const HOME_LISTINGS_PER_CATEGORY = 8;
 
 const LISTINGS_TABS_META = [
   { key: "villas", icon: HomeIcon, to: "/villas", category: "villa", detailTo: (id) => `/villas/${id}`, priceUnit: "villasPage.perNight" },
@@ -98,7 +99,7 @@ export default function IzigoHomepage() {
 
   useEffect(() => {
     Promise.all(LISTINGS_TABS_META.map(({ category }) =>
-      fetchApprovedListings(category).then((rows) => [category, rows.slice(0, 8).map((row) => ({
+      fetchApprovedListings(category, { limit: HOME_LISTINGS_PER_CATEGORY }).then((rows) => [category, rows.map((row) => ({
         id: row.id,
         city: row.city,
         location: row.city,

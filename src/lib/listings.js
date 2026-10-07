@@ -13,21 +13,28 @@ export function toneForId(id) {
 // session; this avoids the repeat network round trip without risking a
 // host's fresh listing being stale for more than a minute.
 const LISTINGS_CACHE_TTL_MS = 60_000;
-const listingsCache = new Map(); // category -> { data, expiresAt }
+const listingsCache = new Map(); // "category:limit" -> { data, expiresAt }
 
-export async function fetchApprovedListings(category) {
-  const cached = listingsCache.get(category);
+/** `limit` is optional — the homepage only shows the newest few per
+ *  category; listing pages omit it and get every approved row. The limit is
+ *  part of the cache key so a short homepage result never stands in for a
+ *  full listing page. */
+export async function fetchApprovedListings(category, { limit } = {}) {
+  const cacheKey = `${category}:${limit ?? "all"}`;
+  const cached = listingsCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return cached.data;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("listings")
     .select("*")
     .eq("category", category)
     .eq("status", "approved")
     .order("created_at", { ascending: false });
+  if (limit) query = query.limit(limit);
+  const { data, error } = await query;
   if (error) throw error;
 
-  listingsCache.set(category, { data, expiresAt: Date.now() + LISTINGS_CACHE_TTL_MS });
+  listingsCache.set(cacheKey, { data, expiresAt: Date.now() + LISTINGS_CACHE_TTL_MS });
   return data;
 }
 
