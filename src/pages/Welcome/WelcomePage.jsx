@@ -79,7 +79,7 @@ export default function WelcomePage() {
 
         .welcome-page .wp-cta { text-align: center; }
         .welcome-page .wp-cta a {
-          display: inline-flex; align-items: center; gap: 8px; background: var(--izigo-orange); color: #fff;
+          display: inline-flex; align-items: center; gap: 8px; background: var(--izigo-orange); color: var(--on-brand);
           border-radius: 10px; padding: 14px 28px; font-weight: 700; font-size: 15px; text-decoration: none;
         }
 

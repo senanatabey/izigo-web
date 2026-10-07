@@ -70,7 +70,7 @@ export default function DealsPage() {
         .deals-page .dp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .deals-page .dp-discount {
           position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 4px;
-          background: var(--izigo-orange); color: #fff; font-size: 12px; font-weight: 800;
+          background: var(--izigo-orange); color: var(--on-brand); font-size: 12px; font-weight: 800;
           padding: 5px 10px; border-radius: 999px;
         }
         .deals-page .dp-body { padding: 16px; }

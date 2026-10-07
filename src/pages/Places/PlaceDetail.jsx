@@ -28,7 +28,7 @@ function PlaceNotFound() {
         .place-not-found h1 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
         .place-not-found p { font-size: 14.5px; color: var(--text-soft); margin: 0 0 24px; }
         .place-not-found a {
-          display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green); color: #fff;
+          display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green); color: var(--on-brand);
           border-radius: 10px; padding: 11px 22px; font-weight: 700; font-size: 14px;
         }
       `}</style>

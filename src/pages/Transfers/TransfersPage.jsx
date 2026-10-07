@@ -132,7 +132,7 @@ export default function TransfersPage() {
         }
         .transfers-page .tp-price-sep { color: var(--text-soft); font-weight: 700; }
         .transfers-page .tp-price-apply {
-          border: none; border-radius: 10px; background: var(--izigo-orange); color: #fff;
+          border: none; border-radius: 10px; background: var(--izigo-orange); color: var(--on-brand);
           font-weight: 700; font-size: 13.5px; padding: 10px; cursor: pointer;
         }
         .transfers-page .tp-reset {

@@ -251,7 +251,7 @@ export default function ProfilePage() {
           white-space: nowrap; transition: background 0.15s ease, color 0.15s ease;
         }
         .pp-mf-chip:hover { background: rgba(0,200,151,0.08); }
-        .pp-mf-chip.active { background: var(--izigo-green); color: #fff; }
+        .pp-mf-chip.active { background: var(--izigo-green); color: var(--on-brand); }
 
         .pp-my-listings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .pp-mli-card {
@@ -349,7 +349,7 @@ export default function ProfilePage() {
         .pp-save-status.saved { color: var(--izigo-green); }
         .pp-save {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 13px 26px; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap;
         }
         .pp-save:disabled { opacity: 0.5; cursor: not-allowed; }

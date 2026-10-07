@@ -87,7 +87,7 @@ export default function ListingReviews({ listingId }) {
           font-family: var(--sans); resize: vertical; min-height: 80px; margin: 12px 0;
         }
         .listing-reviews .lr-submit {
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 10px 20px; font-weight: 700; font-size: 13.5px; cursor: pointer;
         }
         .listing-reviews .lr-submit:disabled { opacity: 0.5; cursor: not-allowed; }

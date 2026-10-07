@@ -219,7 +219,7 @@ export default function ListingGallery({
           display: inline-flex; align-items: center; gap: 7px;
           font-size: 13px; font-weight: 700; white-space: nowrap;
           border: none; border-radius: 999px; padding: 9px 14px; cursor: pointer;
-          background: var(--izigo-green); color: #fff; text-decoration: none;
+          background: var(--izigo-green); color: var(--on-brand); text-decoration: none;
         }
         .listing-gallery .lg-lb-contact:hover { filter: brightness(0.95); }
         .listing-gallery .lg-lb-close {

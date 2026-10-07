@@ -29,7 +29,7 @@ export default function FounderBenefits({ counterText }) {
         .founder-benefits-block .fb-icon {
           width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 14px;
           display: flex; align-items: center; justify-content: center;
-          background: var(--izigo-green); color: #fff;
+          background: var(--izigo-green); color: var(--on-brand);
         }
         .founder-benefits-block .fb-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         .founder-benefits-block .fb-card > p { font-size: 14.5px; color: var(--text-soft); line-height: 1.55; margin: 0 auto; max-width: 600px; }

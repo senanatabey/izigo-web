@@ -76,7 +76,7 @@ export default function SavedPage() {
           border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green); font-size: 13.5px; font-weight: 700;
           cursor: pointer; transition: all 0.15s ease;
         }
-        .saved-page .sp-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: #fff; }
+        .saved-page .sp-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
         .saved-page .sp-tab:hover:not(.active) { background: rgba(0,200,151,0.08); }
 
         .saved-page .sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }

@@ -71,7 +71,7 @@ export default function BecomeAHostPage() {
         .become-a-host-page .final-cta p { font-size: 14px; color: var(--text-soft); margin: 0 0 20px; }
         .become-a-host-page .final-cta-btn {
           display: inline-flex; align-items: center; gap: 8px;
-          background: var(--izigo-orange); color: #fff; border: none; border-radius: 10px;
+          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
           padding: 13px 28px; font-weight: 700; font-size: 15px; text-decoration: none;
         }
 

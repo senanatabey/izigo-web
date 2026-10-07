@@ -142,7 +142,7 @@ export default function MyListingsPage() {
           flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; font-family: var(--sans);
         }
         .my-listings-page .mlp-review-reply-form button {
-          display: inline-flex; align-items: center; gap: 4px; border: none; background: var(--izigo-green); color: #fff;
+          display: inline-flex; align-items: center; gap: 4px; border: none; background: var(--izigo-green); color: var(--on-brand);
           border-radius: 8px; padding: 0 12px; font-size: 12px; font-weight: 700; cursor: pointer;
         }
         .my-listings-page .mlp-thumb { width: 76px; height: 60px; border-radius: 10px; flex-shrink: 0; background-size: cover; background-position: center; }
