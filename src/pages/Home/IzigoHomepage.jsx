@@ -285,8 +285,8 @@ export default function IzigoHomepage() {
       <style>{`
         .izigo-home .hero {
           position: relative;
-          padding: 56px 0 40px;
-          min-height: 560px;
+          padding: 36px 0 28px;
+          min-height: 520px;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -299,7 +299,7 @@ export default function IzigoHomepage() {
           color: #fff;
         }
         .izigo-home .hero-inner { max-width: 1280px; width: 100%; margin: 0 auto; padding: 0 6vw; display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; }
-        .izigo-home .hero-content { max-width: 800px; width: 100%; min-width: 0; margin: 0 auto; transform: translateY(-20px); }
+        .izigo-home .hero-content { max-width: 800px; width: 100%; min-width: 0; margin: 0 auto; }
         .izigo-home .hero-eyebrow {
           display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 600; letter-spacing: 0.6px;
           text-transform: uppercase; color: #FFD447; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
@@ -311,7 +311,7 @@ export default function IzigoHomepage() {
         .izigo-home .hero h1 span { display: block; }
         .izigo-home .hero h1 p { margin: 0; }
         .izigo-home .hero h1 p + p { margin-top: 16px; }
-        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 22px; }
+        .izigo-home .hero-cta-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 14px; margin-top: 16px; }
         .izigo-home .hero-trust-row {
           display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
           margin-top: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.88);
@@ -343,7 +343,7 @@ export default function IzigoHomepage() {
         }
         .izigo-home .search-tabs {
           display: flex; gap: 8px; overflow-x: auto;
-          padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border);
+          padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border);
         }
         .izigo-home .search-tab {
           flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
