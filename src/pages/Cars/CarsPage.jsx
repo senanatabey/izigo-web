@@ -145,22 +145,24 @@ export default function CarsPage() {
         }
 
         .cars-page .cp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .cars-page .cp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+        .cars-page .cp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .cars-page .cp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .cars-page .cp-thumb { aspect-ratio: 4 / 2.8; background-size: cover; background-position: center; }
         .cars-page .cp-thumb.dusk { background: linear-gradient(135deg, #24406B, #6B4A8A 60%, #C98A3B); }
         .cars-page .cp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .cars-page .cp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
-        .cars-page .cp-body { padding: 18px; }
-        .cars-page .cp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange); margin-bottom: 6px; }
-        .cars-page .cp-title { font-size: 15.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+        .cars-page .cp-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+        .cars-page .cp-city { display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--text-soft); margin-bottom: 6px; }
+        .cars-page .cp-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
         .cars-page .cp-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--text-soft); margin-bottom: 14px; }
         .cars-page .cp-meta span { display: flex; align-items: center; gap: 5px; }
-        .cars-page .cp-footer { display: flex; align-items: center; justify-content: space-between; }
-        .cars-page .cp-price { font-size: 16px; font-weight: 800; color: var(--text); }
+        /* Pinned to the card bottom, items aligned to its bottom edge, so the link
+           lines up across a grid row even when a long price wraps to 2 lines. */
+        .cars-page .cp-footer { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+        .cars-page .cp-price { font-size: 20px; font-weight: 800; color: var(--text); }
         .cars-page .cp-price span { font-size: 12.5px; font-weight: 500; color: var(--text-soft); }
         .cars-page .cp-price-old { font-size: 12.5px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .cars-page .cp-link { font-size: 13px; font-weight: 700; color: var(--izigo-orange); }
+        .cars-page .cp-link { font-size: 13px; font-weight: 700; color: var(--text); }
 
         .cars-page .cp-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; }
 
