@@ -41,14 +41,14 @@ export default function FounderBanner() {
       <style>{`
         .founder-banner {
           display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
-          background: var(--izigo-green); color: #fff; padding: 12px 20px; text-align: center; font-size: 13.5px;
+          background: var(--rebrand-text); color: #fff; padding: 12px 20px; text-align: center; font-size: 13.5px;
         }
         .founder-banner strong { font-weight: 800; }
         .founder-banner a {
-          display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.16);
+          display: inline-flex; align-items: center; gap: 6px; background: var(--rebrand-listing-cta);
           border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 12.5px; color: #fff; white-space: nowrap;
         }
-        .founder-banner a:hover { background: rgba(255,255,255,0.26); }
+        .founder-banner a:hover { background: var(--rebrand-listing-cta-hover); }
       `}</style>
       <span>
         🎉 <strong>Founder Host Campaign</strong>

@@ -198,7 +198,7 @@ export default function ListingGallery({
           padding: 0; background: var(--bg-soft);
         }
         .listing-gallery .lg-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .listing-gallery .lg-thumb.is-active { border-color: var(--izigo-green); }
+        .listing-gallery .lg-thumb.is-active { border-color: var(--rebrand-cta); }
         .listing-gallery .lg-thumb:not(.is-active) img { opacity: 0.7; }
 
         /* ---- lightbox ---- */
@@ -213,15 +213,17 @@ export default function ListingGallery({
         }
         .listing-gallery .lg-lb-meta { min-width: 0; }
         .listing-gallery .lg-lb-title { font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .listing-gallery .lg-lb-price { font-size: 13px; font-weight: 700; color: var(--izigo-orange); margin-top: 2px; }
+        .listing-gallery .lg-lb-price { font-size: 13px; font-weight: 700; color: var(--rebrand-text); margin-top: 2px; }
         .listing-gallery .lg-lb-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .listing-gallery .lg-lb-contact {
           display: inline-flex; align-items: center; gap: 7px;
           font-size: 13px; font-weight: 700; white-space: nowrap;
           border: none; border-radius: 999px; padding: 9px 14px; cursor: pointer;
-          background: var(--izigo-green); color: var(--on-brand); text-decoration: none;
+          background: var(--rebrand-cta); color: #fff; text-decoration: none;
         }
         .listing-gallery .lg-lb-contact:hover { filter: brightness(0.95); }
+        .listing-gallery a.lg-lb-contact { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+        .listing-gallery a.lg-lb-contact:hover { background: var(--whatsapp-brand-hover); }
         .listing-gallery .lg-lb-close {
           flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none;
           background: rgba(255, 255, 255, 0.14); color: #fff; cursor: pointer;

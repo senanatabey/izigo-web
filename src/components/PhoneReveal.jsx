@@ -29,7 +29,7 @@ export default function PhoneReveal({ phone, listingId }) {
         <style>{`
           .phone-reveal .pr-row {
             display: flex; align-items: center; justify-content: space-between; gap: 10px;
-            background: var(--izigo-green); border: none; border-radius: 10px;
+            background: var(--rebrand-cta); border: none; border-radius: 10px;
             padding: 12px 14px; margin-bottom: 10px; text-decoration: none;
           }
           .phone-reveal .pr-row.is-hidden { cursor: pointer; }
@@ -47,14 +47,14 @@ export default function PhoneReveal({ phone, listingId }) {
             display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 800; color: var(--text);
             text-decoration: none; margin-bottom: 12px; letter-spacing: 0.2px;
           }
-          .phone-reveal .pr-number-revealed:hover { color: var(--izigo-green); }
-          .phone-reveal .pr-number-revealed svg { color: var(--izigo-green); flex-shrink: 0; }
+          .phone-reveal .pr-number-revealed:hover { color: var(--rebrand-cta-hover); }
+          .phone-reveal .pr-number-revealed svg { color: var(--rebrand-cta); flex-shrink: 0; }
           .phone-reveal .pr-whatsapp {
             display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-            background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px;
+            background: var(--whatsapp-brand); color: var(--rebrand-text); border: none; border-radius: 10px;
             padding: 13px; font-weight: 700; font-size: 14.5px; text-decoration: none;
           }
-          .phone-reveal .pr-whatsapp:hover { filter: brightness(0.95); }
+          .phone-reveal .pr-whatsapp:hover { background: var(--whatsapp-brand-hover); }
 
           @media (max-width: 640px) {
             .phone-reveal .pr-whatsapp { display: none; }
@@ -100,10 +100,10 @@ export default function PhoneReveal({ phone, listingId }) {
               text-decoration: none; color: #fff;
               box-shadow: 0 4px 14px rgba(16, 24, 40, 0.22);
             }
-            .pr-mobile-bar .pr-mobile-call { background: var(--izigo-navy); }
-            .pr-mobile-bar .pr-mobile-call:hover { filter: brightness(1.15); }
-            .pr-mobile-bar .pr-mobile-whatsapp { background: var(--izigo-green); }
-            .pr-mobile-bar .pr-mobile-whatsapp:hover { filter: brightness(0.95); }
+            .pr-mobile-bar .pr-mobile-call { background: var(--rebrand-cta); }
+            .pr-mobile-bar .pr-mobile-call:hover { background: var(--rebrand-cta-hover); }
+            .pr-mobile-bar .pr-mobile-whatsapp { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+            .pr-mobile-bar .pr-mobile-whatsapp:hover { background: var(--whatsapp-brand-hover); }
           }
         `}</style>
         <a href={`tel:+${digits}`} className="pr-mobile-call" onClick={recordContact}>

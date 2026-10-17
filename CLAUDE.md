@@ -99,6 +99,13 @@ src/
   - `--rebrand-text` = `#05203D` (tünd-göy) — başlıqlar və böyük rəngli bloklar (məs. Plan My Trip bölməsi).
   - Digərləri: `--rebrand-text-sec #5B6B7A`, `--rebrand-border #AFD0F4`, `--rebrand-bg #FFFDF8`,
     `--rebrand-bg-tint #EFF5FB`, `--rebrand-gold #D98A2B` (token, hələ istifadə olunmur).
+  - `--alert-dot` = `#E5484D` — **brend palitrasının hissəsi DEYİL**, sistem siqnalıdır (təcililik göstəricisi).
+    YALNIZ oxunmamış bildiriş nöqtəsi (`NotificationBell`) üçün; başqa yerdə işlətmə.
+  - `--whatsapp-brand` `#25D366` (hover `#1DA851`) — WhatsApp öz rəsmi yaşılı ilə saxlanılır. Bu bizim
+    brend yaşılımız (`#3DB460`) DEYİL, ayrıca üçüncü-tərəf tanınma istisnasıdır; YALNIZ WhatsApp düymələrində
+    (`PhoneReveal`, lightbox-dakı wa.me linki) işlət. "Zəng et" düyməsi brend mavisindədir (`--rebrand-cta`).
+    WhatsApp düymələrində mətn tünd-göydür (`--rebrand-text`): ağ mətn kontrastı 1.98:1 verirdi, AA-nı keçmirdi
+    (tünd-göy: 8.27:1, hover-də 5.29:1).
 - **Dark mode tamamilə silinib** — `ThemeContext`/toggle/`[data-theme="dark"]` CSS yoxdur, sayt yalnız light.
   Pilot qaydalarındakı `:root:not([data-theme="dark"])` qarovul selektorları zərərsiz qalıqdır.
 - **Loqo/favikon hazırdır — TOXUNMA:** `public/favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`,

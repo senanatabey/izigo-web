@@ -19,7 +19,7 @@ export default function FaqAccordion({ items }) {
           font-size: 14.5px; font-weight: 700; color: var(--text);
         }
         .faq-question svg { flex-shrink: 0; color: var(--text-soft); transition: transform 0.2s ease; }
-        .faq-item.open .faq-question svg { transform: rotate(180deg); color: var(--izigo-green); }
+        .faq-item.open .faq-question svg { transform: rotate(180deg); color: var(--rebrand-cta); }
         .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.2s ease; }
         .faq-item.open .faq-answer { max-height: 240px; }
         .faq-answer p { margin: 0; padding: 0 18px 16px; font-size: 13.5px; color: var(--text-soft); line-height: 1.6; }

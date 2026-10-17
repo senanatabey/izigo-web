@@ -25,7 +25,7 @@ export default function SaveHeart({ type, id, className = "" }) {
           transition: transform 0.15s ease;
         }
         .save-heart:hover { transform: scale(1.08); }
-        .save-heart.active { color: var(--izigo-orange); }
+        .save-heart.active { color: var(--rebrand-cta); }
       `}</style>
       <Heart size={16} fill={saved ? "currentColor" : "none"} />
     </button>

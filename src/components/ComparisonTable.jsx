@@ -14,10 +14,10 @@ export default function ComparisonTable() {
       <style>{`
         .comparison-table-block .comparison-card {
           max-width: 1280px; margin: 0 auto;
-          background: var(--izigo-green); color: #fff;
+          background: var(--rebrand-text); color: #fff;
           border-radius: 18px; padding: 32px; box-shadow: var(--shadow-md);
         }
-        .comparison-table-block .comparison-card h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 22px; }
+        .comparison-table-block .comparison-card h2 { color: #fff; font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 22px; }
         .comparison-table-block .comparison-scroll { overflow-x: auto; }
         .comparison-table-block .comparison-table { width: 100%; border-collapse: collapse; min-width: 640px; }
         .comparison-table-block .comparison-table th, .comparison-table-block .comparison-table td {

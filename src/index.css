@@ -43,6 +43,11 @@ html {
   /* "Post a listing" actions only (navbar Yeni elan, bottom-nav +, host CTAs). */
   --rebrand-listing-cta: #3DB460;
   --rebrand-listing-cta-hover: #349851;
+  /* Not part of the brand palette: unread-notification urgency dot only (system signal). */
+  --alert-dot: #E5484D;
+  /* Third-party recognition color, NOT part of the brand palette: WhatsApp buttons only. */
+  --whatsapp-brand: #25D366;
+  --whatsapp-brand-hover: #1DA851;
 
   --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 
