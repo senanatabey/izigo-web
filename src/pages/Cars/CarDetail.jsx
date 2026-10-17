@@ -87,11 +87,11 @@ export default function CarDetail() {
         .car-detail .cd-header { margin-bottom: 20px; }
         .car-detail .cd-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .car-detail .cd-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .car-detail .cd-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
-        .car-detail .cd-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .car-detail .cd-badge-founder { background: var(--rebrand-cta); color: #fff; }
+        .car-detail .cd-badge-agent { background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text); }
         .car-detail .cd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .car-detail .cd-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }
-        .car-detail .cd-city svg { color: var(--izigo-orange); flex-shrink: 0; }
+        .car-detail .cd-city svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         .car-detail .cd-layout { display: grid; grid-template-columns: 1fr 340px; column-gap: 48px; align-items: start; }
         .car-detail .cd-gallery-col { grid-column: 1; grid-row: 1; min-width: 0; }
@@ -105,12 +105,12 @@ export default function CarDetail() {
           font-size: 12.5px; color: var(--text-soft);
           margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--border);
         }
-        .car-detail .cd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
+        .car-detail .cd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
         .car-detail .cd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .car-detail .cd-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .car-detail .cd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
-        .car-detail .cd-facts svg { color: var(--izigo-green); flex-shrink: 0; }
+        .car-detail .cd-facts svg { color: var(--rebrand-cta); flex-shrink: 0; }
         .car-detail .cd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .car-detail .cd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .car-detail .cd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
@@ -119,11 +119,11 @@ export default function CarDetail() {
         .car-detail .cd-agent-price {
           margin-top: 12px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;
-          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+          background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text);
         }
         .car-detail .detail-save-btn { position: static; }
         .car-detail .cd-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .car-detail .cd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
+        .car-detail .cd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--rebrand-cta); flex-shrink: 0; }
         .car-detail .cd-host-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .car-detail .cd-host-name { font-size: 14px; font-weight: 700; }
         .car-detail .cd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); }
