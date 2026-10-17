@@ -57,7 +57,7 @@ export default function ReviewsPage() {
           border: none; border-radius: 8px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer;
         }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
-        .status-pill.published { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.published { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.flagged { background: rgba(255,180,0,0.16); color: #B87700; }
         .status-pill.hidden { background: rgba(224,85,63,0.14); color: #E0553F; }
         .status-pill.pending_moderation { background: rgba(255,180,0,0.16); color: #B87700; }
@@ -65,7 +65,7 @@ export default function ReviewsPage() {
         .status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
         .btn-flag { background: rgba(255,180,0,0.16); color: #B87700; }
         .btn-hide { background: rgba(224,85,63,0.14); color: #E0553F; }
-        .btn-restore { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .btn-restore { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
         .btn-delete { background: none; color: #E0553F; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Rəylər</h1>

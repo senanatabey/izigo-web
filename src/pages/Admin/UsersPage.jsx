@@ -146,26 +146,26 @@ export default function UsersPage() {
         .admin-users-table th, .admin-users-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .admin-users-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
         .role-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
-        .role-pill.admin { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .role-pill.admin { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
         .role-pill.host { background: var(--bg-soft); color: var(--text-soft); }
-        .admin-users-table button.toggle { border: none; background: none; color: var(--izigo-green); font-weight: 700; cursor: pointer; font-size: 12.5px; }
+        .admin-users-table button.toggle { border: none; background: none; color: var(--rebrand-cta); font-weight: 700; cursor: pointer; font-size: 12.5px; }
         .verified-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-        .verified-pill.yes { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .verified-pill.yes { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .verified-pill.no { background: var(--bg-soft); color: var(--text-soft); }
         .founder-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: rgba(255,180,0,0.16); color: #B87700; }
         .host-type-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
         .host-type-pill.owner { background: var(--bg-soft); color: var(--text-soft); }
-        .host-type-pill.agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .host-type-pill.agent { background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text); }
         .agent-status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
         .agent-status-pill.none { background: var(--bg-soft); color: var(--text-soft); }
         .agent-status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
-        .agent-status-pill.approved { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .agent-status-pill.approved { background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text); }
         .agent-status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
         .admin-users-filter { margin-bottom: 16px; font-size: 13px; display: flex; flex-wrap: wrap; gap: 12px 20px; }
         .admin-users-filter select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
         .agent-action-btns { display: flex; gap: 6px; }
         .agent-action-btns button { border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .agent-action-btns .approve { background: var(--izigo-green); color: var(--on-brand); }
+        .agent-action-btns .approve { background: var(--rebrand-cta); color: #fff; }
         .agent-action-btns .reject { background: var(--bg-soft); color: var(--text); }
         .agent-action-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
       `}</style>

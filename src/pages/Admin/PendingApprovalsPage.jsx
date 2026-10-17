@@ -120,7 +120,7 @@ export default function PendingApprovalsPage() {
         .pending-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
         .pending-preview-link {
           display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700;
-          color: var(--izigo-green); white-space: nowrap; flex-shrink: 0;
+          color: var(--rebrand-cta); white-space: nowrap; flex-shrink: 0;
         }
         .pending-photos { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
         .pending-photo { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
@@ -137,7 +137,7 @@ export default function PendingApprovalsPage() {
         .pending-actions button {
           border-radius: 8px; padding: 8px 16px; font-weight: 700; font-size: 13px; cursor: pointer; border: none;
         }
-        .btn-approve { background: var(--izigo-green); color: var(--on-brand); }
+        .btn-approve { background: var(--rebrand-cta); color: #fff; }
         .btn-reject { background: var(--bg-soft); color: var(--text); }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Gözləyən təsdiqlər</h1>
