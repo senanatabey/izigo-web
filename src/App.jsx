@@ -631,6 +631,15 @@ function BottomNav({ hidden = false }) {
 
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMenuRef = React.useRef(null);
+
+  // The menu sits ~76px above the bar, so sliding the bar away on scroll
+  // leaves the open menu floating on the page. Close it whenever the bar
+  // hides (state adjusted during render, React's pattern for prop changes).
+  const [wasHidden, setWasHidden] = useState(hidden);
+  if (hidden !== wasHidden) {
+    setWasHidden(hidden);
+    if (hidden) setAddMenuOpen(false);
+  }
   useEffect(() => {
     if (!addMenuOpen) return undefined;
     const onClickOutside = (e) => {
