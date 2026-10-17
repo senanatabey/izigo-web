@@ -112,7 +112,7 @@ export default function ConciergePage() {
           font-size: 14px; color: var(--text); background: var(--surface); min-width: 200px; font-family: var(--sans);
         }
         .concierge-page .cg-reset {
-          border: none; background: none; color: var(--izigo-green); font-weight: 700;
+          border: none; background: none; color: var(--rebrand-cta); font-weight: 700;
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
@@ -122,10 +122,10 @@ export default function ConciergePage() {
         .concierge-page .cg-item { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
         .concierge-page .cg-item-thumb { aspect-ratio: 4 / 2.6; background-size: cover; background-position: center; background-color: var(--bg-soft); }
         .concierge-page .cg-item-body { padding: 16px; }
-        .concierge-page .cg-item-service { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
+        .concierge-page .cg-item-service { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--rebrand-cta); margin-bottom: 6px; }
         .concierge-page .cg-item-title { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
         .concierge-page .cg-item { display: block; color: inherit; text-decoration: none; }
-        .concierge-page .cg-item-link { font-size: 13px; font-weight: 700; color: var(--izigo-green); }
+        .concierge-page .cg-item-link { font-size: 13px; font-weight: 700; color: var(--rebrand-cta); }
 
         .concierge-page .cg-empty { text-align: center; padding: 60px 20px; color: var(--text-soft); border: 1px dashed var(--border); border-radius: 16px; margin-bottom: 40px; }
 
@@ -141,11 +141,11 @@ export default function ConciergePage() {
         }
         .concierge-page .cg-whatsapp {
           display: inline-flex; align-items: center; gap: 8px;
-          background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px;
+          background: var(--whatsapp-brand); color: var(--rebrand-text); border: none; border-radius: 10px;
           padding: 13px 24px; font-weight: 700; font-size: 14.5px; text-decoration: none;
           transition: filter 0.15s ease;
         }
-        .concierge-page .cg-whatsapp:hover { filter: brightness(0.95); }
+        .concierge-page .cg-whatsapp:hover { background: var(--whatsapp-brand-hover); }
         .concierge-page .cg-whatsapp.disabled { cursor: not-allowed; opacity: 0.5; pointer-events: none; }
         .concierge-page .cg-contact-note { font-size: 12px; color: var(--text-soft); margin-top: 10px; }
 

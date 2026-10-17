@@ -73,12 +73,12 @@ export default function ServiceDetail() {
 
         .service-detail .sd-header { margin-bottom: 20px; }
         .service-detail .sd-badge {
-          display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: var(--izigo-green);
-          background: var(--bg-soft); padding: 5px 12px; border-radius: 999px; margin-bottom: 10px;
+          display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: var(--rebrand-cta);
+          background: var(--rebrand-bg-tint); padding: 5px 12px; border-radius: 999px; margin-bottom: 10px;
         }
         .service-detail .sd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .service-detail .sd-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }
-        .service-detail .sd-city svg { color: var(--izigo-orange); flex-shrink: 0; }
+        .service-detail .sd-city svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         .service-detail .sd-layout { display: grid; grid-template-columns: 1fr 340px; column-gap: 48px; align-items: start; }
         .service-detail .sd-gallery-col { grid-column: 1; grid-row: 1; min-width: 0; }
@@ -92,7 +92,7 @@ export default function ServiceDetail() {
           font-size: 12.5px; color: var(--text-soft);
           margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--border);
         }
-        .service-detail .sd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
+        .service-detail .sd-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
         .service-detail .sd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .service-detail .sd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
@@ -100,7 +100,7 @@ export default function ServiceDetail() {
         .service-detail .sd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
         .service-detail .detail-save-btn { position: static; }
         .service-detail .sd-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .service-detail .sd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
+        .service-detail .sd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--rebrand-cta); flex-shrink: 0; }
         .service-detail .sd-host-name { font-size: 14px; font-weight: 700; }
 
         @media (max-width: 900px) {
