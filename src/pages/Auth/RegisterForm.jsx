@@ -109,17 +109,17 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
         .auth-form .ap-error-text { font-size: 12px; color: #E0553F; margin: -10px 0 16px; }
 
         .auth-form .ap-submit {
-          width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
+          width: 100%; background: var(--rebrand-cta); color: #fff; border: none; border-radius: 10px;
           padding: 13px; font-weight: 700; font-size: 14.5px; cursor: pointer; margin-top: 4px;
         }
         .auth-form .ap-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-        .auth-form .ap-submit:not(:disabled):hover { filter: brightness(0.95); }
+        .auth-form .ap-submit:not(:disabled):hover { background: var(--rebrand-cta-hover); }
 
         .auth-form .ap-note {
           display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-soft);
           background: var(--bg-soft); border-radius: 10px; padding: 10px 12px; margin-top: 16px; line-height: 1.5;
         }
-        .auth-form .ap-note svg { flex-shrink: 0; color: var(--izigo-green); margin-top: 1px; }
+        .auth-form .ap-note svg { flex-shrink: 0; color: var(--rebrand-cta); margin-top: 1px; }
 
         .auth-form .ap-checkbox-row {
           display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text);
@@ -137,7 +137,7 @@ export default function RegisterForm({ onSuccess, footerSwitch }) {
 
         .auth-form .ap-switch { text-align: center; font-size: 13.5px; color: var(--text-soft); margin-top: 20px; }
         .auth-form .ap-switch a, .auth-form .ap-switch button {
-          color: var(--izigo-green); font-weight: 700; border: none; background: none; cursor: pointer; font-size: inherit; padding: 0;
+          color: var(--rebrand-cta); font-weight: 700; border: none; background: none; cursor: pointer; font-size: inherit; padding: 0;
         }
       `}</style>
 
