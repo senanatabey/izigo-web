@@ -21,7 +21,7 @@ export default function BecomeHostCta() {
         .become-host-cta-block p { font-size: 13.5px; color: var(--text-soft); line-height: 1.55; margin: 0 auto 18px; max-width: 520px; }
         .become-host-cta-block a {
           display: inline-flex; align-items: center; gap: 6px;
-          color: var(--izigo-green); font-weight: 600; font-size: 14px;
+          color: var(--rebrand-cta); font-weight: 600; font-size: 14px;
         }
       `}</style>
       <div className="bhc-card">

@@ -60,8 +60,8 @@ export default function BecomeAHostPage() {
         .become-a-host-page .why-icon {
           width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
-        .become-a-host-page .why-icon.green { background: rgba(0, 200, 151, 0.12); color: var(--izigo-green); }
-        .become-a-host-page .why-icon.orange { background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
+        .become-a-host-page .why-icon.green { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
+        .become-a-host-page .why-icon.orange { background: var(--rebrand-bg-tint); color: var(--rebrand-text); }
         .become-a-host-page .why-card h3 { font-size: 15.5px; font-weight: 700; margin: 0; color: var(--text); }
         .become-a-host-page .why-card p { font-size: 13px; color: var(--text-soft); line-height: 1.5; margin: 0; }
         .become-a-host-page .section-heading { text-align: center; font-size: 26px; font-weight: 800; margin: 0 0 24px; color: var(--text); }
@@ -71,17 +71,17 @@ export default function BecomeAHostPage() {
         .become-a-host-page .final-cta p { font-size: 14px; color: var(--text-soft); margin: 0 0 20px; }
         .become-a-host-page .final-cta-btn {
           display: inline-flex; align-items: center; gap: 8px;
-          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
+          background: var(--rebrand-listing-cta); color: #fff; border: none; border-radius: 10px;
           padding: 13px 28px; font-weight: 700; font-size: 15px; text-decoration: none;
         }
 
         .become-a-host-page .secondary-cta { text-align: center; padding-top: 0; padding-bottom: 24px; }
         .become-a-host-page .secondary-cta-btn {
           display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: var(--izigo-green); border: 1.5px solid var(--izigo-green); border-radius: 10px;
+          background: transparent; color: var(--rebrand-text); border: 1.5px solid var(--rebrand-listing-cta); border-radius: 10px;
           padding: 10px 20px; font-weight: 700; font-size: 13.5px; text-decoration: none;
         }
-        .become-a-host-page .secondary-cta-btn:hover { background: rgba(0,200,151,0.08); }
+        .become-a-host-page .secondary-cta-btn:hover { background: rgba(61,180,96,0.08); }
 
         @media (max-width: 1024px) {
           .become-a-host-page .why-grid { grid-template-columns: repeat(2, 1fr); }
