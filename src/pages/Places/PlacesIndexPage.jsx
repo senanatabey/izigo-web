@@ -42,7 +42,7 @@ export default function PlacesIndexPage() {
         .places-index-page .pip-card { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
         .places-index-page .pip-thumb { aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--bg-soft); }
         .places-index-page .pip-body { padding: 12px 14px; }
-        .places-index-page .pip-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; color: var(--izigo-orange); margin-bottom: 4px; }
+        .places-index-page .pip-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; color: var(--rebrand-cta); margin-bottom: 4px; }
         .places-index-page .pip-name { font-size: 14px; font-weight: 700; }
         .places-index-page .pip-empty { color: var(--text-soft); font-size: 14px; }
       `}</style>

@@ -28,7 +28,7 @@ function PlaceNotFound() {
         .place-not-found h1 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
         .place-not-found p { font-size: 14.5px; color: var(--text-soft); margin: 0 0 24px; }
         .place-not-found a {
-          display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green); color: var(--on-brand);
+          display: inline-flex; align-items: center; gap: 6px; background: var(--rebrand-cta); color: #fff;
           border-radius: 10px; padding: 11px 22px; font-weight: 700; font-size: 14px;
         }
       `}</style>
@@ -95,7 +95,7 @@ export default function PlaceDetail() {
           background-image: linear-gradient(0deg, rgba(5,22,20,0.75), rgba(5,22,20,0.05))${place.hero_image_url ? `, url("${place.hero_image_url}")` : ""};
         }
         .place-detail .pd-hero-inner { max-width: 1280px; margin: 0 auto; width: 100%; }
-        .place-detail .pd-city { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: var(--izigo-orange); text-transform: capitalize; margin-bottom: 6px; }
+        .place-detail .pd-city { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); text-transform: capitalize; margin-bottom: 6px; }
         .place-detail .pd-hero h1 { font-size: 32px; font-weight: 800; margin: 0; }
 
         .place-detail .pd-body { max-width: 900px; margin: 0 auto; padding: 40px 6vw 20px; }
