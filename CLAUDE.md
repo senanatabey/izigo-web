@@ -101,6 +101,9 @@ src/
     `--rebrand-bg-tint #EFF5FB`, `--rebrand-gold #D98A2B` (token, hələ istifadə olunmur).
   - `--alert-dot` = `#E5484D` — **brend palitrasının hissəsi DEYİL**, sistem siqnalıdır (təcililik göstəricisi).
     YALNIZ oxunmamış bildiriş nöqtəsi (`NotificationBell`) üçün; başqa yerdə işlətmə.
+  - `--status-success` = `#2E9D5E` — **brend palitrasının hissəsi DEYİL**, "təsdiqləndi/published" status siqnalıdır
+    (`--alert-dot` məntiqi ilə). YALNIZ status nöqtəsi və status nişanının fonu üçün (`rgba(46,157,94,0.14)` fon +
+    `--rebrand-text` mətn: ~14:1; nöqtə ağ fonda ~3.4:1). Mavi "klikləmə/aktiv" mənasındadır, status üçün işlətmə.
   - `--whatsapp-brand` `#25D366` (hover `#1DA851`) — WhatsApp öz rəsmi yaşılı ilə saxlanılır. Bu bizim
     brend yaşılımız (`#3DB460`) DEYİL, ayrıca üçüncü-tərəf tanınma istisnasıdır; YALNIZ WhatsApp düymələrində
     (`PhoneReveal`, lightbox-dakı wa.me linki) işlət. "Zəng et" düyməsi brend mavisindədir (`--rebrand-cta`).
