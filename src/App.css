@@ -1200,16 +1200,13 @@ html, body {
    green is used on these buttons and nowhere else. Remove this block to roll
    back. */
 :root:not([data-theme="dark"]) .app-nav-right .btn-primary,
-:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta,
 :root:not([data-theme="dark"]) .become-a-host-page .final-cta-btn,
 :root:not([data-theme="dark"]) .welcome-page .wp-cta a {
   background: var(--rebrand-listing-cta);
   color: #FFFFFF;
 }
 :root:not([data-theme="dark"]) .app-nav-right .btn-primary { box-shadow: 0 4px 12px rgba(61, 180, 96, 0.28); }
-:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta { box-shadow: 0 6px 16px rgba(61, 180, 96, 0.4); }
 :root:not([data-theme="dark"]) .app-nav-right .btn-primary:hover,
-:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta:hover,
 :root:not([data-theme="dark"]) .become-a-host-page .final-cta-btn:hover,
 :root:not([data-theme="dark"]) .welcome-page .wp-cta a:hover {
   background: var(--rebrand-listing-cta-hover);
@@ -1224,4 +1221,33 @@ html, body {
    use the darker brand blue for the text instead of changing the shared tint. */
 :root:not([data-theme="dark"]) .locale-switcher-item.is-active {
   color: var(--rebrand-primary-hover);
+}
+
+/* Rebrand pilot — mobile bottom-nav "+" uses the brand blue (the other
+   post-a-listing buttons stay listing green). */
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta {
+  background: var(--rebrand-cta);
+  color: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(0, 113, 235, 0.4);
+}
+:root:not([data-theme="dark"]) .app-bottom-nav .abn-item-cta:hover {
+  background: var(--rebrand-cta-hover);
+}
+
+/* Rebrand pilot — primary actions in the auth forms (pages and modal share
+   LoginForm/RegisterForm) and the add-listing form: white on brand blue
+   (4.60:1), hover #004A99. Secondary/outline/back buttons are untouched. */
+:root:not([data-theme="dark"]) .auth-form .ap-submit,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-btn-next,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-submit,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-btn-primary {
+  background: var(--rebrand-cta);
+  color: #FFFFFF;
+}
+:root:not([data-theme="dark"]) .auth-form .ap-submit:not(:disabled):hover,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-btn-next:not(:disabled):hover,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-submit:not(:disabled):hover,
+:root:not([data-theme="dark"]) .add-listing-form-page .alf-btn-primary:hover {
+  background: var(--rebrand-cta-hover);
+  filter: none;
 }
