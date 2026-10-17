@@ -16,8 +16,8 @@ Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzər
 - **Backend/DB:** Supabase (Postgres + Auth + Storage) — ayrıca custom backend YOXDUR
 - **Deploy:** Vercel
 - **Stil:** CSS-in-file (`<style>` tag-lar komponent daxilində), CSS dəyişənləri `src/index.css`-də
-  (`--izigo-green`, `--izigo-orange`, `--on-brand`, `--text`, `--text-soft`, `--border`, `--bg`, `--surface` və s.;
-  dark tema `<html data-theme="dark">` ilə) — Tailwind istifadə OLUNMUR
+  (`--rebrand-*` brend tokenləri, köhnə `--izigo-green`/`--izigo-orange`, `--on-brand`, `--text`, `--text-soft`,
+  `--border`, `--bg`, `--surface` və s.) — Tailwind istifadə OLUNMUR. Sayt yalnız light temadadır (dark mode silinib).
 
 ## Hazırkı fayl strukturu
 
@@ -74,10 +74,11 @@ src/
 
 ## Dizayn dili (yeni səhifə/komponent tikəndə buna sadiq qal)
 
-- Rənglər (brend qərarı — dəyişmə): yaşıl `#00C897` (`--izigo-green`, əsas brend rəngi) və
-  narıncı `#FF7A00` (`--izigo-orange`, əsas CTA — "Səyahətimi Planla"). Fon: `--bg` / `--bg-soft`.
-- Yaşıl və ya narıncı **doldurulmuş** fonda mətn həmişə `var(--on-brand)` (`#1F2937`) olmalıdır —
-  ağ mətn WCAG AA-dan keçmir (2.16:1 / 2.61:1), `--on-brand` keçir (6.79:1 / 5.62:1).
+- Rənglər: yeni iş üçün **`--rebrand-*` tokenlərindən** istifadə et (aşağıda "Rəng sistemi" bölməsinə bax).
+  Köhnə yaşıl `#00C897` / narıncı `#FF7A00` (`--izigo-*`) hələ rebrand olunmamış səhifələrdə qalır —
+  yeni yerə köhnə rəngi daşıma.
+- Köhnə yaşıl/narıncı **doldurulmuş** fonda mətn `var(--on-brand)` (`#1F2937`) qalır (ağ AA-dan keçmir).
+  Yeni mavi `#0071EB` fonda isə mətn **ağdır** (4.60:1).
 - Font: yalnız 'Inter' (`var(--sans)`), başlıqlar da daxil. Yüklənən çəkilər 400/500/600;
   `font-synthesis: none` olduğu üçün 700/800 yazma — onsuz da 600 kimi görünür.
   ('Fraunces' `index.html`-də yüklənir, amma yalnız NotificationsPage istifadə edir — yeni yerdə işlətmə.)
@@ -86,6 +87,32 @@ src/
   `@media (max-width: 1024px)` (planşet); landşaft telefon üçün `(min-width: 641px) and (max-height: 500px)`.
   Bəzi köhnə səhifələrdə 860/900px qalıb — yeni komponentlərdə 640/1024 işlət.
 
+## Rəng sistemi və rebrand statusu (2026-10-17)
+
+- **Tokenlər** `src/index.css`-dədir (`--rebrand-*`):
+  - `--rebrand-primary` / `--rebrand-cta` = `#0071EB` (mavi, hover `#004A99`) — brendin əsas rəngi, bütün
+    əsas hərəkət düymələri: hero CTA, axtarış ("Axtar"), login/qeydiyyat/elan formalarının əsas düymələri,
+    mobil aşağı menyudakı "+". Mətn ağ.
+  - `--rebrand-listing-cta` = `#3DB460` (yaşıl, hover `#349851`) — **YALNIZ** "Elan yerləşdir"/"Yeni elan"
+    düymələri (navbar "Yeni elan", become-a-host son CTA, welcome səhifəsi). **Başqa heç bir yerdə yaşıl
+    işlətmə — qəti qayda.** (Mobil "+" bu qaydadan şüurlu istisnadır — mavidir.)
+  - `--rebrand-text` = `#05203D` (tünd-göy) — başlıqlar və böyük rəngli bloklar (məs. Plan My Trip bölməsi).
+  - Digərləri: `--rebrand-text-sec #5B6B7A`, `--rebrand-border #AFD0F4`, `--rebrand-bg #FFFDF8`,
+    `--rebrand-bg-tint #EFF5FB`, `--rebrand-gold #D98A2B` (token, hələ istifadə olunmur).
+- **Dark mode tamamilə silinib** — `ThemeContext`/toggle/`[data-theme="dark"]` CSS yoxdur, sayt yalnız light.
+  Pilot qaydalarındakı `:root:not([data-theme="dark"])` qarovul selektorları zərərsiz qalıqdır.
+- **Loqo/favikon hazırdır — TOXUNMA:** `public/favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`,
+  `apple-touch-icon.png`, `android-chrome-*`, `maskable-icon-512x512.png` (göy fon + ağ "Z");
+  `public/logo/` — `izigo-wordmark.png` (navbar, footer), `izigo-full-tagline.png`,
+  `izigo-reversed-white.png` (tünd sidebar). Manifest faylı yoxdur.
+- **Rollout statusu:**
+  - Bitib: ana səhifə (`IzigoHomepage.jsx`-dəki pilot bloku — hero, axtarış, kartlar, Plan My Trip və s.),
+    shell (navbar "Yeni elan", aşağı menyu "+" və aktiv bənd, dil seçicisi aktiv dili, footer loqosu),
+    auth formaları (səhifə + modal) və elan formasının əsas düymələri (`App.css`-in sonundakı pilot blokları).
+  - Hələ köhnə palitrada: siyahı/detal səhifələri (`/villas`, `/cars`, `/transfers`, `/events`, detal
+    səhifələri, `/concierge`, `/destinations` və s.), elan formasının stepper/chip-ləri, auth linkləri.
+  - **4-cü mərhələ (admin + regional partnyor paneli) HƏLƏ BAŞLAMAYIB.**
+
 ## İş qaydaları (vacib)
 
 - Hər dəyişiklikdən əvvəl mənə nə edəcəyini qısa izah et, sonra fayl dəyişikliyinə keç.
@@ -93,3 +120,5 @@ src/
 - `localStorage`/`sessionStorage` istifadə etmə — auth state React Context/state-də saxlanılır.
 - Yeni asılılıq (npm paketi) əlavə etməzdən əvvəl mənə de, niyə lazım olduğunu izah et.
 - Kodu yazandan sonra, əgər mümkündürsə, layihəni işə sal (`npm run dev`) və xəta olub-olmadığını yoxla.
+- **Git:** hər commit yalnız bir mövzuya aid olsun. Açıq təlimat olmadan **commit etmə**; mən "push"
+  deməmiş **heç vaxt push etmə**.
