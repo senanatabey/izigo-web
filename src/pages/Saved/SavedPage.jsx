@@ -73,11 +73,11 @@ export default function SavedPage() {
         .saved-page .sp-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .saved-page .sp-tab {
           display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px;
-          border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green); font-size: 13.5px; font-weight: 700;
+          border: 1.5px solid var(--rebrand-cta); background: var(--surface); color: var(--rebrand-cta); font-size: 13.5px; font-weight: 700;
           cursor: pointer; transition: all 0.15s ease;
         }
-        .saved-page .sp-tab.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
-        .saved-page .sp-tab:hover:not(.active) { background: rgba(0,200,151,0.08); }
+        .saved-page .sp-tab.active { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
+        .saved-page .sp-tab:hover:not(.active) { background: var(--rebrand-bg-tint); }
 
         .saved-page .sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .saved-page .sp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
@@ -87,7 +87,7 @@ export default function SavedPage() {
         .saved-page .sp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .saved-page .sp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .saved-page .sp-body { padding: 16px; }
-        .saved-page .sp-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--izigo-orange); }
+        .saved-page .sp-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--rebrand-cta); }
         .saved-page .sp-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.35; min-height: 36px; }
         .saved-page .sp-price { font-size: 14px; font-weight: 800; color: var(--text); }
         .saved-page .sp-price span { font-size: 11.5px; font-weight: 500; color: var(--text-soft); }
@@ -96,7 +96,7 @@ export default function SavedPage() {
         .saved-page .sp-empty { text-align: center; padding: 60px 20px; border: 1px dashed var(--border); border-radius: 16px; }
         .saved-page .sp-empty svg { color: var(--border); margin-bottom: 12px; }
         .saved-page .sp-empty p { color: var(--text-soft); font-size: 14.5px; margin: 0 0 16px; }
-        .saved-page .sp-empty a { color: var(--izigo-green); font-weight: 700; font-size: 14px; }
+        .saved-page .sp-empty a { color: var(--rebrand-cta); font-weight: 700; font-size: 14px; }
 
         @media (max-width: 1024px) { .saved-page .sp-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 640px) {

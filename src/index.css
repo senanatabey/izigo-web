@@ -48,6 +48,8 @@ html {
   /* Third-party recognition color, NOT part of the brand palette: WhatsApp buttons only. */
   --whatsapp-brand: #25D366;
   --whatsapp-brand-hover: #1DA851;
+  /* Not part of the brand palette: "approved/published" status signal only (dot, status badge fill). */
+  --status-success: #2E9D5E;
 
   --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 
