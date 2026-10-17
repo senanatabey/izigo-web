@@ -59,8 +59,8 @@ export default function PartnerDashboardPage() {
         .partner-dash-head h1 { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
         .partner-dash-head p { font-size: 13.5px; color: var(--text-soft); margin: 0; }
         .partner-region-badge {
-          display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: var(--izigo-green);
-          background: rgba(0,200,151,0.12); border-radius: 999px; padding: 4px 12px; margin-top: 8px;
+          display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: var(--rebrand-cta);
+          background: var(--rebrand-bg-tint); border-radius: 999px; padding: 4px 12px; margin-top: 8px;
         }
         .partner-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .partner-kpi-card {
@@ -69,11 +69,11 @@ export default function PartnerDashboardPage() {
           transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
         .partner-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .partner-kpi-card svg { color: var(--izigo-green); }
+        .partner-kpi-card svg { color: var(--rebrand-cta); }
         .partner-kpi-value { font-size: 22px; font-weight: 800; }
         .partner-kpi-label { font-size: 13px; color: var(--text-soft); }
-        .partner-kpi-card.priority { border-color: var(--izigo-orange); background: rgba(255, 122, 0, 0.05); }
-        .partner-kpi-card.priority svg { color: var(--izigo-orange); }
+        .partner-kpi-card.priority { border-color: #B87700; background: rgba(184, 119, 0, 0.06); }
+        .partner-kpi-card.priority svg { color: #B87700; }
         @media (max-width: 900px) { .partner-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 
         .partner-section-title { font-size: 15px; font-weight: 800; margin: 32px 0 12px; }
@@ -83,8 +83,8 @@ export default function PartnerDashboardPage() {
           padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--surface); text-decoration: none;
           transition: border-color 0.15s ease, background 0.15s ease;
         }
-        .partner-quick-action:hover { border-color: var(--izigo-green); background: rgba(0, 200, 151, 0.06); }
-        .partner-quick-action svg { color: var(--izigo-green); flex-shrink: 0; }
+        .partner-quick-action:hover { border-color: var(--rebrand-cta); background: var(--rebrand-bg-tint); }
+        .partner-quick-action svg { color: var(--rebrand-cta); flex-shrink: 0; }
         @media (max-width: 640px) { .partner-quick-actions { grid-template-columns: 1fr; } }
 
         .partner-activity-card { border: 1px solid var(--border); border-radius: 14px; padding: 8px 20px; }
@@ -95,7 +95,7 @@ export default function PartnerDashboardPage() {
         .partner-activity-empty { padding: 20px 0; font-size: 13.5px; color: var(--text-soft); text-align: center; }
         .status-pill { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; text-transform: capitalize; }
         .status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
-        .status-pill.approved { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.approved { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
       `}</style>
       <div className="partner-dash-head">

@@ -35,7 +35,7 @@ export default function PartnerPaymentsPage() {
         .partner-payments-table th, .partner-payments-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .partner-payments-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-        .status-pill.paid { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.paid { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>{t("regionalPartner.paymentsHeading")}</h1>

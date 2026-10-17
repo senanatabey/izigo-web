@@ -50,12 +50,12 @@ export default function PartnerRevenuePage() {
           display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--border); border-radius: 12px;
           padding: 14px 16px; background: var(--bg-soft); margin-bottom: 32px; font-size: 13px; color: var(--text-soft); line-height: 1.6;
         }
-        .partner-revenue-note svg { color: var(--izigo-green); flex-shrink: 0; margin-top: 1px; }
+        .partner-revenue-note svg { color: var(--rebrand-cta); flex-shrink: 0; margin-top: 1px; }
         .partner-breakdown-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .partner-breakdown-table th, .partner-breakdown-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .partner-breakdown-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-        .status-pill.active { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.active { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.completed { background: var(--bg-soft); color: var(--text-soft); }
         .status-pill.cancelled { background: rgba(224,85,63,0.14); color: #E0553F; }
         @media (max-width: 900px) { .partner-revenue-metrics { grid-template-columns: repeat(2, 1fr); } }
