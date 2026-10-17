@@ -348,6 +348,11 @@ export default function IzigoHomepage() {
         :root:not([data-theme="dark"]) .izigo-home .search-tab.active {
           background: var(--rebrand-bg-tint); color: var(--rebrand-primary-hover); border-color: var(--rebrand-primary-hover);
         }
+        /* Plan My Trip band on deep navy, so the blue "find my trip" button in
+           its white card stands out. The quote rule was dark grey (invisible on
+           navy) — light it up; the badge's translucent white still reads. */
+        :root:not([data-theme="dark"]) .izigo-home .plan-trip-section { background: var(--rebrand-text); }
+        :root:not([data-theme="dark"]) .izigo-home .plan-trip-example { border-left-color: rgba(255, 255, 255, 0.35); }
         /* Cards stay neutral so photos and price lead. */
         :root:not([data-theme="dark"]) .izigo-home .latest-card { background: var(--rebrand-surface); }
         :root:not([data-theme="dark"]) .izigo-home .latest-city svg { color: var(--rebrand-accent); }
