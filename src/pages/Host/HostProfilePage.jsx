@@ -48,9 +48,9 @@ export default function HostProfilePage() {
       <style>{`
         .host-profile-page { max-width: 1280px; margin: 0 auto; padding: 32px 6vw 80px; }
         .hp-head { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
-        .hp-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
+        .hp-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--rebrand-cta); flex-shrink: 0; }
         .hp-name { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
-        .hp-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--izigo-green); font-weight: 600; }
+        .hp-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--rebrand-cta); font-weight: 600; }
         .hp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
         .hp-card { position: relative; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: block; transition: box-shadow 0.15s ease, transform 0.15s ease; }
         .hp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -59,7 +59,7 @@ export default function HostProfilePage() {
         .hp-thumb.forest { background: linear-gradient(135deg, #0F3D3A, #1E6E5C 55%, #4C9A6B); }
         .hp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .hp-body { padding: 16px; }
-        .hp-city { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--izigo-green); margin-bottom: 6px; }
+        .hp-city { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--rebrand-cta); margin-bottom: 6px; }
         .hp-title { font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
         .hp-price { font-size: 14px; font-weight: 800; color: var(--text); }
         .hp-empty { color: var(--text-soft); font-size: 14px; }
