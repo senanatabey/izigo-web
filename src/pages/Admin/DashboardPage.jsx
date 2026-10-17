@@ -83,13 +83,13 @@ export default function DashboardPage() {
           transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
         .admin-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-        .admin-kpi-card svg { color: var(--izigo-green); }
+        .admin-kpi-card svg { color: var(--rebrand-cta); }
         .admin-kpi-value { font-size: 26px; font-weight: 800; }
         .admin-kpi-label { font-size: 13px; color: var(--text-soft); }
-        .admin-kpi-card.priority { border-color: var(--izigo-orange); background: rgba(255, 122, 0, 0.05); }
-        .admin-kpi-card.priority svg { color: var(--izigo-orange); }
+        .admin-kpi-card.priority { border-color: #B87700; background: rgba(184, 119, 0, 0.06); }
+        .admin-kpi-card.priority svg { color: #B87700; }
         .admin-kpi-badge {
-          position: absolute; top: 14px; right: 14px; background: var(--izigo-orange); color: var(--on-brand);
+          position: absolute; top: 14px; right: 14px; background: rgba(184, 119, 0, 0.16); color: var(--rebrand-text);
           font-size: 11px; font-weight: 800; border-radius: 999px; padding: 2px 8px;
         }
         @media (max-width: 900px) { .admin-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -101,8 +101,8 @@ export default function DashboardPage() {
           padding: 14px 16px; font-size: 13.5px; font-weight: 700; color: var(--text); background: var(--surface);
           transition: border-color 0.15s ease, background 0.15s ease;
         }
-        .admin-quick-action:hover { border-color: var(--izigo-green); background: rgba(0, 200, 151, 0.06); }
-        .admin-quick-action svg { color: var(--izigo-green); flex-shrink: 0; }
+        .admin-quick-action:hover { border-color: var(--rebrand-cta); background: var(--rebrand-bg-tint); }
+        .admin-quick-action svg { color: var(--rebrand-cta); flex-shrink: 0; }
         @media (max-width: 900px) { .admin-quick-actions { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 560px) { .admin-quick-actions { grid-template-columns: 1fr; } }
 

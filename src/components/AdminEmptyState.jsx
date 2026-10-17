@@ -19,8 +19,8 @@ export default function AdminEmptyState({ icon: Icon = Inbox, message, actionLab
         }
         .admin-empty-state p { margin: 0; font-size: 14px; font-weight: 600; }
         .admin-empty-state a {
-          margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green);
-          color: var(--on-brand); border-radius: 10px; padding: 9px 18px; font-size: 13.5px; font-weight: 700;
+          margin-top: 4px; display: inline-flex; align-items: center; gap: 6px; background: var(--rebrand-cta);
+          color: #fff; border-radius: 10px; padding: 9px 18px; font-size: 13.5px; font-weight: 700;
         }
       `}</style>
       <div className="admin-empty-state-icon"><Icon size={20} /></div>

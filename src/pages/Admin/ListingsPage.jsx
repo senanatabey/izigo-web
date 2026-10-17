@@ -37,13 +37,13 @@ export default function ListingsPage() {
           border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
-        .admin-listings-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
+        .admin-listings-filters button.active { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
         .admin-listings-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .admin-listings-table th, .admin-listings-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .admin-listings-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
         .status-pill.pending { background: rgba(255,180,0,0.16); color: #B87700; }
-        .status-pill.approved { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.approved { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.rejected { background: rgba(224,85,63,0.14); color: #E0553F; }
         .admin-listings-table button.delete { border: none; background: none; color: #E0553F; font-weight: 700; cursor: pointer; font-size: 12.5px; }
       `}</style>
