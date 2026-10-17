@@ -30,7 +30,7 @@ function DestinationNotFound() {
         .city-guide-not-found h1 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
         .city-guide-not-found p { font-size: 14.5px; color: var(--text-soft); margin: 0 0 24px; }
         .city-guide-not-found a {
-          display: inline-flex; align-items: center; gap: 6px; background: var(--izigo-green); color: var(--on-brand);
+          display: inline-flex; align-items: center; gap: 6px; background: var(--rebrand-cta); color: #fff;
           border-radius: 10px; padding: 11px 22px; font-weight: 700; font-size: 14px;
         }
       `}</style>
@@ -131,14 +131,14 @@ export default function CityGuide() {
       <style>{`
         .city-guide .guide-hero {
           padding: 64px 6vw 56px;
-          background: linear-gradient(120deg, #0B3D3B 0%, var(--izigo-green) 55%, var(--izigo-orange) 130%);
+          background: linear-gradient(120deg, var(--rebrand-text) 0%, var(--rebrand-primary-hover) 100%);
           background-size: cover;
           background-position: center;
           color: #fff;
         }
         .city-guide .guide-hero-inner { max-width: 1280px; margin: 0 auto; }
         .city-guide .guide-back { display: inline-block; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
-        .city-guide .guide-hero h1 { font-size: 40px; font-weight: 800; margin: 0; }
+        .city-guide .guide-hero h1 { color: #fff; font-size: 40px; font-weight: 800; margin: 0; }
         .city-guide .guide-hero p { margin-top: 8px; font-size: 16px; color: rgba(255,255,255,0.9); }
 
         .city-guide .guide-body { max-width: 1280px; margin: 0 auto; padding: 48px 6vw; display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start; }
@@ -147,11 +147,11 @@ export default function CityGuide() {
         .city-guide .catalog h2 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
         .city-guide .catalog-group { margin-bottom: 20px; }
         .city-guide .catalog-group:last-child { margin-bottom: 0; }
-        .city-guide .catalog-group-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--izigo-green); margin-bottom: 8px; }
+        .city-guide .catalog-group-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--rebrand-cta); margin-bottom: 8px; }
         .city-guide .catalog-list { list-style: none; margin: 0; padding: 0; }
         .city-guide .catalog-list li { font-size: 13.5px; color: var(--text-soft); padding: 5px 0; }
         .city-guide .catalog-list li a { display: flex; align-items: center; color: inherit; }
-        .city-guide .catalog-list li a:hover { color: var(--izigo-green); }
+        .city-guide .catalog-list li a:hover { color: var(--rebrand-cta); }
         .city-guide .catalog-empty { font-size: 12.5px; color: var(--text-soft); font-style: italic; }
 
         .city-guide .guide-main h2 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
@@ -159,7 +159,7 @@ export default function CityGuide() {
 
         .city-guide .news-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
         .city-guide .news-card { display: flex; align-items: flex-start; gap: 12px; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-        .city-guide .news-icon { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
+        .city-guide .news-icon { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
         .city-guide .news-card h3 { font-size: 14.5px; font-weight: 700; margin: 0 0 3px; }
         .city-guide .news-card span { font-size: 12.5px; color: var(--text-soft); }
 
@@ -171,10 +171,10 @@ export default function CityGuide() {
         .city-guide .browse-row { display: flex; flex-wrap: wrap; gap: 10px; }
         .city-guide .browse-pill {
           display: inline-flex; align-items: center; gap: 6px;
-          border: 1.5px solid var(--izigo-green); color: var(--izigo-green);
+          border: 1.5px solid var(--rebrand-cta); color: var(--rebrand-cta);
           border-radius: 999px; padding: 9px 16px; font-size: 13.5px; font-weight: 700;
         }
-        .city-guide .browse-pill:hover { background: var(--izigo-green); color: var(--on-brand); }
+        .city-guide .browse-pill:hover { background: var(--rebrand-cta); color: #fff; }
 
         @media (max-width: 860px) {
           .city-guide .guide-body { grid-template-columns: 1fr; }
@@ -184,7 +184,7 @@ export default function CityGuide() {
 
       <section
         className="guide-hero"
-        style={data.heroImage ? { backgroundImage: `linear-gradient(120deg, rgba(11,61,59,0.75) 0%, rgba(0,200,151,0.55) 55%, rgba(255,122,0,0.55) 130%), url("${data.heroImage}")` } : undefined}
+        style={data.heroImage ? { backgroundImage: `linear-gradient(120deg, rgba(5,32,61,0.78) 0%, rgba(0,74,153,0.6) 100%), url("${data.heroImage}")` } : undefined}
       >
         <div className="guide-hero-inner">
           <Link to="/" className="guide-back">{t("cityGuide.backHome")}</Link>

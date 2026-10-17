@@ -24,7 +24,7 @@ export default function AllDestinationsPage() {
         .all-destinations-page h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-soft); margin: 0 0 16px; }
         .all-destinations-page .featured-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
         .all-destinations-page .featured-chip {
-          display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--izigo-green); color: var(--izigo-green);
+          display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--rebrand-cta); color: var(--rebrand-cta);
           border-radius: 999px; padding: 8px 16px; font-size: 13.5px; font-weight: 700;
         }
         .all-destinations-page .destination-list {
@@ -33,7 +33,7 @@ export default function AllDestinationsPage() {
         .all-destinations-page .destination-list a {
           padding: 8px 0; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border);
         }
-        .all-destinations-page .destination-list a:hover { color: var(--izigo-green); }
+        .all-destinations-page .destination-list a:hover { color: var(--rebrand-cta); }
         @media (max-width: 640px) {
           .all-destinations-page .destination-list { grid-template-columns: repeat(2, 1fr); }
         }
