@@ -521,7 +521,7 @@ export default function AddListingFormPage() {
           display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 999px;
           padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--surface); cursor: pointer;
         }
-        .add-listing-form-page .alf-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
+        .add-listing-form-page .alf-chip.active { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
 
         .add-listing-form-page .alf-radio-row { display: flex; gap: 20px; margin-bottom: 16px; }
         .add-listing-form-page .alf-radio { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
@@ -545,25 +545,25 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-stepper-item:not(:last-child)::after {
           content: ""; flex: 1; height: 2px; background: var(--border); margin-left: 8px;
         }
-        .add-listing-form-page .alf-stepper-item.done:not(:last-child)::after { background: var(--izigo-green); }
+        .add-listing-form-page .alf-stepper-item.done:not(:last-child)::after { background: var(--rebrand-cta); }
         .add-listing-form-page .alf-stepper-dot {
           width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
           font-size: 12.5px; font-weight: 700; background: var(--bg-soft); color: var(--text-soft); border: 2px solid var(--border);
         }
-        .add-listing-form-page .alf-stepper-item.active .alf-stepper-dot { background: var(--izigo-orange); border-color: var(--izigo-orange); color: var(--on-brand); }
-        .add-listing-form-page .alf-stepper-item.done .alf-stepper-dot { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
+        .add-listing-form-page .alf-stepper-item.active .alf-stepper-dot { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
+        .add-listing-form-page .alf-stepper-item.done .alf-stepper-dot { background: var(--rebrand-text); border-color: var(--rebrand-text); color: #fff; }
         .add-listing-form-page .alf-stepper-label { font-size: 12.5px; font-weight: 700; color: var(--text-soft); white-space: nowrap; }
         .add-listing-form-page .alf-stepper-item.active .alf-stepper-label { color: var(--text); }
         .add-listing-form-page .alf-stepper-mobile { display: none; font-size: 12.5px; font-weight: 700; color: var(--text-soft); margin: 0 0 8px; }
         .add-listing-form-page .alf-stepper-bar { display: none; height: 4px; border-radius: 999px; background: var(--bg-soft); overflow: hidden; margin-bottom: 20px; max-width: 640px; }
-        .add-listing-form-page .alf-stepper-bar-fill { height: 100%; background: var(--izigo-orange); transition: width 0.2s ease; }
+        .add-listing-form-page .alf-stepper-bar-fill { height: 100%; background: var(--rebrand-cta); transition: width 0.2s ease; }
 
         .add-listing-form-page .alf-step-heading { font-size: 16px; font-weight: 800; margin: 0 0 4px; }
         .add-listing-form-page .alf-step-subheading { font-size: 12.5px; color: var(--text-soft); margin: 0 0 20px; }
 
         .add-listing-form-page .alf-step-nav { display: flex; justify-content: space-between; gap: 12px; margin: 24px 0 8px; }
         .add-listing-form-page .alf-btn-next {
-          margin-left: auto; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
+          margin-left: auto; background: var(--rebrand-cta); color: #fff; border: none; border-radius: 10px;
           padding: 12px 24px; font-weight: 700; font-size: 14px; cursor: pointer;
         }
         .add-listing-form-page .alf-btn-next:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -583,22 +583,22 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-longstay-warning { font-size: 12.5px; color: #E0553F; margin: -8px 0 16px; font-weight: 600; }
 
         .add-listing-form-page .alf-submit {
-          width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
+          width: 100%; background: var(--rebrand-cta); color: #fff; border: none; border-radius: 10px;
           padding: 14px; font-weight: 700; font-size: 15px; cursor: pointer;
         }
         .add-listing-form-page .alf-submit:disabled { opacity: 0.45; cursor: not-allowed; }
 
         .add-listing-form-page .alf-success { text-align: center; border: 1px solid var(--border); border-radius: 18px; padding: 56px 32px; max-width: 520px; }
-        .add-listing-form-page .alf-success-icon { color: var(--izigo-green); margin-bottom: 16px; }
+        .add-listing-form-page .alf-success-icon { color: var(--rebrand-text); margin-bottom: 16px; }
         .add-listing-form-page .alf-success h2 { font-size: 22px; font-weight: 800; margin: 0 0 10px; }
         .add-listing-form-page .alf-success p { font-size: 14.5px; color: var(--text-soft); line-height: 1.6; margin: 0 0 24px; }
         .add-listing-form-page .alf-success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .add-listing-form-page .alf-success-actions a { font-weight: 700; font-size: 14px; }
         .add-listing-form-page .alf-btn-primary {
-          background: var(--izigo-orange); color: var(--on-brand); border-radius: 10px; padding: 11px 20px; text-decoration: none;
+          background: var(--rebrand-cta); color: #fff; border-radius: 10px; padding: 11px 20px; text-decoration: none;
         }
         .add-listing-form-page .alf-btn-outline {
-          background: transparent; color: var(--izigo-green); border: 1.5px solid var(--izigo-green); border-radius: 10px;
+          background: transparent; color: var(--rebrand-text); border: 1.5px solid var(--rebrand-listing-cta); border-radius: 10px;
           padding: 11px 20px; text-decoration: none;
         }
 
@@ -607,7 +607,7 @@ export default function AddListingFormPage() {
         .add-listing-form-page .alf-bedtype-row select { flex: 2; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; background: var(--surface); font-family: var(--sans); }
         .add-listing-form-page .alf-bedtype-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 14px; width: 100%; }
         .add-listing-form-page .alf-bedtype-row button { width: 36px; height: 36px; flex-shrink: 0; border: none; background: none; color: #E0553F; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .add-listing-form-page .alf-bedtype-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--izigo-green); cursor: pointer; min-height: 44px; }
+        .add-listing-form-page .alf-bedtype-add { border: 1px dashed var(--border); border-radius: 10px; background: none; padding: 10px; width: 100%; font-size: 13px; font-weight: 700; color: var(--rebrand-cta); cursor: pointer; min-height: 44px; }
 
         .add-listing-form-page .alf-houserules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
         .add-listing-form-page .alf-houserule-item { display: flex; flex-direction: column; gap: 8px; }

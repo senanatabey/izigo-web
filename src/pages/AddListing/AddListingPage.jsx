@@ -28,12 +28,12 @@ export default function AddListingPage() {
           display: flex; align-items: center; gap: 16px; border: 1px solid var(--border); border-radius: 16px;
           padding: 20px; background: var(--surface); transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
-        .add-listing-page .alp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--izigo-green); }
+        .add-listing-page .alp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--rebrand-cta); }
         .add-listing-page .alp-icon {
           width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
-        .add-listing-page .alp-icon.green { background: rgba(0, 200, 151, 0.12); color: var(--izigo-green); }
-        .add-listing-page .alp-icon.orange { background: rgba(255, 122, 0, 0.12); color: var(--izigo-orange); }
+        .add-listing-page .alp-icon.green { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
+        .add-listing-page .alp-icon.orange { background: var(--rebrand-bg-tint); color: var(--rebrand-text); }
         .add-listing-page .alp-card-body h3 { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
         .add-listing-page .alp-card-body p { font-size: 13px; color: var(--text-soft); margin: 0; line-height: 1.4; }
         .add-listing-page .alp-card-arrow { margin-left: auto; color: var(--text-soft); flex-shrink: 0; }
