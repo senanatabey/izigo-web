@@ -70,11 +70,11 @@ export default function DealsPage() {
         .deals-page .dp-thumb.meadow { background: linear-gradient(135deg, #1B4332, #3F7A57 55%, #86A662); }
         .deals-page .dp-discount {
           position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 4px;
-          background: var(--izigo-orange); color: var(--on-brand); font-size: 12px; font-weight: 800;
+          background: var(--rebrand-cta); color: #fff; font-size: 12px; font-weight: 800;
           padding: 5px 10px; border-radius: 999px;
         }
         .deals-page .dp-body { padding: 16px; }
-        .deals-page .dp-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--izigo-orange); }
+        .deals-page .dp-city { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--rebrand-cta); }
         .deals-page .dp-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.35; min-height: 36px; }
         .deals-page .dp-price-row { display: flex; align-items: baseline; gap: 8px; }
         .deals-page .dp-price-new { font-size: 15px; font-weight: 800; color: var(--text); }
