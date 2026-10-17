@@ -118,7 +118,7 @@ export default function TransfersPage() {
           font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
           text-align: left; cursor: pointer;
         }
-        .transfers-page .tp-price-trigger.active { border-color: var(--izigo-orange); color: var(--izigo-orange); font-weight: 700; }
+        .transfers-page .tp-price-trigger.active { border-color: var(--rebrand-cta); color: var(--rebrand-cta); font-weight: 700; }
         .transfers-page .tp-price-backdrop { display: none; }
         .transfers-page .tp-price-popover {
           position: absolute; top: calc(100% + 8px); left: 0; z-index: 20;
@@ -132,11 +132,11 @@ export default function TransfersPage() {
         }
         .transfers-page .tp-price-sep { color: var(--text-soft); font-weight: 700; }
         .transfers-page .tp-price-apply {
-          border: none; border-radius: 10px; background: var(--izigo-orange); color: var(--on-brand);
+          border: none; border-radius: 10px; background: var(--rebrand-cta); color: #fff;
           font-weight: 700; font-size: 13.5px; padding: 10px; cursor: pointer;
         }
         .transfers-page .tp-reset {
-          border: none; background: none; color: var(--izigo-orange); font-weight: 700;
+          border: none; background: none; color: var(--rebrand-cta); font-weight: 700;
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
@@ -211,7 +211,7 @@ export default function TransfersPage() {
             width: 22px; height: 22px; color: #fff;
             filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
           }
-          .transfers-page .tp-card .save-heart.active svg { color: var(--izigo-orange); }
+          .transfers-page .tp-card .save-heart.active svg { color: var(--rebrand-cta); }
         }
       `}</style>
 

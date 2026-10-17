@@ -88,11 +88,11 @@ export default function TransferDetail() {
         .transfer-detail .td-header { margin-bottom: 20px; }
         .transfer-detail .td-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .transfer-detail .td-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .transfer-detail .td-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
-        .transfer-detail .td-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .transfer-detail .td-badge-founder { background: var(--rebrand-cta); color: #fff; }
+        .transfer-detail .td-badge-agent { background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text); }
         .transfer-detail .td-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .transfer-detail .td-city { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-soft); }
-        .transfer-detail .td-city svg { color: var(--izigo-orange); flex-shrink: 0; }
+        .transfer-detail .td-city svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         .transfer-detail .td-layout { display: grid; grid-template-columns: 1fr 340px; column-gap: 48px; align-items: start; }
         .transfer-detail .td-gallery-col { grid-column: 1; grid-row: 1; min-width: 0; }
@@ -102,7 +102,7 @@ export default function TransferDetail() {
         .transfer-detail .td-desc { font-size: 15px; line-height: 1.7; color: var(--text-soft); margin-bottom: 24px; }
         .transfer-detail .td-vehicle {
           display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700;
-          color: var(--izigo-green); background: var(--bg-soft); padding: 8px 14px; border-radius: 999px;
+          color: var(--rebrand-cta); background: var(--bg-soft); padding: 8px 14px; border-radius: 999px;
         }
 
         .transfer-detail .td-footer-meta {
@@ -110,12 +110,12 @@ export default function TransferDetail() {
           font-size: 12.5px; color: var(--text-soft);
           margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--border);
         }
-        .transfer-detail .td-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
+        .transfer-detail .td-edit-btn { font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
 
         .transfer-detail .td-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .transfer-detail .td-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .transfer-detail .td-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
-        .transfer-detail .td-facts svg { color: var(--izigo-green); flex-shrink: 0; }
+        .transfer-detail .td-facts svg { color: var(--rebrand-cta); flex-shrink: 0; }
         .transfer-detail .td-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .transfer-detail .td-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .transfer-detail .td-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
@@ -124,11 +124,11 @@ export default function TransferDetail() {
         .transfer-detail .td-agent-price {
           margin-top: 12px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;
-          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+          background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text);
         }
         .transfer-detail .detail-save-btn { position: static; }
         .transfer-detail .td-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .transfer-detail .td-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--izigo-green); flex-shrink: 0; }
+        .transfer-detail .td-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--rebrand-cta); flex-shrink: 0; }
         .transfer-detail .td-host-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .transfer-detail .td-host-name { font-size: 14px; font-weight: 700; }
         .transfer-detail .td-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); }
