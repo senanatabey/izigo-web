@@ -102,7 +102,7 @@ export const schema = {
     "@type": "Organization",
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/images/logos/logo-navbar.png`,
+    logo: `${SITE_URL}/logo/izigo-wordmark.png`,
   }),
   touristDestination: ({ name, description, url, image }) => ({
     "@context": "https://schema.org",

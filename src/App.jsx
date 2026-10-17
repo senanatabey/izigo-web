@@ -312,11 +312,11 @@ function RequireRegionalPartner({ children }) {
    LOGO — shared between navbar, auth card and sidebars
    ========================================================================= */
 function IzigoLogo() {
-  return <img src="/images/logos/logo-navbar.png" alt="IZIGO" className="app-logo-img" />;
+  return <img src="/logo/izigo-wordmark.png" alt="IZIGO" className="app-logo-img" />;
 }
 
 function IzigoLogoDark() {
-  return <img src="/images/logos/logo-dark.png" alt="IZIGO" className="app-logo-img app-logo-img-dark" />;
+  return <img src="/logo/izigo-reversed-white.png" alt="IZIGO" className="app-logo-img app-logo-img-dark" />;
 }
 
 /* Shared by AppLayout and AdminLayout so both panel sidebars stay in sync —
@@ -838,7 +838,7 @@ function MainLayout() {
       {!isListingDetailPage && <BottomNav hidden={bottomNavHidden} />}
       <main className={!isListingDetailPage ? "has-bottom-nav" : ""}><Outlet /></main>
       <footer className="site-footer">
-        <img src="/images/logos/logo-footer.png" alt="IZIGO" className="site-footer-logo" />
+        <img src="/logo/izigo-wordmark.png" alt="IZIGO" className="site-footer-logo" />
         <nav className="site-footer-explore">
           <span className="site-footer-explore-label">{t("footer.exploreHeading")}</span>
           <Link to="/destinations">{t("footer.travelGuides")}</Link>
