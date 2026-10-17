@@ -57,8 +57,8 @@ export default function WelcomePage() {
 
         .welcome-page .wp-checklist { border: 1px solid var(--border); border-radius: 16px; padding: 22px 26px; margin-bottom: 28px; }
         .welcome-page .wp-checklist-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14.5px; font-weight: 600; color: var(--text); }
-        .welcome-page .wp-checklist-item.done { color: var(--izigo-green); }
-        .welcome-page .wp-checklist-item .wp-check-icon { color: var(--izigo-green); flex-shrink: 0; }
+        .welcome-page .wp-checklist-item.done { color: var(--rebrand-text); }
+        .welcome-page .wp-checklist-item .wp-check-icon { color: var(--rebrand-text); flex-shrink: 0; }
         .welcome-page .wp-checklist-item .wp-circle-icon { color: var(--text-soft); flex-shrink: 0; }
         .welcome-page .wp-checklist-item.founder-row { font-weight: 800; }
 
@@ -72,14 +72,14 @@ export default function WelcomePage() {
         }
         .welcome-page .wp-benefit-icon {
           width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-          background: rgba(0,200,151,0.14); color: var(--izigo-green); flex-shrink: 0;
+          background: var(--rebrand-bg-tint); color: var(--rebrand-cta); flex-shrink: 0;
         }
         .welcome-page .wp-benefit-card h3 { font-size: 13.5px; font-weight: 800; margin: 0 0 4px; }
         .welcome-page .wp-benefit-card p { font-size: 12px; color: var(--text-soft); margin: 0; line-height: 1.4; }
 
         .welcome-page .wp-cta { text-align: center; }
         .welcome-page .wp-cta a {
-          display: inline-flex; align-items: center; gap: 8px; background: var(--izigo-orange); color: var(--on-brand);
+          display: inline-flex; align-items: center; gap: 8px; background: var(--rebrand-listing-cta); color: #fff;
           border-radius: 10px; padding: 14px 28px; font-weight: 700; font-size: 15px; text-decoration: none;
         }
 
