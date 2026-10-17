@@ -210,10 +210,10 @@ export default function TripRequestDetailPage() {
           width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
           font-size: 11px; font-weight: 800; border: 2px solid var(--border); background: var(--surface); color: var(--text-soft); flex-shrink: 0;
         }
-        .trip-timeline-dot.done { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
-        .trip-timeline-dot.current { background: var(--surface); border-color: var(--izigo-green); color: var(--izigo-green); }
+        .trip-timeline-dot.done { background: var(--rebrand-text); border-color: var(--rebrand-text); color: #fff; }
+        .trip-timeline-dot.current { background: var(--surface); border-color: var(--rebrand-cta); color: var(--rebrand-cta); }
         .trip-timeline-line { flex: 1; height: 2px; background: var(--border); margin: 0 6px; }
-        .trip-timeline-line.done { background: var(--izigo-green); }
+        .trip-timeline-line.done { background: var(--rebrand-text); }
         .trip-timeline-label { font-size: 11px; font-weight: 700; color: var(--text-soft); text-align: center; margin-top: 6px; white-space: nowrap; }
         .trip-timeline-wrap { margin-bottom: 18px; }
         .trip-timeline-labels { display: flex; }
@@ -231,11 +231,11 @@ export default function TripRequestDetailPage() {
         .trip-field textarea { resize: vertical; min-height: 70px; }
         .trip-readonly { font-size: 13.5px; color: var(--text); white-space: pre-wrap; }
         .trip-save-btn {
-          background: var(--izigo-green); color: var(--on-brand); border: none; border-radius: 10px; padding: 10px 20px;
+          background: var(--rebrand-cta); color: #fff; border: none; border-radius: 10px; padding: 10px 20px;
           font-weight: 700; font-size: 13.5px; cursor: pointer; margin-top: 4px;
         }
         .trip-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .trip-saved-flash { color: var(--izigo-green); font-size: 12.5px; font-weight: 700; margin-left: 10px; }
+        .trip-saved-flash { color: var(--rebrand-text); font-size: 12.5px; font-weight: 700; margin-left: 10px; }
 
         .service-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .service-row {
@@ -261,7 +261,7 @@ export default function TripRequestDetailPage() {
         .cost-summary-row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; }
         .cost-summary-row.total { font-weight: 800; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 12px; }
         .cost-summary-row.exceeded { color: #E0553F; font-weight: 800; }
-        .cost-summary-row.ok { color: var(--izigo-green); font-weight: 800; }
+        .cost-summary-row.ok { color: var(--rebrand-text); font-weight: 800; }
 
         .wa-message { white-space: pre-wrap; background: var(--bg-soft); border-radius: 10px; padding: 14px; font-size: 13.5px; margin-bottom: 12px; }
         .wa-actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -270,7 +270,8 @@ export default function TripRequestDetailPage() {
           font-weight: 700; font-size: 13px; cursor: pointer; border: none; text-decoration: none;
         }
         .wa-copy-btn { background: var(--bg-soft); color: var(--text); }
-        .wa-send-btn { background: var(--izigo-green); color: var(--on-brand); }
+        .wa-send-btn { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+        .wa-send-btn:hover { background: var(--whatsapp-brand-hover); }
 
         @media (max-width: 860px) {
           .trip-grid, .new-service-row { grid-template-columns: 1fr 1fr; }

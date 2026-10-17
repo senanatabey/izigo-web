@@ -71,18 +71,18 @@ export default function AdCampaignsPage() {
         .ac-table th, .ac-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
         .ac-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
         .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
-        .status-pill.active { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .status-pill.active { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .status-pill.completed { background: var(--bg-soft); color: var(--text-soft); }
         .status-pill.cancelled { background: rgba(224,85,63,0.14); color: #E0553F; }
         .ac-table select.inline { border: 1px solid var(--border); border-radius: 6px; padding: 3px 6px; font-size: 12px; }
         .ac-table button.delete { border: none; background: none; color: #E0553F; font-weight: 700; cursor: pointer; font-size: 12.5px; }
-        .ac-new-btn { border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; margin-bottom: 20px; }
+        .ac-new-btn { border: none; background: var(--rebrand-cta); color: #fff; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; margin-bottom: 20px; }
         .ac-form { border: 1px solid var(--border); border-radius: 14px; padding: 20px; max-width: 460px; margin-bottom: 24px; }
         .ac-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .ac-field label { font-size: 12.5px; font-weight: 700; color: var(--text); }
         .ac-field input, .ac-field select { border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: var(--sans); }
         .ac-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .ac-save-btn { border: none; background: var(--izigo-orange); color: var(--on-brand); border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+        .ac-save-btn { border: none; background: var(--rebrand-cta); color: #fff; border-radius: 8px; padding: 9px 18px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
       `}</style>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Reklam Kampaniyaları</h1>
 

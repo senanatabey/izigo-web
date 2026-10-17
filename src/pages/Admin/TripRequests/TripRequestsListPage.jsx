@@ -81,7 +81,7 @@ export default function TripRequestsListPage() {
           border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 7px 16px;
           font-size: 13px; font-weight: 700; cursor: pointer; text-transform: capitalize;
         }
-        .trip-requests-filters button.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
+        .trip-requests-filters button.active { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
         .trip-requests-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .trip-requests-table th, .trip-requests-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
         .trip-requests-table th { color: var(--text-soft); font-weight: 700; font-size: 12px; text-transform: uppercase; }
@@ -91,7 +91,7 @@ export default function TripRequestsListPage() {
         .trip-status-pill.new { background: rgba(0,150,255,0.14); color: var(--info-text); }
         .trip-status-pill.in_progress { background: rgba(255,180,0,0.16); color: #B87700; }
         .trip-status-pill.offer_sent { background: rgba(148,86,222,0.14); color: #7B3FE0; }
-        .trip-status-pill.confirmed { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .trip-status-pill.confirmed { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .trip-status-pill.completed { background: rgba(0,0,0,0.08); color: var(--text-soft); }
         .trip-status-pill.cancelled { background: rgba(224,85,63,0.14); color: #E0553F; }
         .trip-view-btn {
