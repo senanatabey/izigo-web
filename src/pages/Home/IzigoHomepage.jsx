@@ -512,8 +512,8 @@ export default function IzigoHomepage() {
         .izigo-home .latest-review-count { font-weight: 500; color: var(--text-soft); }
         .izigo-home .latest-badge-new {
           display: inline-flex; align-items: center; flex-shrink: 0; margin-top: 2px; font-size: clamp(10px, 2.4vw, 11px); line-height: 14px; font-weight: 600;
-          letter-spacing: 0.3px; text-transform: uppercase; color: var(--rebrand-primary);
-          background: rgba(0, 200, 151, 0.12); border-radius: 999px; padding: 3px 9px;
+          letter-spacing: 0.3px; text-transform: uppercase; color: var(--rebrand-primary-hover);
+          background: var(--rebrand-bg-tint); border-radius: 999px; padding: 3px 9px;
         }
         /* "New" badge on the blue tint: #0071EB text would be 4.19:1 at 11px, so the darker blue (≈8:1). [rebrand pilot] */
         :root:not([data-theme="dark"]) .izigo-home .latest-badge-new { color: var(--rebrand-primary-hover); background: var(--rebrand-bg-tint); }
