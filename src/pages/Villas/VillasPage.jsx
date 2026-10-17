@@ -132,18 +132,18 @@ export default function VillasPage() {
         .villas-page .vp-quick-filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
         .villas-page .vp-quick-chip {
           display: inline-flex; align-items: center; gap: 7px; padding: 10px 18px; border-radius: 999px;
-          border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green); font-size: 14px; font-weight: 700;
+          border: 1.5px solid var(--rebrand-cta); background: var(--surface); color: var(--rebrand-cta); font-size: 14px; font-weight: 700;
           cursor: pointer; transition: all 0.15s ease;
         }
-        .villas-page .vp-quick-chip.active { background: var(--izigo-green); border-color: var(--izigo-green); color: var(--on-brand); }
-        .villas-page .vp-quick-chip:hover:not(.active) { background: rgba(0,200,151,0.08); }
+        .villas-page .vp-quick-chip.active { background: var(--rebrand-cta); border-color: var(--rebrand-cta); color: #fff; }
+        .villas-page .vp-quick-chip:hover:not(.active) { background: var(--rebrand-bg-tint); }
         .villas-page .vp-more-chip { gap: 6px; }
         .villas-page .vp-more-panel {
           display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px 16px;
           border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 18px; background: var(--bg-soft);
         }
         .villas-page .vp-more-item { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text); cursor: pointer; }
-        .villas-page .vp-more-item input { width: 16px; height: 16px; accent-color: var(--izigo-green); cursor: pointer; }
+        .villas-page .vp-more-item input { width: 16px; height: 16px; accent-color: var(--rebrand-cta); cursor: pointer; }
 
         .villas-page .vp-filters {
           display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px;
@@ -161,7 +161,7 @@ export default function VillasPage() {
           font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
           text-align: left; cursor: pointer;
         }
-        .villas-page .vp-price-trigger.active { border-color: var(--izigo-green); color: var(--izigo-green); font-weight: 700; }
+        .villas-page .vp-price-trigger.active { border-color: var(--rebrand-cta); color: var(--rebrand-cta); font-weight: 700; }
         .villas-page .vp-price-backdrop { display: none; }
         .villas-page .vp-price-popover {
           position: absolute; top: calc(100% + 8px); left: 0; z-index: 20;
@@ -175,11 +175,11 @@ export default function VillasPage() {
         }
         .villas-page .vp-price-sep { color: var(--text-soft); font-weight: 700; }
         .villas-page .vp-price-apply {
-          border: none; border-radius: 10px; background: var(--izigo-green); color: var(--on-brand);
+          border: none; border-radius: 10px; background: var(--rebrand-cta); color: #fff;
           font-weight: 700; font-size: 13.5px; padding: 10px; cursor: pointer;
         }
         .villas-page .vp-reset {
-          border: none; background: none; color: var(--izigo-green); font-weight: 700;
+          border: none; background: none; color: var(--rebrand-cta); font-weight: 700;
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
@@ -234,7 +234,7 @@ export default function VillasPage() {
             width: 22px; height: 22px; color: #fff;
             filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
           }
-          .villas-page .villa-card .save-heart.active svg { color: var(--izigo-orange); }
+          .villas-page .villa-card .save-heart.active svg { color: var(--rebrand-cta); }
         }
       `}</style>
 

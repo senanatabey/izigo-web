@@ -149,16 +149,16 @@ export default function VillaDetail() {
         .villa-detail .vd-header { margin-bottom: 20px; }
         .villa-detail .vd-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
         .villa-detail .vd-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.2px; }
-        .villa-detail .vd-badge-founder { background: var(--izigo-green); color: var(--on-brand); }
-        .villa-detail .vd-badge-agent { background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange); }
+        .villa-detail .vd-badge-founder { background: var(--rebrand-cta); color: #fff; }
+        .villa-detail .vd-badge-agent { background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text); }
         .villa-detail .vd-title { font-size: 28px; font-weight: 800; margin: 0 0 8px; }
         .villa-detail .vd-city {
           display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600;
           color: var(--text-soft); background: none; border: none; padding: 0; cursor: pointer;
           font-family: var(--sans);
         }
-        .villa-detail .vd-city:hover { color: var(--izigo-green); text-decoration: underline; }
-        .villa-detail .vd-city svg { color: var(--izigo-orange); flex-shrink: 0; }
+        .villa-detail .vd-city:hover { color: var(--rebrand-cta); text-decoration: underline; }
+        .villa-detail .vd-city svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         /* Gallery + amenities in the left column, sidebar in the right column
            spanning the full height and sticking as you scroll. */
@@ -171,7 +171,7 @@ export default function VillaDetail() {
         .villa-detail .vd-sb-amenities-label { font-size: 12px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 10px; }
         .villa-detail .vd-sb-amenities-grid { column-count: 2; column-gap: 12px; }
         .villa-detail .vd-sb-amenity { display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px; line-height: 1.35; color: var(--text); margin-bottom: 9px; break-inside: avoid; -webkit-column-break-inside: avoid; }
-        .villa-detail .vd-sb-amenity svg { color: var(--izigo-green); flex-shrink: 0; margin-top: 1px; }
+        .villa-detail .vd-sb-amenity svg { color: var(--rebrand-cta); flex-shrink: 0; margin-top: 1px; }
 
         .villa-detail .vd-bedtypes { margin-top: 10px; }
         .villa-detail .vd-bedtypes-line { font-size: 13px; color: var(--text); margin-bottom: 3px; }
@@ -186,36 +186,36 @@ export default function VillaDetail() {
           margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--border);
         }
         .villa-detail .vd-edit-btn {
-          font-size: 12.5px; font-weight: 700; color: var(--izigo-green);
+          font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta);
           border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
         }
 
 
         .villa-detail .vd-checkinout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 32px; }
         .villa-detail .vd-checkinout div { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-soft); }
-        .villa-detail .vd-checkinout svg { color: var(--izigo-green); flex-shrink: 0; }
+        .villa-detail .vd-checkinout svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         .villa-detail .vd-houserules-grid { display: grid; grid-template-columns: repeat(2, 1fr); row-gap: 14px; column-gap: 14px; margin-bottom: 32px; }
         .villa-detail .vd-houserule { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text); line-height: 1.4; }
-        .villa-detail .vd-rule-yes { color: var(--izigo-green); flex-shrink: 0; }
+        .villa-detail .vd-rule-yes { color: var(--rebrand-cta); flex-shrink: 0; }
         .villa-detail .vd-rule-no { color: #E0553F; flex-shrink: 0; }
         .villa-detail .vd-houserules-notes { font-size: 13px; color: var(--text-soft); margin: -20px 0 32px; line-height: 1.6; }
 
         .villa-detail .vd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .villa-detail .vd-facts { display: flex; flex-wrap: wrap; row-gap: 8px; column-gap: 16px; }
         .villa-detail .vd-facts span { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); }
-        .villa-detail .vd-facts svg { color: var(--izigo-green); flex-shrink: 0; }
+        .villa-detail .vd-facts svg { color: var(--rebrand-cta); flex-shrink: 0; }
         .villa-detail .vd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .villa-detail .vd-price { font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: -0.3px; margin-bottom: 4px; }
         .villa-detail .vd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
         .villa-detail .vd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .villa-detail .vd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: rgba(0, 200, 151, 0.08); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
+        .villa-detail .vd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--rebrand-bg-tint); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
         .villa-detail .vd-price-block { flex: 1; min-width: 0; }
-        .villa-detail .vd-longstay-note { font-size: 12px; font-weight: 600; color: var(--izigo-green); margin-top: 4px; }
+        .villa-detail .vd-longstay-note { font-size: 12px; font-weight: 600; color: var(--rebrand-text); margin-top: 4px; }
         .villa-detail .vd-agent-price {
           margin-top: 12px; margin-bottom: 16px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;
-          background: rgba(186, 91, 46, 0.14); color: var(--izigo-orange);
+          background: rgba(217, 138, 43, 0.14); color: var(--rebrand-text);
         }
         .villa-detail .detail-save-btn { position: static; }
         .villa-detail .vd-host { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
@@ -223,8 +223,8 @@ export default function VillaDetail() {
         .villa-detail .vd-host-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
         .villa-detail .vd-host-type { font-size: 11.5px; font-weight: 700; color: var(--text-soft); line-height: 1.3; }
         .villa-detail .vd-host-avatar { width: 54px; height: 54px; border-radius: 12px; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--text-soft); flex-shrink: 0; }
-        .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--izigo-green); font-weight: 600; }
-        .villa-detail .vd-host-all-listings { display: block; font-size: 12.5px; font-weight: 400; color: var(--izigo-green); white-space: nowrap; margin-top: 3px; }
+        .villa-detail .vd-host-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--rebrand-cta); font-weight: 600; }
+        .villa-detail .vd-host-all-listings { display: block; font-size: 12.5px; font-weight: 400; color: var(--rebrand-cta); white-space: nowrap; margin-top: 3px; }
         .villa-detail .vd-host-all-listings:hover { text-decoration: underline; }
 
         .villa-detail .vd-sidebar-map-preview {
@@ -238,7 +238,7 @@ export default function VillaDetail() {
           padding: 8px 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
           box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
         }
-        .villa-detail .vd-sidebar-map-btn svg { color: var(--izigo-green); }
+        .villa-detail .vd-sidebar-map-btn svg { color: var(--rebrand-cta); }
 
         .villa-detail .vd-map-overlay {
           position: fixed; inset: 0; background: rgba(11, 61, 59, 0.55); z-index: 1000;
@@ -364,7 +364,7 @@ export default function VillaDetail() {
             background-color: #EDF0F2;
             background-image:
               linear-gradient(115deg, transparent 44%, rgba(150, 162, 174, 0.4) 44%, rgba(150, 162, 174, 0.4) 46%, transparent 46%),
-              linear-gradient(25deg, transparent 58%, rgba(0, 200, 151, 0.32) 58%, rgba(0, 200, 151, 0.32) 60%, transparent 60%),
+              linear-gradient(25deg, transparent 58%, rgba(0, 113, 235, 0.32) 58%, rgba(0, 113, 235, 0.32) 60%, transparent 60%),
               linear-gradient(155deg, transparent 22%, rgba(150, 162, 174, 0.35) 22%, rgba(150, 162, 174, 0.35) 24%, transparent 24%);
           }
 
