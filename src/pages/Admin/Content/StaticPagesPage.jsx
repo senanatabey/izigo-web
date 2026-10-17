@@ -97,7 +97,7 @@ export default function StaticPagesPage() {
       </div>
       <p className="ca-subtitle">Sabit hüquqi/şirkət səhifələri toplusu — hər dil üçün kontenti redaktə edin, əlavə etmə/silmə tələb olunmur.</p>
 
-      {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
+      {success && <p style={{ color: "var(--rebrand-text)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
       {loading ? <p>Yüklənir...</p> : (
         <div className="ca-list">

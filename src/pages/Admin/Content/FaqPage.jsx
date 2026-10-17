@@ -114,7 +114,7 @@ export default function FaqPage() {
       </div>
       <p className="ca-subtitle">Kateqoriyaya görə qruplaşdırılıb — daha sonra sayt üzrə FAQ bölmələrini idarə etmək üçün istifadə olunacaq.</p>
 
-      {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
+      {success && <p style={{ color: "var(--rebrand-text)", fontSize: 13, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
       {faqs.length > 0 && (
         <div className="ca-toolbar">

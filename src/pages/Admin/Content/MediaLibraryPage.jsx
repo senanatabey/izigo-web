@@ -93,7 +93,7 @@ export default function MediaLibraryPage() {
       <style>{`
         .ml-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
         .ml-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; background: var(--surface); }
-        .ml-item:hover { border-color: var(--izigo-green); }
+        .ml-item:hover { border-color: var(--rebrand-cta); }
         .ml-item-thumb { aspect-ratio: 1; background: var(--bg-soft); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: var(--text-soft); }
         .ml-item-info { padding: 8px 10px; }
         .ml-item-name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -124,7 +124,7 @@ export default function MediaLibraryPage() {
       </form>
 
       {error && <p style={{ color: "#E0553F", fontSize: 13, marginBottom: 12 }}>{error}</p>}
-      {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginBottom: 12, fontWeight: 700 }}>{success}</p>}
+      {success && <p style={{ color: "var(--rebrand-text)", fontSize: 13, marginBottom: 12, fontWeight: 700 }}>{success}</p>}
 
       {loading ? <p>Yüklənir...</p> : items.length === 0 ? (
         <div className="ca-empty">

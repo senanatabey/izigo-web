@@ -251,7 +251,7 @@ export default function TravelGuidesPage() {
         <button type="submit" className="ca-btn-edit" style={{ border: "1px solid var(--border)" }}>Axtar</button>
       </form>
 
-      {success && <p style={{ color: "var(--izigo-green)", fontSize: 13, marginTop: -12, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
+      {success && <p style={{ color: "var(--rebrand-text)", fontSize: 13, marginTop: -12, marginBottom: 16, fontWeight: 700 }}>{success}</p>}
 
       {loading ? <p>Yüklənir...</p> : guides.length === 0 ? (
         <div className="ca-empty">

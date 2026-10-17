@@ -207,7 +207,7 @@ export default function HeroCampaignsPage() {
       <style>{`
         .hc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
         .hc-subtitle { font-size: 13.5px; color: var(--text-soft); margin: 0 0 24px; }
-        .hc-new-btn { border: none; background: var(--izigo-green); color: var(--on-brand); border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+        .hc-new-btn { border: none; background: var(--rebrand-cta); color: #fff; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
         .hc-new-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .hc-default-box { border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 24px; background: var(--bg-soft); }
         .hc-default-box h2 { font-size: 15px; font-weight: 800; margin: 0 0 4px; }
@@ -227,17 +227,17 @@ export default function HeroCampaignsPage() {
         .hc-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: capitalize; }
         .hc-pill.draft { background: var(--bg-soft); color: var(--text-soft); }
         .hc-pill.scheduled { background: rgba(255,180,0,0.16); color: #B87700; }
-        .hc-pill.published { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
+        .hc-pill.published { background: rgba(46,157,94,0.14); color: var(--rebrand-text); }
         .hc-pill.archived { background: var(--bg-soft); color: var(--text-soft); }
         .hc-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
         .hc-actions button, .hc-actions select { border: none; border-radius: 8px; padding: 7px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; }
-        .btn-publish { background: var(--izigo-green); color: var(--on-brand); }
+        .btn-publish { background: var(--rebrand-cta); color: #fff; }
         .btn-edit { background: var(--bg-soft); color: var(--text); }
         .btn-remove { background: none; color: #E0553F; }
         .hc-status-select { background: var(--bg-soft); color: var(--text); font-family: var(--sans); }
 
         .hc-empty { text-align: center; padding: 60px 20px; border: 1px dashed var(--border); border-radius: 16px; }
-        .hc-empty svg { color: var(--izigo-green); margin-bottom: 12px; }
+        .hc-empty svg { color: var(--rebrand-cta); margin-bottom: 12px; }
         .hc-empty h2 { font-size: 18px; font-weight: 800; margin: 0 0 8px; }
         .hc-empty p { font-size: 13.5px; color: var(--text-soft); max-width: 420px; margin: 0 auto 20px; line-height: 1.6; }
 
@@ -251,7 +251,7 @@ export default function HeroCampaignsPage() {
         }
         .hc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .hc-upload { display: flex; align-items: center; gap: 10px; border: 1px dashed var(--border); border-radius: 10px; padding: 12px; cursor: pointer; background: var(--bg-soft); font-size: 12.5px; color: var(--text-soft); }
-        .hc-save-btn { width: 100%; background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+        .hc-save-btn { width: 100%; background: var(--rebrand-cta); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; }
       `}</style>
 
       <div className="hc-head">
