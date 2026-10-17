@@ -637,7 +637,7 @@
 }
 
 .sidebar-link.active svg {
-  color: var(--rebrand-cta);
+  color: #fff;
 }
 
 .sidebar-link.logout {
