@@ -86,7 +86,7 @@ export default function EventsPage() {
           font-size: 14px; color: var(--text); background: var(--surface); min-width: 160px; font-family: var(--sans);
         }
         .events-page .ep-reset {
-          border: none; background: none; color: var(--izigo-orange); font-weight: 700;
+          border: none; background: none; color: var(--rebrand-cta); font-weight: 700;
           font-size: 13.5px; cursor: pointer; padding: 10px 0;
         }
 
@@ -148,7 +148,7 @@ export default function EventsPage() {
             width: 22px; height: 22px; color: #fff;
             filter: drop-shadow(0 0 2px rgba(0,0,0,0.6)) drop-shadow(0 1px 3px rgba(0,0,0,0.5));
           }
-          .events-page .ep-card .save-heart.active svg { color: var(--izigo-orange); }
+          .events-page .ep-card .save-heart.active svg { color: var(--rebrand-cta); }
         }
       `}</style>
 
