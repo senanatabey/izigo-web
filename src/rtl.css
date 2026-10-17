@@ -12,7 +12,7 @@
 
 .rtl .sidebar-link.active {
   border-left: none;
-  border-right: 3px solid var(--izigo-green);
+  border-right: 3px solid var(--rebrand-cta);
   padding-left: 12px;
   padding-right: 9px;
 }

@@ -429,8 +429,8 @@
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: var(--izigo-orange, #BA5B2E);
-  color: var(--on-brand);
+  background: var(--rebrand-cta);
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
   line-height: 18px;
@@ -442,7 +442,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--izigo-orange, #BA5B2E);
+  background: var(--rebrand-cta);
   flex-shrink: 0;
 }
 
@@ -629,15 +629,15 @@
 }
 
 .sidebar-link.active {
-  background: rgba(0, 200, 151, 0.16);
-  border-left: 3px solid var(--izigo-green);
+  background: rgba(0, 113, 235, 0.24);
+  border-left: 3px solid var(--rebrand-cta);
   padding-left: 9px;
   font-weight: 700;
   color: #fff;
 }
 
 .sidebar-link.active svg {
-  color: var(--izigo-green);
+  color: var(--rebrand-cta);
 }
 
 .sidebar-link.logout {
