@@ -83,11 +83,11 @@
 }
 
 .app-nav-links a.active {
-  color: var(--izigo-green);
+  color: var(--rebrand-cta);
 }
 
 .app-nav-links a:hover {
-  color: var(--izigo-green);
+  color: var(--rebrand-cta);
 }
 
 .app-nav-right {
