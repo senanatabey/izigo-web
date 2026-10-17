@@ -187,14 +187,14 @@ export default function ProfilePage() {
         }
         .pp-hero-left { display: flex; align-items: center; gap: 20px; min-width: 0; }
         .pp-avatar {
-          width: 96px; height: 96px; border-radius: 50%; background: var(--bg-soft); color: var(--izigo-green);
+          width: 96px; height: 96px; border-radius: 50%; background: var(--bg-soft); color: var(--rebrand-cta);
           display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 32px; font-weight: 800;
         }
         .pp-hero h1 { font-size: 22px; font-weight: 800; margin: 0 0 6px; }
         .pp-badge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
         .pp-badge {
-          display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--izigo-green);
-          background: rgba(0, 200, 151, 0.12); border-radius: 999px; padding: 4px 10px;
+          display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--rebrand-cta);
+          background: var(--rebrand-bg-tint); border-radius: 999px; padding: 4px 10px;
         }
         .pp-role { font-size: 13px; color: var(--text-soft); font-weight: 600; }
 
@@ -204,7 +204,7 @@ export default function ProfilePage() {
         }
         .pp-stat-card .pp-stat-label { font-size: 11px; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
         .pp-stat-card .pp-stat-value { font-size: 14.5px; font-weight: 800; margin-top: 4px; }
-        .pp-stat-card.connected .pp-stat-value { color: var(--izigo-green); }
+        .pp-stat-card.connected .pp-stat-value { color: var(--rebrand-cta); }
 
         /* Role row + My listings */
         .pp-role-row {
@@ -212,13 +212,13 @@ export default function ProfilePage() {
           border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin-top: 16px; background: var(--surface);
         }
         .pp-role-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--text); }
-        .pp-role-chip svg { color: var(--izigo-green); flex-shrink: 0; }
+        .pp-role-chip svg { color: var(--rebrand-cta); flex-shrink: 0; }
         .pp-role-btn {
-          display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--izigo-green); border-radius: 999px;
-          padding: 8px 16px; font-size: 12.5px; font-weight: 700; color: var(--izigo-green); white-space: nowrap;
+          display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--rebrand-cta); border-radius: 999px;
+          padding: 8px 16px; font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); white-space: nowrap;
           transition: background 0.15s ease;
         }
-        .pp-role-btn:hover { background: rgba(0,200,151,0.08); }
+        .pp-role-btn:hover { background: var(--rebrand-bg-tint); }
 
         .pp-settings-fab { display: none; }
 
@@ -237,7 +237,7 @@ export default function ProfilePage() {
         @media (max-width: 860px) { .pp-partner-main { display: block; } }
         .pp-my-listings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .pp-my-listings-head h2 { margin: 0; }
-        .pp-my-listings-viewall { font-size: 12.5px; font-weight: 700; color: var(--izigo-green); white-space: nowrap; }
+        .pp-my-listings-viewall { font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); white-space: nowrap; }
         .pp-my-listings-empty { font-size: 13.5px; color: var(--text-soft); margin: 4px 0 0; }
 
         .pp-mf-filters {
@@ -246,12 +246,12 @@ export default function ProfilePage() {
         }
         .pp-mf-filters::-webkit-scrollbar { display: none; }
         .pp-mf-chip {
-          flex-shrink: 0; border: 1.5px solid var(--izigo-green); background: var(--surface); color: var(--izigo-green);
+          flex-shrink: 0; border: 1.5px solid var(--rebrand-cta); background: var(--surface); color: var(--rebrand-cta);
           border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer;
           white-space: nowrap; transition: background 0.15s ease, color 0.15s ease;
         }
-        .pp-mf-chip:hover { background: rgba(0,200,151,0.08); }
-        .pp-mf-chip.active { background: var(--izigo-green); color: var(--on-brand); }
+        .pp-mf-chip:hover { background: var(--rebrand-bg-tint); }
+        .pp-mf-chip.active { background: var(--rebrand-cta); color: #fff; }
 
         .pp-my-listings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .pp-mli-card {
@@ -269,7 +269,7 @@ export default function ProfilePage() {
           position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; border-radius: 50%;
           border: 2px solid var(--surface); box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
         }
-        .pp-mli-status-dot.approved { background: var(--izigo-green); }
+        .pp-mli-status-dot.approved { background: var(--status-success); }
         .pp-mli-status-dot.pending { background: #FFB800; }
         .pp-mli-status-dot.rejected { background: #E0553F; }
         .pp-mli-body { padding: 10px; }
@@ -299,7 +299,7 @@ export default function ProfilePage() {
           font-size: 14px; color: var(--text); font-family: var(--sans); width: 100%;
           transition: border-color 0.15s ease;
         }
-        .pp-field input:focus, .pp-field select:focus { border-color: var(--izigo-green); outline: none; }
+        .pp-field input:focus, .pp-field select:focus { border-color: var(--rebrand-cta); outline: none; }
         .pp-field input:disabled { color: var(--text-soft); background: var(--bg-soft); }
 
         .pp-note { font-size: 12px; color: var(--text-soft); margin: 14px 0 0; line-height: 1.5; }
@@ -307,28 +307,28 @@ export default function ProfilePage() {
 
         .pp-admin-link {
           display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700;
-          color: var(--izigo-green); margin-top: 6px;
+          color: var(--rebrand-cta); margin-top: 6px;
         }
         .pp-admin-link:hover { text-decoration: underline; }
 
         /* Sidebar cards */
         .pp-completion-bar { height: 8px; border-radius: 999px; background: var(--bg-soft); overflow: hidden; margin: 10px 0 12px; }
-        .pp-completion-fill { height: 100%; background: var(--izigo-green); border-radius: 999px; transition: width 0.2s ease; }
+        .pp-completion-fill { height: 100%; background: var(--rebrand-cta); border-radius: 999px; transition: width 0.2s ease; }
         .pp-completion-percent { font-size: 20px; font-weight: 800; }
         .pp-completion-remaining { font-size: 12px; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin: 12px 0 6px; }
         .pp-completion-list { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text); }
         .pp-completion-list li { display: flex; align-items: center; gap: 8px; list-style: none; }
-        .pp-completion-list li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--izigo-orange); flex-shrink: 0; }
+        .pp-completion-list li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--rebrand-text); flex-shrink: 0; }
 
         .pp-founder-list { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text); margin-top: 4px; }
         .pp-founder-item { display: flex; align-items: center; gap: 8px; }
-        .pp-founder-item.done { color: var(--izigo-green); font-weight: 700; }
-        .pp-founder-item .pp-founder-icon-done { color: var(--izigo-green); flex-shrink: 0; }
+        .pp-founder-item.done { color: var(--rebrand-text); font-weight: 700; }
+        .pp-founder-item .pp-founder-icon-done { color: var(--rebrand-text); flex-shrink: 0; }
         .pp-founder-item .pp-founder-icon-pending { color: var(--text-soft); flex-shrink: 0; }
-        .pp-founder-card { border-color: var(--izigo-orange); }
+        .pp-founder-card { border-color: var(--rebrand-cta); }
         .pp-founder-badge-row { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; margin-bottom: 4px; }
         .pp-founder-vip-until { font-size: 12.5px; color: var(--text-soft); margin-bottom: 14px; }
-        .pp-founder-benefit { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--izigo-green); font-weight: 700; padding: 4px 0; }
+        .pp-founder-benefit { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--rebrand-cta); font-weight: 700; padding: 4px 0; }
 
         .pp-quick-list { display: flex; flex-direction: column; gap: 4px; }
         .pp-quick-link {
@@ -336,7 +336,7 @@ export default function ProfilePage() {
           font-size: 13.5px; font-weight: 600; color: var(--text); transition: background 0.15s ease;
         }
         .pp-quick-link:hover { background: var(--bg-soft); }
-        .pp-quick-link svg { color: var(--izigo-green); flex-shrink: 0; }
+        .pp-quick-link svg { color: var(--rebrand-cta); flex-shrink: 0; }
 
         /* Sticky save bar */
         .pp-save-bar {
@@ -345,11 +345,11 @@ export default function ProfilePage() {
           box-shadow: 0 -4px 16px rgba(20, 30, 28, 0.06);
         }
         .pp-save-status { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--text-soft); }
-        .pp-save-status.dirty { color: var(--izigo-orange); }
-        .pp-save-status.saved { color: var(--izigo-green); }
+        .pp-save-status.dirty { color: #B87700; }
+        .pp-save-status.saved { color: var(--rebrand-text); }
         .pp-save {
           display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          background: var(--izigo-orange); color: var(--on-brand); border: none; border-radius: 10px;
+          background: var(--rebrand-cta); color: #fff; border: none; border-radius: 10px;
           padding: 13px 26px; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap;
         }
         .pp-save:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -380,8 +380,8 @@ export default function ProfilePage() {
             grid-row: 1; grid-column: 1;
           }
           .pp-stat-icon svg { width: 9px; height: 9px; }
-          .pp-stat-icon-member { background: rgba(0,200,151,0.14); color: var(--izigo-green); }
-          .pp-stat-icon-listings { background: rgba(255,166,0,0.16); color: var(--izigo-orange); }
+          .pp-stat-icon-member { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
+          .pp-stat-icon-listings { background: var(--rebrand-bg-tint); color: var(--rebrand-text); }
           .pp-stat-icon-reviews { background: rgba(255,184,0,0.18); color: #B8860B; }
           .pp-stat-icon-whatsapp { background: rgba(37,211,102,0.16); color: #25D366; }
           .pp-stat-label {
@@ -657,8 +657,8 @@ export default function ProfilePage() {
 
             {user?.founderHost ? (
               <div className="pp-card pp-founder-card">
-                <div className="pp-founder-badge-row"><Award size={18} color="var(--izigo-orange)" />🏅 Founder Host</div>
-                <div className="pp-founder-badge-row"><Crown size={16} color="var(--izigo-orange)" />👑 Launch VIP Active</div>
+                <div className="pp-founder-badge-row"><Award size={18} color="var(--rebrand-cta)" />🏅 Founder Host</div>
+                <div className="pp-founder-badge-row"><Crown size={16} color="var(--rebrand-cta)" />👑 Launch VIP Active</div>
                 <p className="pp-founder-vip-until">
                   VIP Valid Until: {user.vipExpiresAt ? new Date(user.vipExpiresAt).toLocaleDateString() : "—"}
                 </p>
