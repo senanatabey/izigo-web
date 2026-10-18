@@ -115,7 +115,7 @@ export default function CarDetail() {
         .car-detail .cd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .car-detail .cd-price span { font-size: 13px; font-weight: 500; color: var(--text-soft); }
         .car-detail .cd-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .car-detail .cd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .car-detail .cd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--rebrand-bg-tint); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
         .car-detail .cd-agent-price {
           margin-top: 12px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;

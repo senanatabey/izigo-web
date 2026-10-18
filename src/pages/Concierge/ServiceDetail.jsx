@@ -97,7 +97,7 @@ export default function ServiceDetail() {
         .service-detail .sd-sidebar { border: 1px solid var(--border); border-radius: 16px; padding: 24px; background: var(--surface); }
         .service-detail .sd-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .service-detail .sd-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
-        .service-detail .sd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .service-detail .sd-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--rebrand-bg-tint); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
         .service-detail .detail-save-btn { position: static; }
         .service-detail .sd-host { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
         .service-detail .sd-host-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-soft); display: flex; align-items: center; justify-content: center; color: var(--rebrand-cta); flex-shrink: 0; }

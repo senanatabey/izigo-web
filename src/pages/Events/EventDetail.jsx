@@ -115,7 +115,7 @@ export default function EventDetail() {
         .event-detail .ed-sb-divider { border-top: 1px solid var(--border); margin: 18px 0; }
         .event-detail .ed-price { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
         .event-detail .ed-price-old { font-size: 13px; font-weight: 500; color: #E0553F !important; text-decoration: line-through; }
-        .event-detail .ed-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .event-detail .ed-price-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--rebrand-bg-tint); border-radius: 12px; padding: 14px 16px; margin: 4px 0 16px; }
         .event-detail .ed-agent-price {
           margin-top: 12px; padding: 8px 12px; border-radius: 10px;
           font-size: 13.5px; font-weight: 700;
