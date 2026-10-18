@@ -179,12 +179,6 @@ export default function EventDetail() {
         </div>
 
         <aside className="ed-sidebar">
-          <div className="ed-facts">
-            <span><Calendar size={15} />{formatDate(event.date)}</span>
-          </div>
-
-          <div className="ed-sb-divider" />
-
           <div className="ed-price-row">
             <div className="ed-price">
               {event.price === 0 ? t("eventsPage.free") : event.discount ? (<><span className="ed-price-old">{formatPrice(event.price)}</span> {formatPrice(Math.round(event.price * (1 - event.discount / 100)))}</>) : formatPrice(event.price)}
@@ -197,6 +191,12 @@ export default function EventDetail() {
               {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
             </div>
           )}
+
+          <div className="ed-sb-divider" />
+
+          <div className="ed-facts">
+            <span><Calendar size={15} />{formatDate(event.date)}</span>
+          </div>
 
           <div className="ed-sb-divider" />
 
