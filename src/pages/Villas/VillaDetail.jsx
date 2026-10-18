@@ -287,7 +287,7 @@ export default function VillaDetail() {
           .villa-detail .vd-main { grid-column: 1; grid-row: 3; }
           /* Mobilde qiymət ən yuxarıda görünsün deyə DOM sırasını
              dəyişmədən, yalnız vizual sıranı flex order ilə dəyişirik. */
-          .villa-detail .vd-sb-divider:has(+ .vd-price-row) { order: -2; }
+          .villa-detail .vd-sb-divider:has(+ .vd-facts) { order: -1; }
           .villa-detail .vd-price-row { order: -2; }
           .villa-detail .vd-agent-price { order: -1; }
         }
@@ -342,6 +342,7 @@ export default function VillaDetail() {
 
           .villa-detail .vd-price-row { order: -90; }
           .villa-detail .vd-agent-price { order: -89; }
+          .villa-detail .vd-sb-divider:has(+ .vd-facts) { order: -85; }
           .villa-detail .vd-facts { order: -80; }
           .villa-detail .vd-bedtypes { order: -79; }
           .villa-detail .vd-sb-divider:has(+ .vd-sb-amenities-label) { order: -78; }
@@ -454,6 +455,32 @@ export default function VillaDetail() {
         </div>
 
         <aside className="vd-sidebar">
+          <div className="vd-price-row">
+            <div className="vd-price-block">
+              {/* Main price is always the 1-night rate — a long-stay discount
+                  is conditional on a minimum number of nights, so it must
+                  never be the number shown as "the price" by default. It
+                  gets its own smaller line underneath instead. */}
+              <div className="vd-price">
+                {villa.discount ? (<><span className="vd-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))}</>) : formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span>
+              </div>
+              {longStayActive && (
+                <div className="vd-longstay-note">
+                  {t("villaDetail.longStayNote").replace("{nights}", villa.longStayMinNights)}: {formatPrice(longStayPrice)} {t("villaDetail.perNight")}
+                </div>
+              )}
+            </div>
+            <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
+          </div>
+
+          {agentPrice != null && (
+            <div className="vd-agent-price">
+              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
+            </div>
+          )}
+
+          <div className="vd-sb-divider" />
+
           <div className="vd-facts">
             <span><Users size={15} />{villa.guests} {t("villaDetail.guestsUnit")}</span>
             <span><BedDouble size={15} />{villa.bedrooms} {t("villaDetail.bedroomsUnit")}</span>
@@ -487,32 +514,6 @@ export default function VillaDetail() {
                 })}
               </div>
             </>
-          )}
-
-          <div className="vd-sb-divider" />
-
-          <div className="vd-price-row">
-            <div className="vd-price-block">
-              {/* Main price is always the 1-night rate — a long-stay discount
-                  is conditional on a minimum number of nights, so it must
-                  never be the number shown as "the price" by default. It
-                  gets its own smaller line underneath instead. */}
-              <div className="vd-price">
-                {villa.discount ? (<><span className="vd-price-old">{formatPrice(villa.price)}</span> {formatPrice(Math.round(villa.price * (1 - villa.discount / 100)))}</>) : formatPrice(villa.price)} <span>{t("villaDetail.perNight")}</span>
-              </div>
-              {longStayActive && (
-                <div className="vd-longstay-note">
-                  {t("villaDetail.longStayNote").replace("{nights}", villa.longStayMinNights)}: {formatPrice(longStayPrice)} {t("villaDetail.perNight")}
-                </div>
-              )}
-            </div>
-            <SaveHeart type="villa" id={villa.id} className="detail-save-btn" />
-          </div>
-
-          {agentPrice != null && (
-            <div className="vd-agent-price">
-              {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
-            </div>
           )}
 
           <div className="vd-sb-divider" />
