@@ -270,7 +270,7 @@ export default function TripRequestDetailPage() {
           font-weight: 700; font-size: 13px; cursor: pointer; border: none; text-decoration: none;
         }
         .wa-copy-btn { background: var(--bg-soft); color: var(--text); }
-        .wa-send-btn { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+        .wa-send-btn { background: var(--whatsapp-brand); color: #fff; }
         .wa-send-btn:hover { background: var(--whatsapp-brand-hover); }
 
         @media (max-width: 860px) {

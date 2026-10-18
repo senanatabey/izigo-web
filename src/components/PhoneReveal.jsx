@@ -51,7 +51,7 @@ export default function PhoneReveal({ phone, listingId }) {
           .phone-reveal .pr-number-revealed svg { color: var(--rebrand-cta); flex-shrink: 0; }
           .phone-reveal .pr-whatsapp {
             display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-            background: var(--whatsapp-brand); color: var(--rebrand-text); border: none; border-radius: 10px;
+            background: var(--whatsapp-brand); color: #fff; border: none; border-radius: 10px;
             padding: 13px; font-weight: 700; font-size: 14.5px; text-decoration: none;
           }
           .phone-reveal .pr-whatsapp:hover { background: var(--whatsapp-brand-hover); }
@@ -102,7 +102,7 @@ export default function PhoneReveal({ phone, listingId }) {
             }
             .pr-mobile-bar .pr-mobile-call { background: var(--rebrand-cta); }
             .pr-mobile-bar .pr-mobile-call:hover { background: var(--rebrand-cta-hover); }
-            .pr-mobile-bar .pr-mobile-whatsapp { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+            .pr-mobile-bar .pr-mobile-whatsapp { background: var(--whatsapp-brand); color: #fff; }
             .pr-mobile-bar .pr-mobile-whatsapp:hover { background: var(--whatsapp-brand-hover); }
           }
         `}</style>

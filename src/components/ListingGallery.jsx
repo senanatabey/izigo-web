@@ -222,7 +222,7 @@ export default function ListingGallery({
           background: var(--rebrand-cta); color: #fff; text-decoration: none;
         }
         .listing-gallery .lg-lb-contact:hover { filter: brightness(0.95); }
-        .listing-gallery a.lg-lb-contact { background: var(--whatsapp-brand); color: var(--rebrand-text); }
+        .listing-gallery a.lg-lb-contact { background: var(--whatsapp-brand); color: #fff; }
         .listing-gallery a.lg-lb-contact:hover { background: var(--whatsapp-brand-hover); }
         .listing-gallery .lg-lb-close {
           flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none;

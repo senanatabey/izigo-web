@@ -107,8 +107,10 @@ src/
   - `--whatsapp-brand` `#25D366` (hover `#1DA851`) — WhatsApp öz rəsmi yaşılı ilə saxlanılır. Bu bizim
     brend yaşılımız (`#3DB460`) DEYİL, ayrıca üçüncü-tərəf tanınma istisnasıdır; YALNIZ WhatsApp düymələrində
     (`PhoneReveal`, lightbox-dakı wa.me linki) işlət. "Zəng et" düyməsi brend mavisindədir (`--rebrand-cta`).
-    WhatsApp düymələrində mətn tünd-göydür (`--rebrand-text`): ağ mətn kontrastı 1.98:1 verirdi, AA-nı keçmirdi
-    (tünd-göy: 8.27:1, hover-də 5.29:1).
+    Mətn/ikon ağdır (`#fff`), WhatsApp-ın öz rəsmi nişan konvensiyasına uyğun; kontrast (1.98:1) bilərəkdən
+    AA standartından aşağıdır, çünki marka tanınırlığı burda prioritetdir (səhv deyil, şüurlu qərardır).
+    Bütün `wa.me` düymələri: `PhoneReveal` (desktop + mobil), `ListingGallery` lightbox linki, `ConciergePage`
+    `cg-whatsapp`, admin `wa-send-btn`.
 - **Dark mode tamamilə silinib** — `ThemeContext`/toggle/`[data-theme="dark"]` CSS yoxdur, sayt yalnız light.
   Pilot qaydalarındakı `:root:not([data-theme="dark"])` qarovul selektorları zərərsiz qalıqdır.
 - **Loqo/favikon hazırdır — TOXUNMA:** `public/favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`,

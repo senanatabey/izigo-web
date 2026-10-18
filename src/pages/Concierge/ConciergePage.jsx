@@ -141,7 +141,7 @@ export default function ConciergePage() {
         }
         .concierge-page .cg-whatsapp {
           display: inline-flex; align-items: center; gap: 8px;
-          background: var(--whatsapp-brand); color: var(--rebrand-text); border: none; border-radius: 10px;
+          background: var(--whatsapp-brand); color: #fff; border: none; border-radius: 10px;
           padding: 13px 24px; font-weight: 700; font-size: 14.5px; text-decoration: none;
           transition: filter 0.15s ease;
         }
