@@ -179,13 +179,6 @@ export default function CarDetail() {
         </div>
 
         <aside className="cd-sidebar">
-          <div className="cd-facts">
-            <span><Users size={15} />{car.seats} {t("carsPage.seatsUnit")}</span>
-            <span><Settings2 size={15} />{t(`addListing.${car.transmission}`)}</span>
-          </div>
-
-          <div className="cd-sb-divider" />
-
           <div className="cd-price-row">
             <div className="cd-price">
               {car.discount ? (<><span className="cd-price-old">{formatPrice(car.price)}</span> {formatPrice(Math.round(car.price * (1 - car.discount / 100)))}</>) : formatPrice(car.price)} <span>{t("carsPage.perDay")}</span>
@@ -198,6 +191,13 @@ export default function CarDetail() {
               {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
             </div>
           )}
+
+          <div className="cd-sb-divider" />
+
+          <div className="cd-facts">
+            <span><Users size={15} />{car.seats} {t("carsPage.seatsUnit")}</span>
+            <span><Settings2 size={15} />{t(`addListing.${car.transmission}`)}</span>
+          </div>
 
           <div className="cd-sb-divider" />
 
