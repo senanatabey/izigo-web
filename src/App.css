@@ -353,6 +353,10 @@
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(20, 30, 28, 0.14), 0 2px 8px rgba(20, 30, 28, 0.08);
   padding: 8px;
+  max-height: calc(100vh - 100px);
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 60;
   opacity: 0;
   transform: translateY(-6px) scale(0.98);
