@@ -189,13 +189,6 @@ export default function TransferDetail() {
         </div>
 
         <aside className="td-sidebar">
-          <div className="td-facts">
-            <span>{item.type === "tour" ? t("transfersPage.typeTour") : t("transfersPage.typeTransfer")}</span>
-            <span><Users size={15} />{item.seats} {t("transfersPage.seatsUnit")}</span>
-          </div>
-
-          <div className="td-sb-divider" />
-
           <div className="td-price-row">
             <div className="td-price">
               {item.discount ? (<><span className="td-price-old">{formatPrice(item.price)}</span> {formatPrice(Math.round(item.price * (1 - item.discount / 100)))}</>) : formatPrice(item.price)} <span>{t("transfersPage.perPerson")}</span>
@@ -208,6 +201,13 @@ export default function TransferDetail() {
               {t("villaDetail.agentPriceLabel")}: {formatPrice(agentPrice)}
             </div>
           )}
+
+          <div className="td-sb-divider" />
+
+          <div className="td-facts">
+            <span>{item.type === "tour" ? t("transfersPage.typeTour") : t("transfersPage.typeTransfer")}</span>
+            <span><Users size={15} />{item.seats} {t("transfersPage.seatsUnit")}</span>
+          </div>
 
           <div className="td-sb-divider" />
 
