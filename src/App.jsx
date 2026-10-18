@@ -1264,6 +1264,19 @@ function RouteFallback() {
   return <div style={{ minHeight: "40vh" }} />;
 }
 
+/* Resets scroll to the top when the route (pathname) changes — BrowserRouter
+   keeps the old scroll position otherwise, so opening a similar listing from
+   the bottom of a page would land at the bottom of the new one. Only pathname
+   triggers it: query/state changes (filters, tabs) and #anchor links do not. */
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+  return null;
+}
+
 /* =========================================================================
    ROOT APP — full route tree, matching the MVP sitemap 1:1
    ========================================================================= */
@@ -1275,6 +1288,7 @@ export default function App() {
     <AuthModalProvider>
     <SavedProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <AuthModal />
         <Suspense fallback={<RouteFallback />}>
         <Routes>
