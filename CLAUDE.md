@@ -16,8 +16,7 @@ Online ödəniş yoxdur — istifadəçilər host-larla birbaşa WhatsApp üzər
 - **Backend/DB:** Supabase (Postgres + Auth + Storage) — ayrıca custom backend YOXDUR
 - **Deploy:** Vercel
 - **Stil:** CSS-in-file (`<style>` tag-lar komponent daxilində), CSS dəyişənləri `src/index.css`-də
-  (`--rebrand-*` brend tokenləri, köhnə `--izigo-green`/`--izigo-orange`, `--on-brand`, `--text`, `--text-soft`,
-  `--border`, `--bg`, `--surface` və s.) — Tailwind istifadə OLUNMUR. Sayt yalnız light temadadır (dark mode silinib).
+  (`--rebrand-*` brend tokenləri, `--text`, `--text-soft`, `--border`, `--bg`, `--surface` və s.) — Tailwind istifadə OLUNMUR. Sayt yalnız light temadadır (dark mode silinib).
 
 ## Hazırkı fayl strukturu
 
@@ -75,10 +74,10 @@ src/
 ## Dizayn dili (yeni səhifə/komponent tikəndə buna sadiq qal)
 
 - Rənglər: yeni iş üçün **`--rebrand-*` tokenlərindən** istifadə et (aşağıda "Rəng sistemi" bölməsinə bax).
-  Köhnə yaşıl `#00C897` / narıncı `#FF7A00` (`--izigo-*`) hələ rebrand olunmamış səhifələrdə qalır —
-  yeni yerə köhnə rəngi daşıma.
-- Köhnə yaşıl/narıncı **doldurulmuş** fonda mətn `var(--on-brand)` (`#1F2937`) qalır (ağ AA-dan keçmir).
-  Yeni mavi `#0071EB` fonda isə mətn **ağdır** (4.60:1).
+  Köhnə yaşıl `#00C897` / narıncı `#FF7A00` və `--izigo-green`/`--izigo-orange`/`--izigo-navy`/`--on-brand`
+  tokenləri silinib — geri gətirmə.
+- Mavi `#0071EB` doldurulmuş fonda mətn **ağdır** (4.60:1). Aktiv/klikləmə = mavi, bitmiş vəziyyət = tünd-göy,
+  status üçün aşağıdakı ayrıca tokenlər (`--status-success`, amber `#B87700`, qırmızı `#E0553F`).
 - Font: yalnız 'Inter' (`var(--sans)`), başlıqlar da daxil. Yüklənən çəkilər 400/500/600;
   `font-synthesis: none` olduğu üçün 700/800 yazma — onsuz da 600 kimi görünür.
   ('Fraunces' `index.html`-də yüklənir, amma yalnız NotificationsPage istifadə edir — yeni yerdə işlətmə.)
@@ -98,7 +97,8 @@ src/
     işlətmə — qəti qayda.** (Mobil "+" bu qaydadan şüurlu istisnadır — mavidir.)
   - `--rebrand-text` = `#05203D` (tünd-göy) — başlıqlar və böyük rəngli bloklar (məs. Plan My Trip bölməsi).
   - Digərləri: `--rebrand-text-sec #5B6B7A`, `--rebrand-border #AFD0F4`, `--rebrand-bg #FFFDF8`,
-    `--rebrand-bg-tint #EFF5FB`, `--rebrand-gold #D98A2B` (token, hələ istifadə olunmur).
+    `--rebrand-bg-tint #EFF5FB`, `--rebrand-gold #D98A2B` (YALNIZ "Agent" host tipi/qiymət nişanı: `rgba(217,138,43,0.14)` fon +
+    `--rebrand-text` mətn; başqa mənaya bağlama).
   - `--alert-dot` = `#E5484D` — **brend palitrasının hissəsi DEYİL**, sistem siqnalıdır (təcililik göstəricisi).
     YALNIZ oxunmamış bildiriş nöqtəsi (`NotificationBell`) üçün; başqa yerdə işlətmə.
   - `--status-success` = `#2E9D5E` — **brend palitrasının hissəsi DEYİL**, "təsdiqləndi/published" status siqnalıdır
@@ -115,13 +115,15 @@ src/
   `apple-touch-icon.png`, `android-chrome-*`, `maskable-icon-512x512.png` (göy fon + ağ "Z");
   `public/logo/` — `izigo-wordmark.png` (navbar, footer), `izigo-full-tagline.png`,
   `izigo-reversed-white.png` (tünd sidebar). Manifest faylı yoxdur.
-- **Rollout statusu:**
-  - Bitib: ana səhifə (`IzigoHomepage.jsx`-dəki pilot bloku — hero, axtarış, kartlar, Plan My Trip və s.),
-    shell (navbar "Yeni elan", aşağı menyu "+" və aktiv bənd, dil seçicisi aktiv dili, footer loqosu),
-    auth formaları (səhifə + modal) və elan formasının əsas düymələri (`App.css`-in sonundakı pilot blokları).
-  - Hələ köhnə palitrada: siyahı/detal səhifələri (`/villas`, `/cars`, `/transfers`, `/events`, detal
-    səhifələri, `/concierge`, `/destinations` və s.), elan formasının stepper/chip-ləri, auth linkləri.
-  - **4-cü mərhələ (admin + regional partnyor paneli) HƏLƏ BAŞLAMAYIB.**
+- **Rollout statusu: BİTİB (2026-10-18).** Bütün səhifələr, shell, komponentlər, auth, elan formaları,
+  admin və regional partnyor paneli yeni palitradadır; `src/`-də köhnə yaşıl/narıncı qalmayıb (grep ilə yoxlanıb).
+  - Status rəngləri: mavi = aktiv/əməliyyat, `--status-success` = təsdiqləndi, amber `#B87700` = gözləyir/diqqət,
+    qırmızı `#E0553F` = rədd/təhlükə.
+  - Qəsdən toxunulmayanlar: `forest`/`meadow`/`teal`/`copper` dekorativ qradient fonları (şəkli olmayan
+    elan/kart placeholder-ləri: Home, Cars, Deals, Events). Marka palitrasından kənardır, köhnə
+    `--izigo-green`/`--izigo-orange`-dan törəməyib, "klikləmə" mənası daşımır — dəyişmə.
+  - Qalan qarovul selektorları (`:root:not([data-theme="dark"])`) və `IzigoHomepage.jsx`-dəki `.izigo-home`
+    remap bloku (`--bg`/`--surface`/`--text`) zərərsiz qalıqdır.
 
 ## İş qaydaları (vacib)
 
