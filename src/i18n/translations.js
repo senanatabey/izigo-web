@@ -99,7 +99,7 @@ export const translations = {
     },
     phoneReveal: {
       show: "Show",
-      safetyWarning: "Caution: never send a deposit or payment before viewing the property in person.",
+      safetyWarning: "Caution: never send a deposit or payment without meeting in person or verifying first.",
       call: "Call",
     },
     carsPage: {
@@ -957,7 +957,7 @@ export const translations = {
     },
     phoneReveal: {
       show: "Göstər",
-      safetyWarning: "Diqqət! Görüş keçirib evə baxmadan heç kimə beh və ya ödəniş etməyin.",
+      safetyWarning: "Diqqət! Görüşmədən və ya yoxlamadan heç kimə beh və ya ödəniş etməyin.",
       call: "Zəng et",
     },
     carsPage: {
@@ -1822,7 +1822,7 @@ export const translations = {
     },
     phoneReveal: {
       show: "Показать",
-      safetyWarning: "Внимание: никогда не переводите предоплату или деньги, не осмотрев объект лично.",
+      safetyWarning: "Внимание: никогда не переводите предоплату или деньги, не встретившись лично и не проверив.",
       call: "Позвонить",
     },
     carsPage: {
@@ -2653,7 +2653,7 @@ export const translations = {
     },
     phoneReveal: {
       show: "إظهار",
-      safetyWarning: "تنبيه: لا ترسل عربونًا أو أي دفعة أبدًا قبل معاينة العقار شخصيًا.",
+      safetyWarning: "تنبيه: لا ترسل عربونًا أو أي دفعة أبدًا قبل اللقاء شخصيًا أو التحقق.",
       call: "اتصال",
     },
     carsPage: {
