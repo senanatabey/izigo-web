@@ -622,6 +622,35 @@ function AccountMenu() {
 /* Shared bottom tab bar (Home / Saved / + / Concierge / Account) — used by
    MainLayout (public pages, where it can hide on scroll-down) and AppLayout
    (account pages like Profile, where it must stay permanently visible). */
+/* Aşağı naviqasiya aşağı sürüşdürəndə gizlənir, yuxarı sürüşdürəndə geri gəlir
+   (tap.az-dakı kimi) — ekranın çox yuxarısında (y <= 80) həmişə görünür. Hər iki
+   layout (MainLayout, AppShell) eyni davranışı paylaşır; scroll hadisəsi
+   requestAnimationFrame ilə throttle olunur. */
+function useBottomNavHidden() {
+  const [hidden, setHidden] = useState(false);
+  const lastYRef = React.useRef(0);
+  const tickingRef = React.useRef(false);
+  useEffect(() => {
+    const update = () => {
+      tickingRef.current = false;
+      const y = window.scrollY;
+      const last = lastYRef.current;
+      if (y <= 80) setHidden(false);
+      else if (y > last + 4) setHidden(true);
+      else if (y < last - 4) setHidden(false);
+      lastYRef.current = y;
+    };
+    const onScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+      window.requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return hidden;
+}
+
 function BottomNav({ hidden = false }) {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -753,22 +782,7 @@ function MainLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Aşağı naviqasiya aşağı sürüşdürəndə gizlənir, yuxarı sürüşdürəndə geri gəlir
-  // (tap.az-dakı kimi) — ekranın çox yuxarısında (y <= 80) həmişə görünür.
-  const [bottomNavHidden, setBottomNavHidden] = useState(false);
-  const lastScrollYRef = React.useRef(0);
-  useEffect(() => {
-    const onBottomNavScroll = () => {
-      const y = window.scrollY;
-      const last = lastScrollYRef.current;
-      if (y <= 80) setBottomNavHidden(false);
-      else if (y > last + 4) setBottomNavHidden(true);
-      else if (y < last - 4) setBottomNavHidden(false);
-      lastScrollYRef.current = y;
-    };
-    window.addEventListener("scroll", onBottomNavScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onBottomNavScroll);
-  }, []);
+  const bottomNavHidden = useBottomNavHidden();
 
   return (
     <div>
@@ -917,6 +931,7 @@ const PARTNER_AREA_ROLE_LABEL = { regional_partner: "Regional partnyor", admin: 
 
 function AppShell() {
   const { user, logout } = useAuth();
+  const bottomNavHidden = useBottomNavHidden();
   const { t } = useLanguage();
   const location = useLocation();
   const inPartnerArea = location.pathname.startsWith("/partner");
@@ -985,7 +1000,7 @@ function AppShell() {
         </p>
         <Outlet />
       </main>
-      <BottomNav />
+      <BottomNav hidden={bottomNavHidden} />
     </div>
   );
 }
