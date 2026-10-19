@@ -254,7 +254,7 @@ export default function ProfilePage() {
         .pp-mf-chip:hover { background: var(--rebrand-bg-tint); }
         .pp-mf-chip.active { background: var(--rebrand-cta); color: #fff; }
 
-        .pp-my-listings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .pp-my-listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
         .pp-mli-card {
           display: block; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
           transition: box-shadow 0.15s ease, transform 0.15s ease;
@@ -423,7 +423,7 @@ export default function ProfilePage() {
           .pp-my-listings { margin-top: 12px; }
           .pp-mf-filters { margin-bottom: 10px; }
           .pp-mf-chip { padding: 5px 12px; font-size: 11.5px; }
-          .pp-my-listings-grid { gap: 8px; }
+          .pp-my-listings-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
           .pp-mli-body { padding: 8px; }
           .pp-mli-title { font-size: 12px; min-height: 32px; }
           .pp-mli-meta { font-size: 10px; }
