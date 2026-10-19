@@ -188,6 +188,9 @@ export default function ProfilePage() {
           display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--rebrand-cta);
           background: var(--rebrand-bg-tint); border-radius: 999px; padding: 4px 10px;
         }
+        .pp-badge-link { text-decoration: none; cursor: pointer; transition: background 0.15s ease; }
+        .pp-badge-link:hover { background: var(--rebrand-border); }
+        .pp-badge-link:focus-visible { outline: 2px solid var(--rebrand-cta); outline-offset: 2px; }
         .pp-role { font-size: 13px; color: var(--text-soft); font-weight: 600; }
 
 
@@ -421,7 +424,11 @@ export default function ProfilePage() {
             <h1>{user?.name}</h1>
             <div className="pp-badge-row">
               <span className="pp-role">{roleLabel}</span>
-              {stats.rating ? <span className="pp-badge"><Star size={12} />{stats.rating} ({stats.reviewCount})</span> : null}
+              {stats.rating ? (
+                <Link to="/my-listings" className="pp-badge pp-badge-link" aria-label={t("profilePage.viewAllReviews")}>
+                  <Star size={12} />{stats.rating} ({stats.reviewCount})
+                </Link>
+              ) : null}
             </div>
             {user?.role === "admin" && (
               <Link to="/admin" className="pp-admin-link"><LayoutDashboard size={13} />{t("profilePage.backToAdmin")}</Link>
