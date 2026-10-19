@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   User, Mail, Phone, MessageCircle, Send, Globe, Check, Circle,
   Star, PlusCircle, ListChecks, Bell, Heart, Coins, LayoutDashboard,
-  Award, Crown, Calendar, ChevronRight, Home, Settings, LogOut, ArrowLeft,
+  Award, Crown, ChevronRight, Home, Settings, LogOut, ArrowLeft,
   Users, DollarSign, Receipt,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -11,7 +11,6 @@ import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { fetchListingRatings, toneForId } from "../../lib/listings";
-import { formatMonthYear } from "../../lib/formatDate";
 
 const QUICK_ACTIONS = [
   { key: "quickAddListing", to: "/add-listing", icon: PlusCircle },
@@ -36,11 +35,6 @@ const PARTNER_QUICK_ACTIONS = [
 const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events", service: "concierge" };
 const CATEGORY_NAV_KEY = { villa: "nav.villas", car: "nav.cars", transfer: "nav.transfers", event: "nav.events", service: "nav.concierge" };
 
-function monthYear(dateStr, language) {
-  if (!dateStr) return "—";
-  return formatMonthYear(dateStr, language);
-}
-
 export default function ProfilePage() {
   const { t, language } = useLanguage();
   const { currency, formatPrice } = useCurrency();
@@ -62,7 +56,6 @@ export default function ProfilePage() {
   const [passwordMessage, setPasswordMessage] = useState("");
 
   const [stats, setStats] = useState({ listings: 0, rating: null, reviewCount: 0 });
-  const [statsError, setStatsError] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [myListings, setMyListings] = useState([]);
   const [myListingsLoading, setMyListingsLoading] = useState(true);
@@ -74,10 +67,8 @@ export default function ProfilePage() {
     supabase.from("listings").select("id").eq("host_id", user.id).then(async ({ data: listings, error }) => {
       if (error) {
         console.error("Failed to load listing stats:", error);
-        setStatsError(true);
         return;
       }
-      setStatsError(false);
       const ids = (listings || []).map((l) => l.id);
       const ratings = await fetchListingRatings(ids);
       const entries = Object.values(ratings);
@@ -191,21 +182,14 @@ export default function ProfilePage() {
           width: 96px; height: 96px; border-radius: 50%; background: var(--bg-soft); color: var(--rebrand-cta);
           display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 32px; font-weight: 800;
         }
-        .pp-hero h1 { font-size: 22px; font-weight: 800; margin: 0 0 6px; }
-        .pp-badge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+        .pp-hero h1 { font-size: 22px; font-weight: 800; margin: 0 0 2px; }
+        .pp-badge-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 2px; }
         .pp-badge {
           display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--rebrand-cta);
           background: var(--rebrand-bg-tint); border-radius: 999px; padding: 4px 10px;
         }
         .pp-role { font-size: 13px; color: var(--text-soft); font-weight: 600; }
 
-        .pp-stat-grid { display: grid; grid-template-columns: repeat(4, auto); gap: 12px; }
-        .pp-stat-card {
-          border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; text-align: center; min-width: 96px;
-        }
-        .pp-stat-card .pp-stat-label { font-size: 11px; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
-        .pp-stat-card .pp-stat-value { font-size: 14.5px; font-weight: 800; margin-top: 4px; }
-        .pp-stat-card.connected .pp-stat-value { color: var(--rebrand-cta); }
 
         /* Role row + My listings */
         .pp-role-row {
@@ -358,41 +342,16 @@ export default function ProfilePage() {
         @media (max-width: 860px) {
           .pp-layout { grid-template-columns: 1fr; }
           .pp-hero { flex-direction: column; align-items: flex-start; }
-          .pp-stat-grid { grid-template-columns: repeat(2, 1fr); width: 100%; }
           .pp-field-grid { grid-template-columns: 1fr; }
           .pp-save-bar { flex-direction: column; align-items: stretch; text-align: center; }
         }
 
-        .pp-stat-icon { display: none; }
         .pp-quick-chevron { display: none; }
 
         @media (max-width: 640px) {
           .pp-hero { padding: 18px; border-radius: 18px; gap: 14px; }
           .pp-avatar { width: 60px; height: 60px; font-size: 20px; }
           .pp-hero h1 { font-size: 17px; }
-          .pp-stat-grid { gap: 10px 16px; padding-top: 14px; margin-top: 6px; border-top: 1px solid var(--border); }
-          .pp-stat-card {
-            padding: 0; border: none; border-radius: 0; background: transparent; min-width: 0; text-align: left;
-            display: grid; grid-template-columns: 14px 1fr; column-gap: 5px; row-gap: 2px; align-items: center;
-          }
-          .pp-stat-icon {
-            display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px;
-            border-radius: 50%; position: static; margin: 0; flex-shrink: 0;
-            grid-row: 1; grid-column: 1;
-          }
-          .pp-stat-icon svg { width: 9px; height: 9px; }
-          .pp-stat-icon-member { background: var(--rebrand-bg-tint); color: var(--rebrand-cta); }
-          .pp-stat-icon-listings { background: var(--rebrand-bg-tint); color: var(--rebrand-text); }
-          .pp-stat-icon-reviews { background: rgba(255,184,0,0.18); color: #B8860B; }
-          .pp-stat-icon-whatsapp { background: rgba(37,211,102,0.16); color: #25D366; }
-          .pp-stat-label {
-            font-size: 9.5px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--text-soft);
-            grid-row: 1; grid-column: 2;
-          }
-          .pp-stat-card .pp-stat-value {
-            font-size: 13px; font-weight: 700; margin-top: 0; padding-right: 0; color: var(--text);
-            grid-row: 2; grid-column: 1 / -1;
-          }
 
           .pp-settings-fab {
             display: flex; align-items: center; justify-content: center;
@@ -403,6 +362,7 @@ export default function ProfilePage() {
 
           .pp-settings-overlay {
             position: fixed; inset: 0; z-index: 300; background: var(--bg);
+            scroll-padding-bottom: 110px;
             transform: translateX(100%); transition: transform 0.25s ease;
             overflow-y: auto; padding: 16px 18px 40px;
           }
@@ -461,32 +421,11 @@ export default function ProfilePage() {
             <h1>{user?.name}</h1>
             <div className="pp-badge-row">
               <span className="pp-role">{roleLabel}</span>
+              {stats.rating ? <span className="pp-badge"><Star size={12} />{stats.rating} ({stats.reviewCount})</span> : null}
             </div>
             {user?.role === "admin" && (
               <Link to="/admin" className="pp-admin-link"><LayoutDashboard size={13} />{t("profilePage.backToAdmin")}</Link>
             )}
-          </div>
-        </div>
-        <div className="pp-stat-grid">
-          <div className="pp-stat-card">
-            <div className="pp-stat-icon pp-stat-icon-member"><Calendar size={13} /></div>
-            <div className="pp-stat-label">{t("profilePage.memberSince")}</div>
-            <div className="pp-stat-value">{monthYear(user?.createdAt, language)}</div>
-          </div>
-          <div className="pp-stat-card">
-            <div className="pp-stat-icon pp-stat-icon-listings"><ListChecks size={13} /></div>
-            <div className="pp-stat-label">{t("profilePage.listingsLabel")}</div>
-            <div className="pp-stat-value">{statsError ? "—" : stats.listings}</div>
-          </div>
-          <div className="pp-stat-card">
-            <div className="pp-stat-icon pp-stat-icon-reviews"><Star size={13} /></div>
-            <div className="pp-stat-label">{t("profilePage.reviewsLabel")}</div>
-            <div className="pp-stat-value">{stats.rating ? `${stats.rating} ★ (${stats.reviewCount})` : "—"}</div>
-          </div>
-          <div className={`pp-stat-card${whatsappConnected ? " connected" : ""}`}>
-            <div className="pp-stat-icon pp-stat-icon-whatsapp"><MessageCircle size={13} /></div>
-            <div className="pp-stat-label">WhatsApp</div>
-            <div className="pp-stat-value">{whatsappConnected ? `${t("profilePage.whatsappConnected")} ✓` : "—"}</div>
           </div>
         </div>
       </div>
@@ -704,6 +643,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {(dirty || saving || saved || saveError) && (
         <div className="pp-save-bar">
           <span className={`pp-save-status ${saved ? "saved" : dirty ? "dirty" : ""}`}>
             {saved ? <><Check size={15} />{t("profilePage.saved")}</> : dirty ? t("profilePage.unsavedChanges") : t("profilePage.allSaved")}
@@ -711,6 +651,7 @@ export default function ProfilePage() {
           {saveError && <p className="pp-password-message">{saveError}</p>}
           <button type="submit" className="pp-save" disabled={!dirty || saving}>{t("profilePage.save")}</button>
         </div>
+        )}
       </form>
 
         <button type="button" className="pp-logout-btn" onClick={logout}>
