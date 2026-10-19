@@ -11,6 +11,7 @@ import PhoneReveal from "../../components/PhoneReveal";
 import SaveHeart from "../../components/SaveHeart";
 import ListingReviews from "../../components/ListingReviews";
 import ListingGallery from "../../components/ListingGallery";
+import { formatDateLong } from "../../lib/formatDate";
 
 export default function EventDetail() {
   const { id } = useParams();
@@ -77,7 +78,7 @@ export default function EventDetail() {
     );
   }
 
-  const formatDate = (iso) => new Date(iso).toLocaleDateString(language === "az" ? "az-AZ" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const formatDate = (iso) => formatDateLong(iso, language);
 
   return (
     <div className="event-detail">

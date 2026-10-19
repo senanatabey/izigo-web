@@ -11,6 +11,7 @@ import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { fetchListingRatings, toneForId } from "../../lib/listings";
+import { formatMonthYear } from "../../lib/formatDate";
 
 const QUICK_ACTIONS = [
   { key: "quickAddListing", to: "/add-listing", icon: PlusCircle },
@@ -37,7 +38,7 @@ const CATEGORY_NAV_KEY = { villa: "nav.villas", car: "nav.cars", transfer: "nav.
 
 function monthYear(dateStr, language) {
   if (!dateStr) return "—";
-  return new Date(dateStr).toLocaleDateString(language === "az" ? "az-AZ" : "en-US", { month: "long", year: "numeric" });
+  return formatMonthYear(dateStr, language);
 }
 
 export default function ProfilePage() {

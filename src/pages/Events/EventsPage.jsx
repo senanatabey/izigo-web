@@ -6,6 +6,7 @@ import { useCurrency } from "../../i18n/CurrencyContext";
 import { fetchApprovedListings, toneForId } from "../../lib/listings";
 import { useSeo } from "../../lib/seo";
 import SaveHeart from "../../components/SaveHeart";
+import { formatDateLong } from "../../lib/formatDate";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
 
 const CITIES = ALL_DESTINATIONS;
@@ -66,7 +67,7 @@ export default function EventsPage() {
     return list;
   }, [filtered, sortBy]);
 
-  const formatDate = (iso) => new Date(iso).toLocaleDateString(language === "az" ? "az-AZ" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const formatDate = (iso) => formatDateLong(iso, language);
 
   return (
     <div className="events-page">
