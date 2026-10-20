@@ -346,9 +346,11 @@ export default function ProfilePage() {
         .pp-quick-chevron { display: none; }
 
         @media (max-width: 640px) {
-          .pp-hero { padding: 18px; border-radius: 18px; gap: 14px; }
-          .pp-avatar { width: 60px; height: 60px; font-size: 20px; }
-          .pp-hero h1 { font-size: 17px; }
+          .pp-hero { padding: 14px 16px; border-radius: 18px; gap: 10px; }
+          .pp-hero-left { gap: 12px; }
+          .pp-avatar { width: 48px; height: 48px; font-size: 16px; }
+          .pp-hero h1 { font-size: 16px; margin-bottom: 0; }
+          .pp-badge-row { margin-bottom: 0; gap: 8px; }
 
           .pp-settings-fab {
             display: flex; align-items: center; justify-content: center;
