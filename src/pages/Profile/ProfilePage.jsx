@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  User, Mail, Phone, MessageCircle, Send, Globe, Check, Circle,
-  Star, PlusCircle, ListChecks, Bell, Heart, Coins, LayoutDashboard,
+  User, Mail, Phone, MessageCircle, Send, Check, Circle,
+  Star, PlusCircle, ListChecks, Bell, Heart, LayoutDashboard,
   Award, Crown, ChevronRight, Home, Settings, LogOut, ArrowLeft,
   Users, DollarSign, Receipt,
 } from "lucide-react";
@@ -39,7 +39,7 @@ const CATEGORY_NAV_KEY = { villa: "nav.villas", car: "nav.cars", transfer: "nav.
 
 export default function ProfilePage() {
   const { t, language } = useLanguage();
-  const { currency, formatPrice } = useCurrency();
+  const { formatPrice } = useCurrency();
   const { user, refreshUser, logout } = useAuth();
 
   const [name, setName] = useState(user?.name || "");
@@ -47,7 +47,6 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState(user?.phone || "");
   const [whatsapp, setWhatsapp] = useState(user?.phone || "");
   const [telegram, setTelegram] = useState("");
-  const [website, setWebsite] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -164,7 +163,7 @@ export default function ProfilePage() {
     <div className="profile-page">
       <style>{`
         .profile-page { max-width: 980px; margin: 0 auto; }
-        .pp-section-gap { display: flex; flex-direction: column; gap: 24px; }
+        .pp-section-gap { display: flex; flex-direction: column; gap: 16px; }
 
         /* Hero card */
         .pp-hero {
@@ -339,7 +338,6 @@ export default function ProfilePage() {
         @media (max-width: 860px) {
           .pp-layout { grid-template-columns: 1fr; }
           .pp-hero { flex-direction: column; align-items: flex-start; }
-          .pp-field-grid { grid-template-columns: 1fr; }
           .pp-save-bar { flex-direction: column; align-items: stretch; text-align: center; }
         }
 
@@ -391,19 +389,24 @@ export default function ProfilePage() {
           .pp-card { padding: 16px; border-radius: 16px; }
           .pp-card h2 { font-size: 14.5px; }
           .pp-card-subtitle { display: none; }
-          .pp-field-grid { gap: 0; }
+          /* Field pairs (phone + WhatsApp/Telegram, new + confirm password) sit side by side with the
+             label above the value; full-width fields and the stacked personal group use a compact
+             label-left / value-right row. */
+          .pp-field-grid { gap: 0 12px; }
           .pp-field {
-            flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;
-            padding: 13px 0; border-bottom: 1px solid var(--border);
+            flex-direction: column; align-items: stretch; gap: 2px; padding: 10px 0; min-width: 0;
           }
-          .pp-field:last-child { border-bottom: none; }
           .pp-field label { font-size: 12.5px; color: var(--text-soft); font-weight: 600; flex-shrink: 0; }
           .pp-field input, .pp-field select {
-            border: none; padding: 0; height: auto; text-align: right; font-weight: 700; font-size: 14px; background: transparent;
+            border: none; padding: 0; height: auto; text-align: left; font-weight: 700; font-size: 14px; background: transparent; min-width: 0;
           }
           .pp-field input:disabled { background: transparent; }
-          .pp-field.full { flex-direction: column; align-items: stretch; }
-          .pp-field.full input { text-align: left; }
+          .pp-field.full, .pp-fg-stack .pp-field {
+            grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 10px;
+            border-bottom: 1px solid var(--border);
+          }
+          .pp-field.full input, .pp-fg-stack .pp-field input { text-align: right; }
+          .pp-fg-stack .pp-field:last-child { border-bottom: none; }
 
           .pp-quick-link { position: relative; }
           .pp-quick-chevron { display: inline-block; margin-left: auto; color: var(--text-soft); }
@@ -514,7 +517,7 @@ export default function ProfilePage() {
             <div className="pp-card">
               <h2>{t("profilePage.sectionPersonal")}</h2>
               <p className="pp-card-subtitle">{t("profilePage.note")}</p>
-              <div className="pp-field-grid">
+              <div className="pp-field-grid pp-fg-stack">
                 <div className="pp-field full">
                   <label><User size={13} />{t("profilePage.nameLabel")}</label>
                   <input type="text" value={name} onChange={markDirty(setName)} />
@@ -526,10 +529,6 @@ export default function ProfilePage() {
                 <div className="pp-field">
                   <label><Phone size={13} />{t("profilePage.phoneLabel")}</label>
                   <input type="tel" value={phone} onChange={markDirty(setPhone)} />
-                </div>
-                <div className="pp-field">
-                  <label><Coins size={13} />{t("profilePage.currencyLabel")}</label>
-                  <input type="text" value={currency} disabled />
                 </div>
               </div>
             </div>
@@ -544,10 +543,6 @@ export default function ProfilePage() {
                 <div className="pp-field">
                   <label><Send size={13} />{t("profilePage.telegramLabel")}</label>
                   <input type="text" value={telegram} onChange={markDirty(setTelegram)} />
-                </div>
-                <div className="pp-field full">
-                  <label><Globe size={13} />{t("profilePage.websiteLabel")}</label>
-                  <input type="url" value={website} onChange={markDirty(setWebsite)} />
                 </div>
               </div>
             </div>
