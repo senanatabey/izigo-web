@@ -382,6 +382,7 @@ export const translations = {
       viewAll: "View all",
       filterAll: "All",
       settingsTitle: "Settings",
+      myProfile: "My profile",
     },
     myListingsPage: {
       heading: "My Listings",
@@ -1245,6 +1246,7 @@ export const translations = {
       viewAll: "Hamısına bax",
       filterAll: "Hamısı",
       settingsTitle: "Ayarlar",
+      myProfile: "Profilim",
     },
     myListingsPage: {
       heading: "Elanlarım",
@@ -2115,6 +2117,7 @@ export const translations = {
       viewAll: "Смотреть все",
       filterAll: "Все",
       settingsTitle: "Настройки",
+      myProfile: "Мой профиль",
     },
     myListingsPage: {
       heading: "Мои объявления",
@@ -2951,6 +2954,7 @@ export const translations = {
       viewAll: "عرض الكل",
       filterAll: "الكل",
       settingsTitle: "الإعدادات",
+      myProfile: "ملفي الشخصي",
     },
     myListingsPage: {
       heading: "إعلاناتي",

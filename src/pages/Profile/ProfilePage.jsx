@@ -318,6 +318,7 @@ export default function ProfilePage() {
         }
         .pp-quick-link:hover { background: var(--bg-soft); }
         .pp-quick-link svg { color: var(--rebrand-cta); flex-shrink: 0; }
+        .pp-compact-row { display: none; }
 
         /* Sticky save bar */
         .pp-save-bar {
@@ -336,7 +337,12 @@ export default function ProfilePage() {
         .pp-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
         @media (max-width: 860px) {
-          .pp-layout { grid-template-columns: 1fr; }
+          .pp-layout { grid-template-columns: 1fr; gap: 16px; }
+          /* Single column: flatten the two form columns so the profile-completion and Founder
+             blocks can come first, before "Personal info". */
+          .pp-section-gap { display: contents; }
+          .pp-completion-card { order: -2; }
+          .pp-founder-block { order: -1; }
           .pp-hero { flex-direction: column; align-items: flex-start; }
           .pp-save-bar { flex-direction: column; align-items: stretch; text-align: center; }
         }
@@ -344,6 +350,19 @@ export default function ProfilePage() {
         .pp-quick-chevron { display: none; }
 
         @media (max-width: 640px) {
+          /* Phones: the hero is replaced by a compact "My profile >" row that opens the settings overlay. */
+          .pp-hero { display: none; }
+          .pp-compact-row {
+            display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; margin: 0;
+            border: 1px solid var(--border); border-radius: 14px; background: var(--surface);
+            cursor: pointer; font-family: var(--sans); color: var(--text); text-align: left;
+          }
+          .pp-compact-avatar {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--rebrand-bg-tint); color: var(--rebrand-cta);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12.5px; font-weight: 800;
+          }
+          .pp-compact-title { flex: 1; font-size: 15px; font-weight: 700; }
+          .pp-compact-row svg { color: var(--text-soft); flex-shrink: 0; }
           .pp-hero { padding: 14px 16px; border-radius: 18px; gap: 10px; }
           .pp-hero-left { gap: 12px; }
           .pp-avatar { width: 48px; height: 48px; font-size: 16px; }
@@ -412,6 +431,12 @@ export default function ProfilePage() {
           .pp-quick-chevron { display: inline-block; margin-left: auto; color: var(--text-soft); }
         }
       `}</style>
+
+      <button type="button" className="pp-compact-row" onClick={() => setSettingsOpen(true)}>
+        <span className="pp-compact-avatar">{initials}</span>
+        <span className="pp-compact-title">{t("profilePage.myProfile")}</span>
+        <ChevronRight size={18} />
+      </button>
 
       <div className="pp-hero">
         <button type="button" className="pp-settings-fab" onClick={() => setSettingsOpen(true)} aria-label={t("profilePage.settingsTitle")}>
@@ -568,7 +593,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="pp-section-gap">
-            <div className="pp-card">
+            <div className="pp-card pp-completion-card">
               <h2>{t("profilePage.completionTitle")}</h2>
               <div className="pp-completion-percent">{completion.percent}%</div>
               <div className="pp-completion-bar"><div className="pp-completion-fill" style={{ width: `${completion.percent}%` }} /></div>
@@ -583,7 +608,7 @@ export default function ProfilePage() {
             </div>
 
             {user?.founderHost ? (
-              <div className="pp-card pp-founder-card">
+              <div className="pp-card pp-founder-card pp-founder-block">
                 <div className="pp-founder-badge-row"><Award size={18} color="var(--rebrand-cta)" />🏅 Founder Host</div>
                 <div className="pp-founder-badge-row"><Crown size={16} color="var(--rebrand-cta)" />👑 Launch VIP Active</div>
                 <p className="pp-founder-vip-until">
@@ -594,7 +619,7 @@ export default function ProfilePage() {
                 <div className="pp-founder-benefit"><Check size={14} />Priority Visibility</div>
               </div>
             ) : (
-              <div className="pp-card">
+              <div className="pp-card pp-founder-block">
                 <h2>Founder Progress</h2>
                 <div className="pp-founder-list">
                   <div className="pp-founder-item done"><Check size={15} className="pp-founder-icon-done" />Account Created</div>
