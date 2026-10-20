@@ -7,6 +7,8 @@ import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
 import { toneForId } from "../../lib/listings";
 import { ALL_DESTINATIONS, cityLabel } from "../../data/azerbaijanDestinations";
+import { ListingStatusTabs } from "../../components/ListingStatusTabs";
+import { useStatusFilter } from "../../lib/useStatusFilter";
 import { fetchHostReviews, replyToReview } from "../../lib/reviews";
 
 const TYPE_TO_PATH = { villa: "villas", car: "cars", transfer: "transfers", event: "events", service: "concierge" };
@@ -61,7 +63,6 @@ export default function MyListingsPage() {
   const [cityQuery, setCityQuery] = useState("");
   const [cityFilter, setCityFilter] = useState(null);
   const [cityOpen, setCityOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState("all");
   const [reviewsByListing, setReviewsByListing] = useState({});
   const [openReviewsFor, setOpenReviewsFor] = useState(null);
 
@@ -112,16 +113,9 @@ export default function MyListingsPage() {
     setCityQuery("");
   };
 
-  // Client-side filters: city first, then status. Tab counts follow the city filter.
+  // Client-side filters: city first, then status (shared with the profile block). Tab counts follow the city filter.
   const cityListings = cityFilter ? listings.filter((l) => l.city === cityFilter) : listings;
-  const statusCounts = {
-    all: cityListings.length,
-    approved: cityListings.filter((l) => l.status === "approved").length,
-    pending: cityListings.filter((l) => l.status === "pending").length,
-    rejected: cityListings.filter((l) => l.status === "rejected").length,
-  };
-  const filteredListings = statusFilter === "all" ? cityListings : cityListings.filter((l) => l.status === statusFilter);
-  const STATUS_TABS = ["all", "approved", "pending", "rejected"];
+  const { filter: statusFilter, setFilter: setStatusFilter, counts: statusCounts, filtered: filteredListings } = useStatusFilter(cityListings);
 
   return (
     <div className="my-listings-page">
@@ -217,6 +211,8 @@ export default function MyListingsPage() {
         .my-listings-page .mlp-item.is-open .mlp-side { padding-bottom: 12px; }
 
         @media (max-width: 640px) {
+          /* The bottom-nav "+" already opens "new listing"; keep phones uncluttered. */
+          .my-listings-page .mlp-toolbar-main { display: none; }
           .my-listings-page .mlp-list { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
           .my-listings-page .mlp-body { padding: 10px 10px 0; }
           .my-listings-page .mlp-title { font-size: 13px; }
@@ -241,7 +237,7 @@ export default function MyListingsPage() {
         </div>
       ) : (
         <>
-          <div className="mlp-toolbar">
+          <div className="mlp-toolbar mlp-toolbar-main">
             <div className="mlp-city-wrap">
               <div className="mlp-search">
                 <Search size={16} />
@@ -272,18 +268,13 @@ export default function MyListingsPage() {
             <Link to="/add-listing" className="mlp-new-btn"><Plus size={16} />{t("nav.publish")}</Link>
           </div>
 
-          <div className="mlp-tabs">
-            {STATUS_TABS.map((key) => (
-              <button
-                key={key}
-                type="button"
-                className={`mlp-tab${statusFilter === key ? " active" : ""}`}
-                onClick={() => setStatusFilter(key)}
-              >
-                {key === "all" ? t("myListingsPage.tabAll") : t(`myListingsPage.status.${key}`)} ({statusCounts[key]})
-              </button>
-            ))}
-          </div>
+          <ListingStatusTabs
+            className="mlp-tabs"
+            itemClassName="mlp-tab"
+            counts={statusCounts}
+            value={statusFilter}
+            onChange={setStatusFilter}
+          />
 
           {filteredListings.length === 0 ? (
             <p className="mlp-empty">{t("myListingsPage.noResults")}</p>

@@ -7,6 +7,8 @@ import {
   Users, DollarSign, Receipt,
 } from "lucide-react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { ListingStatusTabs } from "../../components/ListingStatusTabs";
+import { useStatusFilter } from "../../lib/useStatusFilter";
 import { useCurrency } from "../../i18n/CurrencyContext";
 import { useAuth } from "../../App";
 import { supabase } from "../../lib/supabaseClient";
@@ -59,7 +61,6 @@ export default function ProfilePage() {
   const [saveError, setSaveError] = useState("");
   const [myListings, setMyListings] = useState([]);
   const [myListingsLoading, setMyListingsLoading] = useState(true);
-  const [myListingsFilter, setMyListingsFilter] = useState("all");
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
@@ -157,13 +158,7 @@ export default function ProfilePage() {
     return { percent: Math.round((done / total) * 100), remaining };
   }, [phone, whatsappConnected, t]);
 
-  const myListingsCounts = myListings.reduce((acc, item) => {
-    acc[item.status] = (acc[item.status] || 0) + 1;
-    return acc;
-  }, {});
-  const filteredMyListings = myListingsFilter === "all"
-    ? myListings
-    : myListings.filter((item) => item.status === myListingsFilter);
+  const { filter: myListingsFilter, setFilter: setMyListingsFilter, counts: myListingsCounts, filtered: filteredMyListings } = useStatusFilter(myListings);
 
   return (
     <div className="profile-page">
@@ -225,7 +220,6 @@ export default function ProfilePage() {
         @media (max-width: 860px) { .pp-partner-main { display: block; } }
         .pp-my-listings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .pp-my-listings-head h2 { margin: 0; }
-        .pp-my-listings-viewall { font-size: 12.5px; font-weight: 700; color: var(--rebrand-cta); white-space: nowrap; }
         .pp-my-listings-empty { font-size: 13.5px; color: var(--text-soft); margin: 4px 0 0; }
 
         .pp-mf-filters {
@@ -454,33 +448,21 @@ export default function ProfilePage() {
       <div className="pp-card pp-my-listings">
         <div className="pp-my-listings-head">
           <h2>{t("profilePage.myListingsTitle")}</h2>
-          {myListings.length > 0 && <Link to="/my-listings" className="pp-my-listings-viewall">{t("profilePage.viewAll")}</Link>}
         </div>
         {myListingsLoading ? null : myListings.length === 0 ? (
           <p className="pp-my-listings-empty">{t("profilePage.myListingsEmpty")}</p>
         ) : (
           <>
-            <div className="pp-mf-filters">
-              <button
-                type="button"
-                className={`pp-mf-chip${myListingsFilter === "all" ? " active" : ""}`}
-                onClick={() => setMyListingsFilter("all")}
-              >
-                {t("profilePage.filterAll")} {myListings.length}
-              </button>
-              {["approved", "pending", "rejected"].map((statusKey) => (
-                myListingsCounts[statusKey] > 0 && (
-                  <button
-                    key={statusKey}
-                    type="button"
-                    className={`pp-mf-chip${myListingsFilter === statusKey ? " active" : ""}`}
-                    onClick={() => setMyListingsFilter(statusKey)}
-                  >
-                    {t(`myListingsPage.status.${statusKey}`)} {myListingsCounts[statusKey]}
-                  </button>
-                )
-              ))}
-            </div>
+            <ListingStatusTabs
+              className="pp-mf-filters"
+              itemClassName="pp-mf-chip"
+              counts={myListingsCounts}
+              value={myListingsFilter}
+              onChange={setMyListingsFilter}
+            />
+            {filteredMyListings.length === 0 ? (
+              <p className="pp-my-listings-empty">{t("myListingsPage.noResults")}</p>
+            ) : (
             <div className="pp-my-listings-grid">
               {filteredMyListings.map((item) => (
                 <Link to={`/edit-listing/${item.id}`} className="pp-mli-card" key={item.id}>
@@ -499,6 +481,7 @@ export default function ProfilePage() {
                 </Link>
               ))}
             </div>
+            )}
           </>
         )}
       </div>
