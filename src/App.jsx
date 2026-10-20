@@ -993,11 +993,11 @@ function AppShell() {
       </aside>
       <main className="app-main has-bottom-nav">
         <PageBackLink to={APP_PARENT_ROUTES.find(([re]) => re.test(location.pathname))?.[1]} />
-        <p style={{ fontSize: 13, color: "var(--text-soft)", marginBottom: 18 }}>
-          {inPartnerArea
-            ? <>Daxil olub: <strong>{user?.name}</strong> ({PARTNER_AREA_ROLE_LABEL[user?.role] || user?.role})</>
-            : <>Signed in as <strong>{user?.name}</strong> ({user?.role})</>}
-        </p>
+        {inPartnerArea && (
+          <p style={{ fontSize: 13, color: "var(--text-soft)", marginBottom: 18 }}>
+            Daxil olub: <strong>{user?.name}</strong> ({PARTNER_AREA_ROLE_LABEL[user?.role] || user?.role})
+          </p>
+        )}
         <Outlet />
       </main>
       <BottomNav hidden={bottomNavHidden} />
