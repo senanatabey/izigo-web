@@ -210,9 +210,13 @@ export default function MyListingsPage() {
         .my-listings-page .mlp-side { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px 14px; }
         .my-listings-page .mlp-item.is-open .mlp-side { padding-bottom: 12px; }
 
-        @media (max-width: 640px) {
-          /* The bottom-nav "+" already opens "new listing"; keep phones uncluttered. */
+        /* The bottom nav (shown up to 860px) has a "+" that opens "new listing", so hide the
+           duplicate toolbar wherever the bottom nav is visible. */
+        @media (max-width: 860px) {
           .my-listings-page .mlp-toolbar-main { display: none; }
+        }
+
+        @media (max-width: 640px) {
           .my-listings-page .mlp-list { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
           .my-listings-page .mlp-body { padding: 10px 10px 0; }
           .my-listings-page .mlp-title { font-size: 13px; }
