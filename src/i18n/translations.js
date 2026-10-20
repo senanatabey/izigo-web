@@ -1249,7 +1249,7 @@ export const translations = {
     myListingsPage: {
       heading: "Elanlarım",
       subtitle: "Yayımladığın hər şeyin statusunu izlə.",
-      status: { approved: "Təsdiqlənib", pending: "Gözləmədə", rejected: "Rədd edilib" },
+      status: { approved: "Təsdiqlənib", pending: "Gözləmədə", rejected: "İmtina olunub" },
       inquiries: "sorğu",
       rejectReasonLabel: "Səbəb",
       edit: "Redaktə et",
